@@ -2,38 +2,126 @@
   "permissions": {
     "TYL_trackableRecord": {
       "row": {
-        "update": {}
+        "select": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "user_id"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ],
+        "insert": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "user_id"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ],
+        "update": {},
+        "delete": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "user_id"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ]
+      }
+    },
+    "TYL_trackable": {
+      "row": {
+        "select": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "user_id"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ],
+        "insert": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "user_id"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ],
+        "update": {},
+        "delete": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "user_id"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ]
       }
     }
   },
   "schema": {
     "version": 1,
     "tables": {
-      "TYL_auth_user": {
-        "tableName": "TYL_auth_user",
-        "primaryKey": [
-          "id"
-        ],
-        "columns": {
-          "email": {
-            "type": "string",
-            "optional": false
-          },
-          "id": {
-            "type": "string",
-            "optional": false
-          },
-          "settings": {
-            "type": "json",
-            "optional": false
-          },
-          "username": {
-            "type": "string",
-            "optional": false
-          }
-        },
-        "relationships": {}
-      },
       "TYL_trackable": {
         "tableName": "TYL_trackable",
         "primaryKey": [
@@ -78,15 +166,6 @@
               "trackableId"
             ],
             "destSchema": "TYL_trackableRecord"
-          },
-          "user": {
-            "sourceField": [
-              "user_id"
-            ],
-            "destField": [
-              "id"
-            ],
-            "destSchema": "TYL_auth_user"
           }
         }
       },
@@ -114,17 +193,7 @@
             "optional": false
           }
         },
-        "relationships": {
-          "user": {
-            "sourceField": [
-              "user_id"
-            ],
-            "destField": [
-              "id"
-            ],
-            "destSchema": "TYL_auth_user"
-          }
-        }
+        "relationships": {}
       }
     }
   }

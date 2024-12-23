@@ -23,12 +23,16 @@ const migrateIfNeeded = async () => {
 
   if (migrationsDone) return;
 
+  console.log("Running migrations(if present)");
+
   await migrate(db, {
     migrationsFolder:
       process.env.NODE_ENV === "development"
         ? "../../packages/db/drizzle" // Local development when root folder is apps/next
         : "./drizzle", // Docker build when drizzle folder is copied to build dir
   });
+
+  console.log("Migrations done");
 
   migrationsDone = true;
 };

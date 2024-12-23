@@ -2,12 +2,7 @@ import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { PreserveLocationOnSidebarNavSwitch } from "~/components/Settings";
-import { BackupAndRestore } from "~/components/Settings/backup";
 import { ThemeSwitcher } from "~/components/Settings/themeSwitcher";
-import {
-  CurrentTime,
-  TimezoneSelector,
-} from "~/components/Settings/timezoneSelector";
 import { getTimezones } from "~/components/Settings/timzones";
 
 export const Route = createFileRoute("/app/settings")({
@@ -48,18 +43,13 @@ function RouteComponent() {
         <div>
           <div className="flex gap-2">
             <h2 className="text-xl">Timezone</h2>
-            <CurrentTime />
           </div>
-
-          <TimezoneSelector list={tz} />
 
           <p className="mt-2 text-xs opacity-50">
             Used to accurately determine time when rendering on the server. Has
             no effect on mobile app.{" "}
           </p>
         </div>
-
-        <BackupAndRestore />
       </div>
     </div>
   );

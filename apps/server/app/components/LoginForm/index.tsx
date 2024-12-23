@@ -7,8 +7,8 @@ import { useRouter } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { AnimatePresence, m } from "framer-motion";
 import { XCircleIcon } from "lucide-react";
+import { z } from "zod";
 
-import type { LoginData, RegisterData } from "~/auth/authOperations";
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
 import { Button } from "~/@shad/components/button";
 import {
@@ -20,7 +20,7 @@ import {
 } from "~/@shad/components/card";
 import { Input } from "~/@shad/components/input";
 import { RadioTabItem, RadioTabs } from "~/@shad/components/radio-tabs";
-import { loginFn, registerFn, registerValidator } from "~/auth/authOperations";
+import { authClient } from "~/auth/client";
 
 type ActionState = "login" | "register";
 
@@ -55,11 +55,23 @@ const Register = () => {
   const router = useRouter();
 
   const registerMutation = useMutation({
-    mutationFn: async ({ email, password, username }: RegisterData) => {
-      const r = await registerFn({ data: { email, password, username } });
-      if (!r.ok) {
-        throw new Error(r.message);
-      }
+    mutationFn: async ({
+      email,
+      password,
+      name,
+    }: {
+      email: string;
+      password: string;
+      name: string;
+    }) => {
+      await authClient.signUp.email(
+        { email, password, name },
+        {
+          onError: (ctx) => {
+            throw new Error(ctx.error.message);
+          },
+        },
+      );
     },
     onSuccess: async () => {
       await router.invalidate();
@@ -69,17 +81,21 @@ const Register = () => {
 
   const form = useForm({
     defaultValues: {
-      username: "",
+      name: "",
       email: "",
       password: "",
-    } as RegisterData,
+    },
     onSubmit: async ({ value }) => {
       await registerMutation.mutateAsync(value);
     },
 
     validatorAdapter: zodValidator(),
     validators: {
-      onChange: registerValidator,
+      onChange: z.object({
+        email: z.string().email(),
+        name: z.string().min(3),
+        password: z.string().min(8),
+      }),
     },
   });
 
@@ -113,7 +129,7 @@ const Register = () => {
 
       <h4 className="mb-2 mt-4">Name</h4>
       <form.Field
-        name="username"
+        name="name"
         children={(field) => (
           <>
             <Input
@@ -122,8 +138,8 @@ const Register = () => {
                 field.handleChange(e.target.value);
               }}
               type="text"
-              name="username"
-              id="username"
+              name="name"
+              id="name"
               placeholder="John Doe"
             />
             <FieldInfo field={field} />
@@ -172,11 +188,21 @@ const Login = () => {
   const router = useRouter();
 
   const loginMutation = useMutation({
-    mutationFn: async ({ email, password }: LoginData) => {
-      const r = await loginFn({ data: { email, password } });
-      if (!r.ok) {
-        throw new Error(r.message);
-      }
+    mutationFn: async ({
+      email,
+      password,
+    }: {
+      email: string;
+      password: string;
+    }) => {
+      await authClient.signIn.email(
+        { email, password },
+        {
+          onError: (ctx) => {
+            throw new Error(ctx.error.message);
+          },
+        },
+      );
     },
     onSuccess: async () => {
       await router.invalidate();
@@ -188,7 +214,7 @@ const Login = () => {
     defaultValues: {
       email: "",
       password: "",
-    } as LoginData,
+    },
     onSubmit: async ({ value }) => {
       await loginMutation.mutateAsync(value);
     },

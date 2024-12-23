@@ -1,13 +1,23 @@
 import { Zero } from "@rocicorp/zero";
 import { ZeroProvider } from "@rocicorp/zero/react";
 import { cn } from "@shad/utils";
-import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import {
+  createFileRoute,
+  Outlet,
+  redirect,
+  useRouteContext,
+} from "@tanstack/react-router";
+import { createServerFn } from "@tanstack/start";
 
 import { SidebarProvider } from "~/@shad/components/sidebar";
+import { authClient } from "~/auth/client";
+import { auth } from "~/auth/server";
 import Header from "~/components/Header";
-import { UserProvider } from "~/components/Providers/UserContext";
 import { AppSidebar } from "~/components/Sidebar";
+import { getSession } from "~/routes/__root";
 import { schema } from "~/schema";
+import { useSessionAuthed, useSessionInfo } from "~/utils/useSessionInfo";
 import { preloadCore } from "~/utils/useZ";
 
 export const Route = createFileRoute("/app")({
@@ -15,27 +25,28 @@ export const Route = createFileRoute("/app")({
 });
 
 function AppComponent() {
+  const { sessionInfo, token } = useSessionAuthed();
+
   const z = new Zero({
-    userID: "tyl-zero",
+    userID: sessionInfo.user.id,
     server: "http://localhost:4848/",
     schema,
     kvStore: "idb",
+    auth: token,
   });
 
   return (
     <ZeroProvider zero={z}>
       <MainPreloader>
-        <UserProvider>
-          <SidebarProvider>
-            <AppSidebar />
-            <div className={cn("h-full max-h-full min-h-screen w-full", "")}>
-              <Header />
-              <div className="mx-auto box-border w-full pt-4 max-xl:col-span-2">
-                <Outlet />
-              </div>
+        <SidebarProvider>
+          <AppSidebar />
+          <div className={cn("h-full max-h-full min-h-screen w-full", "")}>
+            <Header />
+            <div className="mx-auto box-border w-full pt-4 max-xl:col-span-2">
+              <Outlet />
             </div>
-          </SidebarProvider>
-        </UserProvider>
+          </div>
+        </SidebarProvider>
       </MainPreloader>
     </ZeroProvider>
   );

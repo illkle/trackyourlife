@@ -1,18 +1,42 @@
 import type { QueryClient } from "@tanstack/react-query";
 import * as React from "react";
+import { useQuery } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import {
   createRootRouteWithContext,
   Outlet,
   ScrollRestoration,
 } from "@tanstack/react-router";
-import { Meta, Scripts } from "@tanstack/start";
+import { createServerFn, Meta, Scripts } from "@tanstack/start";
 import { ThemeProvider } from "next-themes";
+import { getWebRequest } from "vinxi/http";
 
-import { getUserFn } from "~/auth/authOperations";
+import { auth } from "~/auth/server";
 import { LazyMotionProvider } from "~/components/Providers/lazyFramerMotionProvider";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo.js";
+import { UserPreloader } from "~/utils/useSessionInfo";
+
+export const getSession = createServerFn({ method: "GET" }).handler(
+  async () => {
+    try {
+      const r = getWebRequest();
+
+      const sessionInfo = await auth.api.getSession({
+        headers: r.headers,
+      });
+
+      const { token } = await auth.api.getToken({
+        headers: r.headers,
+      });
+
+      return { sessionInfo, token };
+    } catch (e) {
+      console.log(e);
+      return { sessionInfo: null, token: null };
+    }
+  },
+);
 
 const iconPrefix = (path: string) =>
   process.env.SITE === "stage" ? `/stg${path}` : path;
@@ -80,28 +104,17 @@ const TanStackRouterDevtools =
         })),
       );
 
-// Temporary HMR HACK https://github.com/TanStack/router/issues/1992
+//  import.meta.env.DEV  is a temporary HMR HACK https://github.com/TanStack/router/issues/1992
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html suppressHydrationWarning={true}>
       <head>
         <Meta />
-        {import.meta.env.DEV && (
-          <script
-            type="module"
-            dangerouslySetInnerHTML={{
-              __html: `import RefreshRuntime from "/_build/@react-refresh";
-RefreshRuntime.injectIntoGlobalHook(window)
-window.$RefreshReg$ = () => {}
-window.$RefreshSig$ = () => (type) => type`,
-            }}
-          />
-        )}
       </head>
       <body className="bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-50">
         <LazyMotionProvider>
           <ThemeProvider defaultTheme="dark" attribute="class">
-            {children}
+            <UserPreloader>{children}</UserPreloader>
             <ScrollRestoration />
             <TanStackRouterDevtools position="bottom-right" />
             <ReactQueryDevtools buttonPosition="bottom-left" />

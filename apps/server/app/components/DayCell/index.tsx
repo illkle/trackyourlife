@@ -4,11 +4,10 @@ import { cn } from "@shad/utils";
 import { format, isSameDay } from "date-fns";
 
 import { DbTrackableSelect } from "@tyl/db/schema";
-import { getGMTWithTimezoneOffset } from "@tyl/helpers/timezone";
 
 import { Skeleton } from "~/@shad/components/skeleton";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
-import { useUserSafe } from "~/components/Providers/UserContext";
+import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { useZ } from "~/utils/useZ";
 import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
@@ -109,12 +108,11 @@ export const DayCellWrapper = ({
   disabled?: boolean;
   labelType?: "auto" | "outside" | "none";
 }) => {
-  const { id: userId } = useUserSafe();
-  const { settings: uSettings } = useUserSafe();
+  const { sessionInfo, token } = useSessionAuthed();
 
   const { id, type } = useTrackableMeta();
 
-  const isToday = isSameDay(date, getGMTWithTimezoneOffset(uSettings.timezone));
+  const isToday = isSameDay(date, new Date());
 
   const z = useZ();
 
@@ -124,10 +122,10 @@ export const DayCellWrapper = ({
         date: date.getTime(),
         trackableId: id,
         value: val,
-        user_id: userId,
+        user_id: sessionInfo.user.id,
       });
     },
-    [date, id, z],
+    [date, id, z, sessionInfo.user.id],
   );
 
   return (
@@ -156,7 +154,7 @@ export const DayCellWrapper = ({
         {labelType !== "none" && (
           <div
             className={cn(
-              "absolute left-1 top-0 select-none text-base text-neutral-800",
+              "absolute left-1 top-0 z-10 select-none text-base text-neutral-800",
               labelType === "outside" ? "hidden" : "max-md:hidden",
               isToday ? "font-normal underline" : "font-light",
             )}

@@ -4,22 +4,12 @@ import {
   createSchema,
   createTableSchema,
   definePermissions,
+  ExpressionBuilder,
 } from "@rocicorp/zero";
 
-import { ITrackableSettings, IUserSettings } from "@tyl/db/jsonValidators";
+import { ITrackableSettings } from "@tyl/db/jsonValidators";
 
 const { json } = column;
-
-const TYL_auth_user = createTableSchema({
-  tableName: "TYL_auth_user",
-  columns: {
-    id: { type: "string" },
-    email: { type: "string" },
-    username: { type: "string" },
-    settings: json<IUserSettings>(),
-  },
-  primaryKey: "id",
-});
 
 const TYL_trackableRecord = createTableSchema({
   tableName: "TYL_trackableRecord",
@@ -30,13 +20,6 @@ const TYL_trackableRecord = createTableSchema({
     user_id: { type: "string" },
   },
   primaryKey: ["trackableId", "date"],
-  relationships: {
-    user: {
-      sourceField: "user_id",
-      destSchema: TYL_auth_user,
-      destField: "id",
-    },
-  },
 });
 
 const TYL_trackable = createTableSchema({
@@ -52,11 +35,6 @@ const TYL_trackable = createTableSchema({
   },
   primaryKey: "id",
   relationships: {
-    user: {
-      sourceField: "user_id",
-      destSchema: TYL_auth_user,
-      destField: "id",
-    },
     trackableRecord: {
       sourceField: "id",
       destSchema: TYL_trackableRecord,
@@ -70,13 +48,49 @@ export const schema = createSchema({
   tables: {
     TYL_trackable,
     TYL_trackableRecord,
-    TYL_auth_user,
   },
 });
 
 export type Schema = typeof schema;
 
-export const permissions = definePermissions<any, Schema>(schema, () => {
+type AuthData = {
+  sub: string;
+};
+
+export const permissions = definePermissions<AuthData, Schema>(schema, () => {
+  const allowIfOwnerTrackable = (
+    authData: AuthData,
+    { cmp }: ExpressionBuilder<typeof TYL_trackable>,
+  ) => cmp("user_id", "=", authData.sub);
+
+  const allowIfOwnerTrackableRecord = (
+    authData: AuthData,
+    { cmp }: ExpressionBuilder<typeof TYL_trackableRecord>,
+  ) => cmp("user_id", "=", authData.sub);
+
+  return {
+    TYL_trackableRecord: {
+      row: {
+        insert: [allowIfOwnerTrackableRecord],
+        delete: [allowIfOwnerTrackableRecord],
+        select: [allowIfOwnerTrackableRecord],
+        preMutation: [allowIfOwnerTrackableRecord],
+        postMutation: [allowIfOwnerTrackableRecord],
+      },
+    },
+    TYL_trackable: {
+      row: {
+        insert: [allowIfOwnerTrackable],
+        delete: [allowIfOwnerTrackable],
+        select: [allowIfOwnerTrackable],
+        preMutation: [allowIfOwnerTrackable],
+        postMutation: [allowIfOwnerTrackable],
+      },
+    },
+  };
+});
+
+export const permissions2 = definePermissions<AuthData, Schema>(schema, () => {
   return {
     TYL_trackableRecord: {
       row: {

@@ -15,12 +15,10 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { ErrorBoundary } from "react-error-boundary";
 
-import { DbTrackableRecordSelect } from "@tyl/db/schema";
 import { getGMTWithTimezoneOffset } from "@tyl/helpers/timezone";
 
 import { Button } from "~/@shad/components/button";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
-import { useUserSafe } from "~/components/Providers/UserContext";
 import { TrackableNoteEditable } from "~/components/TrackableNote";
 import { YearSelector } from "~/components/TrackableView/yearSelector";
 import { Route } from "~/routes/app/trackables/$id/view";
@@ -137,7 +135,6 @@ const YearFetcher = ({
   year: number;
   openMonth: (n: number) => void;
 }) => {
-  const { settings } = useUserSafe();
   const { id } = useTrackableMeta();
 
   const firstDayDate = new Date(Date.UTC(year, 0, 1));
@@ -201,8 +198,7 @@ const ViewController = ({
   year: TVDateValue;
   month: TVDateValue;
 }) => {
-  const { settings } = useUserSafe();
-  const now = getGMTWithTimezoneOffset(settings.timezone);
+  const now = new Date();
   const navigate = Route.useNavigate();
 
   const toPrev = getIncrementedDate(-1, year, month);

@@ -8,6 +8,7 @@ import {
   IBooleanSettings,
   INumberSettings,
   IRangeSettings,
+  ITrackableSettings,
 } from "@tyl/db/jsonValidators";
 import { DbTrackableSelect } from "@tyl/db/schema";
 import { presetsMap } from "@tyl/helpers/colorPresets";
@@ -24,7 +25,6 @@ import { DayCellBoolean } from "~/components/DayCell/DayCellBoolean";
 import { DayCellNumber } from "~/components/DayCell/DayCellNumber";
 import { DayCellRange } from "~/components/DayCell/DayCellRange";
 import { DayCellProvider } from "~/components/Providers/DayCellProvider";
-import { useUserSafe } from "~/components/Providers/UserContext";
 import NumberColorSelector from "../Colors/numberColorSelector";
 import NumberLimitsSelector from "./numberLimitsSelector";
 import RangeLabelSelector from "./rangeLabelSelector";
@@ -36,10 +36,8 @@ export const SettingsTitle = ({ children }: { children: React.ReactNode }) => {
 export const SettingsCommon = ({
   form,
 }: {
-  form: ReactFormExtendedApi<DbTrackableSelect["settings"]>;
+  form: ReactFormExtendedApi<ITrackableSettings>;
 }) => {
-  const { settings } = useUserSafe();
-
   return (
     <div>
       <SettingsTitle>Tracking Start</SettingsTitle>
@@ -55,7 +53,7 @@ export const SettingsCommon = ({
                 onChange={(v) => field.handleChange(String(v))}
                 limits={{
                   start: new Date(1990, 0, 1),
-                  end: getGMTWithTimezoneOffset(settings.timezone),
+                  end: new Date(),
                 }}
               />
             </DrawerMobileTitleProvider>
@@ -253,7 +251,7 @@ const TrackableMock = ({
   className,
 }: {
   type: DbTrackableSelect["type"];
-  form: ReactFormExtendedApi<DbTrackableSelect["settings"]>;
+  form: ReactFormExtendedApi<ITrackableSettings>;
   mockLabel: string;
   className?: string;
 }) => {
@@ -304,11 +302,11 @@ const TrackableSettings = ({
   customSaveButtonText,
 }: {
   trackableType: DbTrackableSelect["type"];
-  initialSettings: DbTrackableSelect["settings"];
-  handleSave: (v: DbTrackableSelect["settings"]) => void | Promise<void>;
+  initialSettings: ITrackableSettings;
+  handleSave: (v: ITrackableSettings) => void | Promise<void>;
   customSaveButtonText?: string;
 }) => {
-  const form = useForm<DbTrackableSelect["settings"]>({
+  const form = useForm<ITrackableSettings>({
     defaultValues: initialSettings,
     onSubmit: async (v) => {
       await handleSave(v.value);

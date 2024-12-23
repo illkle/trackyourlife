@@ -71,17 +71,16 @@
   },
   "globalEnv": [
     "DATABASE_URL",
-    "TEST_ENV",
+    "TEST_URL",
     "MIGRATE",
-    "SITE"
-  ],
-  "globalPassThroughEnv": [
-    "MIGRATE",
-    "NODE_ENV",
-    "CI",
-    "VERCEL",
-    "VERCEL_ENV",
-    "VERCEL_URL",
-    "npm_lifecycle_event"
+    "SITE",
+    "BETTER_AUTH_SECRET",
+    "BETTER_AUTH_URL",
+    "ZERO_UPSTREAM_DB",
+    "ZERO_CVR_DB",
+    "ZERO_CHANGE_DB",
+    "ZERO_AUTH_SECRET",
+    "ZERO_REPLICA_FILE",
+    "VITE_PUBLIC_SERVER"
   ]
 }

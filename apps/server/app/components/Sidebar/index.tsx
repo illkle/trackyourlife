@@ -32,11 +32,10 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/@shad/components/sidebar";
-import { logoutFn } from "~/auth/authOperations";
+import { authClient } from "~/auth/client";
 import { CoreLinks } from "~/components/Header";
-import { useUserSafe } from "~/components/Providers/UserContext";
 import { ThemeSwitcher } from "~/components/Settings/themeSwitcher";
-import { useZeroTrackablesList, useZeroUser } from "~/utils/useZ";
+import { useZeroTrackablesList } from "~/utils/useZ";
 
 const iconsMap: Record<DbTrackableSelect["type"], ReactNode> = {
   boolean: <ToggleRight size={16} />,
@@ -47,17 +46,16 @@ const iconsMap: Record<DbTrackableSelect["type"], ReactNode> = {
 const TrackablesMiniList = () => {
   const [data, info] = useZeroTrackablesList();
 
-  const user = useUserSafe();
-
   const loc = useLocation();
 
   const favsSet = useMemo(() => {
-    return new Set(user?.settings?.favorites || []);
-  }, [user]);
+    // TODO
+    return new Set<string>([]);
+  }, []);
 
   if (!data || data.length === 0) return <div></div>;
 
-  const sorted = sortTrackableList([...data], user?.settings?.favorites || []);
+  const sorted = sortTrackableList([...data], []);
 
   return (
     <SidebarMenu>
@@ -68,13 +66,9 @@ const TrackablesMiniList = () => {
               <Link
                 key={tr.id}
                 to={`/app/trackables/${tr.id}/`}
-                search={(prev) =>
-                  user?.settings.preserveLocationOnSidebarNav
-                    ? {
-                        ...prev,
-                      }
-                    : {}
-                }
+                search={(prev) => ({
+                  ...prev,
+                })}
               >
                 <div className="flex w-full items-center justify-between gap-2">
                   <div className="justify-baseline flex items-center gap-2 truncate">
@@ -100,8 +94,7 @@ const TrackablesMiniList = () => {
 export const AppSidebar = () => {
   const loc = useLocation();
   const router = useRouter();
-
-  const user = useUserSafe();
+  const { data } = authClient.useSession();
 
   return (
     <Sidebar variant="floating">
@@ -130,7 +123,7 @@ export const AppSidebar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 /> {user.username}
+                  <User2 /> {data?.user.name}
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -141,8 +134,13 @@ export const AppSidebar = () => {
                 <ThemeSwitcher className="mb-2 w-full" />
                 <DropdownMenuItem
                   onClick={() => {
-                    void logoutFn();
-                    void router.navigate({ to: "/login" });
+                    authClient.signOut({
+                      fetchOptions: {
+                        onSuccess: async () => {
+                          await router.navigate({ to: "/login" });
+                        },
+                      },
+                    });
                   }}
                 >
                   <span>Sign out</span>

@@ -13,14 +13,6 @@ export const useZeroTrackablesList = () => {
   return useQuery(q);
 };
 
-export const useZeroUser = () => {
-  const zero = useZ();
-
-  const q = zero.query.TYL_auth_user.one();
-
-  return useQuery(q);
-};
-
 export const useZeroTrackable = ({ id }: { id: string }) => {
   const zero = useZ();
   const q = zero.query.TYL_trackable.one().where("id", id);

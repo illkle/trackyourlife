@@ -44,6 +44,7 @@
     "@visx/visx": "^3.12.0",
     "@yornaath/batshit": "^0.10.1",
     "arctic": "^2.3.0",
+    "better-auth": "^1.1.1",
     "class-variance-authority": "catalog:",
     "clsx": "^2.1.1",
     "date-fns": "catalog:",

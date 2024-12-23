@@ -1,17 +1,16 @@
 import * as React from "react";
 import { useRef, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { v4 as uuidv4 } from "uuid";
 
 import type { ITrackableSettings } from "@tyl/db/jsonValidators";
-import { DbTrackableInsert } from "@tyl/db/schema";
+import { DbTrackableInsert, user } from "@tyl/db/schema";
 import { cloneDeep } from "@tyl/helpers";
 
 import { Input } from "~/@shad/components/input";
 import { RadioTabItem, RadioTabs } from "~/@shad/components/radio-tabs";
-import { useUserSafe } from "~/components/Providers/UserContext";
 import TrackableSettings from "~/components/TrackableSettings";
+import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { useZ } from "~/utils/useZ";
 
 export const Route = createFileRoute("/app/create")({
@@ -20,20 +19,20 @@ export const Route = createFileRoute("/app/create")({
 
 function RouteComponent() {
   const router = useRouter();
-
   const z = useZ();
-  const user = useUserSafe();
+
+  const { sessionInfo } = useSessionAuthed();
 
   const [newOne, setNewOne] = useState<DbTrackableInsert>({
     type: "boolean",
     name: "",
     settings: {},
-    user_id: user.id,
+    user_id: sessionInfo.user.id,
   });
 
   const nameRef = useRef("");
 
-  const setType = (type: ITrackableToCreate["type"]) => {
+  const setType = (type: DbTrackableInsert["type"]) => {
     // This assumes that all settings fields are optional
     const update = cloneDeep(newOne);
     update.type = type;
@@ -70,7 +69,7 @@ function RouteComponent() {
 
       <RadioTabs
         value={newOne.type}
-        onValueChange={(v) => setType(v as ITrackableToCreate["type"])}
+        onValueChange={(v) => setType(v as DbTrackableInsert["type"])}
         className="mt-2"
       >
         <RadioTabItem value="boolean" id="boolean" className="w-full">
@@ -85,7 +84,7 @@ function RouteComponent() {
       </RadioTabs>
       <TrackableSettings
         trackableType={newOne.type}
-        initialSettings={newOne.settings}
+        initialSettings={newOne.settings ?? {}}
         handleSave={createTrackable}
         customSaveButtonText="Create Trackable"
       />

@@ -5,10 +5,10 @@ import {
   pgEnum,
   pgTableCreator,
   primaryKey,
+  text,
   timestamp,
   unique,
   uuid,
-  varchar,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
@@ -16,45 +16,86 @@ import { ITrackableSettings, IUserSettings } from "./jsonValidators";
 
 const pgTable = pgTableCreator((name) => `TYL_${name}`);
 
-export const auth_user = pgTable("auth_user", {
-  id: varchar("id").primaryKey(),
+/**
+ * AUTH https://www.better-auth.com/docs/installation
+ * npx @better-auth/cli generate --config ./apps/server/app/utils/auth.ts
+ * Copy output here manually and remove prefixes, they are set by pgtable
+ */
 
-  email: varchar("email").unique().notNull(),
-  username: varchar("username").notNull(),
-
-  hashedPassword: varchar("hashed_password").notNull(),
-
-  settings: json("settings").default({}).$type<IUserSettings>(),
-  // Currently only used to identify users created by e2e testing
-  role: varchar("role"),
+export const user = pgTable("user", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull().unique(),
+  emailVerified: boolean("emailVerified").notNull().default(false),
+  image: text("image"),
+  createdAt: timestamp("createdAt").notNull().defaultNow(),
+  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
 });
 
-export const user_session = pgTable("user_session", {
-  id: varchar("id").primaryKey(),
-
-  userId: varchar("user_id")
+export const session = pgTable("session", {
+  id: text("id").primaryKey(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  token: text("token").notNull().unique(),
+  createdAt: timestamp("createdAt").notNull(),
+  updatedAt: timestamp("updatedAt").notNull(),
+  ipAddress: text("ipAddress"),
+  userAgent: text("userAgent"),
+  userId: text("userId")
     .notNull()
-    .references(() => auth_user.id),
-
-  expiresAt: timestamp("expires_at", {
-    withTimezone: true,
-    mode: "date",
-  }).notNull(),
+    .references(() => user.id),
 });
+
+export const account = pgTable("account", {
+  id: text("id").primaryKey(),
+  accountId: text("accountId").notNull(),
+  providerId: text("providerId").notNull(),
+  userId: text("userId")
+    .notNull()
+    .references(() => user.id),
+  accessToken: text("accessToken"),
+  refreshToken: text("refreshToken"),
+  idToken: text("idToken"),
+  accessTokenExpiresAt: timestamp("accessTokenExpiresAt"),
+  refreshTokenExpiresAt: timestamp("refreshTokenExpiresAt"),
+  scope: text("scope"),
+  password: text("password"),
+  createdAt: timestamp("createdAt").notNull(),
+  updatedAt: timestamp("updatedAt").notNull(),
+});
+
+export const verification = pgTable("verification", {
+  id: text("id").primaryKey(),
+  identifier: text("identifier").notNull(),
+  value: text("value").notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  createdAt: timestamp("createdAt"),
+  updatedAt: timestamp("updatedAt"),
+});
+
+export const jwks = pgTable("jwks", {
+  id: text("id").primaryKey(),
+  publicKey: text("publicKey").notNull(),
+  privateKey: text("privateKey").notNull(),
+  createdAt: timestamp("createdAt").notNull(),
+});
+
+/**
+ * TRACKABLES
+ */
 
 export const trackableTypeEnum = pgEnum("type", ["boolean", "number", "range"]);
 
 export const trackable = pgTable("trackable", {
   is_deleted: boolean("is_deleted").notNull().default(false),
-  user_id: varchar("user_id")
+  user_id: text("user_id")
     .notNull()
-    .references(() => auth_user.id, { onDelete: "cascade" }),
+    .references(() => user.id, { onDelete: "cascade" }),
 
   id: uuid("id").defaultRandom().primaryKey(),
 
-  name: varchar("name").notNull(),
+  name: text("name").notNull(),
   type: trackableTypeEnum("type").notNull(),
-  attached_note: varchar("attached_note"),
+  attached_note: text("attached_note"),
   settings: json("settings").default({}).$type<ITrackableSettings>(),
 });
 
@@ -76,10 +117,10 @@ export const trackableRecord = pgTable(
       .notNull()
       .references(() => trackable.id, { onDelete: "cascade" }),
     date: timestamp("date").notNull(),
-    value: varchar("value").notNull(),
-    user_id: varchar("user_id")
+    value: text("value").notNull(),
+    user_id: text("user_id")
       .notNull()
-      .references(() => auth_user.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" }),
   },
   (t) => ({
     pk: primaryKey({ columns: [t.trackableId, t.date] }),
@@ -92,14 +133,14 @@ export const recordRelations = relations(trackableRecord, ({ one }) => ({
     fields: [trackableRecord.trackableId],
     references: [trackable.id],
   }),
-  userId: one(auth_user, {
+  userId: one(user, {
     fields: [trackableRecord.user_id],
-    references: [auth_user.id],
+    references: [user.id],
   }),
 }));
 
-export type DbUserSelect = typeof auth_user.$inferSelect;
-export type DbSessionSelect = typeof user_session.$inferSelect;
+export type DbUserSelect = typeof user.$inferSelect;
+export type DbSessionSelect = typeof session.$inferSelect;
 
 export type DbTrackableSelect = typeof trackable.$inferSelect;
 export type DbTrackableInsert = typeof trackable.$inferInsert;

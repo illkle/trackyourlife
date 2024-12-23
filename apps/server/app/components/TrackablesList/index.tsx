@@ -5,7 +5,6 @@ import { format, isLastDayOfMonth } from "date-fns";
 import { m } from "framer-motion";
 
 import { DbTrackableSelect } from "@tyl/db/schema";
-import { getGMTWithTimezoneOffset } from "@tyl/helpers/timezone";
 import { sortTrackableList } from "@tyl/helpers/trackables";
 
 import { Badge } from "~/@shad/components/badge";
@@ -13,10 +12,9 @@ import { Button } from "~/@shad/components/button";
 import { Input } from "~/@shad/components/input";
 import DayCellWrapper from "~/components/DayCell";
 import TrackableProvider from "~/components/Providers/TrackableProvider";
-import { useUserSafe } from "~/components/Providers/UserContext";
 import { TrackableNameText } from "~/components/TrackableName";
 import { generateDates } from "~/components/TrackablesList/helper";
-import { useZeroTrackablesList, useZeroUser } from "~/utils/useZ";
+import { useZeroTrackablesList } from "~/utils/useZ";
 import MiniTrackable from "./miniTrackable";
 
 const EmptyList = () => {
@@ -35,10 +33,12 @@ const EmptyList = () => {
 
 type TrackableTypeFilterState = Record<DbTrackableSelect["type"], boolean>;
 
-const filterTrackables = (
+const filterTrackables = <
+  T extends Pick<DbTrackableSelect, "id" | "name" | "type">,
+>(
   query: string,
   types: TrackableTypeFilterState,
-  list: Pick<DbTrackableSelect, "id" | "name" | "type">[],
+  list: T[],
 ) => {
   const filterByType = Object.values(types).some((v) => v);
 
@@ -57,8 +57,6 @@ const filterTrackables = (
 const TrackablesList = ({ daysToShow }: { daysToShow: number }) => {
   const [data, info] = useZeroTrackablesList();
 
-  const [user, uInfo] = useZeroUser();
-
   const [searchQ, setSearch] = useState("");
   const [filterTypes, setFilterTypes] = useState<TrackableTypeFilterState>({
     number: false,
@@ -72,17 +70,14 @@ const TrackablesList = ({ daysToShow }: { daysToShow: number }) => {
   );
 
   const sorted = useMemo(
-    () => sortTrackableList(filtered, user?.settings.favorites || []),
-    [filtered, user],
+    // todo
+    () => sortTrackableList(filtered, []),
+    [filtered],
   );
 
   const daysToRender = useMemo(
-    () =>
-      generateDates(
-        daysToShow,
-        getGMTWithTimezoneOffset(user?.settings.timezone),
-      ),
-    [daysToShow, user],
+    () => generateDates(daysToShow, new Date()),
+    [daysToShow],
   );
 
   if (!data || data.length === 0) return <EmptyList />;
@@ -139,20 +134,15 @@ const TrackablesList = ({ daysToShow }: { daysToShow: number }) => {
 export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
   const [data, info] = useZeroTrackablesList();
 
-  const user = useUserSafe();
-
   const daysToRender = useMemo(
-    () =>
-      generateDates(
-        daysToShow,
-        getGMTWithTimezoneOffset(user.settings.timezone),
-      ).reverse(),
-    [daysToShow, user],
+    () => generateDates(daysToShow, new Date()).reverse(),
+    [daysToShow],
   );
 
   if (!data || data.length === 0) return <EmptyList />;
 
-  const sorted = sortTrackableList([...data], user.settings.favorites);
+  // todo
+  const sorted = sortTrackableList([...data], []);
 
   return (
     <div className="flex flex-col gap-6">

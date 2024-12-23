@@ -18,14 +18,11 @@ import {
   DropdownContent,
   DropdownTrigger,
 } from "~/components/Dropdown";
-import { useUserSafe } from "~/components/Providers/UserContext";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 import { useZ } from "~/utils/useZ";
 
 export const CurrentTime = () => {
   const [value, setValue] = useState("");
-
-  const { settings } = useUserSafe();
 
   useEffect(() => {
     setValue(format(getTimezonedDate(settings.timezone), "HH:mm:ss"));

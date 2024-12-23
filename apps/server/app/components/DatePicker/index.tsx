@@ -21,8 +21,6 @@ import {
 } from "lucide-react";
 import { useResizeObserver } from "usehooks-ts";
 
-import { getGMTWithTimezoneOffset } from "@tyl/helpers/timezone";
-
 import { Button, buttonVariants } from "~/@shad/components/button";
 import {
   Drawer,
@@ -32,7 +30,6 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/@shad/components/drawer";
-import { useUserSafe } from "~/components/Providers/UserContext";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 import { Dropdown, DropdownContent, DropdownTrigger } from "../Dropdown";
 
@@ -53,8 +50,7 @@ const DatePicker = ({
   };
   className?: string;
 }) => {
-  const { settings } = useUserSafe();
-  const dateNow = getGMTWithTimezoneOffset(settings.timezone);
+  const dateNow = new Date();
 
   const [innerDate, setInnerDate] = useState(date);
 
