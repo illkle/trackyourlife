@@ -1,4 +1,4 @@
-import { isAfter, isBefore, isSameDay } from "date-fns";
+import { eachDayOfInterval, isSameDay, startOfTomorrow } from "date-fns";
 
 import {
   IBooleanSettings,
@@ -12,32 +12,51 @@ import { range } from "./animation";
 import { presetsMap } from "./colorPresets";
 import { getColorAtPosition, makeColorString } from "./colorTools";
 
-export const computeDayCellHelpers = ({
-  day,
-  month,
-  year,
-  startDate,
-  dateNow,
-}: {
-  day: number;
-  month: number;
-  year: number;
-  startDate: ITrackableSettings["startDate"];
-  dateNow: Date;
-}) => {
-  const dateDay = new Date(year, month, day);
-  const dateDayUTC = new Date(Date.UTC(year, month, day));
-  const beforeToday = isBefore(dateDay, dateNow);
+export type DataRecord = { readonly date: number; readonly value: string };
 
-  const startConvented = startDate ? new Date(startDate) : undefined;
+export type PureDataRecord = {
+  readonly date: Date;
+  readonly value?: string;
+  readonly disabled: boolean;
+};
 
-  const afterLimit = startConvented
-    ? isSameDay(dateDay, startConvented) || isAfter(dateDay, startConvented)
-    : true;
-  const inTrackRange = beforeToday && afterLimit;
-  const isToday = isSameDay(dateNow, dateDay);
+/*
+  This function convets database selection(which may miss some dates) to array of dates with values
+*/
+export const mapDataToRange = (
+  start: number,
+  end: number,
+  data: readonly DataRecord[],
+  orderBy: "asc" | "desc" = "asc",
+): PureDataRecord[] => {
+  const days = eachDayOfInterval({
+    start,
+    end,
+  });
 
-  return { inTrackRange, isToday, dateDay, dateDayUTC };
+  if (orderBy === "desc") {
+    days.reverse();
+  }
+
+  const disabledAfter = startOfTomorrow().getTime();
+
+  const result: PureDataRecord[] = [];
+
+  let dataPointer = 0;
+
+  for (const day of days) {
+    const disabled = day.getTime() >= disabledAfter;
+
+    const dataRecord = data[dataPointer];
+    if (dataRecord && isSameDay(day.getTime(), dataRecord.date)) {
+      result.push({ date: day, value: dataRecord.value, disabled });
+      dataPointer++;
+    } else {
+      result.push({ date: day, disabled });
+    }
+  }
+
+  return result;
 };
 
 export const getRangeLabelMapping = (settings: IRangeSettings) => {

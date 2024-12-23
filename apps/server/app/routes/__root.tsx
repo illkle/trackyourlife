@@ -32,7 +32,7 @@ export const getSession = createServerFn({ method: "GET" }).handler(
 
       return { sessionInfo, token };
     } catch (e) {
-      console.log(e);
+      console.error(e);
       return { sessionInfo: null, token: null };
     }
   },

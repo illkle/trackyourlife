@@ -1,20 +1,24 @@
 import { Fragment, useMemo, useState } from "react";
 import { cn } from "@shad/utils";
 import { Link } from "@tanstack/react-router";
-import { format, isLastDayOfMonth } from "date-fns";
+import { format, isLastDayOfMonth, subDays } from "date-fns";
 import { m } from "framer-motion";
 
 import { DbTrackableSelect } from "@tyl/db/schema";
-import { sortTrackableList } from "@tyl/helpers/trackables";
+import { mapDataToRange, sortTrackableList } from "@tyl/helpers/trackables";
 
 import { Badge } from "~/@shad/components/badge";
 import { Button } from "~/@shad/components/button";
 import { Input } from "~/@shad/components/input";
+import { Spinner } from "~/@shad/components/spinner";
 import DayCellWrapper from "~/components/DayCell";
 import TrackableProvider from "~/components/Providers/TrackableProvider";
 import { TrackableNameText } from "~/components/TrackableName";
 import { generateDates } from "~/components/TrackablesList/helper";
-import { useZeroTrackablesList } from "~/utils/useZ";
+import {
+  useZeroTrackableListWithData,
+  useZeroTrackablesList,
+} from "~/utils/useZ";
 import MiniTrackable from "./miniTrackable";
 
 const EmptyList = () => {
@@ -55,7 +59,14 @@ const filterTrackables = <
 };
 
 const TrackablesList = ({ daysToShow }: { daysToShow: number }) => {
-  const [data, info] = useZeroTrackablesList();
+  const now = new Date();
+  const lastDay = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  const firstDay = subDays(lastDay, daysToShow - 1).getTime();
+
+  const [data, info] = useZeroTrackableListWithData({
+    firstDay,
+    lastDay,
+  });
 
   const [searchQ, setSearch] = useState("");
   const [filterTypes, setFilterTypes] = useState<TrackableTypeFilterState>({
@@ -75,12 +86,12 @@ const TrackablesList = ({ daysToShow }: { daysToShow: number }) => {
     [filtered],
   );
 
-  const daysToRender = useMemo(
-    () => generateDates(daysToShow, new Date()),
-    [daysToShow],
-  );
-
   if (!data || data.length === 0) return <EmptyList />;
+
+  const mappedData = sorted.map((v) => ({
+    trackable: v,
+    data: mapDataToRange(firstDay, lastDay, v.trackableRecord),
+  }));
 
   return (
     <>
@@ -113,16 +124,16 @@ const TrackablesList = ({ daysToShow }: { daysToShow: number }) => {
       </div>
 
       <div className="mt-3 grid gap-5">
-        {sorted.map((tr) => (
+        {mappedData.map(({ trackable, data }) => (
           <m.div
             transition={{ duration: 0.2, ease: "circInOut" }}
             layout
-            layoutId={tr.id}
-            key={tr.id}
+            layoutId={trackable.id}
+            key={trackable.id}
             className="border-b border-neutral-200 pb-4 last:border-0 dark:border-neutral-800"
           >
-            <TrackableProvider trackable={tr}>
-              <MiniTrackable daysToRender={daysToRender} />
+            <TrackableProvider trackable={trackable}>
+              <MiniTrackable data={data} />
             </TrackableProvider>
           </m.div>
         ))}
@@ -132,68 +143,101 @@ const TrackablesList = ({ daysToShow }: { daysToShow: number }) => {
 };
 
 export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
-  const [data, info] = useZeroTrackablesList();
+  const today = new Date();
 
-  const daysToRender = useMemo(
-    () => generateDates(daysToShow, new Date()).reverse(),
-    [daysToShow],
-  );
+  const now = new Date();
+  const lastDay = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
+  const firstDay = subDays(lastDay, daysToShow).getTime();
 
-  if (!data || data.length === 0) return <EmptyList />;
+  console.log("first day", firstDay);
 
-  // todo
+  const [data, info] = useZeroTrackableListWithData({
+    firstDay: firstDay,
+    lastDay,
+    orderBy: "desc",
+  });
+
   const sorted = sortTrackableList([...data], []);
+
+  const mappedData = sorted.map((v) => ({
+    trackable: v,
+    data: mapDataToRange(firstDay, lastDay, v.trackableRecord, "desc"),
+  }));
+
+  if (!data || data.length === 0) {
+    if (info.type === "unknown") {
+      return (
+        <div className="flex h-full items-center justify-center py-10">
+          <Spinner />
+        </div>
+      );
+    }
+    return <EmptyList />;
+  }
+
+  const days = mappedData[0]?.data.map((v, i) => v.date) || [];
+
+  const trackables = mappedData.map((_, i) => i) || [];
 
   return (
     <div className="flex flex-col gap-6">
-      {daysToRender.map((date, index) => (
-        <Fragment key={index}>
-          <div className="relative flex h-fit flex-col">
-            <div className="flex w-full flex-col justify-between gap-2">
-              {(isLastDayOfMonth(new Date(date.year, date.month, date.day)) ||
-                index === 0) && (
-                <div className="mb-2 text-2xl font-semibold lg:text-3xl">
-                  {format(new Date(date.year, date.month, date.day), "MMMM")}
-                </div>
-              )}
+      {days.map((date, dateIndex) => {
+        return (
+          <Fragment key={dateIndex}>
+            <div className="relative flex h-fit flex-col">
+              <div className="flex w-full flex-col justify-between gap-2">
+                {(isLastDayOfMonth(date) || dateIndex === 0) && (
+                  <div className="mb-2 text-2xl font-semibold lg:text-3xl">
+                    {format(date, "MMMM")}
+                  </div>
+                )}
 
-              <span className="flex w-full items-baseline gap-2">
-                <span className="text-xl opacity-30">
-                  {format(new Date(date.year, date.month, date.day), "EEEE")}
-                </span>{" "}
-                <span className="text-xl font-semibold opacity-80">
-                  {format(new Date(date.year, date.month, date.day), "d")}
+                <span className="flex w-full items-baseline gap-2">
+                  <span className="text-xl opacity-30">
+                    {format(date, "EEEE")}
+                  </span>{" "}
+                  <span className="text-xl font-semibold opacity-80">
+                    {format(date, "d")}
+                  </span>
                 </span>
-              </span>
-            </div>
-            <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
-              {sorted.map((tr, index) => (
-                <div key={index}>
-                  <TrackableProvider trackable={tr}>
-                    <Link
-                      to={`/app/trackables/${tr.id}/`}
-                      className={cn(
-                        "mb-1 block w-full truncate text-xl text-neutral-950 opacity-20 dark:text-neutral-50",
-                      )}
-                    >
-                      <TrackableNameText />
-                    </Link>
+              </div>
+              <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {trackables.map((index) => {
+                  const tr = mappedData[index];
+                  if (!tr) return null;
+                  const day = tr.data[dateIndex];
+                  if (!day) return null;
 
-                    <DayCellWrapper
-                      date={new Date(date.year, date.month, date.day)}
-                      labelType="none"
-                      className="h-20"
-                    />
-                  </TrackableProvider>
-                </div>
-              ))}
+                  return (
+                    <div key={index}>
+                      <TrackableProvider trackable={tr.trackable}>
+                        <Link
+                          to={`/app/trackables/${tr.trackable.id}/`}
+                          className={cn(
+                            "mb-1 block w-full truncate text-xl text-neutral-950 opacity-20 dark:text-neutral-50",
+                          )}
+                        >
+                          <TrackableNameText />
+                        </Link>
+
+                        <DayCellWrapper
+                          date={day.date}
+                          value={day.value}
+                          labelType="none"
+                          className="h-20"
+                        />
+                      </TrackableProvider>
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
-          {index !== daysToRender.length - 1 && (
-            <hr className="h-0 border-b border-neutral-200 dark:border-neutral-800" />
-          )}
-        </Fragment>
-      ))}
+            {dateIndex !== days.length - 1 && (
+              <hr className="h-0 border-b border-neutral-200 dark:border-neutral-800" />
+            )}
+          </Fragment>
+        );
+      })}
     </div>
   );
 };

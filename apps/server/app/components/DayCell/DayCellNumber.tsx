@@ -1,6 +1,6 @@
 import type React from "react";
 import type { CSSProperties, ReactNode } from "react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@shad/utils";
 import { format } from "date-fns";
 import { useIsomorphicLayoutEffect } from "usehooks-ts";
@@ -163,9 +163,9 @@ export const DayCellNumber = ({
 
       {progress !== null && (
         <div
-          className={
-            "z-1 absolute bottom-0 w-full bg-[var(--themeLight)] transition-all dark:bg-[var(--themeDark)]"
-          }
+          className={cn(
+            "z-1 absolute bottom-0 w-full bg-[var(--themeLight)] transition-all dark:bg-[var(--themeDark)]",
+          )}
           style={{ height: `${progress}%` }}
         ></div>
       )}

@@ -15,46 +15,19 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { ErrorBoundary } from "react-error-boundary";
 
-import { getGMTWithTimezoneOffset } from "@tyl/helpers/timezone";
+import { mapDataToRange, PureDataRecord } from "@tyl/helpers/trackables";
 
 import { Button } from "~/@shad/components/button";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { TrackableNoteEditable } from "~/components/TrackableNote";
 import { YearSelector } from "~/components/TrackableView/yearSelector";
 import { Route } from "~/routes/app/trackables/$id/view";
-import { useZ, useZeroTrackableData } from "~/utils/useZ";
+import {
+  preloadZeroTrackableData,
+  useZ,
+  useZeroTrackableData,
+} from "~/utils/useZ";
 import DayCellWrapper from "../DayCell";
-
-type DataRecord = { readonly date: number; readonly value: string };
-
-type PureDataRecord = { readonly date: Date; readonly value?: string };
-
-const mapDataToRange = (
-  start: Date,
-  end: Date,
-  data: readonly DataRecord[],
-): PureDataRecord[] => {
-  const days = eachDayOfInterval({
-    start,
-    end,
-  });
-
-  const result: PureDataRecord[] = [];
-
-  let dataPointer = 0;
-
-  for (const day of days) {
-    const dataRecord = data[dataPointer];
-    if (dataRecord && isSameDay(day, dataRecord.date)) {
-      result.push({ date: day, value: dataRecord.value });
-      dataPointer++;
-    } else {
-      result.push({ date: day });
-    }
-  }
-
-  return result;
-};
 
 const MonthVisualCalendar = ({
   data,
@@ -73,7 +46,8 @@ const MonthVisualCalendar = ({
         {data.map((el, i) => {
           return (
             <DayCellWrapper
-              key={`${i}`}
+              key={`${el.date.getTime()}`}
+              disabled={el.disabled}
               value={el.value}
               date={el.date}
               labelType={mini ? "outside" : "auto"}
@@ -97,8 +71,8 @@ const MonthFetcher = ({
 }) => {
   const { id, type } = useTrackableMeta();
 
-  const firstDayDate = new Date(Date.UTC(year, month, 1));
-  const lastDayDate = endOfMonth(firstDayDate);
+  const firstDayDate = Date.UTC(year, month, 1);
+  const lastDayDate = endOfMonth(firstDayDate).getTime();
   const prefaceWith = getISODay(firstDayDate) - 1;
 
   const [data, dataInfo] = useZeroTrackableData({
@@ -110,11 +84,13 @@ const MonthFetcher = ({
   const mappedData = mapDataToRange(firstDayDate, lastDayDate, data);
 
   return (
-    <MonthVisualCalendar
-      data={mappedData}
-      prefaceDays={prefaceWith}
-      mini={mini}
-    />
+    <>
+      <MonthVisualCalendar
+        data={mappedData}
+        prefaceDays={prefaceWith}
+        mini={mini}
+      />
+    </>
   );
 };
 
@@ -137,8 +113,8 @@ const YearFetcher = ({
 }) => {
   const { id } = useTrackableMeta();
 
-  const firstDayDate = new Date(Date.UTC(year, 0, 1));
-  const lastDayDate = endOfYear(firstDayDate);
+  const firstDayDate = Date.UTC(year, 0, 1);
+  const lastDayDate = endOfYear(firstDayDate).getTime();
   const prefaceWith = getISODay(firstDayDate) - 1;
 
   const [data, dataInfo] = useZeroTrackableData({

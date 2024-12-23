@@ -118,8 +118,10 @@ export const DayCellWrapper = ({
 
   const onChange = useCallback(
     (val: string) => {
+      const d = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+
       z.mutate.TYL_trackableRecord.upsert({
-        date: date.getTime(),
+        date: d,
         trackableId: id,
         value: val,
         user_id: sessionInfo.user.id,
