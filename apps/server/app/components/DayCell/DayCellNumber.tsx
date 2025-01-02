@@ -164,7 +164,7 @@ export const DayCellNumber = ({
       {progress !== null && (
         <div
           className={cn(
-            "z-1 absolute bottom-0 w-full bg-[var(--themeLight)] transition-all dark:bg-[var(--themeDark)]",
+            "z-1 absolute bottom-0 w-full bg-[var(--themeLight)] dark:bg-[var(--themeDark)]",
           )}
           style={{ height: `${progress}%` }}
         ></div>

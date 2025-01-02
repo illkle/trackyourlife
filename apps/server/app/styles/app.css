@@ -71,38 +71,15 @@ input[type="number"] {
   background: var(--gradDark);
 }
 
-.deleteAnimationClass {
-  transform-style: preserve-3d;
+.booleanTransitionAnimation {
+  animation: booleanTransitionAnimation var(--animation-time) ease-in-out;
 }
 
-.deleteAnimationClass[data-fading="true"]::after {
-  content: "";
-  top: 50%;
-  left: 50%;
-  position: absolute;
-  width: calc(100% + var(--drag-away-fade-size));
-  height: calc(100% + var(--drag-away-fade-size));
-
-  z-index: 5;
-
-  transform: translate(-50%, -50%) translateZ(-10px);
-
-  border-radius: 0.65rem;
-
-  background: conic-gradient(
-    from 0deg,
-    #171717 0%,
-    #171717 var(--drag-away-fade),
-    transparent var(--drag-away-fade),
-    transparent 100%
-  );
-}
-.deleteAnimationClass[data-fading="true"]:is(.dark *)::after {
-  background: conic-gradient(
-    from 0deg,
-    #fafaf9 0%,
-    #fafaf9 var(--drag-away-fade),
-    transparent var(--drag-away-fade),
-    transparent 100%
-  );
+@keyframes booleanTransitionAnimation {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1.2);
+  }
 }

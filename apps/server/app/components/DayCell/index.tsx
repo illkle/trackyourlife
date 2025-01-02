@@ -108,8 +108,6 @@ export const DayCellWrapper = ({
   disabled?: boolean;
   labelType?: "auto" | "outside" | "none";
 }) => {
-  const { sessionInfo, token } = useSessionAuthed();
-
   const { id, type } = useTrackableMeta();
 
   const isToday = isSameDay(date, new Date());
@@ -124,10 +122,10 @@ export const DayCellWrapper = ({
         date: d,
         trackableId: id,
         value: val,
-        user_id: sessionInfo.user.id,
+        user_id: z.userID,
       });
     },
-    [date, id, z, sessionInfo.user.id],
+    [date, id, z, z.userID],
   );
 
   return (

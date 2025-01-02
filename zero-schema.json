@@ -117,6 +117,65 @@
           ]
         ]
       }
+    },
+    "TYL_trackableGroup": {
+      "row": {
+        "select": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "user_id"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ],
+        "insert": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "user_id"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ],
+        "update": {},
+        "delete": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "user_id"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ]
+      }
     }
   },
   "schema": {
@@ -166,6 +225,38 @@
               "trackableId"
             ],
             "destSchema": "TYL_trackableRecord"
+          }
+        }
+      },
+      "TYL_trackableGroup": {
+        "tableName": "TYL_trackableGroup",
+        "primaryKey": [
+          "trackableId",
+          "group"
+        ],
+        "columns": {
+          "group": {
+            "type": "string",
+            "optional": false
+          },
+          "trackableId": {
+            "type": "string",
+            "optional": false
+          },
+          "user_id": {
+            "type": "string",
+            "optional": false
+          }
+        },
+        "relationships": {
+          "trackable": {
+            "sourceField": [
+              "trackableId"
+            ],
+            "destField": [
+              "id"
+            ],
+            "destSchema": "TYL_trackable"
           }
         }
       },

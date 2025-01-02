@@ -1,15 +1,13 @@
 import { cn } from "@shad/utils";
 import { Link } from "@tanstack/react-router";
 import { format, subDays } from "date-fns";
-import { ErrorBoundary } from "react-error-boundary";
 
-import { mapDataToRange, PureDataRecord } from "@tyl/helpers/trackables";
+import { PureDataRecord } from "@tyl/helpers/trackables";
 
 import DayCellWrapper from "~/components/DayCell";
 import { FavoriteButton } from "~/components/FavoriteButton";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { TrackableNameText } from "~/components/TrackableName";
-import { useZeroTrackableData } from "~/utils/useZ";
 
 const MiniTrackable = ({
   className,

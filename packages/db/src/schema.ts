@@ -45,6 +45,7 @@ export const session = pgTable("session", {
     .references(() => user.id),
 });
 
+// Account is credentials\oauth data. All user settings and data should reference user table, not this one.
 export const account = pgTable("account", {
   id: text("id").primaryKey(),
   accountId: text("accountId").notNull(),
@@ -138,6 +139,34 @@ export const recordRelations = relations(trackableRecord, ({ one }) => ({
     references: [user.id],
   }),
 }));
+
+export const trackableGroup = pgTable(
+  "trackableGroup",
+  {
+    trackableId: uuid("trackableId")
+      .notNull()
+      .references(() => trackable.id, { onDelete: "cascade" }),
+    group: text("group").notNull(),
+    user_id: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.trackableId, t.group] }),
+  }),
+);
+
+export const trackableGroupRelations = relations(trackableGroup, ({ one }) => ({
+  trackable: one(trackable, {
+    fields: [trackableGroup.trackableId],
+    references: [trackable.id],
+  }),
+  user: one(user, {
+    fields: [trackableGroup.user_id], 
+    references: [user.id],
+  }),
+}));
+
 
 export type DbUserSelect = typeof user.$inferSelect;
 export type DbSessionSelect = typeof session.$inferSelect;

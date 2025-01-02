@@ -16,6 +16,7 @@ import TrackableProvider from "~/components/Providers/TrackableProvider";
 import { TrackableNameText } from "~/components/TrackableName";
 import { generateDates } from "~/components/TrackablesList/helper";
 import {
+  useZeroGroupSet,
   useZeroTrackableListWithData,
   useZeroTrackablesList,
 } from "~/utils/useZ";
@@ -80,10 +81,11 @@ const TrackablesList = ({ daysToShow }: { daysToShow: number }) => {
     [data, filterTypes, searchQ],
   );
 
+  const favsSet = useZeroGroupSet("favorites");
+
   const sorted = useMemo(
-    // todo
-    () => sortTrackableList(filtered, []),
-    [filtered],
+    () => sortTrackableList(filtered, favsSet),
+    [filtered, favsSet],
   );
 
   if (!data || data.length === 0) return <EmptyList />;
@@ -157,7 +159,9 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
     orderBy: "desc",
   });
 
-  const sorted = sortTrackableList([...data], []);
+  const favsSet = useZeroGroupSet("favorites");
+
+  const sorted = sortTrackableList([...data], favsSet);
 
   const mappedData = sorted.map((v) => ({
     trackable: v,

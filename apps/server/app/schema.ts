@@ -43,11 +43,29 @@ const TYL_trackable = createTableSchema({
   },
 });
 
+const TYL_trackableGroup = createTableSchema({
+  tableName: "TYL_trackableGroup",
+  columns: {
+    trackableId: { type: "string" },
+    group: { type: "string" },
+    user_id: { type: "string" },
+  },
+  primaryKey: ["trackableId", "group"],
+  relationships: {
+    trackable: {
+      sourceField: "trackableId",
+      destSchema: TYL_trackable,
+      destField: "id",
+    },
+  },
+});
+
 export const schema = createSchema({
   version: 1,
   tables: {
     TYL_trackable,
     TYL_trackableRecord,
+    TYL_trackableGroup,
   },
 });
 
@@ -68,6 +86,11 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
     { cmp }: ExpressionBuilder<typeof TYL_trackableRecord>,
   ) => cmp("user_id", "=", authData.sub);
 
+  const allowIfOwnerTrackableGroup = (
+    authData: AuthData,
+    { cmp }: ExpressionBuilder<typeof TYL_trackableGroup>,
+  ) => cmp("user_id", "=", authData.sub);
+
   return {
     TYL_trackableRecord: {
       row: {
@@ -85,6 +108,15 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
         select: [allowIfOwnerTrackable],
         preMutation: [allowIfOwnerTrackable],
         postMutation: [allowIfOwnerTrackable],
+      },
+    },
+    TYL_trackableGroup: {
+      row: {
+        insert: [allowIfOwnerTrackableGroup],
+        delete: [allowIfOwnerTrackableGroup],
+        select: [allowIfOwnerTrackableGroup],
+        preMutation: [allowIfOwnerTrackableGroup],
+        postMutation: [allowIfOwnerTrackableGroup],
       },
     },
   };

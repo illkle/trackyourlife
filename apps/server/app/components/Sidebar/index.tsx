@@ -35,7 +35,7 @@ import {
 import { authClient } from "~/auth/client";
 import { CoreLinks } from "~/components/Header";
 import { ThemeSwitcher } from "~/components/Settings/themeSwitcher";
-import { useZeroTrackablesList } from "~/utils/useZ";
+import { useZeroGroupSet, useZeroTrackablesList } from "~/utils/useZ";
 
 const iconsMap: Record<DbTrackableSelect["type"], ReactNode> = {
   boolean: <ToggleRight size={16} />,
@@ -48,14 +48,11 @@ const TrackablesMiniList = () => {
 
   const loc = useLocation();
 
-  const favsSet = useMemo(() => {
-    // TODO
-    return new Set<string>([]);
-  }, []);
+  const favsSet = useZeroGroupSet("favorites");
 
   if (!data || data.length === 0) return <div></div>;
 
-  const sorted = sortTrackableList([...data], []);
+  const sorted = sortTrackableList([...data], favsSet);
 
   return (
     <SidebarMenu>

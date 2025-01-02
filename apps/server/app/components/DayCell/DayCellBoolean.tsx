@@ -1,4 +1,4 @@
-import type { MouseEvent, ReactNode } from "react";
+import type { CSSProperties, MouseEvent, ReactNode } from "react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@shad/utils";
 import { AnimatePresence, m } from "framer-motion";
@@ -6,6 +6,7 @@ import { AnimatePresence, m } from "framer-motion";
 import { clamp } from "@tyl/helpers";
 
 import { useDayCellContextBoolean } from "~/components/Providers/DayCellProvider";
+import { useAllowAnimation } from "~/utils/useAllowAnimation";
 
 const ANIMATION_TIME = 0.3;
 const EASE = [0, 0.2, 0.5, 1];
@@ -22,8 +23,9 @@ export const DayCellBoolean = ({
   className?: string;
 }) => {
   // Even though we're not using any values from context it's useful to check whether it's provided
-  // eslint-disable-next-line no-empty-pattern
-  const {} = useDayCellContextBoolean();
+
+  const { animationMultiplier, runAnimation } =
+    useAllowAnimation(ANIMATION_TIME);
 
   const isActive = value === "true";
 
@@ -38,6 +40,7 @@ export const DayCellBoolean = ({
     e.stopPropagation();
 
     if (mainRef.current) {
+      runAnimation();
       const t = mainRef.current;
       const rect = t.getBoundingClientRect();
       if (e.clientX === 0 && e.clientY === 0) {
@@ -60,10 +63,7 @@ export const DayCellBoolean = ({
     }
   };
 
-  const [animate, setAnimate] = useState(false);
-  useEffect(() => {
-    setAnimate(true);
-  }, []);
+  console.log(animationMultiplier, value);
 
   return (
     <button
@@ -77,6 +77,11 @@ export const DayCellBoolean = ({
           ? "border-[var(--themeActiveLight)] hover:border-[var(--themeInactiveLight)] dark:border-[var(--themeActiveDark)] dark:hover:border-[var(--themeInactiveDark)]"
           : "border-[var(--themeInactiveLight)] hover:border-[var(--themeActiveLight)] dark:border-[var(--themeInactiveDark)] dark:hover:border-[var(--themeActiveDark)]",
       )}
+      style={
+        {
+          "--animation-time": `${ANIMATION_TIME * animationMultiplier}s`,
+        } as CSSProperties
+      }
       onMouseDown={(e) => e.preventDefault()}
       onClick={(e) => void handleClick(e)}
     >
@@ -91,29 +96,10 @@ export const DayCellBoolean = ({
       ></div>
       {/* This is animating layer with with active color */}
 
-      <m.div
-        key={String(isActive)}
-        initial={
-          animate
-            ? {
-                scaleX: 0,
-                scaleY: 0,
-              }
-            : {}
-        }
-        animate={{
-          scaleX: 1.2,
-          scaleY: 1.2,
-        }}
-        transition={{
-          duration: ANIMATION_TIME,
-          ease: EASE,
-          scaleY: {
-            duration: ANIMATION_TIME * whRatio,
-            ease: EASE,
-          },
-        }}
+      <div
+        key={String(`${isActive}`)}
         className={cn(
+          "booleanTransitionAnimation",
           "absolute left-0 top-0 h-full w-full",
           isActive
             ? "bg-[var(--themeActiveLight)] dark:bg-[var(--themeActiveDark)]"

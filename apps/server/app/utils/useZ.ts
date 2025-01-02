@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useQuery, useZero } from "@rocicorp/zero/react";
 import { addMonths, addYears, subMonths } from "date-fns";
 
@@ -116,4 +117,18 @@ export const preloadCore = async () => {
       .where("date", ">=", subMonths(now, 2).getTime())
       .where("date", "<=", addMonths(now, 2).getTime()),
   ).preload();
+};
+
+export const useZeroGroupList = (group: string) => {
+  const zero = useZ();
+  const q = zero.query.TYL_trackableGroup.where("group", "=", group);
+  return useQuery(q);
+};
+
+export const useZeroGroupSet = (group: string) => {
+  const [data] = useZeroGroupList(group);
+
+  return useMemo(() => {
+    return new Set<string>(data.map((f) => f.trackableId));
+  }, [data]);
 };

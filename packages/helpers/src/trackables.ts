@@ -129,10 +129,8 @@ export const sortTrackableList = <
   T extends Pick<DbTrackableSelect, "id" | "name">,
 >(
   list: T[],
-  favorites: string[],
+  favSet: Set<string>,
 ) => {
-  const favSet = new Set(favorites);
-
   const newList = list.sort((a, b) => {
     if (favSet.has(a.id) && !favSet.has(b.id)) return -1;
     if (!favSet.has(a.id) && favSet.has(b.id)) return 1;

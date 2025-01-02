@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { cn } from "@shad/utils";
 import { Link } from "@tanstack/react-router";
 import {
@@ -22,11 +23,7 @@ import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { TrackableNoteEditable } from "~/components/TrackableNote";
 import { YearSelector } from "~/components/TrackableView/yearSelector";
 import { Route } from "~/routes/app/trackables/$id/view";
-import {
-  preloadZeroTrackableData,
-  useZ,
-  useZeroTrackableData,
-} from "~/utils/useZ";
+import { useZ, useZeroTrackableData } from "~/utils/useZ";
 import DayCellWrapper from "../DayCell";
 
 const MonthVisualCalendar = ({
@@ -46,7 +43,7 @@ const MonthVisualCalendar = ({
         {data.map((el, i) => {
           return (
             <DayCellWrapper
-              key={`${el.date.getTime()}`}
+              key={i}
               disabled={el.disabled}
               value={el.value}
               date={el.date}
@@ -84,13 +81,13 @@ const MonthFetcher = ({
   const mappedData = mapDataToRange(firstDayDate, lastDayDate, data);
 
   return (
-    <>
+    <div key={`${firstDayDate}-${lastDayDate}`}>
       <MonthVisualCalendar
         data={mappedData}
         prefaceDays={prefaceWith}
         mini={mini}
       />
-    </>
+    </div>
   );
 };
 
@@ -179,6 +176,19 @@ const ViewController = ({
 
   const toPrev = getIncrementedDate(-1, year, month);
   const toNext = getIncrementedDate(1, year, month);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft") {
+        navigate({ search: (prev) => ({ ...prev, ...toPrev }) });
+      } else if (e.key === "ArrowRight") {
+        navigate({ search: (prev) => ({ ...prev, ...toNext }) });
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [navigate, toPrev, toNext]);
 
   return (
     <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">

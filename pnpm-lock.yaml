@@ -302,8 +302,8 @@ importers:
         specifier: ^1.1.4
         version: 1.1.4(@types/react-dom@18.3.1)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@rocicorp/zero':
-        specifier: ^0.9.2024121900
-        version: 0.9.2024121900
+        specifier: ^0.10.2024122404
+        version: 0.10.2024122404
       '@tanstack/react-form':
         specifier: ^0.39.0
         version: 0.39.0(@tanstack/start@1.85.0(@types/node@22.10.1)(drizzle-orm@0.36.4(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(@types/react@18.3.3)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.25.2)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5)(react@18.2.0))(ioredis@5.4.1)(lightningcss@1.22.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(terser@5.31.6)(vite@5.4.11(@types/node@22.10.1)(lightningcss@1.22.0)(terser@5.31.6)))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.5.4)
@@ -4390,8 +4390,8 @@ packages:
     resolution: {integrity: sha512-bm+VUdF4CnKVjUj/dSCmVu0hjcyXaF/nKkw2rNhZUjGeBOMRy/hh8z/32h311es4dxCVvcZ3+QHQHMxF2YG5Kw==}
     hasBin: true
 
-  '@rocicorp/zero@0.9.2024121900':
-    resolution: {integrity: sha512-/gbhwjfoJylXygYqBKFQ8MGAVYUVu9G8deEAo/nnolqMU7mhC1FHlVAp5KHdp6UZT2mR8o//SQE+pH+HNIdzow==}
+  '@rocicorp/zero@0.10.2024122404':
+    resolution: {integrity: sha512-q9lcRX8f69dIMmQZWCoNWKnS+IhnyekBbfpa9h4FkjQLmIXcdZyjuGdK9XT1aseshgATDesJ1jiyckg402cwAg==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -7927,6 +7927,10 @@ packages:
   js-tokens@9.0.0:
     resolution: {integrity: sha512-WriZw1luRMlmV3LGJaR6QOJjWwgLUTf89OwT2lUOyjX2dJGBwgmIkbcz+7WFZjrZM635JOIR517++e/67CP9dQ==}
 
+  js-xxhash@4.0.0:
+    resolution: {integrity: sha512-3Q2eIqG6s1KEBBmkj9tGM9lef8LJbuRyTVBdI3GpTnrvtytunjLPO0wqABp5qhtMzfA32jYn1FlnIV7GH1RAHQ==}
+    engines: {node: '>=18.0.0'}
+
   js-yaml@3.14.1:
     resolution: {integrity: sha512-okMH7OXXJ7YrN9Ok3/SXrnu4iX9yOk+25nqX4imS2npuvTYDmo/QEZoqwZkYaIDk3jVvBOTOIEgEhaLOynBS9g==}
     hasBin: true
@@ -11168,9 +11172,6 @@ packages:
   xtend@4.0.2:
     resolution: {integrity: sha512-LKYU1iAXJXUgAXn9URjiu+MWhyUXHsvfp7mcuYm9dSUKK0/CjtrUwFAxD82/mCWbtLsGjFIad0wIsod4zrTAEQ==}
     engines: {node: '>=0.4'}
-
-  xxhash-wasm@1.1.0:
-    resolution: {integrity: sha512-147y/6YNh+tlp6nd/2pWq38i9h6mz/EuQ6njIrmW8D1BS5nCqs0P6DG+m6zTGnNz5I+uhZ0SHxBs9BsPrwcKDA==}
 
   y18n@4.0.3:
     resolution: {integrity: sha512-JKhqTOwSrqNA1NY5lSztJ1GrBiUodLMmIZuLiDaMRJ+itFd+ABVE8XBjOvIWL+rSqNDC74LCSFmlb/U4UZ4hJQ==}
@@ -15195,16 +15196,16 @@ snapshots:
       '@babel/plugin-proposal-class-properties': 7.18.6(@babel/core@7.26.0)
       '@babel/plugin-proposal-export-default-from': 7.24.7(@babel/core@7.25.2)
       '@babel/plugin-proposal-logical-assignment-operators': 7.20.7(@babel/core@7.25.2)
-      '@babel/plugin-proposal-nullish-coalescing-operator': 7.18.6(@babel/core@7.25.2)
+      '@babel/plugin-proposal-nullish-coalescing-operator': 7.18.6(@babel/core@7.26.0)
       '@babel/plugin-proposal-numeric-separator': 7.18.6(@babel/core@7.25.2)
       '@babel/plugin-proposal-object-rest-spread': 7.20.7(@babel/core@7.25.2)
       '@babel/plugin-proposal-optional-catch-binding': 7.18.6(@babel/core@7.25.2)
-      '@babel/plugin-proposal-optional-chaining': 7.21.0(@babel/core@7.25.2)
+      '@babel/plugin-proposal-optional-chaining': 7.21.0(@babel/core@7.26.0)
       '@babel/plugin-syntax-dynamic-import': 7.8.3(@babel/core@7.25.2)
       '@babel/plugin-syntax-export-default-from': 7.24.7(@babel/core@7.25.2)
       '@babel/plugin-syntax-flow': 7.24.7(@babel/core@7.26.0)
-      '@babel/plugin-syntax-nullish-coalescing-operator': 7.8.3(@babel/core@7.25.2)
-      '@babel/plugin-syntax-optional-chaining': 7.8.3(@babel/core@7.25.2)
+      '@babel/plugin-syntax-nullish-coalescing-operator': 7.8.3(@babel/core@7.26.0)
+      '@babel/plugin-syntax-optional-chaining': 7.8.3(@babel/core@7.26.0)
       '@babel/plugin-transform-arrow-functions': 7.24.7(@babel/core@7.25.2)
       '@babel/plugin-transform-async-to-generator': 7.24.7(@babel/core@7.25.2)
       '@babel/plugin-transform-block-scoping': 7.25.0(@babel/core@7.25.2)
@@ -15631,7 +15632,7 @@ snapshots:
       bindings: 1.5.0
       prebuild-install: 7.1.2
 
-  '@rocicorp/zero@0.9.2024121900':
+  '@rocicorp/zero@0.10.2024122404':
     dependencies:
       '@badrap/valita': 0.3.11
       '@databases/escape-identifier': 1.0.3
@@ -15659,6 +15660,7 @@ snapshots:
       eventemitter3: 5.0.1
       fastify: 5.2.0
       jose: 5.9.6
+      js-xxhash: 4.0.0
       json-custom-numbers: 3.1.1
       lodash.kebabcase: 4.1.1
       lodash.merge: 4.6.2
@@ -15675,7 +15677,6 @@ snapshots:
       tsx: 4.19.2
       url-pattern: 1.0.3
       ws: 8.18.0
-      xxhash-wasm: 1.1.0
     transitivePeerDependencies:
       - '@75lb/nature'
       - bufferutil
@@ -20137,6 +20138,8 @@ snapshots:
 
   js-tokens@9.0.0: {}
 
+  js-xxhash@4.0.0: {}
+
   js-yaml@3.14.1:
     dependencies:
       argparse: 1.0.10
@@ -20268,7 +20271,7 @@ snapshots:
     dependencies:
       cookie: 1.0.2
       process-warning: 4.0.0
-      set-cookie-parser: 2.7.0
+      set-cookie-parser: 2.7.1
 
   lighthouse-logger@1.4.2:
     dependencies:
@@ -23691,8 +23694,6 @@ snapshots:
   xmlbuilder@15.1.1: {}
 
   xtend@4.0.2: {}
-
-  xxhash-wasm@1.1.0: {}
 
   y18n@4.0.3: {}
 
