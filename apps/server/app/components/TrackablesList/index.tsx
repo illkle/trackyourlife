@@ -1,4 +1,5 @@
 import { Fragment, useMemo, useState } from "react";
+import { Row } from "@rocicorp/zero";
 import { cn } from "@shad/utils";
 import { Link } from "@tanstack/react-router";
 import { format, isLastDayOfMonth, subDays } from "date-fns";
@@ -15,11 +16,8 @@ import DayCellWrapper from "~/components/DayCell";
 import TrackableProvider from "~/components/Providers/TrackableProvider";
 import { TrackableNameText } from "~/components/TrackableName";
 import { generateDates } from "~/components/TrackablesList/helper";
-import {
-  useZeroGroupSet,
-  useZeroTrackableListWithData,
-  useZeroTrackablesList,
-} from "~/utils/useZ";
+import { Schema } from "~/schema";
+import { useZeroGroupSet, useZeroTrackableListWithData } from "~/utils/useZ";
 import MiniTrackable from "./miniTrackable";
 
 const EmptyList = () => {
@@ -59,33 +57,28 @@ const filterTrackables = <
     });
 };
 
-const TrackablesList = ({ daysToShow }: { daysToShow: number }) => {
+const TrackablesList = ({
+  daysToShow,
+  archived,
+}: {
+  daysToShow: number;
+  archived: boolean;
+}) => {
   const now = new Date();
   const lastDay = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const firstDay = subDays(lastDay, daysToShow - 1).getTime();
 
-  const [data, info] = useZeroTrackableListWithData({
-    firstDay,
-    lastDay,
-  });
-
-  const [searchQ, setSearch] = useState("");
-  const [filterTypes, setFilterTypes] = useState<TrackableTypeFilterState>({
-    number: false,
-    range: false,
-    boolean: false,
-  });
-
-  const filtered = useMemo(
-    () => filterTrackables(searchQ, filterTypes, data ? [...data] : []),
-    [data, filterTypes, searchQ],
+  const [data, info] = useZeroTrackableListWithData(
+    {
+      firstDay,
+      lastDay,
+    },
+    archived,
   );
 
-  const favsSet = useZeroGroupSet("favorites");
-
   const sorted = useMemo(
-    () => sortTrackableList(filtered, favsSet),
-    [filtered, favsSet],
+    () => sortTrackableList(data ? [...data] : []),
+    [data],
   );
 
   if (!data || data.length === 0) return <EmptyList />;
@@ -97,34 +90,6 @@ const TrackablesList = ({ daysToShow }: { daysToShow: number }) => {
 
   return (
     <>
-      <Input
-        placeholder="Search by name"
-        className="mt-2"
-        value={searchQ}
-        onChange={(e) => setSearch(e.target.value)}
-      />
-      <div className="mt-2 flex gap-2">
-        {Object.keys(filterTypes).map((v) => (
-          <Badge
-            key={v}
-            variant={
-              filterTypes[v as keyof TrackableTypeFilterState]
-                ? "default"
-                : "outline"
-            }
-            className="cursor-pointer capitalize"
-            onClick={() => {
-              setFilterTypes({
-                ...filterTypes,
-                [v]: !filterTypes[v as keyof TrackableTypeFilterState],
-              });
-            }}
-          >
-            {v}
-          </Badge>
-        ))}
-      </div>
-
       <div className="mt-3 grid gap-5">
         {mappedData.map(({ trackable, data }) => (
           <m.div
@@ -135,7 +100,7 @@ const TrackablesList = ({ daysToShow }: { daysToShow: number }) => {
             className="border-b border-neutral-200 pb-4 last:border-0 dark:border-neutral-800"
           >
             <TrackableProvider trackable={trackable}>
-              <MiniTrackable data={data} />
+              <MiniTrackable data={data} trackable={trackable} />
             </TrackableProvider>
           </m.div>
         ))}
@@ -145,13 +110,9 @@ const TrackablesList = ({ daysToShow }: { daysToShow: number }) => {
 };
 
 export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
-  const today = new Date();
-
   const now = new Date();
   const lastDay = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const firstDay = subDays(lastDay, daysToShow).getTime();
-
-  console.log("first day", firstDay);
 
   const [data, info] = useZeroTrackableListWithData({
     firstDay: firstDay,
@@ -159,9 +120,7 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
     orderBy: "desc",
   });
 
-  const favsSet = useZeroGroupSet("favorites");
-
-  const sorted = sortTrackableList([...data], favsSet);
+  const sorted = sortTrackableList([...data]);
 
   const mappedData = sorted.map((v) => ({
     trackable: v,
@@ -221,7 +180,7 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
                             "mb-1 block w-full truncate text-xl text-neutral-950 opacity-20 dark:text-neutral-50",
                           )}
                         >
-                          <TrackableNameText />
+                          <TrackableNameText trackable={tr.trackable} />
                         </Link>
 
                         <DayCellWrapper

@@ -26,30 +26,6 @@ function RouteComponent() {
           <div>Theme</div>
           <ThemeSwitcher />
         </div>
-
-        <div className="flex flex-col gap-2">
-          <h2 className="text-xl">Preserve location on sidebar nav</h2>
-          <div className="flex items-center gap-2">
-            <PreserveLocationOnSidebarNavSwitch />
-          </div>
-
-          <p className="text-xs opacity-50">
-            If enabled, when navigating to a new trackable in sidebar, app will
-            keep current view and date. Otherwise, app will reset to month view
-            and current date.
-          </p>
-        </div>
-
-        <div>
-          <div className="flex gap-2">
-            <h2 className="text-xl">Timezone</h2>
-          </div>
-
-          <p className="mt-2 text-xs opacity-50">
-            Used to accurately determine time when rendering on the server. Has
-            no effect on mobile app.{" "}
-          </p>
-        </div>
       </div>
     </div>
   );

@@ -1,24 +1,33 @@
-import { useQuery } from "@tanstack/react-query";
-import { redirect } from "@tanstack/react-router";
+import { QueryClient, useQuery } from "@tanstack/react-query";
+import { redirect, useRouter } from "@tanstack/react-router";
 
 import { Spinner } from "~/@shad/components/spinner";
 import { getSession } from "~/routes/__root";
 
+const q = {
+  queryKey: ["session"],
+  queryFn: async () => await getSession(),
+  refetchOnMount: false,
+  refetchOnWindowFocus: false,
+  refetchOnReconnect: true,
+};
+
+export const ensureSessionInfo = async (qc: QueryClient) => {
+  await qc.ensureQueryData(q);
+};
+
 export const useSessionInfo = () => {
-  return useQuery({
-    queryKey: ["session"],
-    queryFn: async () => await getSession(),
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: true,
-  });
+  return useQuery(q);
 };
 
 export const useSessionAuthed = () => {
+  const router = useRouter();
+
   const { data, isPending } = useSessionInfo();
 
   if (!data || !data.sessionInfo || !data?.token) {
-    throw redirect({ to: "/login" });
+    router.navigate({ to: "/login" });
+    throw new Error("Unauthorized");
   }
 
   const { sessionInfo, token } = data;

@@ -22,6 +22,16 @@ const TYL_trackableRecord = createTableSchema({
   primaryKey: ["trackableId", "date"],
 });
 
+const TYL_trackableGroup = createTableSchema({
+  tableName: "TYL_trackableGroup",
+  columns: {
+    trackableId: { type: "string" },
+    group: { type: "string" },
+    user_id: { type: "string" },
+  },
+  primaryKey: ["trackableId", "group"],
+});
+
 const TYL_trackable = createTableSchema({
   tableName: "TYL_trackable",
   columns: {
@@ -40,22 +50,10 @@ const TYL_trackable = createTableSchema({
       destSchema: TYL_trackableRecord,
       destField: "trackableId",
     },
-  },
-});
-
-const TYL_trackableGroup = createTableSchema({
-  tableName: "TYL_trackableGroup",
-  columns: {
-    trackableId: { type: "string" },
-    group: { type: "string" },
-    user_id: { type: "string" },
-  },
-  primaryKey: ["trackableId", "group"],
-  relationships: {
-    trackable: {
-      sourceField: "trackableId",
-      destSchema: TYL_trackable,
-      destField: "id",
+    trackableGroup: {
+      sourceField: "id",
+      destSchema: TYL_trackableGroup,
+      destField: "trackableId",
     },
   },
 });

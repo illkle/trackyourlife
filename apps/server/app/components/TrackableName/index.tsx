@@ -16,7 +16,7 @@ import {
 import { Input } from "~/@shad/components/input";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
-import { useZ, useZeroTrackable } from "~/utils/useZ";
+import { TrackableListItem, useZ, useZeroTrackable } from "~/utils/useZ";
 
 export const TrackableNameEditable = () => {
   const { id } = useTrackableMeta();
@@ -99,11 +99,11 @@ export const TrackableNameEditable = () => {
   );
 };
 
-export const TrackableNameText = () => {
-  const { id } = useTrackableMeta();
-
-  const [trackable] = useZeroTrackable({ id });
-
+export const TrackableNameText = ({
+  trackable,
+}: {
+  trackable: TrackableListItem;
+}) => {
   return (
     <>
       {trackable?.name.length

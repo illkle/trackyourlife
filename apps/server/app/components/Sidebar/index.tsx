@@ -48,11 +48,9 @@ const TrackablesMiniList = () => {
 
   const loc = useLocation();
 
-  const favsSet = useZeroGroupSet("favorites");
-
   if (!data || data.length === 0) return <div></div>;
 
-  const sorted = sortTrackableList([...data], favsSet);
+  const sorted = sortTrackableList([...data]);
 
   return (
     <SidebarMenu>
@@ -73,7 +71,7 @@ const TrackablesMiniList = () => {
                     <div>{tr.name || "Unnamed"}</div>
                   </div>
 
-                  {favsSet.has(tr.id) && (
+                  {tr.trackableGroup.some((v) => v.group === "favorites") && (
                     <div>
                       <HeartIcon fill="currentColor" size={16} />
                     </div>

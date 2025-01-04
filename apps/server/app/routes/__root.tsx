@@ -15,7 +15,7 @@ import { auth } from "~/auth/server";
 import { LazyMotionProvider } from "~/components/Providers/lazyFramerMotionProvider";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo.js";
-import { UserPreloader } from "~/utils/useSessionInfo";
+import { ensureSessionInfo, UserPreloader } from "~/utils/useSessionInfo";
 
 export const getSession = createServerFn({ method: "GET" }).handler(
   async () => {
@@ -84,7 +84,11 @@ export const Route = createRootRouteWithContext<{
     ],
   }),
 
+  ssr: true,
   component: RootComponent,
+  loader: async ({ context }) => {
+    await ensureSessionInfo(context.queryClient);
+  },
 });
 
 function RootComponent() {

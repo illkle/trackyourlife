@@ -8,14 +8,11 @@ import {
   redirect,
   useRouteContext,
 } from "@tanstack/react-router";
-import { createServerFn } from "@tanstack/start";
 
 import { SidebarProvider } from "~/@shad/components/sidebar";
 import { authClient } from "~/auth/client";
-import { auth } from "~/auth/server";
 import Header from "~/components/Header";
 import { AppSidebar } from "~/components/Sidebar";
-import { getSession } from "~/routes/__root";
 import { schema } from "~/schema";
 import { useSessionAuthed, useSessionInfo } from "~/utils/useSessionInfo";
 import { preloadCore } from "~/utils/useZ";
@@ -34,6 +31,8 @@ function AppComponent() {
     kvStore: "idb",
     auth: token,
   });
+
+  console.log("bbb");
 
   return (
     <ZeroProvider zero={z}>

@@ -63,8 +63,6 @@ export const DayCellBoolean = ({
     }
   };
 
-  console.log(animationMultiplier, value);
-
   return (
     <button
       data-value={isActive}

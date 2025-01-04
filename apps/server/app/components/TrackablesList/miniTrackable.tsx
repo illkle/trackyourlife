@@ -8,13 +8,16 @@ import DayCellWrapper from "~/components/DayCell";
 import { FavoriteButton } from "~/components/FavoriteButton";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { TrackableNameText } from "~/components/TrackableName";
+import { TrackableListItem } from "~/utils/useZ";
 
 const MiniTrackable = ({
   className,
   data,
+  trackable,
 }: {
   className?: string;
   data: PureDataRecord[];
+  trackable: TrackableListItem;
 }) => {
   const { id } = useTrackableMeta();
 
@@ -27,10 +30,10 @@ const MiniTrackable = ({
             "mb-1 block w-full text-xl font-light text-neutral-950 dark:text-neutral-50",
           )}
         >
-          <TrackableNameText />
+          <TrackableNameText trackable={trackable} />
         </Link>
 
-        <FavoriteButton onlyIcon />
+        <FavoriteButton onlyIcon trackable={trackable} />
       </div>
 
       <div className={"sm grid grid-cols-3 gap-x-1 gap-y-1 md:grid-cols-6"}>

@@ -217,6 +217,15 @@
           }
         },
         "relationships": {
+          "trackableGroup": {
+            "sourceField": [
+              "id"
+            ],
+            "destField": [
+              "trackableId"
+            ],
+            "destSchema": "TYL_trackableGroup"
+          },
           "trackableRecord": {
             "sourceField": [
               "id"
@@ -248,17 +257,7 @@
             "optional": false
           }
         },
-        "relationships": {
-          "trackable": {
-            "sourceField": [
-              "trackableId"
-            ],
-            "destField": [
-              "id"
-            ],
-            "destSchema": "TYL_trackable"
-          }
-        }
+        "relationships": {}
       },
       "TYL_trackableRecord": {
         "tableName": "TYL_trackableRecord",

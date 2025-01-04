@@ -282,16 +282,6 @@ const TrackableView = ({
     setDates(year, m);
   };
 
-  const z = useZ();
-
-  z.query.TYL_trackableRecord.where(({ cmp, and }) =>
-    and(
-      cmp("trackableId", id),
-      cmp("date", ">=", addMonths(startOfYear(new Date()), -2).getTime()),
-      cmp("date", "<=", addMonths(endOfYear(new Date()), 2).getTime()),
-    ),
-  ).preload();
-
   return (
     <>
       <ViewController year={year} month={month} />

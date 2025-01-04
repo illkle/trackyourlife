@@ -40,19 +40,21 @@ export const mapDataToRange = (
 
   const disabledAfter = startOfTomorrow().getTime();
 
-  const result: PureDataRecord[] = [];
+  const result: PureDataRecord[] = new Array(days.length);
 
   let dataPointer = 0;
+  for (let i = 0; i < days.length; i++) {
+    const day = days[i];
+    if (!day) continue;
 
-  for (const day of days) {
     const disabled = day.getTime() >= disabledAfter;
 
     const dataRecord = data[dataPointer];
     if (dataRecord && isSameDay(day.getTime(), dataRecord.date)) {
-      result.push({ date: day, value: dataRecord.value, disabled });
+      result[i] = { date: day, value: dataRecord.value, disabled };
       dataPointer++;
     } else {
-      result.push({ date: day, disabled });
+      result[i] = { date: day, disabled };
     }
   }
 
@@ -125,15 +127,27 @@ export const getDayCellBooleanColors = (settings: IBooleanSettings) => {
   };
 };
 
+type Group = { readonly group: string };
+type GroupArray = readonly Group[];
+
 export const sortTrackableList = <
-  T extends Pick<DbTrackableSelect, "id" | "name">,
+  T extends Pick<DbTrackableSelect, "id" | "name"> & {
+    readonly trackableGroup: GroupArray;
+  },
 >(
   list: T[],
-  favSet: Set<string>,
 ) => {
   const newList = list.sort((a, b) => {
-    if (favSet.has(a.id) && !favSet.has(b.id)) return -1;
-    if (!favSet.has(a.id) && favSet.has(b.id)) return 1;
+    if (
+      a.trackableGroup.some((v) => v.group === "favorites") &&
+      !b.trackableGroup.some((v) => v.group === "favorites")
+    )
+      return -1;
+    if (
+      !a.trackableGroup.some((v) => v.group === "favorites") &&
+      b.trackableGroup.some((v) => v.group === "favorites")
+    )
+      return 1;
 
     const aName = a.name || "";
     const bName = b.name || "";

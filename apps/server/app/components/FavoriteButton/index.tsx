@@ -4,33 +4,32 @@ import { HeartIcon } from "lucide-react";
 
 import type { ButtonProps } from "~/@shad/components/button";
 import { Button } from "~/@shad/components/button";
-import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
-import { useZ, useZeroGroupSet } from "~/utils/useZ";
+import { TrackableListItem, useZ } from "~/utils/useZ";
 
 export const FavoriteButton = ({
   variant = "ghost",
   onlyIcon = false,
+  trackable,
 }: {
   variant?: ButtonProps["variant"];
   onlyIcon?: boolean;
+  trackable: TrackableListItem;
 }) => {
-  const { id } = useTrackableMeta();
+  const inFavs = trackable.trackableGroup.some(
+    (tg) => tg.group === "favorites",
+  );
 
   const z = useZ();
-
-  const favsSet = useZeroGroupSet("favorites");
-
-  const inFavs = id ? favsSet.has(id) : false;
 
   const favHandler = async () => {
     if (inFavs) {
       z.mutate.TYL_trackableGroup.delete({
-        trackableId: id,
+        trackableId: trackable.id,
         group: "favorites",
       });
     } else {
       z.mutate.TYL_trackableGroup.insert({
-        trackableId: id,
+        trackableId: trackable.id,
         group: "favorites",
         user_id: z.userID,
       });

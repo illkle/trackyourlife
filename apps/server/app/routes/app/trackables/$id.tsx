@@ -6,6 +6,8 @@ import {
   useLocation,
 } from "@tanstack/react-router";
 import {
+  ArchiveIcon,
+  ArchiveRestoreIcon,
   CalendarDaysIcon,
   ImportIcon,
   MoreHorizontalIcon,
@@ -26,7 +28,7 @@ import DeleteButton from "~/components/DeleteButton";
 import { FavoriteButton } from "~/components/FavoriteButton";
 import TrackableProvider from "~/components/Providers/TrackableProvider";
 import { TrackableNameEditable } from "~/components/TrackableName";
-import { useZeroTrackable } from "~/utils/useZ";
+import { useZ, useZeroTrackable } from "~/utils/useZ";
 
 const paramsSchema = z.object({
   month: z
@@ -54,9 +56,17 @@ function RouteComponent() {
   const params = Route.useParams();
   const loc = useLocation();
 
+  const z = useZ();
+
   const isView = loc.pathname === `/app/trackables/${params.id}/view`;
 
   const [trackable, trackableInfo] = useZeroTrackable({ id: params.id });
+
+  const isArchived = trackable?.trackableGroup.some(
+    (tg) => tg.group === "archived",
+  );
+
+  console.log("rrr");
 
   if (!trackable) {
     return (
@@ -72,7 +82,7 @@ function RouteComponent() {
         <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
           <TrackableNameEditable />
           <div className="flex gap-2 justify-self-end">
-            <FavoriteButton variant={"outline"} />
+            <FavoriteButton variant={"outline"} trackable={trackable} />
             {isView ? (
               <>
                 <Link to={`/app/trackables/${params.id}/settings`}>
@@ -109,6 +119,34 @@ function RouteComponent() {
                     <Link to={`/app/trackables/${params.id}/import`}>
                       <ImportIcon className="mr-1" /> Import
                     </Link>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem
+                    className="cursor-pointer"
+                    onClick={() => {
+                      if (isArchived) {
+                        z.mutate.TYL_trackableGroup.delete({
+                          trackableId: params.id,
+                          group: "archived",
+                        });
+                      } else {
+                        z.mutate.TYL_trackableGroup.upsert({
+                          trackableId: params.id,
+                          group: "archived",
+                          user_id: z.userID,
+                        });
+                      }
+                    }}
+                  >
+                    {isArchived ? (
+                      <>
+                        <ArchiveRestoreIcon className="mr-1" /> Unarchve
+                      </>
+                    ) : (
+                      <>
+                        <ArchiveIcon className="mr-1" /> Archive
+                      </>
+                    )}
                   </DropdownMenuItem>
 
                   <AlertDialogTrigger name="delete" asChild>
