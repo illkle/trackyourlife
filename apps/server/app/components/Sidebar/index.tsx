@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import React, { useMemo } from "react";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import { useZero } from "@rocicorp/zero/react";
+import { useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation, useRouter } from "@tanstack/react-router";
 import {
   ChartColumnIncreasing,
@@ -35,6 +36,7 @@ import {
 import { authClient } from "~/auth/client";
 import { CoreLinks } from "~/components/Header";
 import { ThemeSwitcher } from "~/components/Settings/themeSwitcher";
+import { invalidateSession } from "~/utils/useSessionInfo";
 import { useZeroGroupSet, useZeroTrackablesList } from "~/utils/useZ";
 
 const iconsMap: Record<DbTrackableSelect["type"], ReactNode> = {
@@ -90,6 +92,7 @@ export const AppSidebar = () => {
   const loc = useLocation();
   const router = useRouter();
   const { data } = authClient.useSession();
+  const qc = useQueryClient();
 
   return (
     <Sidebar variant="floating">
@@ -132,6 +135,7 @@ export const AppSidebar = () => {
                     authClient.signOut({
                       fetchOptions: {
                         onSuccess: async () => {
+                          await invalidateSession(qc);
                           await router.navigate({ to: "/login" });
                         },
                       },

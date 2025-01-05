@@ -1,4 +1,4 @@
-import { QueryClient, useQuery } from "@tanstack/react-query";
+import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
 import { redirect, useRouter } from "@tanstack/react-router";
 
 import { Spinner } from "~/@shad/components/spinner";
@@ -10,6 +10,10 @@ const q = {
   refetchOnMount: false,
   refetchOnWindowFocus: false,
   refetchOnReconnect: true,
+};
+
+export const invalidateSession = async (qc: QueryClient) => {
+  await qc.invalidateQueries({ queryKey: ["session"] });
 };
 
 export const ensureSessionInfo = async (qc: QueryClient) => {

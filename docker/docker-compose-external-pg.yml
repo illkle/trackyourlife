@@ -1,0 +1,28 @@
+services:
+  node:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    environment:
+      - VITE_PUBLIC_SERVER=zero:4848
+      - DATABASE_URL=${DATABASE_URL}
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=http://localhost:3000
+      - MIGRATE=true
+    ports:
+      - "8000:8000"
+      - "3000:3000"
+    depends_on:
+      - zero
+  zero:
+    build:
+      context: ..
+      dockerfile: ./docker/zero.Dockerfile
+    ports:
+      - "4848:4848"
+    environment:
+      - ZERO_UPSTREAM_DB=${ZERO_UPSTREAM_DB}
+      - ZERO_CVR_DB=${ZERO_CVR_DB}
+      - ZERO_CHANGE_DB=${ZERO_CHANGE_DB}
+      - ZERO_AUTH_JWKS_URL=http://node:3000/api/auth/jwks
+      - ZERO_REPLICA_FILE=./zstart_replica.db

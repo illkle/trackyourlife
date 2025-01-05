@@ -1,11 +1,16 @@
-.PHONY: build-production
-build-production: ## Build the production docker image.
-	docker compose -f docker/docker-compose-with-postgresql.yml build
+.PHONY: start-e
+start-e: 
+	docker compose --env-file .env -f docker/docker-compose-external-pg.yml up -d --build
 
-.PHONY: start-production
-start-production: ## Start the production docker container.
-	docker compose -f docker/docker-compose-with-postgresql.yml up -d
+.PHONY: stop-e
+stop-e:
+	docker compose --env-file .env -f docker/docker-compose-external-pg.yml down
 
-.PHONY: stop-production
-stop-production: ## Stop the production docker container.
-	docker compose -f docker/docker-compose-with-postgresql.yml down
+.PHONY: start-wpg
+start-wpg: 
+	docker compose --env-file .env -f docker/docker-compose-with-pg.yml up -d --build
+
+.PHONY: stop-wpg
+stop-wpg:
+	docker compose --env-file .env -f docker/docker-compose-with-pg.yml down
+

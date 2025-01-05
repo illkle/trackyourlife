@@ -1,13 +1,20 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Navigate, redirect } from "@tanstack/react-router";
 
 import { cn } from "~/@shad/utils/index";
 import LoginForm from "~/components/LoginForm";
+import { useSessionAuthed, useSessionInfo } from "~/utils/useSessionInfo";
 
 export const Route = createFileRoute("/login")({
   component: LoginComp,
 });
 
 function LoginComp() {
+  const u = useSessionInfo();
+
+  if (u.data?.sessionInfo?.session) {
+    return <Navigate to="/app" />;
+  }
+
   return (
     <div
       className={cn(

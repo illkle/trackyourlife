@@ -31,8 +31,7 @@ function AppComponent() {
     kvStore: "idb",
     auth: token,
   });
-
-  console.log("bbb");
+  
 
   return (
     <ZeroProvider zero={z}>

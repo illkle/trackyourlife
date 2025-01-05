@@ -302,8 +302,8 @@ importers:
         specifier: ^1.1.4
         version: 1.1.4(@types/react-dom@18.3.1)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@rocicorp/zero':
-        specifier: ^0.10.2024122404
-        version: 0.10.2024122404
+        specifier: 0.10.2025010400
+        version: 0.10.2025010400
       '@tanstack/react-form':
         specifier: ^0.39.0
         version: 0.39.0(@tanstack/start@1.85.0(@types/node@22.10.1)(drizzle-orm@0.36.4(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(@types/react@18.3.3)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.25.2)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5)(react@18.2.0))(ioredis@5.4.1)(lightningcss@1.22.0)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(terser@5.31.6)(vite@5.4.11(@types/node@22.10.1)(lightningcss@1.22.0)(terser@5.31.6)))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.5.4)
@@ -4390,8 +4390,8 @@ packages:
     resolution: {integrity: sha512-bm+VUdF4CnKVjUj/dSCmVu0hjcyXaF/nKkw2rNhZUjGeBOMRy/hh8z/32h311es4dxCVvcZ3+QHQHMxF2YG5Kw==}
     hasBin: true
 
-  '@rocicorp/zero@0.10.2024122404':
-    resolution: {integrity: sha512-q9lcRX8f69dIMmQZWCoNWKnS+IhnyekBbfpa9h4FkjQLmIXcdZyjuGdK9XT1aseshgATDesJ1jiyckg402cwAg==}
+  '@rocicorp/zero@0.10.2025010400':
+    resolution: {integrity: sha512-ce3UmNqSUw57P2hBTIlKAZ39hwuh8Wd9jvFEsFerQWIHOZDpzWrzlRoGokrFo4H1OKhUnhyFYFerqU9u61Eu+w==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -5247,6 +5247,7 @@ packages:
   '@xmldom/xmldom@0.7.13':
     resolution: {integrity: sha512-lm2GW5PkosIzccsaZIz7tp8cPADSIlIHWDFTR1N0SzfinhhYgeIQjFMz4rYzanCScr3DqQLeomUDArp6MWKm+g==}
     engines: {node: '>=10.0.0'}
+    deprecated: this version is no longer supported, please update to at least 0.8.*
 
   '@xmldom/xmldom@0.8.10':
     resolution: {integrity: sha512-2WALfTl4xo2SkGCYRt6rDTFfk9R1czmBvUQy12gK2KuRKIpWEhcbbzy8EZXtz/jkRqHX8bFEc6FC1HjX4TUWYw==}
@@ -6797,6 +6798,7 @@ packages:
   eslint@8.57.0:
     resolution: {integrity: sha512-dZ6+mexnaTIbSBZWgou51U6OmzIhYM2VcNdtiTtI7qPNZm35Akpr0f6vtw3w1Kmn5PYo+tZVfh13WrhpS6oLqQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
+    deprecated: This version is no longer supported. Please see https://eslint.org/version-support for other options.
     hasBin: true
 
   espree@9.6.1:
@@ -10310,12 +10312,15 @@ packages:
 
   sudo-prompt@8.2.5:
     resolution: {integrity: sha512-rlBo3HU/1zAJUrkY6jNxDOC9eVYliG6nS4JA8u8KAshITd07tafMc/Br7xQwCSseXwJ2iCcHCE8SNWX3q8Z+kw==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   sudo-prompt@9.1.1:
     resolution: {integrity: sha512-es33J1g2HjMpyAhz8lOR+ICmXXAqTuKbuXuUWLhOLew20oN9oUCgCJx615U/v7aioZg7IX5lIh9x34vwneu4pA==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   sudo-prompt@9.2.1:
     resolution: {integrity: sha512-Mu7R0g4ig9TUuGSxJavny5Rv0egCEtpZRNMrZaYS1vxkiIxGiGUwoezU3LazIQ+KE04hTrTfNPgxU5gzi7F5Pw==}
+    deprecated: Package no longer supported. Contact Support at https://www.npmjs.com/support for more info.
 
   superjson@2.2.1:
     resolution: {integrity: sha512-8iGv75BYOa0xRJHK5vRLEjE2H/i4lulTjzpUXic3Eg8akftYjkmQDa8JARQ42rlczXyFR3IeRoeFCc7RxHsYZA==}
@@ -15632,7 +15637,7 @@ snapshots:
       bindings: 1.5.0
       prebuild-install: 7.1.2
 
-  '@rocicorp/zero@0.10.2024122404':
+  '@rocicorp/zero@0.10.2025010400':
     dependencies:
       '@badrap/valita': 0.3.11
       '@databases/escape-identifier': 1.0.3

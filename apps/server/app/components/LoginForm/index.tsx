@@ -2,7 +2,7 @@ import type { FieldApi } from "@tanstack/react-form";
 import { useState } from "react";
 import { cn } from "@shad/utils";
 import { useForm } from "@tanstack/react-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-form-adapter";
 import { AnimatePresence, m } from "framer-motion";
@@ -21,6 +21,7 @@ import {
 import { Input } from "~/@shad/components/input";
 import { RadioTabItem, RadioTabs } from "~/@shad/components/radio-tabs";
 import { authClient } from "~/auth/client";
+import { invalidateSession } from "~/utils/useSessionInfo";
 
 type ActionState = "login" | "register";
 
@@ -54,6 +55,8 @@ function FieldInfo({
 const Register = () => {
   const router = useRouter();
 
+  const qc = useQueryClient();
+
   const registerMutation = useMutation({
     mutationFn: async ({
       email,
@@ -74,7 +77,7 @@ const Register = () => {
       );
     },
     onSuccess: async () => {
-      await router.invalidate();
+      await invalidateSession(qc);
       await router.navigate({ to: "/" });
     },
   });
@@ -186,6 +189,7 @@ const Register = () => {
 
 const Login = () => {
   const router = useRouter();
+  const qc = useQueryClient();
 
   const loginMutation = useMutation({
     mutationFn: async ({
@@ -205,7 +209,7 @@ const Login = () => {
       );
     },
     onSuccess: async () => {
-      await router.invalidate();
+      await invalidateSession(qc);
       await router.navigate({ to: "/" });
     },
   });
