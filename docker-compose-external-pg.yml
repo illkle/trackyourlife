@@ -11,8 +11,6 @@ services:
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
       - BETTER_AUTH_URL=http://localhost
       - MIGRATE=true
-    ports:
-      - "80:80"
     depends_on:
       - zero
   zero:
