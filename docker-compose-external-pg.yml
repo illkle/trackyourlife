@@ -4,13 +4,15 @@ services:
       context: .
       dockerfile: ./docker/Dockerfile
     environment:
+      - NITRO_PORT=80
+      - NODE_ENV=production
       - VITE_PUBLIC_SERVER=zero:4848
       - DATABASE_URL=${DATABASE_URL}
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
-      - BETTER_AUTH_URL=http://localhost:3000
+      - BETTER_AUTH_URL=http://localhost
       - MIGRATE=true
     ports:
-      - "3000:3000"
+      - "80:80"
     depends_on:
       - zero
   zero:
@@ -19,9 +21,11 @@ services:
       dockerfile: ./docker/zero.Dockerfile
     ports:
       - "4848:4848"
+      - "4850:4850"
     environment:
       - ZERO_UPSTREAM_DB=${ZERO_UPSTREAM_DB}
       - ZERO_CVR_DB=${ZERO_CVR_DB}
       - ZERO_CHANGE_DB=${ZERO_CHANGE_DB}
-      - ZERO_AUTH_JWKS_URL=http://node:3000/api/auth/jwks
+      - ZERO_AUTH_JWKS_URL=http://node:80/api/auth/jwks
       - ZERO_REPLICA_FILE=./zstart_replica.db
+      - ZERO_PORT=4848
