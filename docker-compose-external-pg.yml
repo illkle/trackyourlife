@@ -10,7 +10,6 @@ services:
       - BETTER_AUTH_URL=http://localhost:3000
       - MIGRATE=true
     ports:
-      - "8000:8000"
       - "3000:3000"
     depends_on:
       - zero
