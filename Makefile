@@ -1,10 +1,10 @@
 .PHONY: start-e
 start-e: 
-	docker compose --env-file .env -f docker/docker-compose-external-pg.yml up -d --build
+	docker compose --env-file .env -f docker-compose-external-pg.yml up -d --build
 
 .PHONY: stop-e
 stop-e:
-	docker compose --env-file .env -f docker/docker-compose-external-pg.yml down
+	docker compose --env-file .env -f docker-compose-external-pg.yml down
 
 .PHONY: start-wpg
 start-wpg: 

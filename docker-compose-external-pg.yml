@@ -1,7 +1,7 @@
 services:
   node:
     build:
-      context: ..
+      context: .
       dockerfile: ./docker/Dockerfile
     environment:
       - VITE_PUBLIC_SERVER=zero:4848
@@ -16,7 +16,7 @@ services:
       - zero
   zero:
     build:
-      context: ..
+      context: .
       dockerfile: ./docker/zero.Dockerfile
     ports:
       - "4848:4848"
