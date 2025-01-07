@@ -15,8 +15,6 @@ services:
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
       - BETTER_AUTH_URL=http://localhost
       - MIGRATE=true
-    depends_on:
-      - zerosync
   zerosync:
     build:
       context: .
