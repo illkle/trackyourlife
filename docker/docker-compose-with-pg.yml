@@ -4,7 +4,7 @@ services:
       context: ..
       dockerfile: ./docker/Dockerfile
     environment:
-      - VITE_PUBLIC_SERVER=zero:4848
+      - VITE_ZERO_DOMAIN=zero:4848
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
       - BETTER_AUTH_URL=http://localhost:3000

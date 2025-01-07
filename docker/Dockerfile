@@ -28,8 +28,10 @@ RUN pnpm install
  
 # Build the project
 COPY --from=builder /app/out/full/ .
+# This val is included in client build, therefore we need to pass as ARG
+ARG VITE_ZERO_DOMAIN
+ENV VITE_ZERO_DOMAIN=$VITE_ZERO_DOMAIN
 RUN pnpm turbo run build --filter=@tyl/server...
- 
 FROM base AS runner
 WORKDIR /app
 

@@ -15,6 +15,9 @@
         ".expo/**",
         ".output/**",
         ".vercel/output/**"
+      ],
+      "env": [
+        "VITE_ZERO_DOMAIN"
       ]
     },
     "dev": {
@@ -80,7 +83,6 @@
     "ZERO_CVR_DB",
     "ZERO_CHANGE_DB",
     "ZERO_AUTH_SECRET",
-    "ZERO_REPLICA_FILE",
-    "VITE_PUBLIC_SERVER"
+    "ZERO_REPLICA_FILE"
   ]
 }

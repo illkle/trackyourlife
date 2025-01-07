@@ -8,15 +8,14 @@ App to track stuff. It started as a self-hosted habit\mood\stats tracker and I w
 
 updated: 2 December 2024
 
-I use it personally to track my stuff, however it's not stable or production ready. Publically hosted version available at [tyl.zekel.io](https://tyl.zekel.io/) (use at your own risk)
+I use it personally to track my stuff, however it's not stable or production ready. Publically hosted version available at [tyl.illkle.com](https://tyl.illkle.com/) (use at your own risk)
 
 Current goals:
 
 1. Polish the overall experince, refactor ugly stuff, improve design.
 2. Data impromenets: grouped trackables, multiple entries for one day, agregated trackables, data conversions.
 3. System for API integrations running on CRON or using public api.
-4. When it comes out switch to [Zero](https://zero.rocicorp.dev/) for local-first data querying.
-5. Develop mobile app
+4. Develop mobile app
 
 ### Development
 
@@ -25,17 +24,3 @@ Current goals:
 - Migrations are applied automatically on startup. To generate migrations after updating schema use `pnpm run db:generate`
 - Run Drizzle Studio to inspect database with `db:studio`
 - To add something from `shadcn/ui` first do `cd app/server` and then run the command.
-
-### Deployment
-
-You will need a Postgres DB. If you already have one for something else you can reuse it, all tables are prefixed with `TYL_` i.e `TYL_auth_user`. Put Postres connection URL in `DATABASE_URL` env variable. Use docker file `/docker/Dockerfile`.
-
-Example for deploying on [Coolify](https://coolify.io/). Other methods will be similar.
-
-1. If you do not have one deploy Posgtres and copy Postgres URL
-2. New -> Public Repository -> paste URL
-3. Build Pack: Dockerfile
-4. Press Continue
-5. Dockerfile Location: `/docker/Dockerfile`
-6. Open Environment Variables. Set DATABASE_URL to your Postgres URL.
-7. Start

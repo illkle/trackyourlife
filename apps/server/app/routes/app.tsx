@@ -26,12 +26,11 @@ function AppComponent() {
 
   const z = new Zero({
     userID: sessionInfo.user.id,
-    server: "http://localhost:4848/",
+    server: import.meta.env.VITE_ZERO_DOMAIN,
     schema,
     kvStore: "idb",
     auth: token,
   });
-  
 
   return (
     <ZeroProvider zero={z}>
