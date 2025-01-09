@@ -1,7 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { Button } from "~/@shad/components/button";
-import { sendVerificationLetterProtected } from "~/components/Settings";
+import { authClient } from "~/auth/client";
 import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { MutationErrorInfo } from ".";
 
@@ -10,7 +10,13 @@ export const SendVerificationEmailButton = () => {
 
   const sendMutation = useMutation({
     mutationFn: async () => {
-      await sendVerificationLetterProtected();
+      const { error } = await authClient.sendVerificationEmail({
+        email: sessionInfo.user.email,
+        callbackURL: "/app/settings",
+      });
+      if (error) {
+        throw new Error(error.message ?? error.statusText);
+      }
     },
   });
 

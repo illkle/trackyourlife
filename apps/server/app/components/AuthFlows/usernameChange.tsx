@@ -21,9 +21,12 @@ export const UsernameChangeForm = ({ className }: { className?: string }) => {
   const qc = useQueryClient();
   const changeMutation = useMutation({
     mutationFn: async (v: typeof form.state.values) => {
-      await authClient.updateUser({
+      const { error } = await authClient.updateUser({
         name: v.newUsername,
       });
+      if (error) {
+        throw new Error(error.message ?? error.statusText);
+      }
     },
     onSuccess: async () => {
       await invalidateSession(qc);

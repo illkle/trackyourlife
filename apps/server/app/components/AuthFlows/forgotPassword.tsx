@@ -20,10 +20,13 @@ import { FieldInfo, MutationErrorInfo } from ".";
 const ForgotPasswordForm = () => {
   const sendMutation = useMutation({
     mutationFn: async (v: typeof form.state.values) => {
-      await authClient.forgetPassword({
+      const { error } = await authClient.forgetPassword({
         email: v.email,
         redirectTo: "/auth/passwordreset",
       });
+      if (error) {
+        throw new Error(error.message ?? error.statusText);
+      }
     },
   });
 

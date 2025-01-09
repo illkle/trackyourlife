@@ -20,11 +20,14 @@ import { PasswordValidator } from "./common";
 export const PasswordChangeForm = ({ className }: { className?: string }) => {
   const changeMutation = useMutation({
     mutationFn: async (v: typeof form.state.values) => {
-      await authClient.changePassword({
+      const { error } = await authClient.changePassword({
         currentPassword: v.password,
         newPassword: v.newPassword,
         revokeOtherSessions: true,
       });
+      if (error) {
+        throw new Error(error.message ?? error.statusText);
+      }
     },
   });
 

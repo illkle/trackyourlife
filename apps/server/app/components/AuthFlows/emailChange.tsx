@@ -25,8 +25,10 @@ export const EmailChangeForm = ({ className }: { className?: string }) => {
 
   const changeMutation = useMutation({
     mutationFn: async (v: typeof form.state.values) => {
-      console.log("v", v);
-      await authClient.changeEmail(v);
+      const { error } = await authClient.changeEmail(v);
+      if (error) {
+        throw new Error(error.message ?? error.statusText);
+      }
     },
     onSuccess: async () => {
       if (!isVerified) {
@@ -42,7 +44,6 @@ export const EmailChangeForm = ({ className }: { className?: string }) => {
       newEmail: "",
     },
     onSubmit: async ({ value }) => {
-      console.log("value", value);
       await changeMutation.mutateAsync(value);
     },
 

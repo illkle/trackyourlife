@@ -18,31 +18,6 @@ import { SendVerificationEmailButton } from "~/components/AuthFlows/sendVerifica
 import { UsernameChangeForm } from "~/components/AuthFlows/usernameChange";
 import { invalidateSession, useSessionAuthed } from "~/utils/useSessionInfo";
 
-export const sendVerificationLetterProtected = createServerFn({
-  method: "POST",
-}).handler(async () => {
-  const r = getWebRequest();
-
-  const sessionInfo = await auth.api.getSession({
-    headers: r.headers,
-  });
-
-  if (!sessionInfo) {
-    throw new Error("No session info");
-  }
-
-  if (sessionInfo.user.emailVerified) {
-    throw new Error("Email already verified");
-  }
-
-  await auth.api.sendVerificationEmail({
-    body: {
-      email: sessionInfo.user.email,
-      callbackURL: "/app/settings",
-    },
-  });
-});
-
 export const UserSettings = () => {
   const { sessionInfo } = useSessionAuthed();
 
