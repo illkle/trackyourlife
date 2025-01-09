@@ -10,10 +10,8 @@ import {
   unique,
   uuid,
 } from "drizzle-orm/pg-core";
-import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-import type { ITrackableSettings} from "./jsonValidators";
-import { IUserSettings } from "./jsonValidators";
+import type { ITrackableSettings } from "./jsonValidators";
 
 const pgTable = pgTableCreator((name) => `TYL_${name}`);
 
@@ -101,13 +99,6 @@ export const trackable = pgTable("trackable", {
   settings: json("settings").default({}).$type<ITrackableSettings>(),
 });
 
-export const ZTrackableDbSelect = createSelectSchema(trackable);
-export const ZTrackableDbInsert = createInsertSchema(trackable).omit({
-  is_deleted: true,
-  id: true,
-  user_id: true,
-});
-
 export const trackableRelations = relations(trackable, ({ many }) => ({
   data: many(trackableRecord),
 }));
@@ -163,11 +154,10 @@ export const trackableGroupRelations = relations(trackableGroup, ({ one }) => ({
     references: [trackable.id],
   }),
   user: one(user, {
-    fields: [trackableGroup.user_id], 
+    fields: [trackableGroup.user_id],
     references: [user.id],
   }),
 }));
-
 
 export type DbUserSelect = typeof user.$inferSelect;
 export type DbSessionSelect = typeof session.$inferSelect;

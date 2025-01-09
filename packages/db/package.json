@@ -34,7 +34,6 @@
   },
   "dependencies": {
     "drizzle-orm": "0.38.3",
-    "drizzle-zod": "0.6.1",
     "zod": "catalog:"
   },
   "devDependencies": {
