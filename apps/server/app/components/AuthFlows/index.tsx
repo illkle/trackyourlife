@@ -56,7 +56,9 @@ export function FieldInfo({
 export const MutationErrorInfo = ({ message }: { message: string }) => {
   return (
     <Alert variant="destructive" className="mt-4">
-      <AlertTitle className="font-bold">Something is wrong</AlertTitle>
+      <AlertTitle className="flex items-center gap-2">
+        Something went wrong
+      </AlertTitle>
       <AlertDescription>{message}</AlertDescription>
     </Alert>
   );

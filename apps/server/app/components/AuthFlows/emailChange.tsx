@@ -116,7 +116,7 @@ export const EmailChangeForm = ({ className }: { className?: string }) => {
             <Button
               onClick={form.handleSubmit}
               isLoading={form.state.isSubmitting}
-              variant={"destructive"}
+              variant={"outline"}
               className="mt-4 w-full"
               type="submit"
             >
