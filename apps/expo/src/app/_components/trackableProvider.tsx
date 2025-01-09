@@ -1,6 +1,7 @@
+import type {
+  ReactNode} from "react";
 import {
   createContext,
-  ReactNode,
   useContext,
   useEffect,
   useMemo,
@@ -8,8 +9,9 @@ import {
 } from "react";
 import { and, eq } from "drizzle-orm";
 
+import type {
+  ITrackable} from "@tyl/validators/trackable";
 import {
-  ITrackable,
   ITrackableFromList,
   ZTrackableSettings,
 } from "@tyl/validators/trackable";
@@ -20,10 +22,10 @@ import { updateTrackableRecord } from "~/data/syncContext";
 import { db } from "~/db";
 import { trackableRecord } from "~/db/schema";
 
-type UseReturn = {
+interface UseReturn {
   value?: string;
   error?: Error;
-};
+}
 
 interface ITrackableContext {
   type: ITrackable["type"];

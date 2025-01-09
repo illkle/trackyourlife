@@ -1,15 +1,12 @@
 import type { CSSProperties, MouseEvent, ReactNode } from "react";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { cn } from "@shad/utils";
-import { AnimatePresence, m } from "framer-motion";
 
 import { clamp } from "@tyl/helpers";
 
-import { useDayCellContextBoolean } from "~/components/Providers/DayCellProvider";
 import { useAllowAnimation } from "~/utils/useAllowAnimation";
 
 const ANIMATION_TIME = 0.3;
-const EASE = [0, 0.2, 0.5, 1];
 
 export const DayCellBoolean = ({
   value,
@@ -33,7 +30,7 @@ export const DayCellBoolean = ({
   // Point where click happened in % relative to button box. Used for animation
   const [clickPoint, setClickPoint] = useState([50, 50]);
   // Ration between width and height of the box.
-  const [whRatio, setWhRatio] = useState(1);
+  const [_whRatio, setWhRatio] = useState(1);
 
   const handleClick = async (e: MouseEvent) => {
     e.preventDefault();

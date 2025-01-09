@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import type { TrackableListItem } from "~/utils/useZ";
 import {
   Dialog,
   DialogContent,
@@ -16,14 +17,14 @@ import {
 import { Input } from "~/@shad/components/input";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
-import { TrackableListItem, useZ, useZeroTrackable } from "~/utils/useZ";
+import { useZ, useZeroTrackable } from "~/utils/useZ";
 
 export const TrackableNameEditable = () => {
   const { id } = useTrackableMeta();
 
   const z = useZ();
 
-  const [trackable, trackableInfo] = useZeroTrackable({ id });
+  const [trackable] = useZeroTrackable({ id });
   const updateName = (name: string) => {
     void z.mutate.TYL_trackable.update({
       id,
@@ -105,10 +106,6 @@ export const TrackableNameText = ({
   trackable: TrackableListItem;
 }) => {
   return (
-    <>
-      {trackable?.name.length
-        ? trackable.name
-        : `Unnamed ${trackable?.type ?? ""}`}
-    </>
+    <>{trackable.name.length ? trackable.name : `Unnamed ${trackable.type}`}</>
   );
 };

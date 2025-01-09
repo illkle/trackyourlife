@@ -1,4 +1,4 @@
-import { createFileRoute, Navigate, redirect } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 
 import { useSessionAuthed } from "~/utils/useSessionInfo";
 

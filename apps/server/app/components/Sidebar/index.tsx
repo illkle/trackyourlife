@@ -1,21 +1,22 @@
 import type { ReactNode } from "react";
-import React, { useMemo } from "react";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
-import { useZero } from "@rocicorp/zero/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { Link, useLocation, useRouter } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import {
   ChartColumnIncreasing,
   ChevronUp,
   HeartIcon,
+  PanelLeftClose,
+  PanelLeftOpen,
   SmileIcon,
   ToggleRight,
   User2,
 } from "lucide-react";
 
-import { DbTrackableSelect } from "@tyl/db/schema";
+import type { DbTrackableSelect } from "@tyl/db/schema";
 import { sortTrackableList } from "@tyl/helpers/trackables";
 
+import { Button } from "~/@shad/components/button";
 import {
   DropdownMenuContent,
   DropdownMenuItem,
@@ -32,12 +33,13 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from "~/@shad/components/sidebar";
 import { authClient } from "~/auth/client";
 import { CoreLinks } from "~/components/Header";
 import { ThemeSwitcher } from "~/components/Settings/themeSwitcher";
-import { invalidateSession } from "~/utils/useSessionInfo";
-import { useZeroGroupSet, useZeroTrackablesList } from "~/utils/useZ";
+import { invalidateSession, useSessionAuthed } from "~/utils/useSessionInfo";
+import { useZeroTrackablesList } from "~/utils/useZ";
 
 const iconsMap: Record<DbTrackableSelect["type"], ReactNode> = {
   boolean: <ToggleRight size={16} />,
@@ -46,13 +48,16 @@ const iconsMap: Record<DbTrackableSelect["type"], ReactNode> = {
 };
 
 const TrackablesMiniList = () => {
-  const [data, info] = useZeroTrackablesList();
+  const [data] = useZeroTrackablesList();
 
   const loc = useLocation();
 
-  if (!data || data.length === 0) return <div></div>;
+  if (data.length === 0) return <div></div>;
 
-  const sorted = sortTrackableList([...data]);
+  const sorted = sortTrackableList(
+    // Temporary fix for bugged query
+    data.filter((tr) => !tr.trackableGroup.some((v) => v.group === "archived")),
+  );
 
   return (
     <SidebarMenu>
@@ -90,9 +95,9 @@ const TrackablesMiniList = () => {
 
 export const AppSidebar = () => {
   const loc = useLocation();
-  const router = useRouter();
-  const { data } = authClient.useSession();
   const qc = useQueryClient();
+
+  const { sessionInfo } = useSessionAuthed();
 
   return (
     <Sidebar variant="floating">
@@ -121,7 +126,7 @@ export const AppSidebar = () => {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton>
-                  <User2 /> {data?.user.name}
+                  <User2 /> {sessionInfo.user.name}
                   <ChevronUp className="ml-auto" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
@@ -131,12 +136,11 @@ export const AppSidebar = () => {
               >
                 <ThemeSwitcher className="mb-2 w-full" />
                 <DropdownMenuItem
-                  onClick={() => {
-                    authClient.signOut({
+                  onClick={async () => {
+                    await authClient.signOut({
                       fetchOptions: {
                         onSuccess: async () => {
                           await invalidateSession(qc);
-                          await router.navigate({ to: "/login" });
                         },
                       },
                     });
@@ -150,5 +154,20 @@ export const AppSidebar = () => {
         </SidebarMenu>
       </SidebarFooter>
     </Sidebar>
+  );
+};
+
+export const SidebarToggle = ({ className }: { className?: string }) => {
+  const { toggleSidebar, state, isMobile, openMobile } = useSidebar();
+  return (
+    <Button variant="outline" onClick={toggleSidebar} className={className}>
+      {(isMobile && !openMobile) || state === "collapsed" ? (
+        <>
+          <PanelLeftOpen size={16} />
+        </>
+      ) : (
+        <PanelLeftClose size={16} />
+      )}
+    </Button>
   );
 };

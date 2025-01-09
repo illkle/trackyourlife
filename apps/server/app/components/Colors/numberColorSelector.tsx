@@ -4,7 +4,7 @@ import { cn } from "@shad/utils";
 import { PlusCircleIcon, XIcon } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 
-import { IColorCodingValue, IColorValue } from "@tyl/db/jsonValidators";
+import type { IColorCodingValue, IColorValue } from "@tyl/db/jsonValidators";
 import { clamp } from "@tyl/helpers";
 import { presetsMap } from "@tyl/helpers/colorPresets";
 import {

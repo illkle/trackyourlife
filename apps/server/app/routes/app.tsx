@@ -1,21 +1,14 @@
 import { Zero } from "@rocicorp/zero";
 import { ZeroProvider } from "@rocicorp/zero/react";
 import { cn } from "@shad/utils";
-import { useQuery } from "@tanstack/react-query";
-import {
-  createFileRoute,
-  Outlet,
-  redirect,
-  useRouteContext,
-} from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 
 import { SidebarProvider } from "~/@shad/components/sidebar";
-import { authClient } from "~/auth/client";
-import Header from "~/components/Header";
-import { AppSidebar } from "~/components/Sidebar";
+import Header, { HeaderLogo } from "~/components/Header";
+import { AppSidebar, SidebarToggle } from "~/components/Sidebar";
 import { schema } from "~/schema";
-import { useSessionAuthed, useSessionInfo } from "~/utils/useSessionInfo";
-import { preloadCore } from "~/utils/useZ";
+import { useSessionAuthed } from "~/utils/useSessionInfo";
+import { usePreloadCore } from "~/utils/useZ";
 
 export const Route = createFileRoute("/app")({
   component: AppComponent,
@@ -26,7 +19,8 @@ function AppComponent() {
 
   const z = new Zero({
     userID: sessionInfo.user.id,
-    server: import.meta.env.VITE_ZERO_DOMAIN,
+    // Todo proper env
+    server: import.meta.env.VITE_ZERO_DOMAIN as string,
     schema,
     kvStore: "idb",
     auth: token,
@@ -38,7 +32,12 @@ function AppComponent() {
         <SidebarProvider>
           <AppSidebar />
           <div className={cn("h-full max-h-full min-h-screen w-full", "")}>
-            <Header />
+            <Header>
+              <SidebarToggle />
+              <Link to={"/app"}>
+                <HeaderLogo />
+              </Link>
+            </Header>
             <div className="mx-auto box-border w-full pt-4 max-xl:col-span-2">
               <Outlet />
             </div>
@@ -50,7 +49,7 @@ function AppComponent() {
 }
 
 const MainPreloader = ({ children }: { children: React.ReactNode }) => {
-  preloadCore();
+  usePreloadCore();
 
   return children;
 };

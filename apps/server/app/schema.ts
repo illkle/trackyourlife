@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/unbound-method */
+import type { ExpressionBuilder } from "@rocicorp/zero";
 import {
   ANYONE_CAN,
   column,
   createSchema,
   createTableSchema,
   definePermissions,
-  ExpressionBuilder,
 } from "@rocicorp/zero";
 
-import { ITrackableSettings } from "@tyl/db/jsonValidators";
+import type { ITrackableSettings } from "@tyl/db/jsonValidators";
 
 const { json } = column;
 
@@ -69,9 +70,9 @@ export const schema = createSchema({
 
 export type Schema = typeof schema;
 
-type AuthData = {
+interface AuthData {
   sub: string;
-};
+}
 
 export const permissions = definePermissions<AuthData, Schema>(schema, () => {
   const allowIfOwnerTrackable = (

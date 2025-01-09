@@ -83,3 +83,39 @@ input[type="number"] {
     transform: scale(1.2);
   }
 }
+
+.spinner {
+  circle {
+    @apply stroke-neutral-950;
+  }
+  path {
+    @apply fill-neutral-950;
+  }
+}
+
+.spinner.spinner-inverted {
+  circle {
+    @apply stroke-neutral-50;
+  }
+  path {
+    @apply fill-neutral-50;
+  }
+}
+
+.dark .spinner {
+  circle {
+    @apply stroke-neutral-50;
+  }
+  path {
+    @apply fill-neutral-50;
+  }
+}
+
+.dark .spinner.spinner-inverted {
+  circle {
+    @apply stroke-neutral-950;
+  }
+  path {
+    @apply fill-neutral-950;
+  }
+}

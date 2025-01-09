@@ -6,7 +6,8 @@ import { Pressable, Text, View } from "react-native";
 import { cva } from "class-variance-authority";
 
 import { tw, tws } from "~/utils/tw";
-import Spinner, { ISpinnerColor } from "./spinner";
+import type { ISpinnerColor } from "./spinner";
+import Spinner from "./spinner";
 
 const textVariants = cva("text-sm font-medium", {
   variants: {

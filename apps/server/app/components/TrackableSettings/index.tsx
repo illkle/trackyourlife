@@ -4,13 +4,13 @@ import { cn } from "@shad/utils";
 import { useForm } from "@tanstack/react-form";
 import { useStore } from "@tanstack/react-store";
 
-import {
+import type {
   IBooleanSettings,
   INumberSettings,
   IRangeSettings,
   ITrackableSettings,
 } from "@tyl/db/jsonValidators";
-import { DbTrackableSelect } from "@tyl/db/schema";
+import type { DbTrackableSelect } from "@tyl/db/schema";
 import { presetsMap } from "@tyl/helpers/colorPresets";
 import { getGMTWithTimezoneOffset } from "@tyl/helpers/timezone";
 

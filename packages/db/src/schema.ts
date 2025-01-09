@@ -12,7 +12,8 @@ import {
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createSelectSchema } from "drizzle-zod";
 
-import { ITrackableSettings, IUserSettings } from "./jsonValidators";
+import type { ITrackableSettings} from "./jsonValidators";
+import { IUserSettings } from "./jsonValidators";
 
 const pgTable = pgTableCreator((name) => `TYL_${name}`);
 

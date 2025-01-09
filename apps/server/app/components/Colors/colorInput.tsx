@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { PopoverContent } from "@radix-ui/react-popover";
 
-import { IColorValue } from "@tyl/db/jsonValidators";
+import type { IColorValue } from "@tyl/db/jsonValidators";
 import { presetsMap } from "@tyl/helpers/colorPresets";
 
 import {

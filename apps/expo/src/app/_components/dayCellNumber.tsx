@@ -1,5 +1,6 @@
+import type {
+  ReactNode} from "react";
 import {
-  ReactNode,
   useCallback,
   useEffect,
   useLayoutEffect,
@@ -7,14 +8,15 @@ import {
   useRef,
   useState,
 } from "react";
+import type {
+  ViewStyle} from "react-native";
 import {
   Pressable,
   StyleSheet,
   Text,
   TextInput,
   useColorScheme,
-  View,
-  ViewStyle,
+  View
 } from "react-native";
 import Animated, {
   Easing,
@@ -29,7 +31,7 @@ import {
 
 import { makeColorString } from "@tyl/helpers/colorTools";
 
-import { DayCellSize } from "~/app/_components/dayCell";
+import type { DayCellSize } from "~/app/_components/dayCell";
 import { useDayCellContextNumber } from "~/app/_components/dayCellProvider";
 import { Input, InputStyle } from "~/app/_ui/input";
 import { twColors } from "~/utils/tailwindColors";

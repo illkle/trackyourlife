@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArchiveIcon } from "lucide-react";
 import { z } from "zod";
 
 import { Button } from "~/@shad/components/button";
@@ -36,7 +35,7 @@ function RouteComponent() {
       <div className="mt-2">
         <TrackablesList
           daysToShow={SHOW_DAYS}
-          archived={params.archived || false}
+          archived={params.archived ?? false}
         />
       </div>
     </div>

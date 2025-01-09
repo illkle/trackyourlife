@@ -1,10 +1,10 @@
-import { useMemo } from "react";
 import { m } from "framer-motion";
 import { HeartIcon } from "lucide-react";
 
 import type { ButtonProps } from "~/@shad/components/button";
+import type { TrackableListItem } from "~/utils/useZ";
 import { Button } from "~/@shad/components/button";
-import { TrackableListItem, useZ } from "~/utils/useZ";
+import { useZ } from "~/utils/useZ";
 
 export const FavoriteButton = ({
   variant = "ghost",
@@ -23,12 +23,12 @@ export const FavoriteButton = ({
 
   const favHandler = async () => {
     if (inFavs) {
-      z.mutate.TYL_trackableGroup.delete({
+      await z.mutate.TYL_trackableGroup.delete({
         trackableId: trackable.id,
         group: "favorites",
       });
     } else {
-      z.mutate.TYL_trackableGroup.insert({
+      await z.mutate.TYL_trackableGroup.insert({
         trackableId: trackable.id,
         group: "favorites",
         user_id: z.userID,

@@ -7,7 +7,7 @@ import type {
   INumberSettings,
   IRangeSettings,
 } from "@tyl/db/jsonValidators";
-import { DbTrackableSelect } from "@tyl/db/schema";
+import type { DbTrackableSelect } from "@tyl/db/schema";
 import {
   getDayCellBooleanColors,
   getRangeLabelMapping,

@@ -21,12 +21,8 @@ import {
 import { Input } from "~/@shad/components/input";
 import { RadioTabItem, RadioTabs } from "~/@shad/components/radio-tabs";
 import { authClient } from "~/auth/client";
-import {
-  EmailValidator,
-  NameValidator,
-  PasswordValidator,
-} from "~/components/AuthFlows/common";
 import { invalidateSession } from "~/utils/useSessionInfo";
+import { EmailValidator, NameValidator, PasswordValidator } from "./common";
 
 type ActionState = "login" | "register";
 
@@ -158,6 +154,7 @@ const Register = () => {
         children={(field) => (
           <>
             <Input
+              autoComplete="new-password"
               value={field.state.value}
               onChange={(e) => {
                 field.handleChange(e.target.value);

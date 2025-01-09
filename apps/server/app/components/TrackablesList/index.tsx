@@ -1,23 +1,17 @@
-import { Fragment, useMemo, useState } from "react";
-import { Row } from "@rocicorp/zero";
+import { Fragment, useMemo } from "react";
 import { cn } from "@shad/utils";
 import { Link } from "@tanstack/react-router";
 import { format, isLastDayOfMonth, subDays } from "date-fns";
 import { m } from "framer-motion";
 
-import { DbTrackableSelect } from "@tyl/db/schema";
 import { mapDataToRange, sortTrackableList } from "@tyl/helpers/trackables";
 
-import { Badge } from "~/@shad/components/badge";
 import { Button } from "~/@shad/components/button";
-import { Input } from "~/@shad/components/input";
 import { Spinner } from "~/@shad/components/spinner";
 import DayCellWrapper from "~/components/DayCell";
 import TrackableProvider from "~/components/Providers/TrackableProvider";
 import { TrackableNameText } from "~/components/TrackableName";
-import { generateDates } from "~/components/TrackablesList/helper";
-import { Schema } from "~/schema";
-import { useZeroGroupSet, useZeroTrackableListWithData } from "~/utils/useZ";
+import { useZeroTrackableListWithData } from "~/utils/useZ";
 import MiniTrackable from "./miniTrackable";
 
 const EmptyList = () => {
@@ -34,29 +28,6 @@ const EmptyList = () => {
   );
 };
 
-type TrackableTypeFilterState = Record<DbTrackableSelect["type"], boolean>;
-
-const filterTrackables = <
-  T extends Pick<DbTrackableSelect, "id" | "name" | "type">,
->(
-  query: string,
-  types: TrackableTypeFilterState,
-  list: T[],
-) => {
-  const filterByType = Object.values(types).some((v) => v);
-
-  if (!query && !filterByType) return list;
-
-  return list
-    .filter((v) => {
-      return (v.name || "").includes(query);
-    })
-    .filter((v) => {
-      if (!filterByType) return true;
-      return types[v.type];
-    });
-};
-
 const TrackablesList = ({
   daysToShow,
   archived,
@@ -68,7 +39,7 @@ const TrackablesList = ({
   const lastDay = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const firstDay = subDays(lastDay, daysToShow - 1).getTime();
 
-  const [data, info] = useZeroTrackableListWithData(
+  const [data] = useZeroTrackableListWithData(
     {
       firstDay,
       lastDay,
@@ -76,12 +47,9 @@ const TrackablesList = ({
     archived,
   );
 
-  const sorted = useMemo(
-    () => sortTrackableList(data ? [...data] : []),
-    [data],
-  );
+  const sorted = useMemo(() => sortTrackableList([...data]), [data]);
 
-  if (!data || data.length === 0) return <EmptyList />;
+  if (data.length === 0) return <EmptyList />;
 
   const mappedData = sorted.map((v) => ({
     trackable: v,
@@ -127,7 +95,7 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
     data: mapDataToRange(firstDay, lastDay, v.trackableRecord, "desc"),
   }));
 
-  if (!data || data.length === 0) {
+  if (data.length === 0) {
     if (info.type === "unknown") {
       return (
         <div className="flex h-full items-center justify-center py-10">
@@ -138,9 +106,9 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
     return <EmptyList />;
   }
 
-  const days = mappedData[0]?.data.map((v, i) => v.date) || [];
+  const days = mappedData[0]?.data.map((v) => v.date) ?? [];
 
-  const trackables = mappedData.map((_, i) => i) || [];
+  const trackables = mappedData.map((_, i) => i);
 
   return (
     <div className="flex flex-col gap-6">

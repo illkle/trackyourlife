@@ -59,6 +59,7 @@
     "react": "catalog:react18",
     "react-dom": "catalog:react18",
     "react-error-boundary": "^4.1.2",
+    "resend": "^4.0.1",
     "sonner": "^1.7.0",
     "superjson": "2.2.1",
     "tailwind-merge": "^2.5.5",

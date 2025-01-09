@@ -1,10 +1,11 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { Text, useWindowDimensions, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import type {
+  SharedValue} from "react-native-reanimated";
 import Animated, {
   Easing,
   runOnJS,
-  SharedValue,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,

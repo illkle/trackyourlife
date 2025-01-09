@@ -60,7 +60,7 @@ function RouteComponent() {
 
   const isView = loc.pathname === `/app/trackables/${params.id}/view`;
 
-  const [trackable, trackableInfo] = useZeroTrackable({ id: params.id });
+  const [trackable] = useZeroTrackable({ id: params.id });
 
   const isArchived = trackable?.trackableGroup.some(
     (tg) => tg.group === "archived",
@@ -123,12 +123,12 @@ function RouteComponent() {
                     className="cursor-pointer"
                     onClick={() => {
                       if (isArchived) {
-                        z.mutate.TYL_trackableGroup.delete({
+                        void z.mutate.TYL_trackableGroup.delete({
                           trackableId: params.id,
                           group: "archived",
                         });
                       } else {
-                        z.mutate.TYL_trackableGroup.upsert({
+                        void z.mutate.TYL_trackableGroup.upsert({
                           trackableId: params.id,
                           group: "archived",
                           user_id: z.userID,

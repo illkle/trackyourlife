@@ -1,5 +1,6 @@
 import React from "react";
-import { Image, useColorScheme, View, ViewStyle } from "react-native";
+import type { ViewStyle } from "react-native";
+import { Image, useColorScheme, View } from "react-native";
 import Animated, {
   Easing,
   useAnimatedStyle,

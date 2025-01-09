@@ -11,14 +11,18 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as LoginImport } from './routes/login'
+import { Route as AuthImport } from './routes/auth'
 import { Route as AppImport } from './routes/app'
 import { Route as IndexImport } from './routes/index'
 import { Route as AppIndexImport } from './routes/app/index'
+import { Route as AuthPasswordresetImport } from './routes/auth/passwordreset'
+import { Route as AuthLoginImport } from './routes/auth/login'
+import { Route as AuthForgotpasswordImport } from './routes/auth/forgotpassword'
 import { Route as AppTestingImport } from './routes/app/testing'
 import { Route as AppSettingsImport } from './routes/app/settings'
 import { Route as AppCreateImport } from './routes/app/create'
 import { Route as AppTrackablesIndexImport } from './routes/app/trackables/index'
+import { Route as AppSettingsIndexImport } from './routes/app/settings/index'
 import { Route as AppTrackablesIdImport } from './routes/app/trackables/$id'
 import { Route as AppTrackablesIdIndexImport } from './routes/app/trackables/$id/index'
 import { Route as AppTrackablesIdViewImport } from './routes/app/trackables/$id/view'
@@ -27,9 +31,9 @@ import { Route as AppTrackablesIdImportImport } from './routes/app/trackables/$i
 
 // Create/Update Routes
 
-const LoginRoute = LoginImport.update({
-  id: '/login',
-  path: '/login',
+const AuthRoute = AuthImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -49,6 +53,24 @@ const AppIndexRoute = AppIndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+
+const AuthPasswordresetRoute = AuthPasswordresetImport.update({
+  id: '/passwordreset',
+  path: '/passwordreset',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthLoginRoute = AuthLoginImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => AuthRoute,
+} as any)
+
+const AuthForgotpasswordRoute = AuthForgotpasswordImport.update({
+  id: '/forgotpassword',
+  path: '/forgotpassword',
+  getParentRoute: () => AuthRoute,
 } as any)
 
 const AppTestingRoute = AppTestingImport.update({
@@ -73,6 +95,12 @@ const AppTrackablesIndexRoute = AppTrackablesIndexImport.update({
   id: '/trackables/',
   path: '/trackables/',
   getParentRoute: () => AppRoute,
+} as any)
+
+const AppSettingsIndexRoute = AppSettingsIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AppSettingsRoute,
 } as any)
 
 const AppTrackablesIdRoute = AppTrackablesIdImport.update({
@@ -123,11 +151,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppImport
       parentRoute: typeof rootRoute
     }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
     '/app/create': {
@@ -151,6 +179,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTestingImport
       parentRoute: typeof AppImport
     }
+    '/auth/forgotpassword': {
+      id: '/auth/forgotpassword'
+      path: '/forgotpassword'
+      fullPath: '/auth/forgotpassword'
+      preLoaderRoute: typeof AuthForgotpasswordImport
+      parentRoute: typeof AuthImport
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginImport
+      parentRoute: typeof AuthImport
+    }
+    '/auth/passwordreset': {
+      id: '/auth/passwordreset'
+      path: '/passwordreset'
+      fullPath: '/auth/passwordreset'
+      preLoaderRoute: typeof AuthPasswordresetImport
+      parentRoute: typeof AuthImport
+    }
     '/app/': {
       id: '/app/'
       path: '/'
@@ -164,6 +213,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/trackables/$id'
       preLoaderRoute: typeof AppTrackablesIdImport
       parentRoute: typeof AppImport
+    }
+    '/app/settings/': {
+      id: '/app/settings/'
+      path: '/'
+      fullPath: '/app/settings/'
+      preLoaderRoute: typeof AppSettingsIndexImport
+      parentRoute: typeof AppSettingsImport
     }
     '/app/trackables/': {
       id: '/app/trackables/'
@@ -205,6 +261,18 @@ declare module '@tanstack/react-router' {
 
 // Create and export the route tree
 
+interface AppSettingsRouteChildren {
+  AppSettingsIndexRoute: typeof AppSettingsIndexRoute
+}
+
+const AppSettingsRouteChildren: AppSettingsRouteChildren = {
+  AppSettingsIndexRoute: AppSettingsIndexRoute,
+}
+
+const AppSettingsRouteWithChildren = AppSettingsRoute._addFileChildren(
+  AppSettingsRouteChildren,
+)
+
 interface AppTrackablesIdRouteChildren {
   AppTrackablesIdImportRoute: typeof AppTrackablesIdImportRoute
   AppTrackablesIdSettingsRoute: typeof AppTrackablesIdSettingsRoute
@@ -225,7 +293,7 @@ const AppTrackablesIdRouteWithChildren = AppTrackablesIdRoute._addFileChildren(
 
 interface AppRouteChildren {
   AppCreateRoute: typeof AppCreateRoute
-  AppSettingsRoute: typeof AppSettingsRoute
+  AppSettingsRoute: typeof AppSettingsRouteWithChildren
   AppTestingRoute: typeof AppTestingRoute
   AppIndexRoute: typeof AppIndexRoute
   AppTrackablesIdRoute: typeof AppTrackablesIdRouteWithChildren
@@ -234,7 +302,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppCreateRoute: AppCreateRoute,
-  AppSettingsRoute: AppSettingsRoute,
+  AppSettingsRoute: AppSettingsRouteWithChildren,
   AppTestingRoute: AppTestingRoute,
   AppIndexRoute: AppIndexRoute,
   AppTrackablesIdRoute: AppTrackablesIdRouteWithChildren,
@@ -243,15 +311,33 @@ const AppRouteChildren: AppRouteChildren = {
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
+interface AuthRouteChildren {
+  AuthForgotpasswordRoute: typeof AuthForgotpasswordRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthPasswordresetRoute: typeof AuthPasswordresetRoute
+}
+
+const AuthRouteChildren: AuthRouteChildren = {
+  AuthForgotpasswordRoute: AuthForgotpasswordRoute,
+  AuthLoginRoute: AuthLoginRoute,
+  AuthPasswordresetRoute: AuthPasswordresetRoute,
+}
+
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
-  '/login': typeof LoginRoute
+  '/auth': typeof AuthRouteWithChildren
   '/app/create': typeof AppCreateRoute
-  '/app/settings': typeof AppSettingsRoute
+  '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/testing': typeof AppTestingRoute
+  '/auth/forgotpassword': typeof AuthForgotpasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/passwordreset': typeof AuthPasswordresetRoute
   '/app/': typeof AppIndexRoute
   '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
+  '/app/settings/': typeof AppSettingsIndexRoute
   '/app/trackables': typeof AppTrackablesIndexRoute
   '/app/trackables/$id/import': typeof AppTrackablesIdImportRoute
   '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
@@ -261,11 +347,14 @@ export interface FileRoutesByFullPath {
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/login': typeof LoginRoute
+  '/auth': typeof AuthRouteWithChildren
   '/app/create': typeof AppCreateRoute
-  '/app/settings': typeof AppSettingsRoute
   '/app/testing': typeof AppTestingRoute
+  '/auth/forgotpassword': typeof AuthForgotpasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/passwordreset': typeof AuthPasswordresetRoute
   '/app': typeof AppIndexRoute
+  '/app/settings': typeof AppSettingsIndexRoute
   '/app/trackables': typeof AppTrackablesIndexRoute
   '/app/trackables/$id/import': typeof AppTrackablesIdImportRoute
   '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
@@ -277,12 +366,16 @@ export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
-  '/login': typeof LoginRoute
+  '/auth': typeof AuthRouteWithChildren
   '/app/create': typeof AppCreateRoute
-  '/app/settings': typeof AppSettingsRoute
+  '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/testing': typeof AppTestingRoute
+  '/auth/forgotpassword': typeof AuthForgotpasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/passwordreset': typeof AuthPasswordresetRoute
   '/app/': typeof AppIndexRoute
   '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
+  '/app/settings/': typeof AppSettingsIndexRoute
   '/app/trackables/': typeof AppTrackablesIndexRoute
   '/app/trackables/$id/import': typeof AppTrackablesIdImportRoute
   '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
@@ -295,12 +388,16 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/app'
-    | '/login'
+    | '/auth'
     | '/app/create'
     | '/app/settings'
     | '/app/testing'
+    | '/auth/forgotpassword'
+    | '/auth/login'
+    | '/auth/passwordreset'
     | '/app/'
     | '/app/trackables/$id'
+    | '/app/settings/'
     | '/app/trackables'
     | '/app/trackables/$id/import'
     | '/app/trackables/$id/settings'
@@ -309,11 +406,14 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/login'
+    | '/auth'
     | '/app/create'
-    | '/app/settings'
     | '/app/testing'
+    | '/auth/forgotpassword'
+    | '/auth/login'
+    | '/auth/passwordreset'
     | '/app'
+    | '/app/settings'
     | '/app/trackables'
     | '/app/trackables/$id/import'
     | '/app/trackables/$id/settings'
@@ -323,12 +423,16 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/app'
-    | '/login'
+    | '/auth'
     | '/app/create'
     | '/app/settings'
     | '/app/testing'
+    | '/auth/forgotpassword'
+    | '/auth/login'
+    | '/auth/passwordreset'
     | '/app/'
     | '/app/trackables/$id'
+    | '/app/settings/'
     | '/app/trackables/'
     | '/app/trackables/$id/import'
     | '/app/trackables/$id/settings'
@@ -340,13 +444,13 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
-  LoginRoute: typeof LoginRoute
+  AuthRoute: typeof AuthRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
-  LoginRoute: LoginRoute,
+  AuthRoute: AuthRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -361,7 +465,7 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/app",
-        "/login"
+        "/auth"
       ]
     },
     "/": {
@@ -378,8 +482,13 @@ export const routeTree = rootRoute
         "/app/trackables/"
       ]
     },
-    "/login": {
-      "filePath": "login.tsx"
+    "/auth": {
+      "filePath": "auth.tsx",
+      "children": [
+        "/auth/forgotpassword",
+        "/auth/login",
+        "/auth/passwordreset"
+      ]
     },
     "/app/create": {
       "filePath": "app/create.tsx",
@@ -387,11 +496,26 @@ export const routeTree = rootRoute
     },
     "/app/settings": {
       "filePath": "app/settings.tsx",
-      "parent": "/app"
+      "parent": "/app",
+      "children": [
+        "/app/settings/"
+      ]
     },
     "/app/testing": {
       "filePath": "app/testing.tsx",
       "parent": "/app"
+    },
+    "/auth/forgotpassword": {
+      "filePath": "auth/forgotpassword.tsx",
+      "parent": "/auth"
+    },
+    "/auth/login": {
+      "filePath": "auth/login.tsx",
+      "parent": "/auth"
+    },
+    "/auth/passwordreset": {
+      "filePath": "auth/passwordreset.tsx",
+      "parent": "/auth"
     },
     "/app/": {
       "filePath": "app/index.tsx",
@@ -406,6 +530,10 @@ export const routeTree = rootRoute
         "/app/trackables/$id/view",
         "/app/trackables/$id/"
       ]
+    },
+    "/app/settings/": {
+      "filePath": "app/settings/index.tsx",
+      "parent": "/app/settings"
     },
     "/app/trackables/": {
       "filePath": "app/trackables/index.tsx",

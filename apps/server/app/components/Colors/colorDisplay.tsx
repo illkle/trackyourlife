@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 import { cn } from "@shad/utils";
 import { MoonIcon, SunIcon } from "lucide-react";
 
-import { IColorValue } from "@tyl/db/jsonValidators";
+import type { IColorValue } from "@tyl/db/jsonValidators";
 import { presetsArray } from "@tyl/helpers/colorPresets";
 import { makeColorString } from "@tyl/helpers/colorTools";
 

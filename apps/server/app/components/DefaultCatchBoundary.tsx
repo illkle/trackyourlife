@@ -2,12 +2,14 @@ import type { ErrorComponentProps } from "@tanstack/react-router";
 import {
   ErrorComponent,
   Link,
+  Navigate,
   rootRouteId,
   useMatch,
   useRouter,
 } from "@tanstack/react-router";
 
 import { Button } from "~/@shad/components/button";
+import { UnauthorizedError } from "~/utils/useSessionInfo";
 
 export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
   const router = useRouter();
@@ -17,6 +19,10 @@ export function DefaultCatchBoundary({ error }: ErrorComponentProps) {
   });
 
   console.error(error);
+
+  if (error.message === UnauthorizedError) {
+    return <Navigate to="/auth/login" />;
+  }
 
   return (
     <div className="flex min-w-0 flex-1 flex-col items-center justify-center gap-6 p-4">

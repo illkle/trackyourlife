@@ -4,7 +4,8 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { v4 as uuidv4 } from "uuid";
 
 import type { ITrackableSettings } from "@tyl/db/jsonValidators";
-import { DbTrackableInsert, user } from "@tyl/db/schema";
+import type { DbTrackableInsert} from "@tyl/db/schema";
+import { user } from "@tyl/db/schema";
 import { cloneDeep } from "@tyl/helpers";
 
 import { Input } from "~/@shad/components/input";

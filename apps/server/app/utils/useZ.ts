@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/unbound-method */
+import type { Row } from "@rocicorp/zero";
 import { useMemo } from "react";
-import { Row } from "@rocicorp/zero";
 import { useQuery, useZero } from "@rocicorp/zero/react";
 import { addMonths, addYears, subMonths } from "date-fns";
 
-import { Schema } from "~/schema";
+import type { Schema } from "~/schema";
 
 export const useZ = () => {
   return useZero<Schema>();
@@ -20,11 +21,15 @@ interface TrackableRangeParams extends TrackableRangeBase {
 
 export const useZeroTrackablesList = () => {
   const zero = useZ();
-  const q = zero.query.TYL_trackable.orderBy("name", "asc")
+  const q = zero.query.TYL_trackable.orderBy("name", "asc").related(
+    "trackableGroup",
+  );
+  /*
+  This query is bugged, waiting for fix from Rocicorp
     .where(({ not, exists }) =>
       not(exists("trackableGroup", (q) => q.where("group", "=", "archived"))),
     )
-    .related("trackableGroup");
+  */
 
   return useQuery(q);
 };
@@ -35,7 +40,7 @@ export type TrackableListItem = Row<Schema["tables"]["TYL_trackable"]> & {
 
 export const useZeroTrackableListWithData = (
   params: TrackableRangeParams,
-  archived: boolean = false,
+  archived = false,
 ) => {
   const zero = useZ();
 
@@ -53,7 +58,7 @@ export const useZeroTrackableListWithData = (
             cmp("date", "<=", params.lastDay),
           ),
         )
-        .orderBy("date", params.orderBy || "asc"),
+        .orderBy("date", params.orderBy ?? "asc"),
     )
     .related("trackableGroup");
 
@@ -72,7 +77,7 @@ export const useZeroTrackable = ({ id }: { id: string }) => {
 interface ByIdParams extends TrackableRangeParams {
   id: string;
 }
-const trackableQuery = (params: ByIdParams) => {
+const useTracakbleQuery = (params: ByIdParams) => {
   const zero = useZ();
 
   return zero.query.TYL_trackableRecord.where(({ cmp, and }) =>
@@ -81,22 +86,22 @@ const trackableQuery = (params: ByIdParams) => {
       cmp("date", ">=", params.firstDay),
       cmp("date", "<=", params.lastDay),
     ),
-  ).orderBy("date", params.orderBy || "asc");
+  ).orderBy("date", params.orderBy ?? "asc");
 };
 
 export const useZeroTrackableData = ({ id, firstDay, lastDay }: ByIdParams) => {
-  return useQuery(trackableQuery({ id, firstDay, lastDay }));
+  return useQuery(useTracakbleQuery({ id, firstDay, lastDay }));
 };
 
-export const preloadZeroTrackableData = async ({
+export const usePreloadZeroTrackableData = ({
   id,
   firstDay,
   lastDay,
 }: ByIdParams) => {
-  trackableQuery({ id, firstDay, lastDay }).preload();
+  useTracakbleQuery({ id, firstDay, lastDay }).preload();
 };
 
-export const preloadTrackableMonthView = async ({
+export const usePreloadTrackableMonthView = ({
   id,
   year,
 }: {
@@ -113,7 +118,7 @@ export const preloadTrackableMonthView = async ({
     .preload();
 };
 
-export const preloadTrackableYearView = async ({
+export const usePreloadTrackableYearView = ({
   id,
   year,
 }: {
@@ -130,7 +135,7 @@ export const preloadTrackableYearView = async ({
     .preload();
 };
 
-export const preloadCore = async () => {
+export const usePreloadCore = () => {
   const zero = useZ();
 
   const now = new Date();

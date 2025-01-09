@@ -3,11 +3,10 @@ import { useCallback } from "react";
 import { cn } from "@shad/utils";
 import { format, isSameDay } from "date-fns";
 
-import { DbTrackableSelect } from "@tyl/db/schema";
+import type { DbTrackableSelect } from "@tyl/db/schema";
 
 import { Skeleton } from "~/@shad/components/skeleton";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
-import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { useZ } from "~/utils/useZ";
 import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
@@ -115,17 +114,17 @@ export const DayCellWrapper = ({
   const z = useZ();
 
   const onChange = useCallback(
-    (val: string) => {
+    async (val: string) => {
       const d = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
 
-      z.mutate.TYL_trackableRecord.upsert({
+      await z.mutate.TYL_trackableRecord.upsert({
         date: d,
         trackableId: id,
         value: val,
         user_id: z.userID,
       });
     },
-    [date, id, z, z.userID],
+    [date, id, z],
   );
 
   return (

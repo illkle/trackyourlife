@@ -112,7 +112,7 @@ const applyChangesToDb = async (
   if (user) {
     await db
       .insert(authUser)
-      .values(user as typeof user & { settings: IUserSettings })
+      .values(user)
       .onConflictDoUpdate({
         target: [authUser.id],
         set: {

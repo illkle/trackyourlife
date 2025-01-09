@@ -2,28 +2,25 @@ import { useEffect } from "react";
 import { cn } from "@shad/utils";
 import { Link } from "@tanstack/react-router";
 import {
-  addMonths,
-  eachDayOfInterval,
   endOfMonth,
   endOfYear,
   format,
   getISODay,
   getMonth,
   getYear,
-  isSameDay,
-  startOfYear,
 } from "date-fns";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { ErrorBoundary } from "react-error-boundary";
 
-import { mapDataToRange, PureDataRecord } from "@tyl/helpers/trackables";
+import type { PureDataRecord } from "@tyl/helpers/trackables";
+import { mapDataToRange } from "@tyl/helpers/trackables";
 
 import { Button } from "~/@shad/components/button";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { TrackableNoteEditable } from "~/components/TrackableNote";
 import { YearSelector } from "~/components/TrackableView/yearSelector";
 import { Route } from "~/routes/app/trackables/$id/view";
-import { useZ, useZeroTrackableData } from "~/utils/useZ";
+import { useZeroTrackableData } from "~/utils/useZ";
 import DayCellWrapper from "../DayCell";
 
 const MonthVisualCalendar = ({
@@ -66,13 +63,13 @@ const MonthFetcher = ({
   year: number;
   mini?: boolean;
 }) => {
-  const { id, type } = useTrackableMeta();
+  const { id } = useTrackableMeta();
 
   const firstDayDate = Date.UTC(year, month, 1);
   const lastDayDate = endOfMonth(firstDayDate).getTime();
   const prefaceWith = getISODay(firstDayDate) - 1;
 
-  const [data, dataInfo] = useZeroTrackableData({
+  const [data] = useZeroTrackableData({
     id,
     firstDay: firstDayDate,
     lastDay: lastDayDate,
@@ -112,7 +109,6 @@ const YearFetcher = ({
 
   const firstDayDate = Date.UTC(year, 0, 1);
   const lastDayDate = endOfYear(firstDayDate).getTime();
-  const prefaceWith = getISODay(firstDayDate) - 1;
 
   const [data, dataInfo] = useZeroTrackableData({
     id,
@@ -180,9 +176,9 @@ const ViewController = ({
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "ArrowLeft") {
-        navigate({ search: (prev) => ({ ...prev, ...toPrev }) });
+        void navigate({ search: (prev) => ({ ...prev, ...toPrev }) });
       } else if (e.key === "ArrowRight") {
-        navigate({ search: (prev) => ({ ...prev, ...toNext }) });
+        void navigate({ search: (prev) => ({ ...prev, ...toNext }) });
       }
     };
 
@@ -274,7 +270,6 @@ const TrackableView = ({
   month: TVDateValue;
   setDates: (year: TVDateValue, month: TVDateValue) => void;
 }) => {
-  const { id } = useTrackableMeta();
   const view =
     typeof month !== "number" && typeof year === "number" ? "months" : "days";
 

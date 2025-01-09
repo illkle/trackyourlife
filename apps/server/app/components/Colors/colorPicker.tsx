@@ -1,7 +1,7 @@
 import { Fragment, useMemo, useState } from "react";
 import { AnimatePresence, m } from "framer-motion";
 
-import { IColorHSL, IColorRGB, IColorValue } from "@tyl/db/jsonValidators";
+import type { IColorHSL, IColorRGB, IColorValue } from "@tyl/db/jsonValidators";
 import { clamp } from "@tyl/helpers/animation";
 import {
   findModeColorsFromUserSelect,

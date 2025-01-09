@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useMemo } from "react";
-import { Text, View, ViewStyle } from "react-native";
+import type { ViewStyle } from "react-native";
+import { Text, View } from "react-native";
 
 import type { ITrackable } from "@tyl/validators/trackable";
 import { computeDayCellHelpers } from "@tyl/helpers/trackables";

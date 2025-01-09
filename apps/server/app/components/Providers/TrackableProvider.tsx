@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { createContext, useContext } from "react";
 
-import { DbTrackableSelect } from "@tyl/db/schema";
+import type { DbTrackableSelect } from "@tyl/db/schema";
 
 import { MemoDayCellProvider } from "~/components/Providers/DayCellProvider";
 

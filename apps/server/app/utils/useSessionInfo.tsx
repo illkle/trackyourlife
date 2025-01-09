@@ -1,5 +1,7 @@
-import { QueryClient, useQuery, useQueryClient } from "@tanstack/react-query";
-import { redirect, useRouter } from "@tanstack/react-router";
+/* eslint-disable @typescript-eslint/prefer-optional-chain */
+import type { QueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "@tanstack/react-router";
 
 import { Spinner } from "~/@shad/components/spinner";
 import { getSession } from "~/routes/__root";
@@ -24,14 +26,13 @@ export const useSessionInfo = () => {
   return useQuery(q);
 };
 
+export const UnauthorizedError = "Error: Unauthorized. Redirecting...";
+
 export const useSessionAuthed = () => {
-  const router = useRouter();
+  const { data } = useSessionInfo();
 
-  const { data, isPending } = useSessionInfo();
-
-  if (!data || !data.sessionInfo || !data?.token) {
-    router.navigate({ to: "/login" });
-    throw new Error("Unauthorized");
+  if (!data || !data.sessionInfo || !data.token) {
+    throw new Error(UnauthorizedError);
   }
 
   const { sessionInfo, token } = data;

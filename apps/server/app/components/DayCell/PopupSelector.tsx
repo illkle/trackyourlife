@@ -1,7 +1,7 @@
 import { cn } from "@shad/utils";
 import { AnimatePresence, m } from "framer-motion";
 
-import { IRangeSettings } from "@tyl/db/jsonValidators";
+import type { IRangeSettings } from "@tyl/db/jsonValidators";
 
 import style from "./popupSelector.module.css";
 

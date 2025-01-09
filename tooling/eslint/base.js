@@ -19,16 +19,15 @@ export default tseslint.config(
     },
     extends: [
       eslint.configs.recommended,
-      /*
+
       ...tseslint.configs.recommended,
       ...tseslint.configs.recommendedTypeChecked,
       ...tseslint.configs.stylisticTypeChecked,
-      */
     ],
     rules: {
       ...turboPlugin.configs.recommended.rules,
       "@typescript-eslint/no-unused-vars": [
-        "error",
+        "warn",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
       "@typescript-eslint/consistent-type-imports": [

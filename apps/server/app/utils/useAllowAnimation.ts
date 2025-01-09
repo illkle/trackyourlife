@@ -23,7 +23,7 @@ export const useAllowAnimation = (animationDuration: number) => {
     setIsAllowedToAnimate(true);
     resetAnimation();
     return true;
-  }, [isAllowedToAnimate, resetAnimation]);
+  }, [resetAnimation]);
 
   return {
     isAllowedToAnimate,

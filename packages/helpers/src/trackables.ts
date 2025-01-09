@@ -1,24 +1,26 @@
 import { eachDayOfInterval, isSameDay, startOfTomorrow } from "date-fns";
 
-import {
+import type {
   IBooleanSettings,
   INumberSettings,
   IRangeSettings,
-  ITrackableSettings,
 } from "@tyl/db/jsonValidators";
-import { DbTrackableSelect } from "@tyl/db/schema";
+import type { DbTrackableSelect } from "@tyl/db/schema";
 
 import { range } from "./animation";
 import { presetsMap } from "./colorPresets";
 import { getColorAtPosition, makeColorString } from "./colorTools";
 
-export type DataRecord = { readonly date: number; readonly value: string };
+export interface DataRecord {
+  readonly date: number;
+  readonly value: string;
+}
 
-export type PureDataRecord = {
+export interface PureDataRecord {
   readonly date: Date;
   readonly value?: string;
   readonly disabled: boolean;
-};
+}
 
 /*
   This function convets database selection(which may miss some dates) to array of dates with values
@@ -40,7 +42,7 @@ export const mapDataToRange = (
 
   const disabledAfter = startOfTomorrow().getTime();
 
-  const result: PureDataRecord[] = new Array(days.length);
+  const result = new Array(days.length) as PureDataRecord[];
 
   let dataPointer = 0;
   for (let i = 0; i < days.length; i++) {
@@ -127,7 +129,9 @@ export const getDayCellBooleanColors = (settings: IBooleanSettings) => {
   };
 };
 
-type Group = { readonly group: string };
+interface Group {
+  readonly group: string;
+}
 type GroupArray = readonly Group[];
 
 export const sortTrackableList = <

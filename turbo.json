@@ -73,6 +73,7 @@
     }
   },
   "globalEnv": [
+    "NODE_ENV",
     "DATABASE_URL",
     "TEST_URL",
     "MIGRATE",
@@ -83,6 +84,8 @@
     "ZERO_CVR_DB",
     "ZERO_CHANGE_DB",
     "ZERO_AUTH_SECRET",
-    "ZERO_REPLICA_FILE"
+    "ZERO_REPLICA_FILE",
+    "RESEND_API_KEY",
+    "RESEND_FROM_EMAIL"
   ]
 }
