@@ -13,7 +13,7 @@ services:
       - NODE_ENV=production
       - DATABASE_URL=${DATABASE_URL}
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
-      - BETTER_AUTH_URL=http://localhost
+      - BETTER_AUTH_URL=${BETTER_AUTH_URL} # Domain for web container
       - MIGRATE=true
   zerosync:
     build:
@@ -24,5 +24,5 @@ services:
       - ZERO_CVR_DB=${ZERO_CVR_DB}
       - ZERO_CHANGE_DB=${ZERO_CHANGE_DB}
       - ZERO_AUTH_JWKS_URL=${ZERO_AUTH_JWKS_URL} # Domain for web container + /api/auth/jwks
-      - ZERO_REPLICA_FILE=./zstart_replica.db # Should be changed to volume when zero is more stable
+      - ZERO_REPLICA_FILE=./zstart_replica.db # TODO:Should be changed to volume when zero is more stable
       - ZERO_PORT=80
