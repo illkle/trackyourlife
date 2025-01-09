@@ -15,24 +15,13 @@ import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { RadixIcon } from "radix-ui-react-native-icons";
 
 import { sortTrackableList } from "@tyl/helpers/trackables";
-import { ZTrackableSettings } from "@tyl/validators/trackable";
 
 import DayCellWrapper from "~/app/_components/dayCell";
 import { TrackableProvider } from "~/app/_components/trackableProvider";
 import { Button } from "~/app/_ui/button";
 import { currentUserSettings } from "~/data/authContext";
 import { isSyncing, lastSync, syncError } from "~/data/syncContext";
-import { db } from "~/db";
-import { trackable } from "~/db/schema";
 import { tws } from "~/utils/tw";
-
-export const makeTrackableSettings = (trackable: unknown) => {
-  const parseRes = ZTrackableSettings.safeParse(trackable);
-  if (parseRes.success) {
-    return parseRes.data;
-  }
-  return {};
-};
 
 /*
 const Today = () => {

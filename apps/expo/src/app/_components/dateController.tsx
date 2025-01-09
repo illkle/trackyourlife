@@ -1,11 +1,9 @@
-import { useLayoutEffect, useRef, useState } from "react";
+import type { SharedValue } from "react-native-reanimated";
+import { useRef, useState } from "react";
 import { Text, useWindowDimensions, View } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import type {
-  SharedValue} from "react-native-reanimated";
 import Animated, {
   Easing,
-  runOnJS,
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue,
@@ -15,7 +13,6 @@ import * as Haptics from "expo-haptics";
 import {
   add,
   differenceInCalendarMonths,
-  differenceInMonths,
   eachMonthOfInterval,
   format,
   isAfter,
@@ -149,7 +146,7 @@ export const CustomDateController = ({
       const distance = Math.round(fromLeft.value / itemW);
 
       if (virtualDistance.current !== distance) {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+        void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       }
 
       virtualDistance.current = distance;
@@ -169,7 +166,7 @@ export const CustomDateController = ({
 
       const shouldBe = distance * itemW;
 
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
+      void Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Rigid);
       fromLeft.value = withTiming(
         shouldBe,
         {

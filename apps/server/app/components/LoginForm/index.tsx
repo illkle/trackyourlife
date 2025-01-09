@@ -67,7 +67,7 @@ export const MutationErrorInfo = ({ message }: { message: string }) => {
 };
 
 const Register = () => {
-  const router = useRouter();
+  // const router = useRouter();
 
   const qc = useQueryClient();
 
@@ -81,7 +81,7 @@ const Register = () => {
     },
     onSuccess: async () => {
       await invalidateSession(qc);
-      await router.navigate({ to: "/" });
+      //   await router.navigate({ to: "/" });
     },
   });
 
@@ -188,7 +188,7 @@ const Register = () => {
 };
 
 const Login = () => {
-  const router = useRouter();
+  // const router = useRouter();
   const qc = useQueryClient();
 
   const loginMutation = useMutation({
@@ -201,7 +201,7 @@ const Login = () => {
     },
     onSuccess: async () => {
       await invalidateSession(qc);
-      await router.navigate({ to: "/" });
+      //await router.navigate({ to: "/" });
     },
   });
 

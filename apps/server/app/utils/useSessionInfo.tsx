@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-optional-chain */
 import type { QueryClient } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "@tanstack/react-router";
 
 import { Spinner } from "~/@shad/components/spinner";
 import { getSession } from "~/routes/__root";

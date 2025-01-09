@@ -1,16 +1,8 @@
-import type {
-  ReactNode} from "react";
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import type { ReactNode } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { and, eq } from "drizzle-orm";
 
-import type {
-  ITrackable} from "@tyl/validators/trackable";
+import type { ITrackable } from "@tyl/validators/trackable";
 import {
   ITrackableFromList,
   ZTrackableSettings,
@@ -19,8 +11,8 @@ import {
 import { MemoDayCellProvider } from "~/app/_components/dayCellProvider";
 import { TrackableRecordSub } from "~/data/dbWatcher";
 import { updateTrackableRecord } from "~/data/syncContext";
-import { db } from "~/db";
 import { trackableRecord } from "~/db/schema";
+import { db } from "~/drizzle/db";
 
 interface UseReturn {
   value?: string;

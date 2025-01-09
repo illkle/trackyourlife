@@ -16,8 +16,8 @@ import { useLiveQuery } from "drizzle-orm/expo-sqlite";
 import { CustomDateController } from "~/app/_components/dateController";
 import DayCellWrapper from "~/app/_components/dayCell";
 import { TrackableProvider } from "~/app/_components/trackableProvider";
-import { db } from "~/db";
 import { trackable } from "~/db/schema";
+import { db } from "~/drizzle/db";
 import { tws } from "~/utils/tw";
 
 const MonthView = ({ date }: { date: Date }) => {

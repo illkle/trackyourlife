@@ -21,8 +21,8 @@ import DayCellWrapper from "~/app/_components/dayCell";
 import { TrackableProvider } from "~/app/_components/trackableProvider";
 import { Input } from "~/app/_ui/input";
 import { currentUserSettings } from "~/data/authContext";
-import { db } from "~/db";
 import { trackable } from "~/db/schema";
+import { db } from "~/drizzle/db";
 import { tws } from "~/utils/tw";
 
 const DAYS = 7;

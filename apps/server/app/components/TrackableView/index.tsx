@@ -10,7 +10,6 @@ import {
   getYear,
 } from "date-fns";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
-import { ErrorBoundary } from "react-error-boundary";
 
 import type { PureDataRecord } from "@tyl/helpers/trackables";
 import { mapDataToRange } from "@tyl/helpers/trackables";
@@ -281,18 +280,12 @@ const TrackableView = ({
     <>
       <ViewController year={year} month={month} />
 
-      <ErrorBoundary
-        fallbackRender={({ error }: { error: Error }) => {
-          return <div>{error.message}</div>;
-        }}
-      >
-        {view === "days" && (
-          <MonthFetcher year={year as number} month={month as number} />
-        )}
-        {view === "months" && (
-          <YearFetcher year={year as number} openMonth={openMonth} />
-        )}
-      </ErrorBoundary>
+      {view === "days" && (
+        <MonthFetcher year={year as number} month={month as number} />
+      )}
+      {view === "months" && (
+        <YearFetcher year={year as number} openMonth={openMonth} />
+      )}
 
       <hr className="my-4 h-[1px] border-none bg-neutral-900 opacity-10 outline-none dark:bg-neutral-50" />
 

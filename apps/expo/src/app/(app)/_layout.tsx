@@ -1,20 +1,10 @@
 import { useColorScheme } from "react-native";
-import { useDrizzleStudio } from "expo-drizzle-studio-plugin";
 import { Redirect, Tabs } from "expo-router";
-import { useHookstate } from "@hookstate/core";
 import { RadixIcon } from "radix-ui-react-native-icons";
 
-import { currentUser } from "~/data/authContext";
-import { useSyncInterval } from "~/data/syncContext";
-import { expoDb } from "~/db";
 import { tws } from "~/utils/tw";
 
 export default function AppLayout() {
-  const user = useHookstate(currentUser);
-
-  useSyncInterval();
-  useDrizzleStudio(expoDb);
-
   const colorScheme = useColorScheme();
   if (!user.get()) {
     return <Redirect href="/login" />;
