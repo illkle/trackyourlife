@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 
 import {
@@ -24,8 +24,6 @@ const DeleteButton = ({
   const router = useRouter();
 
   const z = useZ();
-
-  const qc = useQueryClient();
 
   const mutation = useMutation({
     mutationFn: (id: string) => z.mutate.TYL_trackable.delete({ id }),

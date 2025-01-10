@@ -3,6 +3,7 @@ import { useState } from "react";
 import { cn } from "@shad/utils";
 import { useForm } from "@tanstack/react-form";
 import { useStore } from "@tanstack/react-store";
+import { m } from "framer-motion";
 
 import type {
   IBooleanSettings,
@@ -12,7 +13,6 @@ import type {
 } from "@tyl/db/jsonValidators";
 import type { DbTrackableSelect } from "@tyl/db/schema";
 import { presetsMap } from "@tyl/helpers/colorPresets";
-import { getGMTWithTimezoneOffset } from "@tyl/helpers/timezone";
 
 import { Button } from "~/@shad/components/button";
 import { DrawerMobileTitleProvider } from "~/@shad/components/drawer";
@@ -151,40 +151,42 @@ export const SettingsNumber = ({
         />
       </div>
 
-      <SettingsTitle>Color coding</SettingsTitle>
-      <form.Field
-        name="colorCodingEnabled"
-        children={(field) => (
-          <div className="mb-2 flex items-center space-x-2">
-            <Switch
-              id="color-coding-enabled"
-              checked={field.state.value}
-              onCheckedChange={(v) => {
-                field.handleChange(v);
-              }}
-            />
-            <Label htmlFor="show-progress">Enable color coding</Label>
-          </div>
-        )}
-      />
-      <form.Subscribe
-        selector={(state) => [state.values.colorCodingEnabled]}
-        children={([colorCodingEnabled]) =>
-          colorCodingEnabled && (
-            <form.Field
-              name="colorCoding"
-              children={(field) => (
-                <NumberColorSelector
-                  value={field.state.value ?? []}
-                  onChange={(v) => {
-                    field.handleChange(v);
-                  }}
-                />
-              )}
-            />
-          )
-        }
-      />
+      <m.div layout layoutRoot>
+        <SettingsTitle>Color coding</SettingsTitle>
+        <form.Field
+          name="colorCodingEnabled"
+          children={(field) => (
+            <div className="mb-2 flex items-center space-x-2">
+              <Switch
+                id="color-coding-enabled"
+                checked={field.state.value}
+                onCheckedChange={(v) => {
+                  field.handleChange(v);
+                }}
+              />
+              <Label htmlFor="color-coding-enabled">Enable color coding</Label>
+            </div>
+          )}
+        />
+        <form.Subscribe
+          selector={(state) => [state.values.colorCodingEnabled]}
+          children={([colorCodingEnabled]) =>
+            colorCodingEnabled && (
+              <form.Field
+                name="colorCoding"
+                children={(field) => (
+                  <NumberColorSelector
+                    value={field.state.value ?? []}
+                    onChange={(v) => {
+                      field.handleChange(v);
+                    }}
+                  />
+                )}
+              />
+            )
+          }
+        />
+      </m.div>
     </>
   );
 };

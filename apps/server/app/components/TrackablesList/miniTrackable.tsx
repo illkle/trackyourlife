@@ -1,14 +1,13 @@
 import { cn } from "@shad/utils";
 import { Link } from "@tanstack/react-router";
-import { format, subDays } from "date-fns";
+import { format } from "date-fns";
 
 import type { PureDataRecord } from "@tyl/helpers/trackables";
 
+import type { TrackableListItem } from "~/utils/useZ";
 import DayCellWrapper from "~/components/DayCell";
 import { FavoriteButton } from "~/components/FavoriteButton";
-import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { TrackableNameText } from "~/components/TrackableName";
-import type { TrackableListItem } from "~/utils/useZ";
 
 const MiniTrackable = ({
   className,
@@ -19,13 +18,12 @@ const MiniTrackable = ({
   data: PureDataRecord[];
   trackable: TrackableListItem;
 }) => {
-  const { id } = useTrackableMeta();
-
   return (
     <div className={className}>
       <div className="flex items-center justify-between">
         <Link
-          to={`/app/trackables/${id}/`}
+          to={"/app/trackables/$id/view"}
+          params={{ id: trackable.id }}
           className={cn(
             "mb-1 block w-full text-xl font-light text-neutral-950 dark:text-neutral-50",
           )}

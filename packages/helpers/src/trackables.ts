@@ -1,4 +1,9 @@
-import { eachDayOfInterval, isSameDay, startOfTomorrow } from "date-fns";
+import {
+  eachDayOfInterval,
+  isSameDay,
+  isSameMonth,
+  startOfTomorrow,
+} from "date-fns";
 
 import type {
   IBooleanSettings,
@@ -20,6 +25,7 @@ export interface PureDataRecord {
   readonly date: Date;
   readonly value?: string;
   readonly disabled: boolean;
+  readonly monthIndex: number;
 }
 
 /*
@@ -36,27 +42,42 @@ export const mapDataToRange = (
     end,
   });
 
+  const diffrentMonths = isSameMonth(start, end);
+
   if (orderBy === "desc") {
     days.reverse();
   }
 
   const disabledAfter = startOfTomorrow().getTime();
-
   const result = new Array(days.length) as PureDataRecord[];
 
+  let currentMonthIndex = 0;
   let dataPointer = 0;
+
   for (let i = 0; i < days.length; i++) {
     const day = days[i];
     if (!day) continue;
+
+    if (diffrentMonths && i > 0) {
+      const prev = days[i - 1];
+      if (prev && !isSameMonth(prev, day)) {
+        currentMonthIndex++;
+      }
+    }
 
     const disabled = day.getTime() >= disabledAfter;
 
     const dataRecord = data[dataPointer];
     if (dataRecord && isSameDay(day.getTime(), dataRecord.date)) {
-      result[i] = { date: day, value: dataRecord.value, disabled };
+      result[i] = {
+        date: day,
+        value: dataRecord.value,
+        disabled,
+        monthIndex: currentMonthIndex,
+      };
       dataPointer++;
     } else {
-      result[i] = { date: day, disabled };
+      result[i] = { date: day, disabled, monthIndex: currentMonthIndex };
     }
   }
 

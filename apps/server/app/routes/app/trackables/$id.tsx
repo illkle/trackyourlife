@@ -83,7 +83,10 @@ function RouteComponent() {
             <FavoriteButton variant={"outline"} trackable={trackable} />
             {isView ? (
               <>
-                <Link to={`/app/trackables/${params.id}/settings`}>
+                <Link
+                  to={"/app/trackables/$id/settings"}
+                  params={{ id: params.id }}
+                >
                   <Button name="settings" variant="outline">
                     <SettingsIcon className="h-4 w-4" />
                     <span className="max-md:hidden">Settings</span>
@@ -92,7 +95,10 @@ function RouteComponent() {
               </>
             ) : (
               <>
-                <Link to={`/app/trackables/${params.id}/view`}>
+                <Link
+                  to={"/app/trackables/$id/view"}
+                  params={{ id: params.id }}
+                >
                   <Button variant="outline">
                     <CalendarDaysIcon className="h-4 w-4" />
                     <span className="max-md:hidden">Calendar</span>
@@ -114,7 +120,10 @@ function RouteComponent() {
                   className="min-w-44"
                 >
                   <DropdownMenuItem className="cursor-pointer" asChild>
-                    <Link to={`/app/trackables/${params.id}/import`}>
+                    <Link
+                      to={"/app/trackables/$id/import"}
+                      params={{ id: params.id }}
+                    >
                       <ImportIcon className="mr-1" /> Import
                     </Link>
                   </DropdownMenuItem>

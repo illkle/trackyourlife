@@ -67,7 +67,8 @@ const TrackablesMiniList = () => {
             <SidebarMenuButton asChild isActive={loc.pathname.includes(tr.id)}>
               <Link
                 key={tr.id}
-                to={`/app/trackables/${tr.id}/`}
+                to={"/app/trackables/$id/view"}
+                params={{ id: tr.id }}
                 search={(prev) => ({
                   ...prev,
                 })}

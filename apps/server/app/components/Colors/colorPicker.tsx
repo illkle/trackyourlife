@@ -10,6 +10,7 @@ import {
   RGBToHSL,
 } from "@tyl/helpers/colorTools";
 
+import { Label } from "~/@shad/components/label";
 import { RadioTabItem, RadioTabs } from "~/@shad/components/radio-tabs";
 import { Switch } from "~/@shad/components/switch";
 import { cn } from "~/@shad/utils";
@@ -362,12 +363,13 @@ export const ColorPicker = ({
         )}
       >
         <Switch
+          id="auto-contrast"
           checked={automatic}
           onCheckedChange={(v) => {
             onChange({ ...value, userSelect: lightMode, manualMode: !v });
           }}
         />
-        <span>Auto Contrast</span>
+        <Label htmlFor="auto-contrast">Auto Contrast</Label>
 
         <AnimatePresence initial={false}>
           {!automatic && (

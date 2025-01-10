@@ -143,7 +143,8 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
                     <div key={index}>
                       <TrackableProvider trackable={tr.trackable}>
                         <Link
-                          to={`/app/trackables/${tr.trackable.id}/`}
+                          to={"/app/trackables/$id/view"}
+                          params={{ id: tr.trackable.id }}
                           className={cn(
                             "mb-1 block w-full truncate text-xl text-neutral-950 opacity-20 dark:text-neutral-50",
                           )}

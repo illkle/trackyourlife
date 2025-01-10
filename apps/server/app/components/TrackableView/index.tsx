@@ -2,12 +2,11 @@ import { useEffect } from "react";
 import { cn } from "@shad/utils";
 import { Link } from "@tanstack/react-router";
 import {
+  eachMonthOfInterval,
   endOfMonth,
   endOfYear,
   format,
   getISODay,
-  getMonth,
-  getYear,
 } from "date-fns";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
@@ -87,16 +86,6 @@ const MonthFetcher = ({
   );
 };
 
-const activeMonths = (year: number, now: Date) => {
-  if (year < getYear(now)) {
-    return 12;
-  }
-  if (year > getYear(now)) {
-    return -1;
-  }
-  return getMonth(now);
-};
-
 const YearFetcher = ({
   year,
   openMonth,
@@ -104,27 +93,29 @@ const YearFetcher = ({
   year: number;
   openMonth: (n: number) => void;
 }) => {
-  const { id } = useTrackableMeta();
-
   const firstDayDate = Date.UTC(year, 0, 1);
   const lastDayDate = endOfYear(firstDayDate).getTime();
 
-  const [data, dataInfo] = useZeroTrackableData({
-    id,
-    firstDay: firstDayDate,
-    lastDay: lastDayDate,
+  const months = eachMonthOfInterval({
+    start: firstDayDate,
+    end: lastDayDate,
   });
 
-  const mappedData = mapDataToRange(firstDayDate, lastDayDate, data);
-
   return (
-    <div className="my-4 flex flex-wrap gap-0.5">
-      {mappedData.map((el, i) => {
+    <div className="grid gap-4 md:grid-cols-2">
+      {months.map((el, i) => {
         return (
-          <div
-            key={`${i}`}
-            className={cn("h-3 w-3", el.value ? "bg-red-500" : "bg-blue-500")}
-          />
+          <div key={i}>
+            <Button
+              onClick={() => openMonth(i)}
+              variant="link"
+              className="w-full justify-start text-lg"
+            >
+              {format(el, "MMMM")}
+            </Button>
+
+            <MonthFetcher mini={true} month={i} year={el.getFullYear()} />
+          </div>
         );
       })}
     </div>

@@ -1,6 +1,7 @@
 import { relations } from "drizzle-orm";
 import {
   boolean,
+  index,
   json,
   pgEnum,
   pgTableCreator,
@@ -117,6 +118,11 @@ export const trackableRecord = pgTable(
   },
   (t) => ({
     pk: primaryKey({ columns: [t.trackableId, t.date] }),
+    idx: index("idx_trackable_record_date").on(
+      t.user_id,
+      t.trackableId,
+      t.date,
+    ),
     unq: unique().on(t.trackableId, t.date).nullsNotDistinct(),
   }),
 );

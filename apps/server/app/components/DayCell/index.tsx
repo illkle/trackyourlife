@@ -15,7 +15,7 @@ import { DayCellRange } from "./DayCellRange";
 export const DayCellBaseClasses =
   "@container w-full h-full relative select-none overflow-hidden border-transparent outline-none focus:outline-neutral-300 dark:focus:outline-neutral-600 border-2 rounded-sm";
 
-const DayCellInner = ({
+export const DayCellDisplay = ({
   type,
   value,
   children,
@@ -94,7 +94,6 @@ const DayCellInner = ({
 export const DayCellWrapper = ({
   date,
   disabled,
-
   className,
   labelType = "auto",
   isLoading = false,
@@ -141,7 +140,7 @@ export const DayCellWrapper = ({
         </div>
       )}
 
-      <DayCellInner
+      <DayCellDisplay
         className={cn(DayCellBaseClasses, className)}
         type={type}
         isLoading={isLoading}
@@ -161,7 +160,7 @@ export const DayCellWrapper = ({
             {format(date, "d")}
           </div>
         )}
-      </DayCellInner>
+      </DayCellDisplay>
     </div>
   );
 };

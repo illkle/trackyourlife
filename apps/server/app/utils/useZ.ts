@@ -144,7 +144,9 @@ export const usePreloadCore = () => {
     q
       .where("date", ">=", subMonths(now, 2).getTime())
       .where("date", "<=", addMonths(now, 2).getTime()),
-  ).preload();
+  )
+    .related("trackableGroup")
+    .preload();
 };
 
 export const useZeroGroupList = (group: string) => {

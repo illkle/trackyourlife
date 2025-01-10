@@ -21,7 +21,7 @@ function RouteComponent() {
     <>
       <TrackableSettings
         trackableType={type}
-        initialSettings={settings}
+        initialSettings={settings ?? {}}
         handleSave={async (v: ITrackableSettings) => {
           await z.mutate.TYL_trackable.update({
             id,
