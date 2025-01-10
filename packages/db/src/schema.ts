@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -8,7 +8,7 @@ import {
   primaryKey,
   text,
   timestamp,
-  unique,
+  uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
 
@@ -86,19 +86,23 @@ export const jwks = pgTable("jwks", {
 
 export const trackableTypeEnum = pgEnum("type", ["boolean", "number", "range"]);
 
-export const trackable = pgTable("trackable", {
-  is_deleted: boolean("is_deleted").notNull().default(false),
-  user_id: text("user_id")
-    .notNull()
-    .references(() => user.id, { onDelete: "cascade" }),
-
-  id: uuid("id").defaultRandom().primaryKey(),
-
-  name: text("name").notNull(),
-  type: trackableTypeEnum("type").notNull(),
-  attached_note: text("attached_note"),
-  settings: json("settings").default({}).$type<ITrackableSettings>(),
-});
+export const trackable = pgTable(
+  "trackable",
+  {
+    user_id: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    id: uuid("id").defaultRandom().primaryKey(),
+    name: text("name").notNull(),
+    type: trackableTypeEnum("type").notNull(),
+    attached_note: text("attached_note"),
+    settings: json("settings").default({}).$type<ITrackableSettings>(),
+  },
+  (t) => ({
+    user_id_idx: uniqueIndex("user_id_idx").on(t.user_id, t.id),
+    user_id_name_idx: index("user_id_name_idx").on(t.user_id, t.name),
+  }),
+);
 
 export const trackableRelations = relations(trackable, ({ many }) => ({
   data: many(trackableRecord),
@@ -107,23 +111,29 @@ export const trackableRelations = relations(trackable, ({ many }) => ({
 export const trackableRecord = pgTable(
   "trackableRecord",
   {
+    recordId: uuid("recordId").defaultRandom().primaryKey(),
+    user_id: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
     trackableId: uuid("trackableId")
       .notNull()
       .references(() => trackable.id, { onDelete: "cascade" }),
     date: timestamp("date").notNull(),
     value: text("value").notNull(),
-    user_id: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
   },
   (t) => ({
-    pk: primaryKey({ columns: [t.trackableId, t.date] }),
-    idx: index("idx_trackable_record_date").on(
-      t.user_id,
+    /*
+     This table has an additional trigger written manually in 0021_record_trigger.sql. It makes it so:
+     - Simple trackables (boolean, number, range) can only have one record per day.
+     - For simple trackables on insert the date is truncated to hour 0 minute 0 second 0.
+     - If after truncating there is an existing record for that day, it gets updated instead.
+    */
+    uniqueDate: uniqueIndex("unique_date").on(
       t.trackableId,
-      t.date,
+      sql`date_trunc('day', ${t.date})`,
     ),
-    unq: unique().on(t.trackableId, t.date).nullsNotDistinct(),
+    trackable_date_idx: index("trackable_date_idx").on(t.trackableId, t.date),
+    user_date_idx: index("user_date_idx").on(t.user_id, t.date),
   }),
 );
 

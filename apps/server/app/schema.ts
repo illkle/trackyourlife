@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import type { ExpressionBuilder } from "@rocicorp/zero";
 import {
-  ANYONE_CAN,
   column,
   createSchema,
   createTableSchema,
@@ -9,18 +8,20 @@ import {
 } from "@rocicorp/zero";
 
 import type { ITrackableSettings } from "@tyl/db/jsonValidators";
+import type { DbTrackableSelect } from "@tyl/db/schema";
 
 const { json } = column;
 
 const TYL_trackableRecord = createTableSchema({
   tableName: "TYL_trackableRecord",
   columns: {
+    recordId: { type: "string" },
     date: { type: "number" },
     trackableId: { type: "string" },
     value: { type: "string" },
     user_id: { type: "string" },
   },
-  primaryKey: ["trackableId", "date"],
+  primaryKey: "recordId",
 });
 
 const TYL_trackableGroup = createTableSchema({
@@ -36,11 +37,10 @@ const TYL_trackableGroup = createTableSchema({
 const TYL_trackable = createTableSchema({
   tableName: "TYL_trackable",
   columns: {
-    is_deleted: { type: "boolean" },
     user_id: { type: "string" },
     id: { type: "string" },
     name: { type: "string" },
-    type: column.enumeration<"boolean" | "range" | "number">(false),
+    type: column.enumeration<DbTrackableSelect["type"]>(false),
     attached_note: { type: "string" },
     settings: json<ITrackableSettings>(),
   },
@@ -60,7 +60,7 @@ const TYL_trackable = createTableSchema({
 });
 
 export const schema = createSchema({
-  version: 1,
+  version: 2,
   tables: {
     TYL_trackable,
     TYL_trackableRecord,
@@ -116,19 +116,6 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
         select: [allowIfOwnerTrackableGroup],
         preMutation: [allowIfOwnerTrackableGroup],
         postMutation: [allowIfOwnerTrackableGroup],
-      },
-    },
-  };
-});
-
-export const permissions2 = definePermissions<AuthData, Schema>(schema, () => {
-  return {
-    TYL_trackableRecord: {
-      row: {
-        // anyone can insert issues
-        insert: ANYONE_CAN,
-        // nobody can delete issues
-        delete: ANYONE_CAN,
       },
     },
   };

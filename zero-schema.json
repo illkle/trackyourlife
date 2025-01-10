@@ -179,7 +179,7 @@
     }
   },
   "schema": {
-    "version": 1,
+    "version": 2,
     "tables": {
       "TYL_trackable": {
         "tableName": "TYL_trackable",
@@ -193,10 +193,6 @@
           },
           "id": {
             "type": "string",
-            "optional": false
-          },
-          "is_deleted": {
-            "type": "boolean",
             "optional": false
           },
           "name": {
@@ -262,12 +258,15 @@
       "TYL_trackableRecord": {
         "tableName": "TYL_trackableRecord",
         "primaryKey": [
-          "trackableId",
-          "date"
+          "recordId"
         ],
         "columns": {
           "date": {
             "type": "number",
+            "optional": false
+          },
+          "recordId": {
+            "type": "string",
             "optional": false
           },
           "trackableId": {
