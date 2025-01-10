@@ -148,6 +148,13 @@
       "when": 1736539827837,
       "tag": "0021_record_trigger",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1736545233558,
+      "tag": "0022_stormy_george_stacy",
+      "breakpoints": true
     }
   ]
 }

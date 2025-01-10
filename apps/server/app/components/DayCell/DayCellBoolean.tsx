@@ -61,51 +61,30 @@ export const DayCellBoolean = ({
   };
 
   return (
-    <button
-      data-value={isActive}
-      ref={mainRef}
-      tabIndex={0}
-      className={cn(
-        className,
-        "transition-all ease-in-out",
-        isActive
-          ? "border-[var(--themeActiveLight)] hover:border-[var(--themeInactiveLight)] dark:border-[var(--themeActiveDark)] dark:hover:border-[var(--themeInactiveDark)]"
-          : "border-[var(--themeInactiveLight)] hover:border-[var(--themeActiveLight)] dark:border-[var(--themeInactiveDark)] dark:hover:border-[var(--themeActiveDark)]",
-      )}
-      style={
-        {
-          "--animation-time": `${ANIMATION_TIME * animationMultiplier}s`,
-        } as CSSProperties
-      }
-      onMouseDown={(e) => e.preventDefault()}
-      onClick={(e) => void handleClick(e)}
-    >
-      {/* This is a background layer with color we're animating from */}
-      <div
+    <>
+      <button
+        data-value={isActive}
+        ref={mainRef}
+        tabIndex={0}
         className={cn(
-          "absolute left-0 top-0 h-full w-full",
+          className,
+          "transition-all ease-in-out",
           isActive
-            ? "bg-[var(--themeInactiveLight)] dark:bg-[var(--themeInactiveDark)]"
-            : "bg-[var(--themeActiveLight)] dark:bg-[var(--themeActiveDark)]",
-        )}
-      ></div>
-      {/* This is animating layer with with active color */}
-
-      <div
-        key={String(`${isActive}`)}
-        className={cn(
-          "booleanTransitionAnimation",
-          "absolute left-0 top-0 h-full w-full",
+            ? "border-[var(--themeActiveLight)] hover:border-[var(--themeInactiveLight)] dark:border-[var(--themeActiveDark)] dark:hover:border-[var(--themeInactiveDark)]"
+            : "border-[var(--themeInactiveLight)] hover:border-[var(--themeActiveLight)] dark:border-[var(--themeInactiveDark)] dark:hover:border-[var(--themeActiveDark)]",
           isActive
             ? "bg-[var(--themeActiveLight)] dark:bg-[var(--themeActiveDark)]"
             : "bg-[var(--themeInactiveLight)] dark:bg-[var(--themeInactiveDark)]",
         )}
-        style={{
-          transformOrigin: `
-              ${clickPoint[0] ?? 50}% ${clickPoint[1] ?? 50}%`,
-        }}
-      />
-      {children}
-    </button>
+        style={
+          {
+            "--animation-time": `${ANIMATION_TIME * animationMultiplier}s`,
+          } as CSSProperties
+        }
+        onClick={(e) => void handleClick(e)}
+      >
+        {children}
+      </button>
+    </>
   );
 };

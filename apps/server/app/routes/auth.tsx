@@ -22,6 +22,7 @@ function AppComponent() {
   return (
     <div className={cn("h-full max-h-full min-h-screen w-full", "")}>
       <Header>
+        <div></div>
         <Link to={"/auth/login"}>
           <HeaderLogo />
         </Link>

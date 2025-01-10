@@ -153,8 +153,7 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
                         </Link>
 
                         <DayCellWrapper
-                          date={day.date}
-                          value={day.value}
+                          {...day}
                           labelType="none"
                           className="h-20"
                         />

@@ -39,9 +39,7 @@ const MonthVisualCalendar = ({
           return (
             <DayCellWrapper
               key={i}
-              disabled={el.disabled}
-              value={el.value}
-              date={el.date}
+              {...el}
               labelType={mini ? "outside" : "auto"}
               className={mini ? "h-12" : "h-12 sm:h-14 md:h-16"}
             />
@@ -72,6 +70,8 @@ const MonthFetcher = ({
     firstDay: firstDayDate,
     lastDay: lastDayDate,
   });
+
+  console.log(data);
 
   const mappedData = mapDataToRange(firstDayDate, lastDayDate, data);
 

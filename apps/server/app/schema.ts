@@ -8,7 +8,6 @@ import {
 } from "@rocicorp/zero";
 
 import type { ITrackableSettings } from "@tyl/db/jsonValidators";
-import type { DbTrackableSelect } from "@tyl/db/schema";
 
 const { json } = column;
 
@@ -40,7 +39,7 @@ const TYL_trackable = createTableSchema({
     user_id: { type: "string" },
     id: { type: "string" },
     name: { type: "string" },
-    type: column.enumeration<DbTrackableSelect["type"]>(false),
+    type: column.enumeration<"boolean" | "range" | "number">(false),
     attached_note: { type: "string" },
     settings: json<ITrackableSettings>(),
   },

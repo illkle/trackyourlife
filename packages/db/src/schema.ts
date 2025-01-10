@@ -1,4 +1,4 @@
-import { relations, sql } from "drizzle-orm";
+import { relations } from "drizzle-orm";
 import {
   boolean,
   index,
@@ -125,13 +125,9 @@ export const trackableRecord = pgTable(
     /*
      This table has an additional trigger written manually in 0021_record_trigger.sql. It makes it so:
      - Simple trackables (boolean, number, range) can only have one record per day.
-     - For simple trackables on insert the date is truncated to hour 0 minute 0 second 0.
+     - For simple trackables on insert date is truncated to hour 0 minute 0 second 0.
      - If after truncating there is an existing record for that day, it gets updated instead.
     */
-    uniqueDate: uniqueIndex("unique_date").on(
-      t.trackableId,
-      sql`date_trunc('day', ${t.date})`,
-    ),
     trackable_date_idx: index("trackable_date_idx").on(t.trackableId, t.date),
     user_date_idx: index("user_date_idx").on(t.user_id, t.date),
   }),

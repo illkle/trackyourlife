@@ -55,8 +55,7 @@ const MiniTrackable = ({
                   </span>
                 </div>
                 <DayCellWrapper
-                  value={day.value}
-                  date={day.date}
+                  {...day}
                   labelType="none"
                   key={index}
                   className="h-16"

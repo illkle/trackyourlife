@@ -2,6 +2,7 @@ import type { ReactNode } from "react";
 import { useCallback } from "react";
 import { cn } from "@shad/utils";
 import { format, isSameDay } from "date-fns";
+import { v4 as uuidv4 } from "uuid";
 
 import type { DbTrackableSelect } from "@tyl/db/schema";
 
@@ -97,9 +98,11 @@ export const DayCellWrapper = ({
   className,
   labelType = "auto",
   isLoading = false,
+  recordId,
   value,
 }: {
   date: Date;
+  recordId?: string;
   isLoading?: boolean;
   className?: string;
   value?: string;
@@ -116,14 +119,16 @@ export const DayCellWrapper = ({
     async (val: string) => {
       const d = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
 
+      if (!recordId) console.log(id);
       await z.mutate.TYL_trackableRecord.upsert({
+        recordId: recordId ?? uuidv4(),
         date: d,
         trackableId: id,
         value: val,
         user_id: z.userID,
       });
     },
-    [date, id, z],
+    [date, id, z, recordId],
   );
 
   return (

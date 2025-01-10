@@ -1,9 +1,4 @@
-import {
-  eachDayOfInterval,
-  isSameDay,
-  isSameMonth,
-  startOfTomorrow,
-} from "date-fns";
+import { eachDayOfInterval, isSameDay, startOfTomorrow } from "date-fns";
 
 import type {
   IBooleanSettings,
@@ -19,13 +14,14 @@ import { getColorAtPosition, makeColorString } from "./colorTools";
 export interface DataRecord {
   readonly date: number;
   readonly value: string;
+  readonly recordId: string;
 }
 
 export interface PureDataRecord {
   readonly date: Date;
   readonly value?: string;
   readonly disabled: boolean;
-  readonly monthIndex: number;
+  readonly recordId?: string;
 }
 
 /*
@@ -42,8 +38,6 @@ export const mapDataToRange = (
     end,
   });
 
-  const diffrentMonths = isSameMonth(start, end);
-
   if (orderBy === "desc") {
     days.reverse();
   }
@@ -51,19 +45,11 @@ export const mapDataToRange = (
   const disabledAfter = startOfTomorrow().getTime();
   const result = new Array(days.length) as PureDataRecord[];
 
-  let currentMonthIndex = 0;
   let dataPointer = 0;
 
   for (let i = 0; i < days.length; i++) {
     const day = days[i];
     if (!day) continue;
-
-    if (diffrentMonths && i > 0) {
-      const prev = days[i - 1];
-      if (prev && !isSameMonth(prev, day)) {
-        currentMonthIndex++;
-      }
-    }
 
     const disabled = day.getTime() >= disabledAfter;
 
@@ -73,11 +59,11 @@ export const mapDataToRange = (
         date: day,
         value: dataRecord.value,
         disabled,
-        monthIndex: currentMonthIndex,
+        recordId: dataRecord.recordId,
       };
       dataPointer++;
     } else {
-      result[i] = { date: day, disabled, monthIndex: currentMonthIndex };
+      result[i] = { date: day, disabled };
     }
   }
 
