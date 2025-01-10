@@ -1,4 +1,4 @@
-# This compose file is for https://coolify.io/ Context is set to "." becuase coolify runs compose as if is locatet at root
+# This compose file is for https://coolify.io/ Context is set to "." becuase coolify effectively copies the compose file to root and runs it from there
 # It expects you to run pg database separately with replication set to logical https://zero.rocicorp.dev/docs/connecting-to-postgres
 # You will need to set domains for both containers. Then you will need to pass those domain to ENV variables and set VITE_ZERO_DOMAIN env as Build Variable.
 services:
@@ -24,5 +24,10 @@ services:
       - ZERO_CVR_DB=${ZERO_CVR_DB}
       - ZERO_CHANGE_DB=${ZERO_CHANGE_DB}
       - ZERO_AUTH_JWKS_URL=${ZERO_AUTH_JWKS_URL} # Domain for web container + /api/auth/jwks
-      - ZERO_REPLICA_FILE=./zstart_replica.db # TODO:Should be changed to volume when zero is more stable
+      - ZERO_REPLICA_FILE=/data/zstart_replica.db
       - ZERO_PORT=80
+    volumes:
+      - zero_data:/data
+
+volumes:
+  zero_data:
