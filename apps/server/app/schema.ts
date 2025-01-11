@@ -19,6 +19,7 @@ const TYL_trackableRecord = createTableSchema({
     trackableId: { type: "string" },
     value: { type: "string" },
     user_id: { type: "string" },
+    createdAt: { type: "number" },
   },
   primaryKey: "recordId",
 });

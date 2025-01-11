@@ -2,6 +2,7 @@ import { relations } from "drizzle-orm";
 import {
   boolean,
   index,
+  integer,
   json,
   pgEnum,
   pgTableCreator,
@@ -120,6 +121,12 @@ export const trackableRecord = pgTable(
       .references(() => trackable.id, { onDelete: "cascade" }),
     date: timestamp("date").notNull(),
     value: text("value").notNull(),
+    /*
+    Only for trackables that allow multiple records per day, used to sort records.
+    Since this application is local first and insert to PG can differ from actual creation date, value is set by the client.
+    Stored as unix timestamp to avoid timezone issues and simplify sorting.
+    */
+    createdAt: integer("createdAt"),
   },
   (t) => ({
     /*

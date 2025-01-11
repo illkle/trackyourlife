@@ -261,6 +261,10 @@
           "recordId"
         ],
         "columns": {
+          "createdAt": {
+            "type": "number",
+            "optional": false
+          },
           "date": {
             "type": "number",
             "optional": false
