@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { RadioGroup, RadioGroupItem } from "@radix-ui/react-radio-group";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { v4 as uuidv4 } from "uuid";
 
@@ -7,7 +8,6 @@ import type { DbTrackableInsert } from "@tyl/db/schema";
 import { cloneDeep } from "@tyl/helpers";
 
 import { Input } from "~/@shad/components/input";
-import { RadioTabItem, RadioTabs } from "~/@shad/components/radio-tabs";
 import TrackableSettings from "~/components/TrackableSettings";
 import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { useZ } from "~/utils/useZ";
@@ -45,7 +45,6 @@ function RouteComponent() {
       ...newOne,
       name: nameRef.current || "",
       settings,
-      is_deleted: false,
       attached_note: "",
     });
 
@@ -66,21 +65,51 @@ function RouteComponent() {
         onChange={(e) => (nameRef.current = e.target.value)}
       />
 
-      <RadioTabs
+      <RadioGroup
         value={newOne.type}
         onValueChange={(v) => setType(v as DbTrackableInsert["type"])}
-        className="mt-2"
+        className="grid grid-cols-5 items-start gap-4"
       >
-        <RadioTabItem value="boolean" id="boolean" className="w-full">
-          Boolean
-        </RadioTabItem>
-        <RadioTabItem value="number" id="number" className="w-full">
-          Number
-        </RadioTabItem>
-        <RadioTabItem value="range" id="range" className="w-full">
-          Range
-        </RadioTabItem>
-      </RadioTabs>
+        <RadioGroupItem value="boolean" id="boolean">
+          <p className="text-lg font-semibold">Boolean</p>
+
+          <p className="text-sm">
+            True or false. Can be used for habit tracking or as a checkbox.
+          </p>
+        </RadioGroupItem>
+        <RadioGroupItem value="number" id="number">
+          <p className="text-lg font-semibold">Number</p>
+
+          <p className="text-sm">
+            Can represent a count like steps walked, measurement like weight, or
+            rating like mood on 1-10 scale.
+          </p>
+        </RadioGroupItem>
+        <RadioGroupItem value="text" id="text" disabled>
+          <p className="text-lg font-semibold">Text</p>
+          <p className="text-sm">
+            Simple block of text for each day. You can use it as a note or a
+            gratitude journal.
+          </p>
+        </RadioGroupItem>
+
+        <RadioGroupItem value="text" id="text" disabled>
+          <p className="text-lg font-semibold">Tags</p>
+          <p className="text-sm">
+            A collection of values where frequency of occurrence is being
+            tracked. For example, emotions you felt, general activities you did,
+            etc.
+          </p>
+        </RadioGroupItem>
+        <RadioGroupItem value="text" id="text" disabled>
+          <p className="text-lg font-semibold">Logs</p>
+          <p className="text-sm">
+            Collection of values that are relatively unique each time and where
+            record attributes are important. Can be tasks closed today,
+            exercises done in the gym, food eaten, etc.
+          </p>
+        </RadioGroupItem>
+      </RadioGroup>
       <TrackableSettings
         trackableType={newOne.type}
         initialSettings={newOne.settings ?? {}}

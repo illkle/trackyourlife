@@ -6,9 +6,12 @@ import {
   ChartColumnIncreasing,
   ChevronUp,
   HeartIcon,
+  ListIcon,
   PanelLeftClose,
   PanelLeftOpen,
   SmileIcon,
+  TagIcon,
+  TextIcon,
   ToggleRight,
   User2,
 } from "lucide-react";
@@ -43,8 +46,10 @@ import { useZeroTrackablesList } from "~/utils/useZ";
 
 const iconsMap: Record<DbTrackableSelect["type"], ReactNode> = {
   boolean: <ToggleRight size={16} />,
-  range: <SmileIcon size={16} />,
   number: <ChartColumnIncreasing size={16} />,
+  text: <TextIcon size={16} />,
+  tags: <TagIcon size={16} />,
+  logs: <ListIcon size={16} />,
 };
 
 const TrackablesMiniList = () => {

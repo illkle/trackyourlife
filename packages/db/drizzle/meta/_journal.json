@@ -169,6 +169,20 @@
       "when": 1736621097411,
       "tag": "0024_common_ricochet",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1736891210105,
+      "tag": "0025_nice_master_chief",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1736891767165,
+      "tag": "0026_trigger_v2",
+      "breakpoints": true
     }
   ]
 }

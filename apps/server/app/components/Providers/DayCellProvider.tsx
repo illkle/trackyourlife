@@ -5,12 +5,10 @@ import type {
   IBooleanSettings,
   IColorValue,
   INumberSettings,
-  IRangeSettings,
 } from "@tyl/db/jsonValidators";
 import type { DbTrackableSelect } from "@tyl/db/schema";
 import {
   getDayCellBooleanColors,
-  getRangeLabelMapping,
   getValueToColorFunc,
   getValueToProgressPercentage,
 } from "@tyl/helpers/trackables";
@@ -31,17 +29,7 @@ export interface IDayCellNumberContext {
   settings: INumberSettings;
 }
 
-export interface IDayCellRangeContext {
-  type: "range";
-  labelMapping: Record<string, string>;
-  labels: IRangeSettings["labels"];
-  settings: IRangeSettings;
-}
-
-export type IDayCellContext =
-  | IDayCellBooleanContext
-  | IDayCellNumberContext
-  | IDayCellRangeContext;
+export type IDayCellContext = IDayCellBooleanContext | IDayCellNumberContext;
 
 const DayCellContext = createContext<IDayCellContext | null>(null);
 
@@ -118,34 +106,6 @@ const DayCellNumberProvider = ({
   );
 };
 
-const DayCellRangeProvider = ({
-  settings,
-  children,
-}: {
-  settings: IRangeSettings;
-  children: ReactNode;
-}) => {
-  const labelMapping = useMemo(
-    () => getRangeLabelMapping(settings),
-    [settings],
-  );
-
-  return (
-    <div>
-      <DayCellContext.Provider
-        value={{
-          type: "range",
-          labelMapping,
-          labels: settings.labels,
-          settings,
-        }}
-      >
-        {children}
-      </DayCellContext.Provider>
-    </div>
-  );
-};
-
 export const DayCellProvider = ({
   type,
   settings,
@@ -172,15 +132,6 @@ export const DayCellProvider = ({
       <DayCellNumberProvider settings={settings}>
         {children}
       </DayCellNumberProvider>
-    );
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (type === "range") {
-    return (
-      <DayCellRangeProvider settings={settings}>
-        {children}
-      </DayCellRangeProvider>
     );
   }
 
@@ -216,20 +167,5 @@ export const useDayCellContextNumber = () => {
   }
   throw new Error(
     `Wrong DayCell context provided or requested. Context type is ${data.type}. Requested type is number`,
-  );
-};
-
-export const useDayCellContextRange = () => {
-  const data = useContext(DayCellContext);
-
-  if (!data) {
-    throw new Error("No DayCell context provided");
-  }
-
-  if (data.type === "range") {
-    return data;
-  }
-  throw new Error(
-    `Wrong DayCell context provided or requested. Context type is ${data.type}. Requested type is range`,
   );
 };

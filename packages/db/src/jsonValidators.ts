@@ -62,27 +62,9 @@ export const ZTrackableSettingsNumber = z.object({
   colorCoding: z.array(ZColorCodingValue).optional(),
 });
 
-export const ZTrackableSettingsRange = z.object({
-  ...basics,
-  labels: z
-    .array(
-      z.object({
-        internalKey: z.string().min(1),
-        emoji: z.string().optional(),
-        color: ZColorValue.optional(),
-        // used to key inputs when editing, can be changed voluntarily
-        id: z.string().uuid().default("empty_id"),
-      }),
-    )
-    .optional(),
-  isCycle: z.boolean().optional(),
-  cycleToEmpty: z.boolean().optional(),
-});
-
 const typeSettingsUnion = z.discriminatedUnion("type", [
   z.object({ type: z.literal("boolean"), settings: ZTrackableSettingsBoolean }),
   z.object({ type: z.literal("number"), settings: ZTrackableSettingsNumber }),
-  z.object({ type: z.literal("range"), settings: ZTrackableSettingsRange }),
 ]);
 
 export const ZTrackableSettings = typeSettingsUnion.transform(
@@ -91,12 +73,8 @@ export const ZTrackableSettings = typeSettingsUnion.transform(
 
 export type IBooleanSettings = z.infer<typeof ZTrackableSettingsBoolean>;
 export type INumberSettings = z.infer<typeof ZTrackableSettingsNumber>;
-export type IRangeSettings = z.infer<typeof ZTrackableSettingsRange>;
 
-export type ITrackableSettings =
-  | IBooleanSettings
-  | INumberSettings
-  | IRangeSettings;
+export type ITrackableSettings = IBooleanSettings | INumberSettings;
 
 /* User settings */
 

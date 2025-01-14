@@ -8,7 +8,6 @@ import { m } from "framer-motion";
 import type {
   IBooleanSettings,
   INumberSettings,
-  IRangeSettings,
   ITrackableSettings,
 } from "@tyl/db/jsonValidators";
 import type { DbTrackableSelect } from "@tyl/db/schema";
@@ -23,11 +22,9 @@ import DatePicker from "~/components/DatePicker";
 import { DayCellBaseClasses } from "~/components/DayCell";
 import { DayCellBoolean } from "~/components/DayCell/DayCellBoolean";
 import { DayCellNumber } from "~/components/DayCell/DayCellNumber";
-import { DayCellRange } from "~/components/DayCell/DayCellRange";
 import { DayCellProvider } from "~/components/Providers/DayCellProvider";
 import NumberColorSelector from "../Colors/numberColorSelector";
 import NumberLimitsSelector from "./numberLimitsSelector";
-import RangeLabelSelector from "./rangeLabelSelector";
 
 export const SettingsTitle = ({ children }: { children: React.ReactNode }) => {
   return <h3 className="mb-1 mt-3 text-xl">{children}</h3>;
@@ -191,61 +188,6 @@ export const SettingsNumber = ({
   );
 };
 
-export const SettingsRange = ({
-  form,
-}: {
-  form: ReactFormExtendedApi<IRangeSettings>;
-}) => {
-  return (
-    <>
-      <SettingsTitle>States</SettingsTitle>
-      <form.Field
-        name="labels"
-        children={(field) => (
-          <RangeLabelSelector
-            initialValue={field.state.value ?? []}
-            onChange={(v) => {
-              field.handleChange(v);
-            }}
-          />
-        )}
-      />
-
-      <SettingsTitle>Cycle values</SettingsTitle>
-      <form.Field
-        name="isCycle"
-        children={(field) => (
-          <div className="flex items-center space-x-2">
-            <Switch
-              id="is-cycle"
-              checked={field.state.value}
-              onCheckedChange={(v) => {
-                field.handleChange(v);
-              }}
-            />
-            <Label htmlFor="is-cycle">Select next label on click</Label>
-          </div>
-        )}
-      />
-      <form.Field
-        name="cycleToEmpty"
-        children={(field) => (
-          <div className="mt-2 flex items-center space-x-2">
-            <Switch
-              id="cycle-empty"
-              checked={field.state.value}
-              onCheckedChange={(v) => {
-                field.handleChange(v);
-              }}
-            />
-            <Label htmlFor="cycle-empty">Cycle to empty</Label>
-          </div>
-        )}
-      />
-    </>
-  );
-};
-
 const TrackableMock = ({
   type,
   form,
@@ -286,11 +228,6 @@ const TrackableMock = ({
           >
             {Label}
           </DayCellNumber>
-        )}
-        {type === "range" && (
-          <DayCellRange className={classes} value={value} onChange={onChange}>
-            {Label}
-          </DayCellRange>
         )}
       </DayCellProvider>
     </div>
@@ -337,7 +274,6 @@ const TrackableSettings = ({
       <SettingsCommon form={form} />
       {trackableType === "boolean" && <SettingsBoolean form={form} />}
       {trackableType === "number" && <SettingsNumber form={form} />}
-      {trackableType === "range" && <SettingsRange form={form} />}
       <Button
         isLoading={form.state.isSubmitting}
         className="mt-4 w-full"

@@ -19,7 +19,7 @@ const TYL_trackableRecord = createTableSchema({
     trackableId: { type: "string" },
     value: { type: "string" },
     user_id: { type: "string" },
-    createdAt: { type: "number" },
+    createdAt: { type: "number", optional: true },
   },
   primaryKey: "recordId",
 });
@@ -40,7 +40,9 @@ const TYL_trackable = createTableSchema({
     user_id: { type: "string" },
     id: { type: "string" },
     name: { type: "string" },
-    type: column.enumeration<"boolean" | "range" | "number">(false),
+    type: column.enumeration<"boolean" | "number" | "text" | "tags" | "logs">(
+      false,
+    ),
     attached_note: { type: "string" },
     settings: json<ITrackableSettings>(),
   },

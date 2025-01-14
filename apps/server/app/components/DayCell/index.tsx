@@ -11,7 +11,6 @@ import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { useZ } from "~/utils/useZ";
 import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
-import { DayCellRange } from "./DayCellRange";
 
 export const DayCellBaseClasses =
   "@container w-full h-full relative select-none overflow-hidden border-transparent outline-none focus:outline-neutral-300 dark:focus:outline-neutral-600 border-2 rounded-sm";
@@ -77,15 +76,6 @@ export const DayCellDisplay = ({
       >
         {children}
       </DayCellNumber>
-    );
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (type === "range") {
-    return (
-      <DayCellRange className={className} value={value} onChange={onChange}>
-        {children}
-      </DayCellRange>
     );
   }
 

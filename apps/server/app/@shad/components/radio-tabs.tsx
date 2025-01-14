@@ -14,7 +14,7 @@ const RadioTabs = React.forwardRef<
     <LayoutGroup id={id}>
       <RadioGroupPrimitive.Root
         className={cn(
-          "flex h-11 items-center justify-center rounded-lg bg-neutral-100 p-1 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400",
+          "flex h-11 items-stretch justify-center rounded-lg bg-neutral-100 p-1 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400",
           className,
         )}
         {...props}
@@ -34,7 +34,7 @@ const RadioTabItem = React.forwardRef<
       <RadioGroupPrimitive.Item
         ref={ref}
         className={cn(
-          "relative inline-flex h-full items-center justify-center whitespace-nowrap rounded-md px-3 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=checked]:text-neutral-950 data-[state=checked]:shadow dark:ring-offset-neutral-950 dark:focus-visible:ring-neutral-300 dark:data-[state=checked]:text-neutral-50",
+          "relative inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 text-sm font-medium ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=checked]:text-neutral-950 data-[state=checked]:shadow dark:ring-offset-neutral-950 dark:focus-visible:ring-neutral-300 dark:data-[state=checked]:text-neutral-50",
           className,
         )}
         {...props}

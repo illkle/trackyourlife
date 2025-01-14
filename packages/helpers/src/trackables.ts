@@ -1,10 +1,6 @@
 import { eachDayOfInterval, isSameDay, startOfTomorrow } from "date-fns";
 
-import type {
-  IBooleanSettings,
-  INumberSettings,
-  IRangeSettings,
-} from "@tyl/db/jsonValidators";
+import type { IBooleanSettings, INumberSettings } from "@tyl/db/jsonValidators";
 import type { DbTrackableSelect } from "@tyl/db/schema";
 
 import { range } from "./animation";
@@ -68,16 +64,6 @@ export const mapDataToRange = (
   }
 
   return result;
-};
-
-export const getRangeLabelMapping = (settings: IRangeSettings) => {
-  const map: Record<string, string> = {};
-  if (!settings.labels) return map;
-  settings.labels.forEach((v) => {
-    map[v.internalKey] = v.emoji ?? "";
-  });
-
-  return map;
 };
 
 export const getValueToColorFunc = (settings: INumberSettings) => {

@@ -85,7 +85,13 @@ export const jwks = pgTable("jwks", {
  * TRACKABLES
  */
 
-export const trackableTypeEnum = pgEnum("type", ["boolean", "number", "range"]);
+export const trackableTypeEnum = pgEnum("type", [
+  "boolean",
+  "number",
+  "text",
+  "tags",
+  "logs",
+]);
 
 export const trackable = pgTable(
   "trackable",
@@ -122,18 +128,19 @@ export const trackableRecord = pgTable(
     date: timestamp("date").notNull(),
     value: text("value").notNull(),
     /*
-    Only for trackables that allow multiple records per day, used to sort records.
-    Since this application is local first and insert to PG can differ from actual creation date, value is set by the client.
-    Stored as unix timestamp to avoid timezone issues and simplify sorting.
+      Only for trackables that allow multiple records per day, used to sort records.
+      Since this application is local first and insert to PG can differ from actual creation date, value is set by the client.
+      Stored as unix timestamp to avoid timezone issues and simplify sorting.
     */
     createdAt: integer("createdAt"),
   },
   (t) => ({
     /*
-     This table has an additional trigger written manually in 0021_record_trigger.sql. It makes it so:
-     - Simple trackables (boolean, number, range) can only have one record per day.
-     - For simple trackables on insert date is truncated to hour 0 minute 0 second 0.
-     - If after truncating there is an existing record for that day, it gets updated instead.
+     This table has an additional trigger written manually in 0026_trigger_v2.sql. It makes it so:
+     - Simple trackables (boolean, number, text) can only have one record per day.
+      - On insert date is truncated to hour 0 minute 0 second 0.
+      - If after truncating there is an existing record for that day, it gets updated instead.
+     - Tags must be unique. If on insert there is an existing tag with the same value, the insert is cancelled.
     */
     trackable_date_idx: index("trackable_date_idx").on(t.trackableId, t.date),
     user_date_idx: index("user_date_idx").on(t.user_id, t.date),
