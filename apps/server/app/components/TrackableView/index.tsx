@@ -14,13 +14,12 @@ import type { PureDataRecord } from "@tyl/helpers/trackables";
 import { mapDataToRange } from "@tyl/helpers/trackables";
 
 import { Button } from "~/@shad/components/button";
-import { DayCellTextEditor } from "~/components/DayCell/DayCellText";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { TrackableNoteEditable } from "~/components/TrackableNote";
 import { YearSelector } from "~/components/TrackableView/yearSelector";
 import { Route } from "~/routes/app/trackables/$id/view";
 import { useZeroTrackableData } from "~/utils/useZ";
-import DayCellWrapper from "../DayCell";
+import DayCellRouter from "../DayCell";
 
 const TextMonthEditor = ({
   data,
@@ -31,32 +30,14 @@ const TextMonthEditor = ({
   prefaceDays: number;
   mini?: boolean;
 }) => {
-  const [selected, setSelected] = useState<number>(0);
-
-  const selectedValue = data[selected];
-
-  if (!selectedValue) throw new Error("Error selected value is not in data");
-
   return (
-    <div className="grid grid-cols-3 gap-4">
-      <div className={cn("grid", mini ? "grid-cols-7" : "grid-cols-7")}>
+    <div className="flex flex-col gap-4">
+      <div>
         <div style={{ gridColumn: `span ${prefaceDays}` }}></div>
 
         {data.map((el, i) => {
-          return (
-            <Button
-              variant={selected === i ? "outline" : "ghost"}
-              key={i}
-              onClick={() => setSelected(i)}
-            >
-              {el.date.getDate()}
-            </Button>
-          );
+          return <DayCellRouter key={i} {...el} />;
         })}
-      </div>
-
-      <div className="col-span-2 w-full rounded-lg bg-neutral-900 p-4">
-        <DayCellTextEditor key={selected} {...selectedValue} />
       </div>
     </div>
   );
@@ -77,7 +58,7 @@ const MonthVisualCalendar = ({
 
       {data.map((el, i) => {
         return (
-          <DayCellWrapper
+          <DayCellRouter
             key={i}
             {...el}
             labelType={mini ? "outside" : "auto"}
@@ -117,19 +98,11 @@ const MonthFetcher = ({
 
   return (
     <div key={`${firstDayDate}-${lastDayDate}`}>
-      {type === "text" ? (
-        <TextMonthEditor
-          data={mappedData}
-          prefaceDays={prefaceWith}
-          mini={mini}
-        />
-      ) : (
-        <MonthVisualCalendar
-          data={mappedData}
-          prefaceDays={prefaceWith}
-          mini={mini}
-        />
-      )}
+      <MonthVisualCalendar
+        data={mappedData}
+        prefaceDays={prefaceWith}
+        mini={mini}
+      />
     </div>
   );
 };

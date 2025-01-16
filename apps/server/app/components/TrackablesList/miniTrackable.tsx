@@ -5,7 +5,7 @@ import { format } from "date-fns";
 import type { PureDataRecord } from "@tyl/helpers/trackables";
 
 import type { TrackableListItem } from "~/utils/useZ";
-import DayCellWrapper from "~/components/DayCell";
+import DayCellRouter from "~/components/DayCell";
 import { FavoriteButton } from "~/components/FavoriteButton";
 import { TrackableNameText } from "~/components/TrackableName";
 
@@ -54,7 +54,7 @@ const MiniTrackable = ({
                     {format(day.date, "d")}
                   </span>
                 </div>
-                <DayCellWrapper
+                <DayCellRouter
                   {...day}
                   labelType="none"
                   key={index}

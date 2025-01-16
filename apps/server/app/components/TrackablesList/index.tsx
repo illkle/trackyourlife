@@ -8,7 +8,7 @@ import { mapDataToRange, sortTrackableList } from "@tyl/helpers/trackables";
 
 import { Button } from "~/@shad/components/button";
 import { Spinner } from "~/@shad/components/spinner";
-import DayCellWrapper from "~/components/DayCell";
+import DayCellRouter from "~/components/DayCell";
 import TrackableProvider from "~/components/Providers/TrackableProvider";
 import { TrackableNameText } from "~/components/TrackableName";
 import { useZeroTrackableListWithData } from "~/utils/useZ";
@@ -152,7 +152,7 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
                           <TrackableNameText trackable={tr.trackable} />
                         </Link>
 
-                        <DayCellWrapper
+                        <DayCellRouter
                           {...day}
                           labelType="none"
                           className="h-20"

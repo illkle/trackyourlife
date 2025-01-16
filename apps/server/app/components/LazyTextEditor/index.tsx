@@ -18,10 +18,12 @@ export const LazyTextEditor = ({
   content,
   contentTimestamp,
   updateContent,
+  onBlur,
 }: {
   content: string;
   contentTimestamp: number;
   updateContent: (content: string, timestamp: number) => void;
+  onBlur?: () => void;
 }) => {
   const [snapshot, setsnapshot] = useState(contentTimestamp);
 
@@ -58,6 +60,7 @@ export const LazyTextEditor = ({
       onUpdate: ({ editor }) => {
         throttledUpdate(editor.getHTML());
       },
+      onBlur: onBlur,
       autofocus: "end",
       editorProps: {
         attributes: {

@@ -1,14 +1,19 @@
 import type { ReactNode } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { cn } from "@shad/utils";
 import { format, isSameDay } from "date-fns";
+import { createPortal } from "react-dom";
 
 import type { DbTrackableSelect } from "@tyl/db/schema";
 
 import { Skeleton } from "~/@shad/components/skeleton";
+import { useEditorModal } from "~/components/EditorModal";
+import { LazyTextEditor } from "~/components/LazyTextEditor";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { useRecordUpdateHandler } from "~/utils/useZ";
 import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
+import { Dialog, DialogContent, DialogTrigger } from "./floatyDialog";
 
 export const DayCellBaseClasses =
   "@container w-full h-full relative select-none overflow-hidden border-transparent outline-none focus:outline-neutral-300 dark:focus:outline-neutral-600 border-2 rounded-sm";
@@ -79,10 +84,96 @@ export const DayCellDisplay = ({
     );
   }
 
+  if (type === "text") {
+    return (
+      <DayCellText
+        value={value}
+        className={className}
+        createdAt={createdAt}
+        onChange={onChange}
+      >
+        {children}
+      </DayCellText>
+    );
+  }
+
   throw new Error("Unsupported trackable type");
 };
 
-export const DayCellWrapper = ({
+interface DayCellRouterProps {
+  date: Date;
+  disabled?: boolean;
+  className?: string;
+  labelType?: "auto" | "outside" | "none";
+  isLoading?: boolean;
+  recordId?: string;
+  value?: string;
+  createdAt?: number | null;
+}
+
+interface DayCellTextProps extends DayCellRouterProps {
+  isToday: boolean;
+  onChange: (content: string, timestamp?: number) => void;
+}
+
+const DayCellText = ({
+  value,
+  createdAt,
+  onChange,
+  className,
+  children,
+}: {
+  value?: string;
+  createdAt?: number | null;
+  className?: string;
+  onChange: (content: string, timestamp?: number) => void;
+}) => {
+  const { ref, registerClient, unregisterClient } = useEditorModal();
+  const [isOpen, setIsOpen] = useState(false);
+
+  const id = useId();
+
+  const open = () => {
+    const ur = registerClient(id, () => setIsOpen(false));
+
+    setIsOpen(true);
+  };
+
+  useEffect(() => {
+    return () => {
+      unregisterClient(id);
+    };
+  }, [id]);
+
+  return (
+    <button
+      className={cn(
+        "flex flex-col overflow-ellipsis border border-2 border-neutral-200 p-2 pt-6 text-left text-xs text-neutral-700 dark:border-neutral-900 dark:text-neutral-500",
+        className,
+      )}
+      onClick={open}
+    >
+      {children}
+      <div dangerouslySetInnerHTML={{ __html: value ?? "" }} />
+      {isOpen &&
+        createPortal(
+          <LazyTextEditor
+            content={value ?? ""}
+            contentTimestamp={createdAt ?? 0}
+            updateContent={onChange}
+            onBlur={() => {
+              console.log("blur");
+              unregisterClient(id);
+            }}
+          />,
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          ref.current!,
+        )}
+    </button>
+  );
+};
+
+export const DayCellRouter = ({
   date,
   disabled,
   className,
@@ -91,17 +182,8 @@ export const DayCellWrapper = ({
   recordId,
   value,
   createdAt,
-}: {
-  date: Date;
-  recordId?: string;
-  isLoading?: boolean;
-  className?: string;
-  value?: string;
-  createdAt?: number | null;
-  disabled?: boolean;
-  labelType?: "auto" | "outside" | "none";
-}) => {
-  const { id, type } = useTrackableMeta();
+}: DayCellRouterProps) => {
+  const { type } = useTrackableMeta();
 
   const isToday = isSameDay(date, new Date());
 
@@ -147,4 +229,4 @@ export const DayCellWrapper = ({
   );
 };
 
-export default DayCellWrapper;
+export default DayCellRouter;

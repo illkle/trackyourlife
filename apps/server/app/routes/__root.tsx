@@ -11,6 +11,7 @@ import { ThemeProvider } from "next-themes";
 import { getWebRequest } from "vinxi/http";
 
 import { auth } from "~/auth/server";
+import { EditorModalProvider } from "~/components/EditorModal";
 import { LazyMotionProvider } from "~/components/Providers/lazyFramerMotionProvider";
 import appCss from "~/styles/app.css?url";
 import textEditorCss from "~/styles/textEditor.css?url";
@@ -119,11 +120,13 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body className="overscroll-none bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-50">
         <LazyMotionProvider>
           <ThemeProvider defaultTheme="dark" attribute="class">
-            <UserPreloader>{children}</UserPreloader>
-            <ScrollRestoration />
-            <TanStackRouterDevtools position="bottom-right" />
-            <ReactQueryDevtools buttonPosition="bottom-left" />
-            <Scripts />
+            <EditorModalProvider>
+              <UserPreloader>{children}</UserPreloader>
+              <ScrollRestoration />
+              <TanStackRouterDevtools position="bottom-right" />
+              <ReactQueryDevtools buttonPosition="bottom-left" />
+              <Scripts />
+            </EditorModalProvider>
           </ThemeProvider>
         </LazyMotionProvider>
       </body>
