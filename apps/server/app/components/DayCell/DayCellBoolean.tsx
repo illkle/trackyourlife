@@ -1,9 +1,11 @@
 import type { CSSProperties, MouseEvent, ReactNode } from "react";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { cn } from "@shad/utils";
 
 import { clamp } from "@tyl/helpers";
+import { getDayCellBooleanColors } from "@tyl/helpers/trackables";
 
+import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { useAllowAnimation } from "~/utils/useAllowAnimation";
 
 const ANIMATION_TIME = 0.3;
@@ -19,6 +21,14 @@ export const DayCellBoolean = ({
   children: ReactNode;
   className?: string;
 }) => {
+  const { settings } = useTrackableMeta();
+  const {
+    themeActiveDark,
+    themeActiveLight,
+    themeInactiveDark,
+    themeInactiveLight,
+  } = useMemo(() => getDayCellBooleanColors(settings), [settings]);
+
   // Even though we're not using any values from context it's useful to check whether it's provided
 
   const { animationMultiplier, runAnimation } =
@@ -78,6 +88,10 @@ export const DayCellBoolean = ({
         )}
         style={
           {
+            "--themeActiveLight": themeActiveLight,
+            "--themeActiveDark": themeActiveDark,
+            "--themeInactiveLight": themeInactiveLight,
+            "--themeInactiveDark": themeInactiveDark,
             "--animation-time": `${ANIMATION_TIME * animationMultiplier}s`,
           } as CSSProperties
         }

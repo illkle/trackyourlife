@@ -202,7 +202,7 @@ const ControllerGradient = ({
           />
         </div>
       </div>
-      <div className="mt-2 flex flex-col-reverse gap-4 sm:flex-row">
+      <div className={cn("mt-2 flex flex-col-reverse gap-4")}>
         <div className="w-full max-md:hidden">
           {!isMobile && selectedColorObject && (
             <ColorPicker
@@ -211,7 +211,7 @@ const ControllerGradient = ({
             />
           )}
         </div>
-        <div className="w-full sm:max-w-xs">
+        <div className={cn("w-full", !isMobile && "sm:max-w-xs")}>
           <div className="flex h-fit flex-col gap-2 rounded-lg bg-neutral-100 p-1 dark:bg-neutral-800">
             {value.map((v) => (
               <div
@@ -230,7 +230,10 @@ const ControllerGradient = ({
                   <DrawerMobileTitleProvider title={"Edit color"}>
                     <Drawer handleOnly>
                       <DrawerTrigger className="w-full">
-                        <ColorDisplay color={v.color} className="w-full" />
+                        <ColorDisplay
+                          color={v.color}
+                          className="h-full w-full"
+                        />
                       </DrawerTrigger>
                       <DrawerContent>
                         <DrawerTitle />

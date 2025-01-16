@@ -17,6 +17,21 @@ const Card = React.forwardRef<
 ));
 Card.displayName = "Card";
 
+const CardPressable = React.forwardRef<
+  HTMLButtonElement,
+  React.HTMLAttributes<HTMLButtonElement>
+>(({ className, ...props }, ref) => (
+  <button
+    ref={ref}
+    className={cn(
+      "flex flex-col rounded-xl border border-neutral-200 bg-white text-left text-neutral-950 shadow disabled:cursor-not-allowed disabled:opacity-30 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50",
+      className,
+    )}
+    {...props}
+  />
+));
+Card.displayName = "Card";
+
 const CardHeader = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -80,4 +95,5 @@ export {
   CardTitle,
   CardDescription,
   CardContent,
+  CardPressable,
 };

@@ -11,6 +11,7 @@ export interface DataRecord {
   readonly date: number;
   readonly value: string;
   readonly recordId: string;
+  readonly createdAt: number | null;
 }
 
 export interface PureDataRecord {
@@ -18,6 +19,7 @@ export interface PureDataRecord {
   readonly value?: string;
   readonly disabled: boolean;
   readonly recordId?: string;
+  readonly createdAt?: number | null;
 }
 
 /*
@@ -54,6 +56,7 @@ export const mapDataToRange = (
       result[i] = {
         date: day,
         value: dataRecord.value,
+        createdAt: dataRecord.createdAt,
         disabled,
         recordId: dataRecord.recordId,
       };

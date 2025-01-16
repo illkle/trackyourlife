@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import type { ExpressionBuilder } from "@rocicorp/zero";
+import type { ExpressionBuilder, Row } from "@rocicorp/zero";
 import {
   column,
   createSchema,
@@ -122,3 +122,11 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
     },
   };
 });
+
+export type ITrackableZero = Row<Schema["tables"]["TYL_trackable"]>;
+
+type Mutable<T> = {
+  -readonly [P in keyof T]: T[P];
+};
+
+export type ITrackableZeroInsert = Mutable<ITrackableZero>;

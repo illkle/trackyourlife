@@ -1,0 +1,1 @@
+ALTER TABLE "TYL_trackableRecord" ALTER COLUMN "createdAt" SET DATA TYPE bigint;

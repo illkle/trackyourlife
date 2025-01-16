@@ -1,14 +1,12 @@
 import type { ReactNode } from "react";
-import { useCallback } from "react";
 import { cn } from "@shad/utils";
 import { format, isSameDay } from "date-fns";
-import { v4 as uuidv4 } from "uuid";
 
 import type { DbTrackableSelect } from "@tyl/db/schema";
 
 import { Skeleton } from "~/@shad/components/skeleton";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
-import { useZ } from "~/utils/useZ";
+import { useRecordUpdateHandler } from "~/utils/useZ";
 import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
 
@@ -22,12 +20,14 @@ export const DayCellDisplay = ({
   isLoading = false,
   outOfRange = false,
   className,
+  createdAt,
   dateDay,
   onChange,
 }: {
   children: ReactNode;
   type: DbTrackableSelect["type"];
   value?: string;
+  createdAt?: number | null;
   isLoading?: boolean;
   outOfRange?: boolean;
   disabled?: boolean;
@@ -90,12 +90,14 @@ export const DayCellWrapper = ({
   isLoading = false,
   recordId,
   value,
+  createdAt,
 }: {
   date: Date;
   recordId?: string;
   isLoading?: boolean;
   className?: string;
   value?: string;
+  createdAt?: number | null;
   disabled?: boolean;
   labelType?: "auto" | "outside" | "none";
 }) => {
@@ -103,23 +105,7 @@ export const DayCellWrapper = ({
 
   const isToday = isSameDay(date, new Date());
 
-  const z = useZ();
-
-  const onChange = useCallback(
-    async (val: string) => {
-      const d = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
-
-      if (!recordId) console.log(id);
-      await z.mutate.TYL_trackableRecord.upsert({
-        recordId: recordId ?? uuidv4(),
-        date: d,
-        trackableId: id,
-        value: val,
-        user_id: z.userID,
-      });
-    },
-    [date, id, z, recordId],
-  );
+  const onChange = useRecordUpdateHandler(date, recordId);
 
   return (
     <div className="flex flex-col">
@@ -143,6 +129,7 @@ export const DayCellWrapper = ({
         dateDay={date}
         value={value}
         onChange={onChange}
+        createdAt={createdAt}
       >
         {labelType !== "none" && (
           <div

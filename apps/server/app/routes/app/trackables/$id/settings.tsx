@@ -2,8 +2,8 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 
 import type { ITrackableSettings } from "@tyl/db/jsonValidators";
 
+import TrackableSettings from "~/components/CreateAndSettingsFlows";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
-import TrackableSettings from "~/components/TrackableSettings";
 import { useZ } from "~/utils/useZ";
 
 export const Route = createFileRoute("/app/trackables/$id/settings")({
@@ -21,7 +21,7 @@ function RouteComponent() {
     <>
       <TrackableSettings
         trackableType={type}
-        initialSettings={settings ?? {}}
+        initialSettings={settings}
         handleSave={async (v: ITrackableSettings) => {
           await z.mutate.TYL_trackable.update({
             id,

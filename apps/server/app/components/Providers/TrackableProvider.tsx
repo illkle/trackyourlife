@@ -1,14 +1,12 @@
 import type { ReactNode } from "react";
 import { createContext, useContext } from "react";
 
-import type { DbTrackableSelect } from "@tyl/db/schema";
-
-import { MemoDayCellProvider } from "~/components/Providers/DayCellProvider";
+import type { ITrackableZero } from "~/schema";
 
 interface ITrackableContext {
-  id: DbTrackableSelect["id"];
-  type: DbTrackableSelect["type"];
-  settings: DbTrackableSelect["settings"];
+  id: ITrackableZero["id"];
+  type: ITrackableZero["type"];
+  settings: ITrackableZero["settings"];
 }
 
 export const TrackableContext = createContext<ITrackableContext | null>(null);
@@ -17,7 +15,7 @@ const TrackableProvider = ({
   trackable,
   children,
 }: {
-  trackable: DbTrackableSelect;
+  trackable: Pick<ITrackableZero, "id" | "type" | "settings">;
   children: ReactNode;
 }) => {
   return (
@@ -28,9 +26,7 @@ const TrackableProvider = ({
         settings: trackable.settings,
       }}
     >
-      <MemoDayCellProvider type={trackable.type} settings={trackable.settings}>
-        {children}
-      </MemoDayCellProvider>
+      {children}
     </TrackableContext.Provider>
   );
 };

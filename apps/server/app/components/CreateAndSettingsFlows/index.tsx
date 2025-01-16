@@ -18,17 +18,14 @@ import { DrawerMobileTitleProvider } from "~/@shad/components/drawer";
 import { Label } from "~/@shad/components/label";
 import { Switch } from "~/@shad/components/switch";
 import ColorInput from "~/components/Colors/colorInput";
+import { SettingsTitle } from "~/components/CreateAndSettingsFlows/settingsTitle";
 import DatePicker from "~/components/DatePicker";
 import { DayCellBaseClasses } from "~/components/DayCell";
 import { DayCellBoolean } from "~/components/DayCell/DayCellBoolean";
 import { DayCellNumber } from "~/components/DayCell/DayCellNumber";
-import { DayCellProvider } from "~/components/Providers/DayCellProvider";
+import TrackableProvider from "~/components/Providers/TrackableProvider";
 import NumberColorSelector from "../Colors/numberColorSelector";
 import NumberLimitsSelector from "./numberLimitsSelector";
-
-export const SettingsTitle = ({ children }: { children: React.ReactNode }) => {
-  return <h3 className="mb-1 mt-3 text-xl">{children}</h3>;
-};
 
 export const SettingsCommon = ({
   form,
@@ -213,7 +210,7 @@ const TrackableMock = ({
 
   return (
     <div className={cn("relative w-full", className)}>
-      <DayCellProvider type={type} settings={settings}>
+      <TrackableProvider trackable={{ id: "1", type, settings }}>
         {type === "boolean" && (
           <DayCellBoolean className={classes} value={value} onChange={onChange}>
             {Label}
@@ -229,7 +226,7 @@ const TrackableMock = ({
             {Label}
           </DayCellNumber>
         )}
-      </DayCellProvider>
+      </TrackableProvider>
     </div>
   );
 };

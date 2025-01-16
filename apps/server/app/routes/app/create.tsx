@@ -1,5 +1,4 @@
 import { useRef, useState } from "react";
-import { RadioGroup, RadioGroupItem } from "@radix-ui/react-radio-group";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { v4 as uuidv4 } from "uuid";
 
@@ -7,8 +6,11 @@ import type { ITrackableSettings } from "@tyl/db/jsonValidators";
 import type { DbTrackableInsert } from "@tyl/db/schema";
 import { cloneDeep } from "@tyl/helpers";
 
+import type { ITrackableZeroInsert } from "~/schema";
 import { Input } from "~/@shad/components/input";
-import TrackableSettings from "~/components/TrackableSettings";
+import TrackableSettings from "~/components/CreateAndSettingsFlows";
+import { SettingsTitle } from "~/components/CreateAndSettingsFlows/settingsTitle";
+import { TrackableTypeSelector } from "~/components/CreateAndSettingsFlows/trackableTypeSelector";
 import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { useZ } from "~/utils/useZ";
 
@@ -22,11 +24,13 @@ function RouteComponent() {
 
   const { sessionInfo } = useSessionAuthed();
 
-  const [newOne, setNewOne] = useState<DbTrackableInsert>({
+  const [newOne, setNewOne] = useState<
+    Omit<ITrackableZeroInsert, "id" | "user_id">
+  >({
     type: "boolean",
     name: "",
     settings: {},
-    user_id: sessionInfo.user.id,
+    attached_note: "",
   });
 
   const nameRef = useRef("");
@@ -46,9 +50,10 @@ function RouteComponent() {
       name: nameRef.current || "",
       settings,
       attached_note: "",
+      user_id: sessionInfo.user.id,
     });
 
-    void router.navigate({
+    await router.navigate({
       to: `/app/trackables/${id}`,
     });
   };
@@ -58,61 +63,18 @@ function RouteComponent() {
       <h3 className="w-full bg-inherit text-2xl font-semibold lg:text-3xl">
         Create new Trackable
       </h3>
-
+      <SettingsTitle>Name</SettingsTitle>
       <Input
         placeholder="Unnamed Trackable"
-        className="mt-2"
         onChange={(e) => (nameRef.current = e.target.value)}
       />
 
-      <RadioGroup
-        value={newOne.type}
-        onValueChange={(v) => setType(v as DbTrackableInsert["type"])}
-        className="grid grid-cols-5 items-start gap-4"
-      >
-        <RadioGroupItem value="boolean" id="boolean">
-          <p className="text-lg font-semibold">Boolean</p>
+      <SettingsTitle>Type</SettingsTitle>
+      <TrackableTypeSelector type={newOne.type} setType={setType} />
 
-          <p className="text-sm">
-            True or false. Can be used for habit tracking or as a checkbox.
-          </p>
-        </RadioGroupItem>
-        <RadioGroupItem value="number" id="number">
-          <p className="text-lg font-semibold">Number</p>
-
-          <p className="text-sm">
-            Can represent a count like steps walked, measurement like weight, or
-            rating like mood on 1-10 scale.
-          </p>
-        </RadioGroupItem>
-        <RadioGroupItem value="text" id="text" disabled>
-          <p className="text-lg font-semibold">Text</p>
-          <p className="text-sm">
-            Simple block of text for each day. You can use it as a note or a
-            gratitude journal.
-          </p>
-        </RadioGroupItem>
-
-        <RadioGroupItem value="text" id="text" disabled>
-          <p className="text-lg font-semibold">Tags</p>
-          <p className="text-sm">
-            A collection of values where frequency of occurrence is being
-            tracked. For example, emotions you felt, general activities you did,
-            etc.
-          </p>
-        </RadioGroupItem>
-        <RadioGroupItem value="text" id="text" disabled>
-          <p className="text-lg font-semibold">Logs</p>
-          <p className="text-sm">
-            Collection of values that are relatively unique each time and where
-            record attributes are important. Can be tasks closed today,
-            exercises done in the gym, food eaten, etc.
-          </p>
-        </RadioGroupItem>
-      </RadioGroup>
       <TrackableSettings
         trackableType={newOne.type}
-        initialSettings={newOne.settings ?? {}}
+        initialSettings={newOne.settings}
         handleSave={createTrackable}
         customSaveButtonText="Create Trackable"
       />

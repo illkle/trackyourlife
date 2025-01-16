@@ -1,0 +1,234 @@
+/* Taken from TipTap React template */
+.ProseMirror {
+  @apply z-0 mx-auto max-w-2xl caret-black outline-0 dark:caret-white;
+
+  .selection {
+    @apply inline;
+  }
+
+  .selection,
+  *::selection {
+    @apply inline bg-black/10 dark:bg-white/20;
+  }
+
+  & > .react-renderer {
+    @apply my-12 first:mt-0 last:mb-0;
+  }
+
+  &.resize-cursor {
+    @apply cursor-col-resize;
+  }
+
+  .ProseMirror-gapcursor {
+    @apply relative mx-auto w-full max-w-2xl;
+
+    &:after {
+      @apply -top-[1.5em] left-0 right-0 mx-auto w-full max-w-2xl border-t-black/40 dark:border-t-white/40;
+    }
+  }
+}
+
+.ProseMirror {
+  /*
+    Base text styles
+  */
+
+  p {
+    @apply my-0 leading-relaxed first:mt-0 last:mb-0;
+  }
+
+  & > p {
+    @apply my-1 first:mt-0 last:mb-0;
+  }
+
+  h1 {
+    @apply text-3xl;
+  }
+
+  h2 {
+    @apply text-2xl;
+  }
+
+  h3 {
+    @apply text-xl;
+  }
+
+  h4 {
+    @apply text-lg;
+  }
+
+  h5 {
+    @apply text-base;
+  }
+
+  h6 {
+    @apply text-sm;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold first:mt-0 last:mb-0;
+  }
+
+  h1,
+  h2,
+  h3 {
+    @apply mt-12;
+  }
+
+  h4,
+  h5,
+  h6 {
+    @apply mt-8;
+  }
+
+  a.link {
+    @apply font-extrabold text-blue-500 dark:text-blue-400;
+  }
+
+  mark {
+    @apply rounded-sm bg-red-500 decoration-clone px-0 py-1 text-inherit dark:bg-red-400;
+  }
+
+  & img {
+    @apply h-auto w-full max-w-full;
+  }
+
+  [data-type="horizontalRule"] {
+    @apply my-8 cursor-pointer py-4 transition-all duration-100 ease-in-out;
+
+    &.ProseMirror-selectednode {
+      @apply bg-black/5 dark:bg-white/10;
+
+      hr {
+        @apply border-t-black/30 dark:border-t-white/30;
+      }
+    }
+
+    &:hover:not(&.ProseMirror-selectednode) {
+      @apply bg-black/5;
+      @apply dark:bg-white/10;
+    }
+
+    hr {
+      @apply border-0 border-t border-black/20 bg-black/80;
+      @apply dark:border-white/20 dark:bg-white/80;
+    }
+  }
+
+  hr {
+    @apply border-neutral-300 dark:border-neutral-700;
+  }
+
+  /*
+  Emoji styling
+  */
+  [data-type="emoji"] {
+    display: inline-block;
+
+    img {
+      width: 1em;
+      height: 1em;
+      object-fit: cover;
+      display: block;
+    }
+  }
+
+  /*
+  Code block styling
+  */
+  code {
+    @apply rounded-sm bg-neutral-900 font-mono text-white caret-white shadow-lg;
+
+    &::selection {
+      @apply bg-white/30;
+    }
+  }
+
+  pre {
+    @apply my-12 rounded border border-black bg-neutral-700 p-4 text-white caret-white dark:border-neutral-800 dark:bg-neutral-900;
+
+    *::selection {
+      @apply bg-white/20;
+    }
+
+    code {
+      @apply bg-inherit p-0 text-inherit shadow-none;
+    }
+  }
+
+  /*
+  List styling
+  */
+  ol {
+    @apply list-decimal;
+  }
+
+  ul {
+    @apply list-disc;
+  }
+
+  ul,
+  ol {
+    @apply my-6 px-8 py-0 first:mt-0 last:mb-0;
+
+    ul,
+    ol,
+    li {
+      @apply my-1;
+    }
+
+    p {
+      @apply mb-1 mt-0;
+    }
+  }
+
+  & > ul,
+  & > ol {
+    @apply my-8 first:mt-0 last:mb-0;
+  }
+
+  ul[data-type="taskList"] {
+    @apply list-none p-0;
+
+    p {
+      @apply m-0;
+    }
+
+    li {
+      @apply flex;
+
+      > label {
+        @apply mr-2 mt-1 flex-auto shrink-0 grow-0 select-none;
+      }
+
+      > div {
+        @apply flex-auto;
+      }
+
+      &[data-checked="true"] {
+        @apply line-through;
+      }
+    }
+  }
+
+  /* Block Quote */
+  figure[data-type="blockquoteFigure"] {
+    @apply my-14 text-black dark:text-white;
+  }
+
+  & > blockquote,
+  [data-type="blockquoteFigure"] {
+    blockquote {
+      @apply m-0;
+
+      & > * {
+        @apply first:mt-0 last:mb-0;
+      }
+    }
+  }
+}

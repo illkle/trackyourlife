@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@shad/utils";
 import { Link } from "@tanstack/react-router";
 import {
@@ -14,12 +14,53 @@ import type { PureDataRecord } from "@tyl/helpers/trackables";
 import { mapDataToRange } from "@tyl/helpers/trackables";
 
 import { Button } from "~/@shad/components/button";
+import { DayCellTextEditor } from "~/components/DayCell/DayCellText";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { TrackableNoteEditable } from "~/components/TrackableNote";
 import { YearSelector } from "~/components/TrackableView/yearSelector";
 import { Route } from "~/routes/app/trackables/$id/view";
 import { useZeroTrackableData } from "~/utils/useZ";
 import DayCellWrapper from "../DayCell";
+
+const TextMonthEditor = ({
+  data,
+  prefaceDays,
+  mini,
+}: {
+  data: PureDataRecord[];
+  prefaceDays: number;
+  mini?: boolean;
+}) => {
+  const [selected, setSelected] = useState<number>(0);
+
+  const selectedValue = data[selected];
+
+  if (!selectedValue) throw new Error("Error selected value is not in data");
+
+  return (
+    <div className="grid grid-cols-3 gap-4">
+      <div className={cn("grid", mini ? "grid-cols-7" : "grid-cols-7")}>
+        <div style={{ gridColumn: `span ${prefaceDays}` }}></div>
+
+        {data.map((el, i) => {
+          return (
+            <Button
+              variant={selected === i ? "outline" : "ghost"}
+              key={i}
+              onClick={() => setSelected(i)}
+            >
+              {el.date.getDate()}
+            </Button>
+          );
+        })}
+      </div>
+
+      <div className="col-span-2 w-full rounded-lg bg-neutral-900 p-4">
+        <DayCellTextEditor key={selected} {...selectedValue} />
+      </div>
+    </div>
+  );
+};
 
 const MonthVisualCalendar = ({
   data,
@@ -31,22 +72,20 @@ const MonthVisualCalendar = ({
   mini?: boolean;
 }) => {
   return (
-    <>
-      <div className={cn("grid gap-1", mini ? "grid-cols-7" : "grid-cols-7")}>
-        <div style={{ gridColumn: `span ${prefaceDays}` }}></div>
+    <div className={cn("grid gap-1", mini ? "grid-cols-7" : "grid-cols-7")}>
+      <div style={{ gridColumn: `span ${prefaceDays}` }}></div>
 
-        {data.map((el, i) => {
-          return (
-            <DayCellWrapper
-              key={i}
-              {...el}
-              labelType={mini ? "outside" : "auto"}
-              className={mini ? "h-12" : "h-12 sm:h-14 md:h-16"}
-            />
-          );
-        })}
-      </div>
-    </>
+      {data.map((el, i) => {
+        return (
+          <DayCellWrapper
+            key={i}
+            {...el}
+            labelType={mini ? "outside" : "auto"}
+            className={mini ? "h-12" : "h-12 sm:h-14 md:h-16"}
+          />
+        );
+      })}
+    </div>
   );
 };
 
@@ -59,7 +98,7 @@ const MonthFetcher = ({
   year: number;
   mini?: boolean;
 }) => {
-  const { id } = useTrackableMeta();
+  const { id, type } = useTrackableMeta();
 
   const firstDayDate = Date.UTC(year, month, 1);
   const lastDayDate = endOfMonth(firstDayDate).getTime();
@@ -74,14 +113,23 @@ const MonthFetcher = ({
   console.log(data);
 
   const mappedData = mapDataToRange(firstDayDate, lastDayDate, data);
+  console.log(mappedData);
 
   return (
     <div key={`${firstDayDate}-${lastDayDate}`}>
-      <MonthVisualCalendar
-        data={mappedData}
-        prefaceDays={prefaceWith}
-        mini={mini}
-      />
+      {type === "text" ? (
+        <TextMonthEditor
+          data={mappedData}
+          prefaceDays={prefaceWith}
+          mini={mini}
+        />
+      ) : (
+        <MonthVisualCalendar
+          data={mappedData}
+          prefaceDays={prefaceWith}
+          mini={mini}
+        />
+      )}
     </div>
   );
 };

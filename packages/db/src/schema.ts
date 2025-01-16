@@ -1,5 +1,6 @@
 import { relations } from "drizzle-orm";
 import {
+  bigint,
   boolean,
   index,
   integer,
@@ -132,7 +133,7 @@ export const trackableRecord = pgTable(
       Since this application is local first and insert to PG can differ from actual creation date, value is set by the client.
       Stored as unix timestamp to avoid timezone issues and simplify sorting.
     */
-    createdAt: integer("createdAt"),
+    createdAt: bigint("createdAt", { mode: "number" }),
   },
   (t) => ({
     /*

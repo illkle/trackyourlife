@@ -1,12 +1,16 @@
 import type React from "react";
 import type { CSSProperties, ReactNode } from "react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { cn } from "@shad/utils";
 import { format } from "date-fns";
 import { useIsomorphicLayoutEffect } from "usehooks-ts";
 
 import { throttle } from "@tyl/helpers";
 import { makeColorString } from "@tyl/helpers/colorTools";
+import {
+  getValueToColorFunc,
+  getValueToProgressPercentage,
+} from "@tyl/helpers/trackables";
 
 import {
   Drawer,
@@ -14,7 +18,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/@shad/components/drawer";
-import { useDayCellContextNumber } from "~/components/Providers/DayCellProvider";
+import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
 const getNumberSafe = (v: string | undefined) => {
@@ -43,7 +47,16 @@ export const DayCellNumber = ({
 }) => {
   const isDesktop = useIsDesktop();
 
-  const { valueToColor, valueToProgressPercentage } = useDayCellContextNumber();
+  const { settings } = useTrackableMeta();
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const valueToColor = useCallback(getValueToColorFunc(settings), [settings]);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const valueToProgressPercentage = useCallback(
+    getValueToProgressPercentage(settings),
+    [settings],
+  );
 
   const [internalNumber, setInternalNumber] = useState(getNumberSafe(value));
   const internalNumberRef = useRef(internalNumber);

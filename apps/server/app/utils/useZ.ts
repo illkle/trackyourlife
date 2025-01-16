@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import type { Row } from "@rocicorp/zero";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useQuery, useZero } from "@rocicorp/zero/react";
 import { addMonths, addYears, subMonths } from "date-fns";
+import { v4 as uuidv4 } from "uuid";
 
 import type { Schema } from "~/schema";
+import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 
 export const useZ = () => {
   return useZero<Schema>();
@@ -173,4 +175,26 @@ export const useZeroInGroup = (trackableId: string, group: string) => {
     ),
   ).limit(1);
   return useQuery(q);
+};
+
+export const useRecordUpdateHandler = (date: Date, recordId?: string) => {
+  const { id } = useTrackableMeta();
+
+  const z = useZ();
+
+  return useCallback(
+    async (val: string, timestamp?: number) => {
+      const d = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+
+      await z.mutate.TYL_trackableRecord.upsert({
+        recordId: recordId ?? uuidv4(),
+        date: d,
+        trackableId: id,
+        value: val,
+        user_id: z.userID,
+        createdAt: timestamp,
+      });
+    },
+    [date, id, z, recordId],
+  );
 };

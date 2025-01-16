@@ -13,6 +13,7 @@ import { getWebRequest } from "vinxi/http";
 import { auth } from "~/auth/server";
 import { LazyMotionProvider } from "~/components/Providers/lazyFramerMotionProvider";
 import appCss from "~/styles/app.css?url";
+import textEditorCss from "~/styles/textEditor.css?url";
 import { seo } from "~/utils/seo.js";
 import { ensureSessionInfo, UserPreloader } from "~/utils/useSessionInfo";
 
@@ -46,6 +47,7 @@ export const Route = createRootRouteWithContext<{
   head: () => ({
     links: [
       { rel: "stylesheet", href: appCss },
+      { rel: "stylesheet", href: textEditorCss },
       {
         rel: "apple-touch-icon",
         sizes: "180x180",

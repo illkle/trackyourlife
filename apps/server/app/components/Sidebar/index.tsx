@@ -1,22 +1,14 @@
-import type { ReactNode } from "react";
 import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation } from "@tanstack/react-router";
 import {
-  ChartColumnIncreasing,
   ChevronUp,
   HeartIcon,
-  ListIcon,
   PanelLeftClose,
   PanelLeftOpen,
-  SmileIcon,
-  TagIcon,
-  TextIcon,
-  ToggleRight,
   User2,
 } from "lucide-react";
 
-import type { DbTrackableSelect } from "@tyl/db/schema";
 import { sortTrackableList } from "@tyl/helpers/trackables";
 
 import { Button } from "~/@shad/components/button";
@@ -41,16 +33,9 @@ import {
 import { authClient } from "~/auth/client";
 import { CoreLinks } from "~/components/Header";
 import { ThemeSwitcher } from "~/components/Settings/themeSwitcher";
+import { RenderTrackableIcon } from "~/utils/trackableIcons";
 import { invalidateSession, useSessionAuthed } from "~/utils/useSessionInfo";
 import { useZeroTrackablesList } from "~/utils/useZ";
-
-const iconsMap: Record<DbTrackableSelect["type"], ReactNode> = {
-  boolean: <ToggleRight size={16} />,
-  number: <ChartColumnIncreasing size={16} />,
-  text: <TextIcon size={16} />,
-  tags: <TagIcon size={16} />,
-  logs: <ListIcon size={16} />,
-};
 
 const TrackablesMiniList = () => {
   const [data] = useZeroTrackablesList();
@@ -80,7 +65,9 @@ const TrackablesMiniList = () => {
               >
                 <div className="flex w-full items-center justify-between gap-2">
                   <div className="justify-baseline flex items-center gap-2 truncate">
-                    <div className="opacity-70">{iconsMap[tr.type]}</div>
+                    <div className="opacity-70">
+                      <RenderTrackableIcon size={16} type={tr.type} />
+                    </div>
                     <div>{tr.name || "Unnamed"}</div>
                   </div>
 
