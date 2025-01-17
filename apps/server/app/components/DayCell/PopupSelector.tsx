@@ -1,3 +1,5 @@
+/*
+Component was pretty cool, but Range selector is currently dead. Might need in the future when number will support enum.
 import { cn } from "@shad/utils";
 import { AnimatePresence, m } from "framer-motion";
 
@@ -168,3 +170,5 @@ export const PopupSelector = ({
     </m.div>
   );
 };
+
+*/

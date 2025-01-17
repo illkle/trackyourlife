@@ -8,11 +8,13 @@ import {
 } from "@tanstack/react-router";
 import { createServerFn, Meta, Scripts } from "@tanstack/start";
 import { ThemeProvider } from "next-themes";
+import remirrorCss from "remirror/styles/all.css?url";
 import { getWebRequest } from "vinxi/http";
 
 import { auth } from "~/auth/server";
 import { EditorModalProvider } from "~/components/EditorModal";
 import { LazyMotionProvider } from "~/components/Providers/lazyFramerMotionProvider";
+import { SingletonProvider } from "~/components/Providers/singletonProvider";
 import appCss from "~/styles/app.css?url";
 import textEditorCss from "~/styles/textEditor.css?url";
 import { seo } from "~/utils/seo.js";
@@ -47,6 +49,7 @@ export const Route = createRootRouteWithContext<{
 }>()({
   head: () => ({
     links: [
+      { rel: "stylesheet", href: remirrorCss },
       { rel: "stylesheet", href: appCss },
       { rel: "stylesheet", href: textEditorCss },
       {
@@ -117,18 +120,21 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <head>
         <Meta />
       </head>
+
       <body className="overscroll-none bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-50">
-        <LazyMotionProvider>
-          <ThemeProvider defaultTheme="dark" attribute="class">
-            <EditorModalProvider>
-              <UserPreloader>{children}</UserPreloader>
-              <ScrollRestoration />
-              <TanStackRouterDevtools position="bottom-right" />
-              <ReactQueryDevtools buttonPosition="bottom-left" />
-              <Scripts />
-            </EditorModalProvider>
-          </ThemeProvider>
-        </LazyMotionProvider>
+        <SingletonProvider>
+          <LazyMotionProvider>
+            <ThemeProvider defaultTheme="dark" attribute="class">
+              <EditorModalProvider>
+                <UserPreloader>{children}</UserPreloader>
+                <ScrollRestoration />
+                <TanStackRouterDevtools position="bottom-right" />
+                <ReactQueryDevtools buttonPosition="bottom-left" />
+                <Scripts />
+              </EditorModalProvider>
+            </ThemeProvider>
+          </LazyMotionProvider>
+        </SingletonProvider>
       </body>
     </html>
   );

@@ -91,10 +91,7 @@ const MonthFetcher = ({
     lastDay: lastDayDate,
   });
 
-  console.log(data);
-
   const mappedData = mapDataToRange(firstDayDate, lastDayDate, data);
-  console.log(mappedData);
 
   return (
     <div key={`${firstDayDate}-${lastDayDate}`}>
@@ -186,10 +183,12 @@ const ViewController = ({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") {
-        void navigate({ search: (prev) => ({ ...prev, ...toPrev }) });
-      } else if (e.key === "ArrowRight") {
-        void navigate({ search: (prev) => ({ ...prev, ...toNext }) });
+      if (e.shiftKey && e.metaKey) {
+        if (e.key === "ArrowLeft") {
+          void navigate({ search: (prev) => ({ ...prev, ...toPrev }) });
+        } else if (e.key === "ArrowRight") {
+          void navigate({ search: (prev) => ({ ...prev, ...toNext }) });
+        }
       }
     };
 

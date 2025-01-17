@@ -1,37 +1,64 @@
-import { useCallback, useEffect, useState } from "react";
-import CharacterCount from "@tiptap/extension-character-count";
-import Highlight from "@tiptap/extension-highlight";
-import { EditorContent, EditorProvider, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Remirror, useRemirror } from "@remirror/react";
+import {
+  BoldExtension,
+  BulletListExtension,
+  HeadingExtension,
+  ItalicExtension,
+  LinkExtension,
+  MarkdownExtension,
+  OrderedListExtension,
+  UnderlineExtension,
+} from "remirror/extensions";
 
 import { throttle } from "@tyl/helpers";
-
-const extensions = [
-  StarterKit.configure(),
-  Highlight,
-  CharacterCount.configure({
-    limit: 10000,
-  }),
-];
 
 export const LazyTextEditor = ({
   content,
   contentTimestamp,
   updateContent,
-  onBlur,
+  className,
 }: {
   content: string;
   contentTimestamp: number;
   updateContent: (content: string, timestamp: number) => void;
-  onBlur?: () => void;
+  className?: string;
 }) => {
-  const [snapshot, setsnapshot] = useState(contentTimestamp);
+  console.log("redner editor");
+
+  const { manager, getContext } = useRemirror({
+    extensions: () => [
+      new BoldExtension({}),
+      new ItalicExtension({}),
+      new UnderlineExtension({}),
+      new HeadingExtension({}),
+      new BulletListExtension({}),
+      new OrderedListExtension({}),
+      new LinkExtension({}),
+      new MarkdownExtension({ copyAsMarkdown: true }),
+    ],
+    content: content,
+    selection: "end",
+    stringHandler: "markdown",
+  });
+
+  const snapshotTimestamp = useRef(contentTimestamp);
 
   const [externalUpdate, setExternalUpdate] = useState(0);
 
   useEffect(() => {
-    if (contentTimestamp !== snapshot) {
+    if (contentTimestamp !== snapshotTimestamp.current) {
+      console.log(
+        "external update",
+        contentTimestamp,
+        snapshotTimestamp.current,
+      );
       setExternalUpdate(externalUpdate + 1);
+      snapshotTimestamp.current = contentTimestamp;
+
+      const context = getContext();
+
+      context?.setContent(content);
     }
   }, [contentTimestamp]);
 
@@ -39,37 +66,25 @@ export const LazyTextEditor = ({
     throttle(
       (content: string) => {
         const ts = Date.now();
-
         updateContent(content, ts);
-
-        setsnapshot(ts);
+        snapshotTimestamp.current = ts;
       },
-      1000,
+      300,
       { leading: false },
     ),
 
     [updateContent],
   );
 
-  console.log(content, contentTimestamp, externalUpdate);
-
-  const editor = useEditor(
-    {
-      extensions,
-      content,
-      onUpdate: ({ editor }) => {
-        throttledUpdate(editor.getHTML());
-      },
-      onBlur: onBlur,
-      autofocus: "end",
-      editorProps: {
-        attributes: {
-          class: "h-full",
-        },
-      },
-    },
-    [externalUpdate],
+  return (
+    <Remirror
+      manager={manager}
+      autoFocus
+      initialContent={content}
+      classNames={[className]}
+      onChange={({ helpers }) => {
+        throttledUpdate(helpers.getMarkdown());
+      }}
+    />
   );
-
-  return <EditorContent editor={editor} className="h-full"></EditorContent>;
 };

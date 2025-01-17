@@ -1,5 +1,14 @@
 import { createContext, useContext, useRef, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogPortal,
+  DialogTitle,
+} from "@radix-ui/react-dialog";
 import { m } from "framer-motion";
+
+import "~/@shad/components/dialog";
 
 import { cn } from "~/@shad/utils";
 
@@ -29,8 +38,8 @@ export const EditorModalProvider = ({
   const unregister = useRef<(() => void) | null>(null);
 
   const reg = (id: string, toUnregister: () => void) => {
-    console.log("reg", id);
     setIsOpen(true);
+    console.log("reg", id);
     if (unregister.current) {
       unregister.current();
     }
@@ -41,6 +50,7 @@ export const EditorModalProvider = ({
 
   const unreg = (id: string) => {
     if (currentId === id) {
+      console.log("unreg", id);
       setIsOpen(false);
       unregister.current?.();
       unregister.current = null;
@@ -52,20 +62,35 @@ export const EditorModalProvider = ({
 
   return (
     <>
-      <m.div
-        ref={ref}
-        className={cn(
-          "fixed bottom-4 left-1/2 z-[9999] h-[200px] w-full max-w-[600px] -translate-x-1/2 rounded-xl border border-neutral-800 bg-neutral-950 px-4 py-2 shadow-2xl",
-          isOpen
-            ? "translate-y-0 opacity-100"
-            : "pointer-events-none translate-y-20 opacity-0",
-        )}
-      ></m.div>
-      <EditorModalContext.Provider
-        value={{ registerClient: reg, unregisterClient: unreg, ref }}
+      <Dialog
+        modal={false}
+        open={false}
+        onOpenChange={(v) => {
+          if (!v) {
+            setIsOpen(false);
+          }
+        }}
       >
-        {children}
-      </EditorModalContext.Provider>
+        <DialogPortal>
+          <DialogContent>
+            <DialogDescription>aa</DialogDescription>
+            <m.div
+              className={cn(
+                "fixed bottom-4 left-1/2 z-[9999] h-[200px] w-full max-w-[600px] -translate-x-1/2 overflow-y-scroll rounded-xl border border-neutral-800 bg-neutral-950 px-4 py-2 shadow-2xl",
+              )}
+            >
+              <DialogTitle>asdlksadjlksdj</DialogTitle>
+              <div ref={ref}>asdlksadjlksdj</div>
+            </m.div>
+          </DialogContent>
+        </DialogPortal>
+
+        <EditorModalContext.Provider
+          value={{ registerClient: reg, unregisterClient: unreg, ref }}
+        >
+          {children}
+        </EditorModalContext.Provider>
+      </Dialog>
     </>
   );
 };
@@ -73,8 +98,6 @@ export const EditorModalProvider = ({
 export const useEditorModal = () => {
   const { registerClient, ref, unregisterClient } =
     useContext(EditorModalContext);
-
-  if (!ref.current) throw new Error("EditorModalProvider not found");
 
   return { registerClient, ref, unregisterClient };
 };
