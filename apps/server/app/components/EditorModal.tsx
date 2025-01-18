@@ -1,21 +1,26 @@
-import { createContext, useContext, useRef, useState } from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogPortal,
-  DialogTitle,
-} from "@radix-ui/react-dialog";
+  createContext,
+  useContext,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import { m } from "framer-motion";
 
 import "~/@shad/components/dialog";
 
+import { createPortal } from "react-dom";
+import { useOnClickOutside } from "usehooks-ts";
+
 import { cn } from "~/@shad/utils";
+import { useIsDesktop } from "~/utils/useIsDesktop";
 
 interface EditorModalApi {
   registerClient: (id: string, toUnregister: () => void) => void;
   unregisterClient: (id: string) => void;
-  ref: React.RefObject<HTMLDivElement>;
+  portalTarget: React.RefObject<HTMLDivElement>;
+  currentId: string | null;
 }
 
 const EditorModalContext = createContext<EditorModalApi>({
@@ -25,7 +30,8 @@ const EditorModalContext = createContext<EditorModalApi>({
   unregisterClient: () => {
     return;
   },
-  ref: { current: null },
+  portalTarget: { current: null },
+  currentId: null,
 });
 
 export const EditorModalProvider = ({
@@ -39,7 +45,6 @@ export const EditorModalProvider = ({
 
   const reg = (id: string, toUnregister: () => void) => {
     setIsOpen(true);
-    console.log("reg", id);
     if (unregister.current) {
       unregister.current();
     }
@@ -50,7 +55,6 @@ export const EditorModalProvider = ({
 
   const unreg = (id: string) => {
     if (currentId === id) {
-      console.log("unreg", id);
       setIsOpen(false);
       unregister.current?.();
       unregister.current = null;
@@ -58,46 +62,89 @@ export const EditorModalProvider = ({
     }
   };
 
-  const ref = useRef<HTMLDivElement>(null);
+  const portalRef = useRef<HTMLDivElement>(null);
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  useOnClickOutside(
+    wrapperRef,
+    () => {
+      if (currentId) {
+        unreg(currentId);
+      }
+    },
+    "mouseup",
+  );
+
+  const isDesktop = useIsDesktop();
+
+  useLayoutEffect(() => {
+    if (currentId && !isDesktop) {
+      unreg(currentId);
+    }
+  }, [isDesktop, currentId]);
 
   return (
     <>
-      <Dialog
-        modal={false}
-        open={false}
-        onOpenChange={(v) => {
-          if (!v) {
-            setIsOpen(false);
-          }
+      <m.div
+        ref={wrapperRef}
+        className={cn(
+          "fixed bottom-4 left-1/2 z-[9999] w-full max-w-[500px] -translate-x-1/2 rounded-md border border-neutral-800 bg-neutral-950 shadow-2xl shadow-neutral-950",
+        )}
+        animate={{
+          opacity: isOpen ? 1 : 0,
+          y: isOpen ? 0 : "100px",
+          x: "-50%",
+        }}
+        transition={{
+          duration: 0.3,
+          ease: [0.2, 0.2, 0.4, 1.1],
         }}
       >
-        <DialogPortal>
-          <DialogContent>
-            <DialogDescription>aa</DialogDescription>
-            <m.div
-              className={cn(
-                "fixed bottom-4 left-1/2 z-[9999] h-[200px] w-full max-w-[600px] -translate-x-1/2 overflow-y-scroll rounded-xl border border-neutral-800 bg-neutral-950 px-4 py-2 shadow-2xl",
-              )}
-            >
-              <DialogTitle>asdlksadjlksdj</DialogTitle>
-              <div ref={ref}>asdlksadjlksdj</div>
-            </m.div>
-          </DialogContent>
-        </DialogPortal>
-
-        <EditorModalContext.Provider
-          value={{ registerClient: reg, unregisterClient: unreg, ref }}
-        >
-          {children}
-        </EditorModalContext.Provider>
-      </Dialog>
+        <div className="px-4 pb-2 pt-8" ref={portalRef}></div>
+      </m.div>
+      <EditorModalContext.Provider
+        value={{
+          registerClient: reg,
+          unregisterClient: unreg,
+          portalTarget: portalRef,
+          currentId,
+        }}
+      >
+        {children}
+      </EditorModalContext.Provider>
     </>
   );
 };
 
 export const useEditorModal = () => {
-  const { registerClient, ref, unregisterClient } =
-    useContext(EditorModalContext);
+  const ctx = useContext(EditorModalContext);
 
-  return { registerClient, ref, unregisterClient };
+  return ctx;
+};
+
+export const EditorModal = ({
+  open,
+  onOpenChange,
+  children,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  children: React.ReactNode;
+}) => {
+  const { registerClient, unregisterClient, currentId, portalTarget } =
+    useEditorModal();
+
+  const id = useId();
+
+  useLayoutEffect(() => {
+    if (open && currentId !== id) {
+      registerClient(id, () => onOpenChange(false));
+    }
+  }, [open]);
+
+  if (currentId === id && portalTarget.current) {
+    return createPortal(children, portalTarget.current);
+  }
+
+  return null;
 };

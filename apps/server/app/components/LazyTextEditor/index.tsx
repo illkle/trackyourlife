@@ -24,8 +24,6 @@ export const LazyTextEditor = ({
   updateContent: (content: string, timestamp: number) => void;
   className?: string;
 }) => {
-  console.log("redner editor");
-
   const { manager, getContext } = useRemirror({
     extensions: () => [
       new BoldExtension({}),
@@ -48,11 +46,6 @@ export const LazyTextEditor = ({
 
   useEffect(() => {
     if (contentTimestamp !== snapshotTimestamp.current) {
-      console.log(
-        "external update",
-        contentTimestamp,
-        snapshotTimestamp.current,
-      );
       setExternalUpdate(externalUpdate + 1);
       snapshotTimestamp.current = contentTimestamp;
 

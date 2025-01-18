@@ -1,30 +1,21 @@
 import type { ReactNode } from "react";
-import { useId, useMemo, useState } from "react";
-import { DialogDescription, DialogTitle } from "@radix-ui/react-dialog";
 import { cn } from "@shad/utils";
 import { format, isSameDay } from "date-fns";
 
 import type { DbTrackableSelect } from "@tyl/db/schema";
 
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerTitle,
-  DrawerTrigger,
-} from "~/@shad/components/drawer";
 import { Skeleton } from "~/@shad/components/skeleton";
-import { LazyTextEditor } from "~/components/LazyTextEditor";
-import { useSingleton } from "~/components/Providers/singletonProvider";
+import { DayCellText } from "~/components/DayCell/DayCellText";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
-import { useIsDesktop } from "~/utils/useIsDesktop";
 import { useRecordUpdateHandler } from "~/utils/useZ";
 import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
-import { Dialog, DialogContent } from "./floatyDialog";
 
 export const DayCellBaseClasses =
-  "@container w-full h-full relative select-none overflow-hidden border-transparent outline-none focus:outline-neutral-300 dark:focus:outline-neutral-600 border-2 rounded-sm";
+  "@container w-full h-full relative select-none overflow-hidden border-transparent  border-2 rounded-sm";
+
+const DayCellBaseClassesFocus =
+  "outline-none focus:outline-neutral-300 dark:focus:outline-neutral-600";
 
 export const DayCellDisplay = ({
   type,
@@ -75,7 +66,11 @@ export const DayCellDisplay = ({
 
   if (type === "boolean") {
     return (
-      <DayCellBoolean className={className} value={value} onChange={onChange}>
+      <DayCellBoolean
+        className={cn(DayCellBaseClassesFocus, className)}
+        value={value}
+        onChange={onChange}
+      >
         {children}
       </DayCellBoolean>
     );
@@ -84,7 +79,7 @@ export const DayCellDisplay = ({
   if (type === "number") {
     return (
       <DayCellNumber
-        className={className}
+        className={cn(DayCellBaseClassesFocus, className)}
         value={value}
         onChange={onChange}
         dateDay={dateDay}
@@ -121,109 +116,6 @@ interface DayCellRouterProps {
   value?: string;
   createdAt?: number | null;
 }
-
-const DayCellText = ({
-  date,
-  value,
-  createdAt,
-  onChange,
-  className,
-  children,
-}: {
-  date: Date;
-  value?: string;
-  createdAt?: number | null;
-  className?: string;
-  onChange: (content: string, timestamp?: number) => void;
-  children: ReactNode;
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const isDesktop = useIsDesktop();
-
-  const id = useId();
-
-  const { registerSingleton } = useSingleton();
-
-  const pretty = useMemo(() => {
-    if (!value) return "";
-
-    return value.split("\n")[0];
-  }, [value]);
-
-  const e = (
-    <LazyTextEditor
-      content={value ?? ""}
-      contentTimestamp={createdAt ?? 0}
-      updateContent={onChange}
-      className="mt-2"
-    />
-  );
-
-  const c = (
-    <button
-      className={cn(
-        "flex-col overflow-ellipsis border border-2 p-1 text-left text-neutral-700 dark:text-neutral-500 sm:p-2",
-
-        className,
-        isOpen
-          ? "border-neutral-500 dark:border-neutral-700"
-          : value?.length
-            ? "border-neutral-300 dark:border-neutral-900"
-            : "border-neutral-100 dark:border-neutral-900",
-      )}
-      onMouseDown={(e) => {
-        setIsOpen(true);
-        registerSingleton(id, () => setIsOpen(false));
-
-        e.preventDefault();
-        e.stopPropagation();
-      }}
-    >
-      {children}
-      <div className="flex h-full max-w-full items-center overflow-hidden overflow-ellipsis whitespace-nowrap text-xs font-normal sm:text-sm">
-        {pretty}
-      </div>
-    </button>
-  );
-
-  if (isDesktop)
-    return (
-      <Dialog
-        modal={false}
-        open={isOpen}
-        onOpenChange={(v) => {
-          setIsOpen(v);
-        }}
-      >
-        {c}
-        <DialogContent
-          className={cn("max-h-[min(60svh,60vh,200px)] px-4 pb-2 pt-8")}
-        >
-          <DialogDescription></DialogDescription>
-          <DialogTitle className="absolute left-0 top-0 flex h-8 w-full items-center justify-between border-b border-neutral-200 px-4 text-sm font-bold dark:border-neutral-800">
-            {format(date, "MMM d")}
-          </DialogTitle>
-          {e}
-        </DialogContent>
-      </Dialog>
-    );
-
-  return (
-    <Drawer>
-      <DrawerTrigger asChild>{c}</DrawerTrigger>
-      <DrawerContent className="max-h-[60svh]">
-        <DrawerDescription></DrawerDescription>
-        <DrawerTitle>{format(date, "MMM d")}</DrawerTitle>
-        <div className="overflow-y-auto p-3">
-          <div className="rounded-md border border-neutral-200 p-3 dark:border-neutral-800">
-            {e}
-          </div>
-        </div>
-      </DrawerContent>
-    </Drawer>
-  );
-};
 
 export const DayCellRouter = ({
   date,

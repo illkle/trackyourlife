@@ -6,6 +6,7 @@ import type { ITrackableZero } from "~/schema";
 interface ITrackableContext {
   id: ITrackableZero["id"];
   type: ITrackableZero["type"];
+  name: ITrackableZero["name"];
   settings: ITrackableZero["settings"];
 }
 
@@ -15,7 +16,7 @@ const TrackableProvider = ({
   trackable,
   children,
 }: {
-  trackable: Pick<ITrackableZero, "id" | "type" | "settings">;
+  trackable: Pick<ITrackableZero, "id" | "type" | "settings" | "name">;
   children: ReactNode;
 }) => {
   return (
@@ -23,6 +24,7 @@ const TrackableProvider = ({
       value={{
         id: trackable.id,
         type: trackable.type,
+        name: trackable.name,
         settings: trackable.settings,
       }}
     >
