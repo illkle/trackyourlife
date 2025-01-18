@@ -1,12 +1,6 @@
-import {
-  createContext,
-  useContext,
-  useId,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from "react";
+import { createContext, useContext, useId, useRef, useState } from "react";
 import { m } from "framer-motion";
+import { useIsomorphicLayoutEffect } from "usehooks-ts";
 
 import "~/@shad/components/dialog";
 
@@ -77,7 +71,7 @@ export const EditorModalProvider = ({
 
   const isDesktop = useIsDesktop();
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (currentId && !isDesktop) {
       unreg(currentId);
     }
@@ -136,7 +130,7 @@ export const EditorModal = ({
 
   const id = useId();
 
-  useLayoutEffect(() => {
+  useIsomorphicLayoutEffect(() => {
     if (open && currentId !== id) {
       registerClient(id, () => onOpenChange(false));
     }
