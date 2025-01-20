@@ -6,6 +6,7 @@ import { clamp } from "@tyl/helpers";
 import { getDayCellBooleanColors } from "@tyl/helpers/trackables";
 
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
+import { useTrackableFlags } from "~/components/TrackableFlags/TrackableFlagsProvider";
 import { useAllowAnimation } from "~/utils/useAllowAnimation";
 
 const ANIMATION_TIME = 0.3;
@@ -21,13 +22,22 @@ export const DayCellBoolean = ({
   children: ReactNode;
   className?: string;
 }) => {
-  const { settings } = useTrackableMeta();
+  const { id } = useTrackableMeta();
+
+  const { getFlag } = useTrackableFlags();
+
+  const activeColor = getFlag(id, "BooleanCheckedColor");
+  const inactiveColor = getFlag(id, "BooleanUncheckedColor");
+
   const {
     themeActiveDark,
     themeActiveLight,
     themeInactiveDark,
     themeInactiveLight,
-  } = useMemo(() => getDayCellBooleanColors(settings), [settings]);
+  } = useMemo(
+    () => getDayCellBooleanColors(activeColor, inactiveColor),
+    [activeColor, inactiveColor],
+  );
 
   // Even though we're not using any values from context it's useful to check whether it's provided
 

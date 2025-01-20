@@ -2,10 +2,10 @@ import { useRef, useState } from "react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { v4 as uuidv4 } from "uuid";
 
-import type { ITrackableSettings } from "@tyl/db/jsonValidators";
 import type { DbTrackableInsert } from "@tyl/db/schema";
 import { cloneDeep } from "@tyl/helpers";
 
+import type { ITrackableFlagsKV } from "~/components/TrackableFlags/TrackableFlagsProvider";
 import type { ITrackableZeroInsert } from "~/schema";
 import { Input } from "~/@shad/components/input";
 import TrackableSettings from "~/components/CreateAndSettingsFlows";
@@ -29,8 +29,6 @@ function RouteComponent() {
   >({
     type: "boolean",
     name: "",
-    settings: {},
-    attached_note: "",
   });
 
   const nameRef = useRef("");
@@ -42,15 +40,25 @@ function RouteComponent() {
     setNewOne(update);
   };
 
-  const createTrackable = async (settings: ITrackableSettings) => {
+  const createTrackable = async (settings: ITrackableFlagsKV) => {
     const id = uuidv4();
     await z.mutate.TYL_trackable.insert({
       id,
       ...newOne,
       name: nameRef.current || "",
-      settings,
-      attached_note: "",
       user_id: sessionInfo.user.id,
+    });
+
+    await z.mutateBatch(async (m) => {
+      const p = Object.entries(settings).map(([key, value]) =>
+        m.TYL_trackableFlags.insert({
+          key,
+          trackableId: id,
+          value,
+        }),
+      );
+
+      await Promise.all(p);
     });
 
     await router.navigate({
@@ -74,7 +82,6 @@ function RouteComponent() {
 
       <TrackableSettings
         trackableType={newOne.type}
-        initialSettings={newOne.settings}
         handleSave={createTrackable}
         customSaveButtonText="Create Trackable"
       />

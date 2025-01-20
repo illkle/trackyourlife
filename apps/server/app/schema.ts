@@ -7,10 +7,6 @@ import {
   definePermissions,
 } from "@rocicorp/zero";
 
-import type { ITrackableSettings } from "@tyl/db/jsonValidators";
-
-const { json } = column;
-
 const TYL_trackableRecord = createTableSchema({
   tableName: "TYL_trackableRecord",
   columns: {
@@ -34,6 +30,26 @@ const TYL_trackableGroup = createTableSchema({
   primaryKey: ["trackableId", "group"],
 });
 
+const TYL_trackableFlags = createTableSchema({
+  tableName: "TYL_trackableFlags",
+  columns: {
+    trackableId: { type: "string" },
+    key: { type: "string" },
+    value: { type: "json", optional: true },
+  },
+  primaryKey: ["trackableId", "key"],
+});
+
+const TYL_userFlags = createTableSchema({
+  tableName: "TYL_userFlags",
+  columns: {
+    userId: { type: "string" },
+    key: { type: "string" },
+    value: { type: "json", optional: true },
+  },
+  primaryKey: ["userId", "key"],
+});
+
 const TYL_trackable = createTableSchema({
   tableName: "TYL_trackable",
   columns: {
@@ -43,8 +59,6 @@ const TYL_trackable = createTableSchema({
     type: column.enumeration<"boolean" | "number" | "text" | "tags" | "logs">(
       false,
     ),
-    attached_note: { type: "string" },
-    settings: json<ITrackableSettings>(),
   },
   primaryKey: "id",
   relationships: {
@@ -58,6 +72,11 @@ const TYL_trackable = createTableSchema({
       destSchema: TYL_trackableGroup,
       destField: "trackableId",
     },
+    trackableFlags: {
+      sourceField: "id",
+      destSchema: TYL_trackableFlags,
+      destField: "trackableId",
+    },
   },
 });
 
@@ -67,6 +86,8 @@ export const schema = createSchema({
     TYL_trackable,
     TYL_trackableRecord,
     TYL_trackableGroup,
+    TYL_trackableFlags,
+    TYL_userFlags,
   },
 });
 
@@ -91,6 +112,16 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
     authData: AuthData,
     { cmp }: ExpressionBuilder<typeof TYL_trackableGroup>,
   ) => cmp("user_id", "=", authData.sub);
+
+  const allowIfOwnerUserFlags = (
+    authData: AuthData,
+    { cmp }: ExpressionBuilder<typeof TYL_userFlags>,
+  ) => cmp("userId", "=", authData.sub);
+
+  const allowIfOwnerTrackableFlags = (
+    authData: AuthData,
+    { cmp }: ExpressionBuilder<typeof TYL_trackableFlags>,
+  ) => cmp("trackableId", "=", authData.sub);
 
   return {
     TYL_trackableRecord: {
@@ -120,10 +151,30 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
         postMutation: [allowIfOwnerTrackableGroup],
       },
     },
+    TYL_trackableFlags: {
+      row: {
+        insert: [allowIfOwnerTrackableFlags],
+        delete: [allowIfOwnerTrackableFlags],
+        select: [allowIfOwnerTrackableFlags],
+        preMutation: [allowIfOwnerTrackableFlags],
+        postMutation: [allowIfOwnerTrackableFlags],
+      },
+    },
+    TYL_userFlags: {
+      row: {
+        insert: [allowIfOwnerUserFlags],
+        delete: [allowIfOwnerUserFlags],
+        select: [allowIfOwnerUserFlags],
+        preMutation: [allowIfOwnerUserFlags],
+        postMutation: [allowIfOwnerUserFlags],
+      },
+    },
   };
 });
 
 export type ITrackableZero = Row<Schema["tables"]["TYL_trackable"]>;
+
+export type ITrackableFlagsZero = Row<Schema["tables"]["TYL_trackableFlags"]>;
 
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P];

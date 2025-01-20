@@ -1,6 +1,10 @@
 import { eachDayOfInterval, isSameDay, startOfTomorrow } from "date-fns";
 
-import type { IBooleanSettings, INumberSettings } from "@tyl/db/jsonValidators";
+import type {
+  IColorCodingValue,
+  IColorValue,
+  INumberProgressBounds,
+} from "@tyl/db/jsonValidators";
 import type { DbTrackableSelect } from "@tyl/db/schema";
 
 import { range } from "./animation";
@@ -69,28 +73,24 @@ export const mapDataToRange = (
   return result;
 };
 
-export const getValueToColorFunc = (settings: INumberSettings) => {
+export const getValueToColorFunc = (colorCoding?: IColorCodingValue[]) => {
   return (displayedNumber: number) => {
-    if (
-      !settings.colorCodingEnabled ||
-      !settings.colorCoding ||
-      displayedNumber === 0
-    ) {
+    if (!colorCoding?.length || displayedNumber === 0) {
       return presetsMap.neutral;
     }
     return getColorAtPosition({
-      value: settings.colorCoding,
+      value: colorCoding,
       point: displayedNumber,
     });
   };
 };
 
-export const getValueToProgressPercentage = (settings: INumberSettings) => {
+export const getValueToProgressPercentage = (
+  progress?: INumberProgressBounds,
+) => {
   return (val: number | undefined) => {
-    const progress = settings.progress;
     if (
-      !progress ||
-      !settings.progressEnabled ||
+      !progress?.enabled ||
       typeof progress.max === "undefined" ||
       typeof progress.min === "undefined" ||
       typeof val === "undefined"
@@ -101,20 +101,21 @@ export const getValueToProgressPercentage = (settings: INumberSettings) => {
   };
 };
 
-export const getDayCellBooleanColors = (settings: IBooleanSettings) => {
-  const themeActive = settings.activeColor;
-  const themeInactive = settings.inactiveColor;
+export const getDayCellBooleanColors = (
+  activeColor?: IColorValue,
+  inactiveColor?: IColorValue,
+) => {
   const themeActiveLight = makeColorString(
-    themeActive?.lightMode ?? presetsMap.green.lightMode,
+    activeColor?.lightMode ?? presetsMap.green.lightMode,
   );
   const themeActiveDark = makeColorString(
-    themeActive?.darkMode ?? presetsMap.green.darkMode,
+    activeColor?.darkMode ?? presetsMap.green.darkMode,
   );
   const themeInactiveLight = makeColorString(
-    themeInactive?.lightMode ?? presetsMap.neutral.lightMode,
+    inactiveColor?.lightMode ?? presetsMap.neutral.lightMode,
   );
   const themeInactiveDark = makeColorString(
-    themeInactive?.darkMode ?? presetsMap.neutral.darkMode,
+    inactiveColor?.darkMode ?? presetsMap.neutral.darkMode,
   );
 
   return {

@@ -62,7 +62,8 @@ export const useZeroTrackableListWithData = (
         )
         .orderBy("date", params.orderBy ?? "asc"),
     )
-    .related("trackableGroup");
+    .related("trackableGroup")
+    .related("trackableFlags");
 
   return useQuery(q);
 };
@@ -71,7 +72,8 @@ export const useZeroTrackable = ({ id }: { id: string }) => {
   const zero = useZ();
   const q = zero.query.TYL_trackable.one()
     .where("id", id)
-    .related("trackableGroup");
+    .related("trackableGroup")
+    .related("trackableFlags");
 
   return useQuery(q);
 };
@@ -79,7 +81,7 @@ export const useZeroTrackable = ({ id }: { id: string }) => {
 interface ByIdParams extends TrackableRangeParams {
   id: string;
 }
-const useTracakbleQuery = (params: ByIdParams) => {
+const useTrackableQuery = (params: ByIdParams) => {
   const zero = useZ();
 
   return zero.query.TYL_trackableRecord.where(({ cmp, and }) =>
@@ -92,7 +94,7 @@ const useTracakbleQuery = (params: ByIdParams) => {
 };
 
 export const useZeroTrackableData = ({ id, firstDay, lastDay }: ByIdParams) => {
-  return useQuery(useTracakbleQuery({ id, firstDay, lastDay }));
+  return useQuery(useTrackableQuery({ id, firstDay, lastDay }));
 };
 
 export const usePreloadZeroTrackableData = ({
@@ -100,7 +102,7 @@ export const usePreloadZeroTrackableData = ({
   firstDay,
   lastDay,
 }: ByIdParams) => {
-  useTracakbleQuery({ id, firstDay, lastDay }).preload();
+  useTrackableQuery({ id, firstDay, lastDay }).preload();
 };
 
 export const usePreloadTrackableMonthView = ({
@@ -148,7 +150,10 @@ export const usePreloadCore = () => {
       .where("date", "<=", addMonths(now, 2).getTime()),
   )
     .related("trackableGroup")
+    .related("trackableFlags")
     .preload();
+
+  zero.query.TYL_userFlags.where("userId", zero.userID).preload();
 };
 
 export const useZeroGroupList = (group: string) => {

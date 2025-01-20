@@ -134,6 +134,10 @@ export const EditorModal = ({
     if (open && currentId !== id) {
       registerClient(id, () => onOpenChange(false));
     }
+
+    if (!open && currentId === id) {
+      unregisterClient(id);
+    }
   }, [open]);
 
   if (currentId === id && portalTarget.current) {

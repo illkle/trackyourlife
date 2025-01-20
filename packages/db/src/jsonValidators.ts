@@ -21,24 +21,6 @@ export const ZColorValue = z.object({
   manualMode: z.boolean().optional(),
 });
 
-export type IColorRGB = z.infer<typeof colorRGB>;
-export type IColorHSL = z.infer<typeof colorHSL>;
-export type IColorValue = z.infer<typeof ZColorValue>;
-
-/* Trackable settings */
-
-const basics = {
-  startDate: z.string().datetime().optional(),
-};
-
-export const ZTrackableSettingsBase = z.object(basics);
-
-export const ZTrackableSettingsBoolean = z.object({
-  ...basics,
-  inactiveColor: ZColorValue.optional(),
-  activeColor: ZColorValue.optional(),
-});
-
 export const ZColorCodingValue = z.object({
   point: z.number(),
   color: ZColorValue,
@@ -46,50 +28,24 @@ export const ZColorCodingValue = z.object({
   id: z.string().uuid().default("empty_id"),
 });
 
+export const ZNumberColorCoding = z.object({
+  enabled: z.boolean().optional(),
+  colors: z.array(ZColorCodingValue).optional().default([]),
+});
+
+/* Other stuff */
+
+export const ZNumberProgressBounds = z.object({
+  min: z.number().optional(),
+  max: z.number().optional(),
+  enabled: z.boolean().optional(),
+});
+
+export type IColorRGB = z.infer<typeof colorRGB>;
+export type IColorHSL = z.infer<typeof colorHSL>;
+export type IColorValue = z.infer<typeof ZColorValue>;
+
 export type IColorCodingValue = z.infer<typeof ZColorCodingValue>;
 
-export const ZTrackableSettingsNumber = z.object({
-  ...basics,
-  incrementBy: z.number().min(1).optional(),
-  progressEnabled: z.boolean().optional(),
-  progress: z
-    .object({
-      min: z.number().optional(),
-      max: z.number().optional(),
-    })
-    .optional(),
-  colorCodingEnabled: z.boolean().optional(),
-  colorCoding: z.array(ZColorCodingValue).optional(),
-});
-
-const typeSettingsUnion = z.discriminatedUnion("type", [
-  z.object({ type: z.literal("boolean"), settings: ZTrackableSettingsBoolean }),
-  z.object({ type: z.literal("number"), settings: ZTrackableSettingsNumber }),
-]);
-
-export const ZTrackableSettings = typeSettingsUnion.transform(
-  (v) => v.settings,
-);
-
-export type IBooleanSettings = z.infer<typeof ZTrackableSettingsBoolean>;
-export type INumberSettings = z.infer<typeof ZTrackableSettingsNumber>;
-
-export type ITrackableSettings = IBooleanSettings | INumberSettings;
-
-/* User settings */
-
-export const ZUserSettings = z.object({
-  favorites: z.array(z.string()).default([]),
-  colorPresets: z.array(ZColorValue).optional(),
-  preserveLocationOnSidebarNav: z.boolean().default(true),
-  timezone: z
-    .object({
-      name: z.string(),
-      label: z.string(),
-      tzCode: z.string(),
-      utc: z.string(),
-    })
-    .optional(),
-});
-
-export type IUserSettings = z.infer<typeof ZUserSettings>;
+export type INumberProgressBounds = z.infer<typeof ZNumberProgressBounds>;
+export type INumberColorCoding = z.infer<typeof ZNumberColorCoding>;

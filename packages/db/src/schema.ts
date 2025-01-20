@@ -3,7 +3,6 @@ import {
   bigint,
   boolean,
   index,
-  integer,
   json,
   pgEnum,
   pgTableCreator,
@@ -13,8 +12,6 @@ import {
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
-
-import type { ITrackableSettings } from "./jsonValidators";
 
 const pgTable = pgTableCreator((name) => `TYL_${name}`);
 
@@ -82,7 +79,36 @@ export const jwks = pgTable("jwks", {
   createdAt: timestamp("createdAt").notNull(),
 });
 
-/**
+/*
+ * Tables related to user.
+ */
+export const userFlags = pgTable(
+  "userFlags",
+  {
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    key: text("key").notNull(),
+    value: json("value").default({}),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.userId, t.key] }),
+  }),
+);
+
+export const userFlagsRelations = relations(userFlags, ({ one }) => ({
+  user: one(user, {
+    fields: [userFlags.userId],
+    references: [user.id],
+  }),
+}));
+
+// Add to existing user relations or create if doesn't exist
+export const userRelations = relations(user, ({ many }) => ({
+  flags: many(userFlags),
+}));
+
+/*
  * TRACKABLES
  */
 
@@ -103,8 +129,6 @@ export const trackable = pgTable(
     id: uuid("id").defaultRandom().primaryKey(),
     name: text("name").notNull(),
     type: trackableTypeEnum("type").notNull(),
-    attached_note: text("attached_note"),
-    settings: json("settings").default({}).$type<ITrackableSettings>(),
   },
   (t) => ({
     user_id_idx: uniqueIndex("user_id_idx").on(t.user_id, t.id),
@@ -112,8 +136,33 @@ export const trackable = pgTable(
   }),
 );
 
+/*
+ * Settings and additional information about trackable.
+ */
+export const trackableFlags = pgTable(
+  "trackableFlags",
+  {
+    trackableId: uuid("trackableId")
+      .notNull()
+      .references(() => trackable.id, { onDelete: "cascade" }),
+    key: text("key").notNull(),
+    value: json("value").default({}),
+  },
+  (t) => ({
+    pk: primaryKey({ columns: [t.trackableId, t.key] }),
+  }),
+);
+
+export const trackableFlagsRelations = relations(trackableFlags, ({ one }) => ({
+  trackable: one(trackable, {
+    fields: [trackableFlags.trackableId],
+    references: [trackable.id],
+  }),
+}));
+
 export const trackableRelations = relations(trackable, ({ many }) => ({
   data: many(trackableRecord),
+  flags: many(trackableFlags),
 }));
 
 export const trackableRecord = pgTable(
@@ -194,3 +243,9 @@ export type DbTrackableInsert = typeof trackable.$inferInsert;
 
 export type DbTrackableRecordSelect = typeof trackableRecord.$inferSelect;
 export type DbTrackableRecordInsert = typeof trackableRecord.$inferInsert;
+
+export type DbTrackableFlagsSelect = typeof trackableFlags.$inferSelect;
+export type DbTrackableFlagsInsert = typeof trackableFlags.$inferInsert;
+
+export type DbUserFlagsSelect = typeof userFlags.$inferSelect;
+export type DbUserFlagsInsert = typeof userFlags.$inferInsert;

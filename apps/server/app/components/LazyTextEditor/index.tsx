@@ -1,5 +1,12 @@
+import type { ReactNode } from "react";
+import type { KeyBindingCommandFunction } from "remirror";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Remirror, useRemirror } from "@remirror/react";
+import {
+  EditorComponent,
+  Remirror,
+  useKeymap,
+  useRemirror,
+} from "@remirror/react";
 import {
   BoldExtension,
   BulletListExtension,
@@ -18,11 +25,13 @@ export const LazyTextEditor = ({
   contentTimestamp,
   updateContent,
   className,
+  children,
 }: {
   content: string;
   contentTimestamp: number;
   updateContent: (content: string, timestamp: number) => void;
   className?: string;
+  children?: ReactNode;
 }) => {
   const { manager, getContext } = useRemirror({
     extensions: () => [
@@ -35,6 +44,7 @@ export const LazyTextEditor = ({
       new LinkExtension({}),
       new MarkdownExtension({ copyAsMarkdown: true }),
     ],
+
     content: content,
     selection: "end",
     stringHandler: "markdown",
@@ -62,7 +72,7 @@ export const LazyTextEditor = ({
         updateContent(content, ts);
         snapshotTimestamp.current = ts;
       },
-      300,
+      400,
       { leading: false },
     ),
 
@@ -78,6 +88,24 @@ export const LazyTextEditor = ({
       onChange={({ helpers }) => {
         throttledUpdate(helpers.getMarkdown());
       }}
-    />
+    >
+      <EditorComponent />
+      {children}
+    </Remirror>
   );
+};
+
+export const SubmitHook = ({ onSubmit }: { onSubmit: () => void }) => {
+  const os = useCallback<KeyBindingCommandFunction>(
+    ({ next }) => {
+      onSubmit();
+
+      return next();
+    },
+    [onSubmit],
+  );
+
+  useKeymap("Mod-Enter", os);
+
+  return null;
 };

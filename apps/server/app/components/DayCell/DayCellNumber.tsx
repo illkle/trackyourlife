@@ -19,6 +19,7 @@ import {
   DrawerTrigger,
 } from "~/@shad/components/drawer";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
+import { useTrackableFlags } from "~/components/TrackableFlags/TrackableFlagsProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
 const getNumberSafe = (v: string | undefined) => {
@@ -47,15 +48,22 @@ export const DayCellNumber = ({
 }) => {
   const isDesktop = useIsDesktop();
 
-  const { settings } = useTrackableMeta();
+  const { id } = useTrackableMeta();
+
+  const { getFlag } = useTrackableFlags();
+
+  const colorCoding = getFlag(id, "NumberColorCoding");
+  const progressBounds = getFlag(id, "NumberProgessBounds");
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const valueToColor = useCallback(getValueToColorFunc(settings), [settings]);
+  const valueToColor = useCallback(getValueToColorFunc(colorCoding), [
+    colorCoding,
+  ]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const valueToProgressPercentage = useCallback(
-    getValueToProgressPercentage(settings),
-    [settings],
+    getValueToProgressPercentage(progressBounds),
+    [progressBounds],
   );
 
   const [internalNumber, setInternalNumber] = useState(getNumberSafe(value));

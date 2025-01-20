@@ -11,7 +11,7 @@ import {
   DrawerTrigger,
 } from "~/@shad/components/drawer";
 import { EditorModal } from "~/components/EditorModal";
-import { LazyTextEditor } from "~/components/LazyTextEditor";
+import { LazyTextEditor, SubmitHook } from "~/components/LazyTextEditor";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
@@ -48,7 +48,13 @@ export const DayCellText = ({
       contentTimestamp={createdAt ?? 0}
       updateContent={onChange}
       className="mt-2"
-    />
+    >
+      <SubmitHook
+        onSubmit={() => {
+          setIsOpen(false);
+        }}
+      ></SubmitHook>
+    </LazyTextEditor>
   );
 
   const c = (

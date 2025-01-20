@@ -17,15 +17,17 @@ import {
 } from "~/@shad/components/drawer";
 import { Textarea } from "~/@shad/components/textarea";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
+import { useTrackableFlags } from "~/components/TrackableFlags/TrackableFlagsProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
-import { useZ, useZeroTrackable } from "~/utils/useZ";
 
 export const TrackableNoteEditable = () => {
   const { id } = useTrackableMeta();
-  const [trackable] = useZeroTrackable({ id });
-  const z = useZ();
 
-  const hasNote = Boolean(trackable?.attached_note);
+  const { getFlag, setFlag } = useTrackableFlags();
+
+  const note = getFlag(id, "AnyNote");
+
+  const hasNote = Boolean(note);
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -33,17 +35,9 @@ export const TrackableNoteEditable = () => {
 
   const isDesktop = useIsDesktop();
 
-  const saveHandler = () => {
-    void z.mutate.TYL_trackable.update({
-      id,
-      attached_note: internalValue,
-    });
-    setIsEditing(false);
-  };
-
   const display = hasNote ? (
     <p className="cursor-pointer whitespace-pre-wrap rounded-md bg-inherit px-2 py-1 text-left text-sm dark:text-neutral-300 md:text-base">
-      {trackable?.attached_note}
+      {note}
     </p>
   ) : (
     <Button variant="outline" className="w-fit gap-2">
@@ -51,10 +45,14 @@ export const TrackableNoteEditable = () => {
       <span className="max-lg:hidden">Add note</span>{" "}
     </Button>
   );
+  const saveHandler = async () => {
+    await setFlag(id, "AnyNote", internalValue);
+    setIsEditing(false);
+  };
 
   const openChangeHandler = (v: boolean) => {
     if (v === true) {
-      setInternalValue(trackable?.attached_note ?? "");
+      setInternalValue(note ?? "");
     }
     setIsEditing(v);
   };
@@ -75,7 +73,7 @@ export const TrackableNoteEditable = () => {
           onChange={(e) => setInternalValue(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              saveHandler();
+              void saveHandler();
             }
           }}
         />

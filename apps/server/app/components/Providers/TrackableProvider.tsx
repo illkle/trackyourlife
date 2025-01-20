@@ -7,7 +7,6 @@ interface ITrackableContext {
   id: ITrackableZero["id"];
   type: ITrackableZero["type"];
   name: ITrackableZero["name"];
-  settings: ITrackableZero["settings"];
 }
 
 export const TrackableContext = createContext<ITrackableContext | null>(null);
@@ -16,7 +15,7 @@ const TrackableProvider = ({
   trackable,
   children,
 }: {
-  trackable: Pick<ITrackableZero, "id" | "type" | "settings" | "name">;
+  trackable: Pick<ITrackableZero, "id" | "type" | "name">;
   children: ReactNode;
 }) => {
   return (
@@ -25,7 +24,6 @@ const TrackableProvider = ({
         id: trackable.id,
         type: trackable.type,
         name: trackable.name,
-        settings: trackable.settings,
       }}
     >
       {children}

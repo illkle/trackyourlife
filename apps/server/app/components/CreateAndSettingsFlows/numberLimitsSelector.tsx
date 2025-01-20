@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { cn } from "@shad/utils";
 
-import type { INumberSettings } from "@tyl/db/jsonValidators";
+import type { INumberProgressBounds } from "@tyl/db/jsonValidators";
 
 import { Input } from "~/@shad/components/input";
 
 export interface IRangeLabelSelector {
-  value: INumberSettings["progress"];
-  onChange: (a: INumberSettings["progress"]) => void;
+  value: INumberProgressBounds;
+  onChange: (a: INumberProgressBounds) => void;
   className?: string;
 }
 
@@ -16,8 +16,8 @@ const NumberLimitsSelector = ({
   onChange,
   className,
 }: IRangeLabelSelector) => {
-  const [innerMin, setInnerMin] = useState(String(value?.min ?? "0"));
-  const [innerMax, setInnerMax] = useState(String(value?.max ?? "100"));
+  const [innerMin, setInnerMin] = useState(String(value.min ?? "0"));
+  const [innerMax, setInnerMax] = useState(String(value.max ?? "100"));
 
   const [isError, setIsError] = useState(false);
 
