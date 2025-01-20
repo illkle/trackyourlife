@@ -300,7 +300,7 @@ const NumberColorSelector = ({
         ],
   );
 
-  const sorted = innerValue.sort((a, b) => a.point - b.point);
+  const sorted = [...innerValue].sort((a, b) => a.point - b.point);
 
   return (
     <ControllerGradient

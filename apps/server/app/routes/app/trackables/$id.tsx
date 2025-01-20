@@ -27,6 +27,7 @@ import { Spinner } from "~/@shad/components/spinner";
 import DeleteButton from "~/components/DeleteButton";
 import { FavoriteButton } from "~/components/FavoriteButton";
 import TrackableProvider from "~/components/Providers/TrackableProvider";
+import { TrackableFlagsProvider } from "~/components/TrackableFlags/TrackableFlagsProvider";
 import { TrackableNameEditable } from "~/components/TrackableName";
 import { useZ, useZeroTrackable } from "~/utils/useZ";
 
@@ -75,100 +76,102 @@ function RouteComponent() {
   }
 
   return (
-    <TrackableProvider trackable={trackable}>
-      <div className="content-container flex h-full max-h-full w-full flex-col pb-6">
-        <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
-          <TrackableNameEditable />
-          <div className="flex gap-2 justify-self-end">
-            <FavoriteButton variant={"outline"} trackable={trackable} />
-            {isView ? (
-              <>
-                <Link
-                  to={"/app/trackables/$id/settings"}
-                  params={{ id: params.id }}
-                >
-                  <Button name="settings" variant="outline">
-                    <SettingsIcon className="h-4 w-4" />
-                    <span className="max-md:hidden">Settings</span>
-                  </Button>
-                </Link>
-              </>
-            ) : (
-              <>
-                <Link
-                  to={"/app/trackables/$id/view"}
-                  params={{ id: params.id }}
-                >
-                  <Button variant="outline">
-                    <CalendarDaysIcon className="h-4 w-4" />
-                    <span className="max-md:hidden">Calendar</span>
-                  </Button>
-                </Link>
-              </>
-            )}
-
-            <DeleteButton className="w-full" id={params.id}>
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline">
-                    <MoreHorizontalIcon className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  side="bottom"
-                  align="end"
-                  className="min-w-44"
-                >
-                  <DropdownMenuItem className="cursor-pointer" asChild>
-                    <Link
-                      to={"/app/trackables/$id/import"}
-                      params={{ id: params.id }}
-                    >
-                      <ImportIcon className="mr-1" /> Import
-                    </Link>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem
-                    className="cursor-pointer"
-                    onClick={() => {
-                      if (isArchived) {
-                        void z.mutate.TYL_trackableGroup.delete({
-                          trackableId: params.id,
-                          group: "archived",
-                        });
-                      } else {
-                        void z.mutate.TYL_trackableGroup.upsert({
-                          trackableId: params.id,
-                          group: "archived",
-                          user_id: z.userID,
-                        });
-                      }
-                    }}
+    <TrackableFlagsProvider trackableIds={[params.id]}>
+      <TrackableProvider trackable={trackable}>
+        <div className="content-container flex h-full max-h-full w-full flex-col pb-6">
+          <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
+            <TrackableNameEditable />
+            <div className="flex gap-2 justify-self-end">
+              <FavoriteButton variant={"outline"} trackable={trackable} />
+              {isView ? (
+                <>
+                  <Link
+                    to={"/app/trackables/$id/settings"}
+                    params={{ id: params.id }}
                   >
-                    {isArchived ? (
-                      <>
-                        <ArchiveRestoreIcon className="mr-1" /> Unarchve
-                      </>
-                    ) : (
-                      <>
-                        <ArchiveIcon className="mr-1" /> Archive
-                      </>
-                    )}
-                  </DropdownMenuItem>
+                    <Button name="settings" variant="outline">
+                      <SettingsIcon className="h-4 w-4" />
+                      <span className="max-md:hidden">Settings</span>
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to={"/app/trackables/$id/view"}
+                    params={{ id: params.id }}
+                  >
+                    <Button variant="outline">
+                      <CalendarDaysIcon className="h-4 w-4" />
+                      <span className="max-md:hidden">Calendar</span>
+                    </Button>
+                  </Link>
+                </>
+              )}
 
-                  <AlertDialogTrigger name="delete" asChild>
-                    <DropdownMenuItem className="cursor-pointer">
-                      <TrashIcon className="mr-1" /> Delete
+              <DeleteButton className="w-full" id={params.id}>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="outline">
+                      <MoreHorizontalIcon className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent
+                    side="bottom"
+                    align="end"
+                    className="min-w-44"
+                  >
+                    <DropdownMenuItem className="cursor-pointer" asChild>
+                      <Link
+                        to={"/app/trackables/$id/import"}
+                        params={{ id: params.id }}
+                      >
+                        <ImportIcon className="mr-1" /> Import
+                      </Link>
                     </DropdownMenuItem>
-                  </AlertDialogTrigger>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </DeleteButton>
+
+                    <DropdownMenuItem
+                      className="cursor-pointer"
+                      onClick={() => {
+                        if (isArchived) {
+                          void z.mutate.TYL_trackableGroup.delete({
+                            trackableId: params.id,
+                            group: "archived",
+                          });
+                        } else {
+                          void z.mutate.TYL_trackableGroup.upsert({
+                            trackableId: params.id,
+                            group: "archived",
+                            user_id: z.userID,
+                          });
+                        }
+                      }}
+                    >
+                      {isArchived ? (
+                        <>
+                          <ArchiveRestoreIcon className="mr-1" /> Unarchve
+                        </>
+                      ) : (
+                        <>
+                          <ArchiveIcon className="mr-1" /> Archive
+                        </>
+                      )}
+                    </DropdownMenuItem>
+
+                    <AlertDialogTrigger name="delete" asChild>
+                      <DropdownMenuItem className="cursor-pointer">
+                        <TrashIcon className="mr-1" /> Delete
+                      </DropdownMenuItem>
+                    </AlertDialogTrigger>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </DeleteButton>
+            </div>
           </div>
+          <hr className="my-4 h-[1px] border-none bg-neutral-900 opacity-10 outline-none dark:bg-neutral-50" />
+          <Outlet />
         </div>
-        <hr className="my-4 h-[1px] border-none bg-neutral-900 opacity-10 outline-none dark:bg-neutral-50" />
-        <Outlet />
-      </div>
-    </TrackableProvider>
+      </TrackableProvider>
+    </TrackableFlagsProvider>
   );
 }

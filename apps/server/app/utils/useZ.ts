@@ -150,8 +150,9 @@ export const usePreloadCore = () => {
       .where("date", "<=", addMonths(now, 2).getTime()),
   )
     .related("trackableGroup")
-    .related("trackableFlags")
     .preload();
+
+  zero.query.TYL_trackableFlags.preload();
 
   zero.query.TYL_userFlags.where("userId", zero.userID).preload();
 };

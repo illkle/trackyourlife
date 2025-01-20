@@ -146,7 +146,7 @@ export const DayCellNumber = ({
   const color = useMemo(() => {
     return valueToColor(internalNumber);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [internalNumber]);
+  }, [internalNumber, valueToColor]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 

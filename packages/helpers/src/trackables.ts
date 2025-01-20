@@ -1,8 +1,8 @@
 import { eachDayOfInterval, isSameDay, startOfTomorrow } from "date-fns";
 
 import type {
-  IColorCodingValue,
   IColorValue,
+  INumberColorCoding,
   INumberProgressBounds,
 } from "@tyl/db/jsonValidators";
 import type { DbTrackableSelect } from "@tyl/db/schema";
@@ -73,13 +73,17 @@ export const mapDataToRange = (
   return result;
 };
 
-export const getValueToColorFunc = (colorCoding?: IColorCodingValue[]) => {
+export const getValueToColorFunc = (colorCoding?: INumberColorCoding) => {
   return (displayedNumber: number) => {
-    if (!colorCoding?.length || displayedNumber === 0) {
+    if (
+      !colorCoding?.enabled ||
+      !colorCoding.colors.length ||
+      displayedNumber === 0
+    ) {
       return presetsMap.neutral;
     }
     return getColorAtPosition({
-      value: colorCoding,
+      value: colorCoding.colors,
       point: displayedNumber,
     });
   };

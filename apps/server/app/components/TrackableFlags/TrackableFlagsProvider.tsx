@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { createContext, useContext, useMemo } from "react";
+import { createContext, memo, useContext, useMemo } from "react";
 import { useQuery } from "@rocicorp/zero/react";
 import { z } from "zod";
 
@@ -35,10 +35,6 @@ export type ITrackableFlagKey = keyof typeof FlagsValidators;
 export type ITrackableFlagValue<K extends ITrackableFlagKey> = z.infer<
   (typeof FlagsValidators)[K]
 >;
-
-export type ITrackableFlagsKV = {
-  [K in ITrackableFlagKey]: ITrackableFlagValue<K> | undefined;
-};
 
 interface ITrackableFlagsContext {
   getFlag: <K extends ITrackableFlagKey>(
@@ -78,12 +74,28 @@ const createFlagsMap = (flags: readonly ITrackableFlagsZero[]) => {
   return flagMap;
 };
 
-export const createFlagsObject = (flags: readonly ITrackableFlagsZero[]) => {
-  const flagMap = createFlagsMap(flags);
-  return Object.fromEntries(flagMap.entries()) as ITrackableFlagsKV;
+export type ITrackableFlagsKV = {
+  [K in ITrackableFlagKey]: ITrackableFlagValue<K> | undefined;
 };
 
-export const TrackableFlagsProvider = ({
+export const createFlagsObjectWithoutId = (
+  flags: readonly ITrackableFlagsZero[],
+) => {
+  const object = {} as ITrackableFlagsKV;
+
+  flags.forEach((flag) => {
+    if (!(flag.key in FlagsValidators)) {
+      return;
+    }
+    const validator = FlagsValidators[flag.key as ITrackableFlagKey];
+    //@ts-expect-error This is correct
+    object[flag.key as ITrackableFlagKey] = validator.parse(flag.value);
+  });
+
+  return object;
+};
+
+const TrackableFlagsProviderNonMemo = ({
   children,
   trackableIds,
 }: {
@@ -124,6 +136,8 @@ export const TrackableFlagsProvider = ({
     </TrackableFlagsContext.Provider>
   );
 };
+
+export const TrackableFlagsProvider = memo(TrackableFlagsProviderNonMemo);
 
 export const TrackableFlagsProviderMock = ({
   children,

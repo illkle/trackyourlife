@@ -10,6 +10,7 @@ import { Button } from "~/@shad/components/button";
 import { Spinner } from "~/@shad/components/spinner";
 import DayCellRouter from "~/components/DayCell";
 import TrackableProvider from "~/components/Providers/TrackableProvider";
+import { TrackableFlagsProvider } from "~/components/TrackableFlags/TrackableFlagsProvider";
 import { TrackableNameText } from "~/components/TrackableName";
 import { useZeroTrackableListWithData } from "~/utils/useZ";
 import MiniTrackable from "./miniTrackable";
@@ -56,22 +57,26 @@ const TrackablesList = ({
     data: mapDataToRange(firstDay, lastDay, v.trackableRecord),
   }));
 
+  const trackableIds = mappedData.map((v) => v.trackable.id);
+
   return (
     <>
       <div className="mt-3 grid gap-5">
-        {mappedData.map(({ trackable, data }) => (
-          <m.div
-            transition={{ duration: 0.2, ease: "circInOut" }}
-            layout
-            layoutId={trackable.id}
-            key={trackable.id}
-            className="border-b border-neutral-200 pb-4 last:border-0 dark:border-neutral-800"
-          >
-            <TrackableProvider trackable={trackable}>
-              <MiniTrackable data={data} trackable={trackable} />
-            </TrackableProvider>
-          </m.div>
-        ))}
+        <TrackableFlagsProvider trackableIds={trackableIds}>
+          {mappedData.map(({ trackable, data }) => (
+            <m.div
+              transition={{ duration: 0.2, ease: "circInOut" }}
+              layout
+              layoutId={trackable.id}
+              key={trackable.id}
+              className="border-b border-neutral-200 pb-4 last:border-0 dark:border-neutral-800"
+            >
+              <TrackableProvider trackable={trackable}>
+                <MiniTrackable data={data} trackable={trackable} />
+              </TrackableProvider>
+            </m.div>
+          ))}
+        </TrackableFlagsProvider>
       </div>
     </>
   );
@@ -110,65 +115,68 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
 
   const trackables = mappedData.map((_, i) => i);
 
+  const trackableIds = mappedData.map((v) => v.trackable.id);
   return (
     <div className="flex flex-col gap-6">
-      {days.map((date, dateIndex) => {
-        return (
-          <Fragment key={dateIndex}>
-            <div className="relative flex h-fit flex-col">
-              <div className="flex w-full flex-col justify-between gap-2">
-                {(isLastDayOfMonth(date) || dateIndex === 0) && (
-                  <div className="mb-2 text-2xl font-semibold lg:text-3xl">
-                    {format(date, "MMMM")}
-                  </div>
-                )}
-
-                <span className="flex w-full items-baseline gap-2">
-                  <span className="text-xl opacity-30">
-                    {format(date, "EEEE")}
-                  </span>{" "}
-                  <span className="text-xl font-semibold opacity-80">
-                    {format(date, "d")}
-                  </span>
-                </span>
-              </div>
-              <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {trackables.map((index) => {
-                  const tr = mappedData[index];
-                  if (!tr) return null;
-                  const day = tr.data[dateIndex];
-                  if (!day) return null;
-
-                  return (
-                    <div key={index}>
-                      <TrackableProvider trackable={tr.trackable}>
-                        <Link
-                          to={"/app/trackables/$id/view"}
-                          params={{ id: tr.trackable.id }}
-                          className={cn(
-                            "mb-1 block w-full truncate text-xl text-neutral-950 opacity-20 dark:text-neutral-50",
-                          )}
-                        >
-                          <TrackableNameText trackable={tr.trackable} />
-                        </Link>
-
-                        <DayCellRouter
-                          {...day}
-                          labelType="none"
-                          className="h-20"
-                        />
-                      </TrackableProvider>
+      <TrackableFlagsProvider trackableIds={trackableIds}>
+        {days.map((date, dateIndex) => {
+          return (
+            <Fragment key={dateIndex}>
+              <div className="relative flex h-fit flex-col">
+                <div className="flex w-full flex-col justify-between gap-2">
+                  {(isLastDayOfMonth(date) || dateIndex === 0) && (
+                    <div className="mb-2 text-2xl font-semibold lg:text-3xl">
+                      {format(date, "MMMM")}
                     </div>
-                  );
-                })}
+                  )}
+
+                  <span className="flex w-full items-baseline gap-2">
+                    <span className="text-xl opacity-30">
+                      {format(date, "EEEE")}
+                    </span>{" "}
+                    <span className="text-xl font-semibold opacity-80">
+                      {format(date, "d")}
+                    </span>
+                  </span>
+                </div>
+                <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {trackables.map((index) => {
+                    const tr = mappedData[index];
+                    if (!tr) return null;
+                    const day = tr.data[dateIndex];
+                    if (!day) return null;
+
+                    return (
+                      <div key={index}>
+                        <TrackableProvider trackable={tr.trackable}>
+                          <Link
+                            to={"/app/trackables/$id/view"}
+                            params={{ id: tr.trackable.id }}
+                            className={cn(
+                              "mb-1 block w-full truncate text-xl text-neutral-950 opacity-20 dark:text-neutral-50",
+                            )}
+                          >
+                            <TrackableNameText trackable={tr.trackable} />
+                          </Link>
+
+                          <DayCellRouter
+                            {...day}
+                            labelType="none"
+                            className="h-20"
+                          />
+                        </TrackableProvider>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-            {dateIndex !== days.length - 1 && (
-              <hr className="h-0 border-b border-neutral-200 dark:border-neutral-800" />
-            )}
-          </Fragment>
-        );
-      })}
+              {dateIndex !== days.length - 1 && (
+                <hr className="h-0 border-b border-neutral-200 dark:border-neutral-800" />
+              )}
+            </Fragment>
+          );
+        })}
+      </TrackableFlagsProvider>
     </div>
   );
 };

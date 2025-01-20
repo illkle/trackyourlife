@@ -30,7 +30,7 @@ const NumberLimitsSelector = ({
       max > min
     ) {
       setIsError(false);
-      onChange({ min, max });
+      onChange({ min, max, enabled: true });
       return;
     }
     setIsError(true);
