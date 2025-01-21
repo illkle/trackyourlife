@@ -80,11 +80,11 @@ const TrackablesList = ({
               key={trackable.id}
               className="border-b border-neutral-200 pb-4 last:border-0 dark:border-neutral-800"
             >
-              <TrackableProvider id={trackable.id} trackable={trackable}>
+              <TrackableProvider trackable={trackable}>
                 <MiniTrackable data={data} trackable={trackable} />
               </TrackableProvider>
             </m.div>
-          ))}{" "}
+          ))}
         </TrackableFlagsProvider>
       </div>
     </>
@@ -160,10 +160,7 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
 
                     return (
                       <div key={index}>
-                        <TrackableProvider
-                          id={tr.trackable.id}
-                          trackable={tr.trackable}
-                        >
+                        <TrackableProvider trackable={tr.trackable}>
                           <Link
                             to={"/app/trackables/$id/view"}
                             params={{ id: tr.trackable.id }}
