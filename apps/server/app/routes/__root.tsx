@@ -8,7 +8,6 @@ import {
 } from "@tanstack/react-router";
 import { createServerFn, Meta, Scripts } from "@tanstack/start";
 import { ThemeProvider } from "next-themes";
-import remirrorCss from "remirror/styles/all.css?url";
 import { getWebRequest } from "vinxi/http";
 
 import { auth } from "~/auth/server";
@@ -49,7 +48,6 @@ export const Route = createRootRouteWithContext<{
 }>()({
   head: () => ({
     links: [
-      { rel: "stylesheet", href: remirrorCss },
       { rel: "stylesheet", href: appCss },
       { rel: "stylesheet", href: textEditorCss },
       {

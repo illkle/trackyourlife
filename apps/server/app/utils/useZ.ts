@@ -40,18 +40,11 @@ export type TrackableListItem = Row<Schema["tables"]["TYL_trackable"]> & {
   trackableGroup: readonly Row<Schema["tables"]["TYL_trackableGroup"]>[];
 };
 
-export const useZeroTrackableListWithData = (
-  params: TrackableRangeParams,
-  archived = false,
-) => {
+export const useZeroTrackableListWithData = (params: TrackableRangeParams) => {
   const zero = useZ();
 
-  const q = zero.query.TYL_trackable.where(({ not, exists }) =>
-    archived
-      ? exists("trackableGroup", (q) => q.where("group", "=", "archived"))
-      : not(exists("trackableGroup", (q) => q.where("group", "=", "archived"))),
-  )
-    .orderBy("name", "asc")
+  // WAITING TODO: add not extest for acrchived when zero fixes it
+  const q = zero.query.TYL_trackable.orderBy("name", "asc")
     .related("trackableRecord", (q) =>
       q
         .where(({ cmp, and }) =>
@@ -62,8 +55,7 @@ export const useZeroTrackableListWithData = (
         )
         .orderBy("date", params.orderBy ?? "asc"),
     )
-    .related("trackableGroup")
-    .related("trackableFlags");
+    .related("trackableGroup");
 
   return useQuery(q);
 };
@@ -152,9 +144,8 @@ export const usePreloadCore = () => {
     .related("trackableGroup")
     .preload();
 
-  zero.query.TYL_trackableFlags.preload();
-
   zero.query.TYL_userFlags.where("userId", zero.userID).preload();
+  zero.query.TYL_trackableFlags.preload();
 };
 
 export const useZeroGroupList = (group: string) => {

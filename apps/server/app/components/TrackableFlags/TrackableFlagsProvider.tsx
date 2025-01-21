@@ -100,12 +100,14 @@ const TrackableFlagsProviderNonMemo = ({
   trackableIds,
 }: {
   children: ReactNode;
-  trackableIds: string[];
+  trackableIds?: string[];
 }) => {
   const z = useZ();
 
   const [flags] = useQuery(
-    z.query.TYL_trackableFlags.where("trackableId", "IN", trackableIds),
+    trackableIds
+      ? z.query.TYL_trackableFlags.where("trackableId", "IN", trackableIds)
+      : z.query.TYL_trackableFlags,
   );
 
   const flagsMap = useMemo(() => {

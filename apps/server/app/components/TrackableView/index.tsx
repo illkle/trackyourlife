@@ -7,6 +7,8 @@ import {
   endOfYear,
   format,
   getISODay,
+  startOfMonth,
+  startOfYear,
 } from "date-fns";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
@@ -70,19 +72,17 @@ const MonthVisualCalendar = ({
   );
 };
 
-const MonthFetcher = ({
-  month,
-  year,
+export const MonthFetcher = ({
+  date,
   mini,
 }: {
-  month: number;
-  year: number;
+  date: Date;
   mini?: boolean;
 }) => {
-  const { id, type } = useTrackableMeta();
+  const { id } = useTrackableMeta();
 
-  const firstDayDate = Date.UTC(year, month, 1);
-  const lastDayDate = endOfMonth(firstDayDate).getTime();
+  const firstDayDate = startOfMonth(date).getTime();
+  const lastDayDate = endOfMonth(date).getTime();
   const prefaceWith = getISODay(firstDayDate) - 1;
 
   const [data] = useZeroTrackableData({
@@ -105,14 +105,14 @@ const MonthFetcher = ({
 };
 
 const YearFetcher = ({
-  year,
+  date,
   openMonth,
 }: {
-  year: number;
+  date: Date;
   openMonth: (n: number) => void;
 }) => {
-  const firstDayDate = Date.UTC(year, 0, 1);
-  const lastDayDate = endOfYear(firstDayDate).getTime();
+  const firstDayDate = startOfYear(date);
+  const lastDayDate = endOfYear(firstDayDate);
 
   const months = eachMonthOfInterval({
     start: firstDayDate,
@@ -132,7 +132,7 @@ const YearFetcher = ({
               {format(el, "MMMM")}
             </Button>
 
-            <MonthFetcher mini={true} month={i} year={el.getFullYear()} />
+            <MonthFetcher mini={true} date={el} />
           </div>
         );
       })}
@@ -167,7 +167,7 @@ const getIncrementedDate = (
   return { year: newYear, month: newMonth };
 };
 
-const ViewController = ({
+export const ViewController = ({
   year,
 
   month,
@@ -292,10 +292,13 @@ const TrackableView = ({
       <ViewController year={year} month={month} />
 
       {view === "days" && (
-        <MonthFetcher year={year as number} month={month as number} />
+        <MonthFetcher date={new Date(year as number, month as number, 1)} />
       )}
       {view === "months" && (
-        <YearFetcher year={year as number} openMonth={openMonth} />
+        <YearFetcher
+          date={new Date(year as number, 0, 1)}
+          openMonth={openMonth}
+        />
       )}
 
       <hr className="my-4 h-[1px] border-none bg-neutral-900 opacity-10 outline-none dark:bg-neutral-50" />

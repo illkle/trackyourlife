@@ -40,15 +40,24 @@ const TrackablesList = ({
   const lastDay = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const firstDay = subDays(lastDay, daysToShow - 1).getTime();
 
-  const [data] = useZeroTrackableListWithData(
-    {
-      firstDay,
-      lastDay,
-    },
-    archived,
-  );
+  const [data] = useZeroTrackableListWithData({
+    firstDay,
+    lastDay,
+  });
 
-  const sorted = useMemo(() => sortTrackableList([...data]), [data]);
+  const sorted = useMemo(
+    () =>
+      sortTrackableList(
+        archived
+          ? [...data].filter((v) =>
+              v.trackableGroup.some((v) => v.group === "archived"),
+            )
+          : [...data].filter(
+              (v) => !v.trackableGroup.some((v) => v.group === "archived"),
+            ),
+      ),
+    [data, archived],
+  );
 
   if (data.length === 0) return <EmptyList />;
 
@@ -57,12 +66,12 @@ const TrackablesList = ({
     data: mapDataToRange(firstDay, lastDay, v.trackableRecord),
   }));
 
-  const trackableIds = mappedData.map((v) => v.trackable.id);
+  console.log("render list", data);
 
   return (
     <>
       <div className="mt-3 grid gap-5">
-        <TrackableFlagsProvider trackableIds={trackableIds}>
+        <TrackableFlagsProvider>
           {mappedData.map(({ trackable, data }) => (
             <m.div
               transition={{ duration: 0.2, ease: "circInOut" }}
@@ -71,11 +80,11 @@ const TrackablesList = ({
               key={trackable.id}
               className="border-b border-neutral-200 pb-4 last:border-0 dark:border-neutral-800"
             >
-              <TrackableProvider trackable={trackable}>
+              <TrackableProvider id={trackable.id} trackable={trackable}>
                 <MiniTrackable data={data} trackable={trackable} />
               </TrackableProvider>
             </m.div>
-          ))}
+          ))}{" "}
         </TrackableFlagsProvider>
       </div>
     </>
@@ -93,7 +102,11 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
     orderBy: "desc",
   });
 
-  const sorted = sortTrackableList([...data]);
+  const sorted = sortTrackableList(
+    [...data].filter(
+      (v) => !v.trackableGroup.some((v) => v.group === "archived"),
+    ),
+  );
 
   const mappedData = sorted.map((v) => ({
     trackable: v,
@@ -115,10 +128,9 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
 
   const trackables = mappedData.map((_, i) => i);
 
-  const trackableIds = mappedData.map((v) => v.trackable.id);
   return (
     <div className="flex flex-col gap-6">
-      <TrackableFlagsProvider trackableIds={trackableIds}>
+      <TrackableFlagsProvider>
         {days.map((date, dateIndex) => {
           return (
             <Fragment key={dateIndex}>
@@ -148,7 +160,10 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
 
                     return (
                       <div key={index}>
-                        <TrackableProvider trackable={tr.trackable}>
+                        <TrackableProvider
+                          id={tr.trackable.id}
+                          trackable={tr.trackable}
+                        >
                           <Link
                             to={"/app/trackables/$id/view"}
                             params={{ id: tr.trackable.id }}

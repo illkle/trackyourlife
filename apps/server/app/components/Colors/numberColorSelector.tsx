@@ -202,7 +202,7 @@ const ControllerGradient = ({
           />
         </div>
       </div>
-      <div className={cn("mt-2 flex flex-col-reverse gap-4")}>
+      <div className={cn("mt-2 flex flex-col-reverse gap-4 sm:flex-row")}>
         <div className="w-full max-md:hidden">
           {!isMobile && selectedColorObject && (
             <ColorPicker

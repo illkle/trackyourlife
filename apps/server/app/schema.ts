@@ -7,6 +7,8 @@ import {
   definePermissions,
 } from "@rocicorp/zero";
 
+const { json } = column;
+
 const TYL_trackableRecord = createTableSchema({
   tableName: "TYL_trackableRecord",
   columns: {
