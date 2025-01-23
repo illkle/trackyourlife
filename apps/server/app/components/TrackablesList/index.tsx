@@ -66,8 +66,6 @@ const TrackablesList = ({
     data: mapDataToRange(firstDay, lastDay, v.trackableRecord),
   }));
 
-  console.log("render list", data);
-
   return (
     <>
       <div className="mt-3 grid gap-5">
@@ -159,7 +157,7 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
                     if (!day) return null;
 
                     return (
-                      <div key={index}>
+                      <div className="" key={index}>
                         <TrackableProvider trackable={tr.trackable}>
                           <Link
                             to={"/app/trackables/$id/view"}

@@ -11,12 +11,8 @@
     @apply w-1 bg-transparent;
   }
 
-  .customScrollBarBig::-webkit-scrollbar {
-    @apply w-2 bg-transparent;
-  }
-
   .customScrollBar::-webkit-scrollbar-thumb {
-    @apply bg-neutral-200 dark:bg-neutral-700;
+    @apply rounded-full bg-neutral-200 dark:bg-neutral-700;
   }
 }
 

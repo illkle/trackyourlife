@@ -40,6 +40,7 @@ export const getSession = createServerFn({ method: "GET" }).handler(
   },
 );
 
+
 const iconPrefix = (path: string) =>
   process.env.SITE === "stage" ? `/stg${path}` : path;
 

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { cn } from "@shad/utils";
 import { Link } from "@tanstack/react-router";
 import {
@@ -55,7 +55,14 @@ const MonthVisualCalendar = ({
   mini?: boolean;
 }) => {
   return (
-    <div className={cn("grid gap-1", mini ? "grid-cols-7" : "grid-cols-7")}>
+    <div
+      className={cn(
+        "grid grid-cols-7 gap-1",
+        mini
+          ? "auto-rows-[48px]"
+          : "auto-rows-[48px] sm:auto-rows-[56px] md:auto-rows-[64px]",
+      )}
+    >
       <div style={{ gridColumn: `span ${prefaceDays}` }}></div>
 
       {data.map((el, i) => {
@@ -64,7 +71,6 @@ const MonthVisualCalendar = ({
             key={i}
             {...el}
             labelType={mini ? "outside" : "auto"}
-            className={mini ? "h-12" : "h-12 sm:h-14 md:h-16"}
           />
         );
       })}
@@ -85,7 +91,7 @@ export const MonthFetcher = ({
   const lastDayDate = endOfMonth(date).getTime();
   const prefaceWith = getISODay(firstDayDate) - 1;
 
-  const [data] = useZeroTrackableData({
+  const [data, s] = useZeroTrackableData({
     id,
     firstDay: firstDayDate,
     lastDay: lastDayDate,

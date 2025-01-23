@@ -1,30 +1,27 @@
-import type { CSSProperties, MouseEvent, ReactNode } from "react";
+import type { CSSProperties, MouseEvent } from "react";
 import { useMemo, useRef, useState } from "react";
 import { cn } from "@shad/utils";
 
 import { clamp } from "@tyl/helpers";
 import { getDayCellBooleanColors } from "@tyl/helpers/trackables";
 
+import {
+  DayCellBaseClasses,
+  DayCellBaseClassesFocus,
+  LabelInside,
+  useDayCellContext,
+} from "~/components/DayCell";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { useTrackableFlags } from "~/components/TrackableFlags/TrackableFlagsProvider";
 import { useAllowAnimation } from "~/utils/useAllowAnimation";
 
 const ANIMATION_TIME = 0.3;
 
-export const DayCellBoolean = ({
-  value,
-  onChange,
-  children,
-  className,
-}: {
-  value?: string;
-  onChange?: (v: string) => Promise<void> | void;
-  children: ReactNode;
-  className?: string;
-}) => {
+export const DayCellBoolean = () => {
   const { id } = useTrackableMeta();
 
   const { getFlag } = useTrackableFlags();
+  const { labelType, value, onChange } = useDayCellContext();
 
   const activeColor = getFlag(id, "BooleanCheckedColor");
   const inactiveColor = getFlag(id, "BooleanUncheckedColor");
@@ -75,9 +72,7 @@ export const DayCellBoolean = ({
 
     const newVal = isActive ? "false" : "true";
 
-    if (onChange) {
-      await onChange(newVal);
-    }
+    await onChange(newVal);
   };
 
   return (
@@ -87,8 +82,9 @@ export const DayCellBoolean = ({
         ref={mainRef}
         tabIndex={0}
         className={cn(
-          className,
-          "transition-all ease-in-out",
+          DayCellBaseClasses,
+          DayCellBaseClassesFocus,
+          "transition-all duration-200 ease-in-out",
           isActive
             ? "border-[var(--themeActiveLight)] hover:border-[var(--themeInactiveLight)] dark:border-[var(--themeActiveDark)] dark:hover:border-[var(--themeInactiveDark)]"
             : "border-[var(--themeInactiveLight)] hover:border-[var(--themeActiveLight)] dark:border-[var(--themeInactiveDark)] dark:hover:border-[var(--themeActiveDark)]",
@@ -107,7 +103,7 @@ export const DayCellBoolean = ({
         }
         onClick={(e) => void handleClick(e)}
       >
-        {children}
+        {labelType === "auto" && <LabelInside />}
       </button>
     </>
   );

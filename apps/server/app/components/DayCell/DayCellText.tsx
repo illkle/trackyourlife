@@ -1,4 +1,3 @@
-import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { cn } from "@shad/utils";
 import { format } from "date-fns";
@@ -10,27 +9,20 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/@shad/components/drawer";
+import {
+  DayCellBaseClasses,
+  LabelInside,
+  useDayCellContext,
+} from "~/components/DayCell";
 import { EditorModal } from "~/components/EditorModal";
 import { LazyTextEditor, SubmitHook } from "~/components/LazyTextEditor";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
-export const DayCellText = ({
-  date,
-  value,
-  createdAt,
-  onChange,
-  className,
-  children,
-}: {
-  date: Date;
-  value?: string;
-  createdAt?: number | null;
-  className?: string;
-  onChange: (content: string, timestamp?: number) => void;
-  children: ReactNode;
-}) => {
+export const DayCellText = () => {
   const { name } = useTrackableMeta();
+
+  const { value, onChange, createdAt, date, labelType } = useDayCellContext();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -60,9 +52,8 @@ export const DayCellText = ({
   const c = (
     <button
       className={cn(
-        "flex-col overflow-ellipsis border border-2 p-1 text-left text-neutral-700 dark:text-neutral-500 sm:p-2",
-
-        className,
+        "flex-col overflow-ellipsis border-2 p-1 text-left text-neutral-700 dark:text-neutral-500 sm:p-2",
+        DayCellBaseClasses,
         isOpen
           ? "border-neutral-500 dark:border-neutral-700"
           : value?.length
@@ -76,7 +67,7 @@ export const DayCellText = ({
         e.stopPropagation();
       }}
     >
-      {children}
+      {labelType === "auto" && <LabelInside />}
       <div className="flex h-full max-w-full items-center overflow-hidden overflow-ellipsis whitespace-nowrap text-xs font-normal sm:text-sm">
         {pretty}
       </div>
@@ -97,7 +88,7 @@ export const DayCellText = ({
             {format(date, "MMM d")}{" "}
             <span className="text-xs font-normal opacity-50">{name}</span>
           </div>
-          <div className="h-full max-h-[min(60svh,60vh,150px)] overflow-y-scroll">
+          <div className="customScrollBar h-full max-h-[min(60svh,60vh,150px)] overflow-y-scroll">
             {e}
           </div>
         </EditorModal>

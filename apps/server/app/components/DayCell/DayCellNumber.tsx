@@ -1,5 +1,5 @@
 import type React from "react";
-import type { CSSProperties, ReactNode } from "react";
+import type { CSSProperties } from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { cn } from "@shad/utils";
 import { format } from "date-fns";
@@ -18,6 +18,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/@shad/components/drawer";
+import {
+  DayCellBaseClasses,
+  DayCellBaseClassesFocus,
+  LabelInside,
+  useDayCellContext,
+} from "~/components/DayCell";
 import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { useTrackableFlags } from "~/components/TrackableFlags/TrackableFlagsProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
@@ -33,27 +39,15 @@ export const NumberFormatter = new Intl.NumberFormat("en-US", {
   notation: "compact",
 });
 
-export const DayCellNumber = ({
-  value,
-  onChange,
-  children,
-  dateDay,
-  className,
-}: {
-  value?: string;
-  onChange?: (v: string) => Promise<void> | void;
-  children: ReactNode;
-  dateDay: Date;
-  className?: string;
-}) => {
+export const DayCellNumber = () => {
   const isDesktop = useIsDesktop();
 
   const { id } = useTrackableMeta();
-
   const { getFlag } = useTrackableFlags();
-
   const colorCoding = getFlag(id, "NumberColorCoding");
   const progressBounds = getFlag(id, "NumberProgessBounds");
+
+  const { value, onChange, labelType, date } = useDayCellContext();
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const valueToColor = useCallback(getValueToColorFunc(colorCoding), [
@@ -102,9 +96,7 @@ export const DayCellNumber = ({
   const debouncedUpdateValue = useCallback(
     throttle(
       () => {
-        if (onChange) {
-          void onChange(String(internalNumberRef.current));
-        }
+        void onChange(String(internalNumberRef.current));
       },
       1000,
       { leading: false },
@@ -145,7 +137,6 @@ export const DayCellNumber = ({
 
   const color = useMemo(() => {
     return valueToColor(internalNumber);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [internalNumber, valueToColor]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -160,7 +151,8 @@ export const DayCellNumber = ({
   return (
     <div
       className={cn(
-        className,
+        DayCellBaseClasses,
+        DayCellBaseClassesFocus,
         "group items-center justify-center overflow-visible",
         "transition-all ease-in-out",
         "cursor-pointer",
@@ -176,7 +168,7 @@ export const DayCellNumber = ({
         } as CSSProperties
       }
     >
-      {children}
+      {labelType === "auto" && <LabelInside />}
 
       <div className="z-100 absolute left-0 top-0 hidden -translate-y-full">
         {internalNumber} {rawInput}
@@ -260,7 +252,7 @@ export const DayCellNumber = ({
             {displayedValue}
           </DrawerTrigger>
           <DrawerContent>
-            <DrawerTitle>{format(dateDay, "d MMMM yyyy")}</DrawerTitle>
+            <DrawerTitle>{format(date, "d MMMM yyyy")}</DrawerTitle>
             <div className="p-6">
               <input
                 autoFocus={true}

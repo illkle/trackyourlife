@@ -10,6 +10,7 @@ import {
 } from "@tyl/db/jsonValidators";
 
 import type { ITrackableFlagsZero } from "~/schema";
+import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { useZ } from "~/utils/useZ";
 
 /*
@@ -162,4 +163,18 @@ export const TrackableFlagsProviderMock = ({
 
 export const useTrackableFlags = () => {
   return useContext(TrackableFlagsContext);
+};
+
+export const useTrackableFlagIdLock = () => {
+  const inCtx = useContext(TrackableFlagsContext);
+
+  const { id } = useTrackableMeta();
+
+  return {
+    getFlag: (key: ITrackableFlagKey) => inCtx.getFlag(id, key),
+    setFlag: (
+      key: ITrackableFlagKey,
+      value: ITrackableFlagValue<ITrackableFlagKey>,
+    ) => inCtx.setFlag(id, key, value),
+  };
 };

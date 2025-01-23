@@ -3,6 +3,7 @@ import { useState } from "react";
 import { cn } from "@shad/utils";
 import { useForm } from "@tanstack/react-form";
 import { useStore } from "@tanstack/react-store";
+import { isAfter, isSameDay, subDays } from "date-fns";
 import { m } from "framer-motion";
 
 import type { DbTrackableSelect } from "@tyl/db/schema";
@@ -17,9 +18,7 @@ import { Switch } from "~/@shad/components/switch";
 import ColorInput from "~/components/Colors/colorInput";
 import { SettingsTitle } from "~/components/CreateAndSettingsFlows/settingsTitle";
 import DatePicker from "~/components/DatePicker";
-import { DayCellBaseClasses } from "~/components/DayCell";
-import { DayCellBoolean } from "~/components/DayCell/DayCellBoolean";
-import { DayCellNumber } from "~/components/DayCell/DayCellNumber";
+import { DayCellContext, DayCellTypeRouter } from "~/components/DayCell";
 import TrackableProvider from "~/components/Providers/TrackableProvider";
 import { TrackableFlagsProviderMock } from "~/components/TrackableFlags/TrackableFlagsProvider";
 import NumberColorSelector from "../Colors/numberColorSelector";
@@ -238,25 +237,22 @@ export const SettingsNumber = ({
 const TrackableMock = ({
   type,
   form,
-  mockLabel,
   className,
+  index,
+  length,
 }: {
   type: DbTrackableSelect["type"];
   form: ReactFormExtendedApi<ITrackableFlagsKV>;
-  mockLabel: string;
   className?: string;
+  index: number;
+  length: number;
 }) => {
   const [value, onChange] = useState("");
 
-  const classes = cn(DayCellBaseClasses, "h-20");
-
-  const Label = (
-    <div className="absolute left-0.5 top-0.5 select-none text-neutral-800 sm:left-1 sm:top-0 sm:text-base">
-      <span className={"font-light"}>{mockLabel}</span>
-    </div>
-  );
-
   const settings = useStore(form.store, (state) => state.values);
+
+  const now = new Date();
+  const date = subDays(now, length - 2 - index);
 
   return (
     <div className={cn("relative w-full", className)}>
@@ -264,25 +260,21 @@ const TrackableMock = ({
         <TrackableProvider
           trackable={{ id: "1", type, name: "Not a real trackable yet" }}
         >
-          {type === "boolean" && (
-            <DayCellBoolean
-              className={classes}
-              value={value}
-              onChange={onChange}
-            >
-              {Label}
-            </DayCellBoolean>
-          )}
-          {type === "number" && (
-            <DayCellNumber
-              className={classes}
-              dateDay={new Date()}
-              value={value}
-              onChange={onChange}
-            >
-              {Label}
-            </DayCellNumber>
-          )}
+          <DayCellContext.Provider
+            value={{
+              date: date,
+              isToday: isSameDay(date, now),
+              isOutOfRange: isAfter(date, now),
+              value,
+              recordId: "1",
+              onChange,
+              labelType: "auto",
+            }}
+          >
+            <div className={cn("flex flex-1 flex-col", className)}>
+              <DayCellTypeRouter type={type}></DayCellTypeRouter>
+            </div>
+          </DayCellContext.Provider>
         </TrackableProvider>
       </TrackableFlagsProviderMock>
     </div>
@@ -318,9 +310,10 @@ const TrackableSettings = ({
               <TrackableMock
                 className="h-20"
                 key={i}
-                mockLabel={String(i + 1)}
+                index={i}
                 type={trackableType}
                 form={form}
+                length={6}
               />
             );
           })}
