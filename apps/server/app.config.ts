@@ -1,3 +1,4 @@
+import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "@tanstack/start/config";
 import tsConfigPaths from "vite-tsconfig-paths";
 
@@ -33,7 +34,7 @@ const confg = defineConfig({
         "top-level-await": true,
       },
     },
-    plugins: [tsConfigPaths({ projects: ["./tsconfig.json"] })],
+    plugins: [tsConfigPaths({ projects: ["./tsconfig.json"] }), tailwindcss()],
   },
 });
 

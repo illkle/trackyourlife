@@ -170,14 +170,14 @@ export const DayCellNumber = () => {
     >
       {labelType === "auto" && <LabelInside />}
 
-      <div className="z-100 absolute left-0 top-0 hidden -translate-y-full">
+      <div className="absolute top-0 left-0 z-100 hidden -translate-y-full">
         {internalNumber} {rawInput}
       </div>
 
       {progress !== null && (
         <div
           className={cn(
-            "z-1 absolute bottom-0 w-full bg-[var(--themeLight)] dark:bg-[var(--themeDark)]",
+            "absolute bottom-0 z-1 w-full bg-[var(--themeLight)] dark:bg-[var(--themeDark)]",
           )}
           style={{ height: `${progress}%` }}
         ></div>
@@ -185,34 +185,18 @@ export const DayCellNumber = () => {
 
       {isDesktop ? (
         <>
-          <div
-            className={cn(
-              "relative z-10 flex h-full w-full select-none items-center justify-center bg-inherit text-center font-semibold transition-all",
-              internalNumber === 0
-                ? "text-neutral-200 dark:text-neutral-800"
-                : "text-neutral-800 dark:text-neutral-300",
-              "text-xs @[4rem]:text-lg",
-              "overflow-hidden",
-              drawerOpen &&
-                "outline outline-neutral-300 dark:outline-neutral-600",
-            )}
-            onClick={() => {
-              setIsEditing(true);
-            }}
-          >
-            {displayedValue}
-          </div>
           <input
             inputMode={"decimal"}
             type={"text"}
             value={rawInput}
             className={cn(
-              "absolute left-1/2 top-0 z-10 flex h-full w-full -translate-x-1/2 select-none items-center justify-center bg-inherit text-center font-semibold outline-hidden transition-all group-hover:opacity-100",
+              "peer",
+              "absolute top-0 left-1/2 z-10 flex h-full w-full -translate-x-1/2 items-center justify-center bg-inherit text-center font-semibold outline-hidden select-none group-hover:opacity-100",
               internalNumber === 0
                 ? "text-neutral-200 dark:text-neutral-800"
                 : "text-neutral-800 dark:text-neutral-300",
               "text-xs @[4rem]:text-xl",
-              "focus:absolute focus:w-[110%] focus:bg-neutral-50 group-hover:bg-neutral-50 dark:focus:bg-neutral-950 dark:group-hover:bg-neutral-950",
+              "focus:absolute",
               "group-hover:outline-neutral-100 dark:group-hover:outline-neutral-600",
               "focus:outline-neutral-300 focus:group-hover:outline-neutral-300 dark:focus:outline-neutral-400 dark:focus:group-hover:outline-neutral-400",
               "selection:bg-neutral-300 dark:selection:bg-neutral-600",
@@ -228,6 +212,24 @@ export const DayCellNumber = () => {
             onChange={handleInput}
             onBlur={handleInputBlur}
           />
+          <div
+            className={cn(
+              "peer-focused:opacity-0 peer-hover:opacity-0",
+              "relative z-5 flex h-full w-full items-center justify-center bg-inherit text-center font-semibold select-none",
+              internalNumber === 0
+                ? "text-neutral-200 dark:text-neutral-800"
+                : "text-neutral-800 dark:text-neutral-300",
+              "text-xs @[4rem]:text-lg",
+              "overflow-hidden",
+              drawerOpen &&
+                "outline outline-neutral-300 dark:outline-neutral-600",
+            )}
+            onClick={() => {
+              setIsEditing(true);
+            }}
+          >
+            {displayedValue}
+          </div>
         </>
       ) : (
         <Drawer
@@ -239,7 +241,7 @@ export const DayCellNumber = () => {
         >
           <DrawerTrigger
             className={cn(
-              "relative z-10 flex h-full w-full select-none items-center justify-center bg-inherit text-center font-semibold transition-all",
+              "relative z-10 flex h-full w-full items-center justify-center bg-inherit text-center font-semibold transition-all select-none",
               internalNumber === 0
                 ? "text-neutral-200 dark:text-neutral-800"
                 : "text-neutral-800 dark:text-neutral-300",
@@ -260,7 +262,7 @@ export const DayCellNumber = () => {
                 type={"text"}
                 value={rawInput}
                 className={cn(
-                  "relative z-10 flex h-full w-full select-none items-center justify-center rounded-sm bg-inherit text-center font-semibold outline-hidden transition-all",
+                  "relative z-10 flex h-full w-full items-center justify-center rounded-sm bg-inherit text-center font-semibold outline-hidden transition-all select-none",
                   internalNumber === 0
                     ? "text-neutral-200 dark:text-neutral-800"
                     : "text-neutral-800 dark:text-neutral-300",

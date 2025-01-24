@@ -29,7 +29,6 @@
     "@tyl/db": "workspace:*",
     "@tyl/eslint-config": "workspace:*",
     "@tyl/prettier-config": "workspace:*",
-    "@tyl/tailwind-config": "workspace:*",
     "@tyl/tsconfig": "workspace:*",
     "@types/chroma-js": "^2.4.4",
     "@types/lodash-es": "^4.17.12",
@@ -37,7 +36,6 @@
     "eslint": "catalog:",
     "prettier": "catalog:",
     "react": "catalog:react18",
-    "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "zod": "catalog:"
   },

@@ -12,7 +12,7 @@ import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
 
 export const DayCellBaseClasses =
-  "w-full h-full relative select-none overflow-hidden border-transparent border-2 rounded-xs";
+  "@container w-full h-full relative select-none overflow-hidden border-transparent border-2 rounded-xs";
 
 export const DayCellBaseClassesFocus =
   "outline-hidden focus:outline-neutral-300 dark:focus:outline-neutral-600";
@@ -153,7 +153,7 @@ export const LabelInside = () => {
   return (
     <div
       className={cn(
-        "absolute left-1 top-0 z-10 select-none text-base text-neutral-800",
+        "absolute top-0 left-1 z-10 text-base text-neutral-800 select-none",
         isToday ? "font-normal underline" : "font-light",
       )}
     >
