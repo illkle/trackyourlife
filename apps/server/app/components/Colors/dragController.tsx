@@ -483,7 +483,7 @@ export const ControllerPoint = ({
           opacity: dragAwayPercent / 100,
         }}
         transition={{ duration: 0 }}
-        className="absolute bottom-0 left-0 h-full w-full rounded bg-neutral-100 dark:bg-neutral-800"
+        className="absolute bottom-0 left-0 h-full w-full rounded-sm bg-neutral-100 dark:bg-neutral-800"
       >
         <TrashIcon
           className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-neutral-800 dark:text-neutral-100"

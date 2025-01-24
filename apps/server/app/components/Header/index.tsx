@@ -56,7 +56,7 @@ const Header = ({ children }: { children: React.ReactNode }) => {
   return (
     <div
       className={cn(
-        "sticky top-3 z-[50] mx-auto flex max-w-[900px] justify-center font-bold",
+        "sticky top-3 z-50 mx-auto flex max-w-[900px] justify-center font-bold",
         "mt-3 px-3",
       )}
     >

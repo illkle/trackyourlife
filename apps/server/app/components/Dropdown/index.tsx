@@ -63,7 +63,7 @@ const DropdownTrigger = ({
 };
 
 const defaultBackgroundClasses =
-  "overflow-hidden box-border rounded-md border border-neutral-200 bg-white p-2 text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50";
+  "overflow-hidden box-border rounded-md border border-neutral-200 bg-white p-2 text-neutral-950 shadow-sm dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50";
 
 const DropdownContent = ({
   className,

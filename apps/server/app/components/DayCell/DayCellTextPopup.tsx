@@ -53,7 +53,7 @@ export const DayCellTextPopup = () => {
   const c = (
     <button
       className={cn(
-        "flex-col overflow-ellipsis border-2 p-1 text-left text-neutral-700 dark:text-neutral-500 sm:p-2",
+        "flex-col text-ellipsis border-2 p-1 text-left text-neutral-700 dark:text-neutral-500 sm:p-2",
         DayCellBaseClasses,
         isOpen
           ? "border-neutral-500 dark:border-neutral-700"
@@ -69,7 +69,7 @@ export const DayCellTextPopup = () => {
       }}
     >
       {labelType === "auto" && <LabelInside />}
-      <div className="flex h-full max-w-full items-center overflow-hidden overflow-ellipsis whitespace-nowrap text-xs font-normal sm:text-sm">
+      <div className="flex h-full max-w-full items-center overflow-hidden text-ellipsis whitespace-nowrap text-xs font-normal sm:text-sm">
         {pretty}
       </div>
     </button>

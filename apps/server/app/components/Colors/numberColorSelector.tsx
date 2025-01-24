@@ -219,7 +219,7 @@ const ControllerGradient = ({
                 className={cn(
                   "flex items-stretch gap-2 p-2 transition-all",
                   v.id === selectedColor
-                    ? "rounded-md bg-neutral-50 shadow dark:bg-neutral-950 dark:shadow-none"
+                    ? "rounded-md bg-neutral-50 shadow-sm dark:bg-neutral-950 dark:shadow-none"
                     : "cursor-pointer",
                 )}
                 onClick={() => {
@@ -258,7 +258,7 @@ const ControllerGradient = ({
                   disabled={value.length < 2}
                   variant={"ghost"}
                   size={"icon"}
-                  className="flex-shrink-0"
+                  className="shrink-0"
                   onClick={(e) => {
                     e.stopPropagation();
                     e.preventDefault();

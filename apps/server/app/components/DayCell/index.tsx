@@ -12,10 +12,10 @@ import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
 
 export const DayCellBaseClasses =
-  "w-full h-full relative select-none overflow-hidden border-transparent border-2 rounded-sm";
+  "w-full h-full relative select-none overflow-hidden border-transparent border-2 rounded-xs";
 
 export const DayCellBaseClassesFocus =
-  "outline-none focus:outline-neutral-300 dark:focus:outline-neutral-600";
+  "outline-hidden focus:outline-neutral-300 dark:focus:outline-neutral-600";
 
 interface IDayCellContext {
   date: Date;

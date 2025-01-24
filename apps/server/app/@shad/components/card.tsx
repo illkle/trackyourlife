@@ -9,7 +9,7 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50",
+      "rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow-sm dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50",
       className,
     )}
     {...props}
@@ -24,7 +24,7 @@ const CardPressable = React.forwardRef<
   <button
     ref={ref}
     className={cn(
-      "flex flex-col rounded-xl border border-neutral-200 bg-white text-left text-neutral-950 shadow disabled:cursor-not-allowed disabled:opacity-30 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50",
+      "flex flex-col rounded-xl border border-neutral-200 bg-white text-left text-neutral-950 shadow-sm disabled:cursor-not-allowed disabled:opacity-30 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50",
       className,
     )}
     {...props}

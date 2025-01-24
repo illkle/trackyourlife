@@ -35,7 +35,7 @@ export const DayCellText = () => {
   }, [value]);
 
   return (
-    <div className="h-full w-full flex-col overflow-y-scroll rounded-sm border-2 border-neutral-200 text-sm dark:border-neutral-900">
+    <div className="h-full w-full flex-col overflow-y-scroll rounded-xs border-2 border-neutral-200 text-sm dark:border-neutral-900">
       <LazyTextEditor
         debug={date.getDate() === 1}
         content={value ?? ""}

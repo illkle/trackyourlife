@@ -135,10 +135,10 @@ export const YearSelectorOld = ({
               onChange={(e) => setValueInternal(e.target.value)}
               onBlur={handleRealSave}
               className={cn(
-                "relative z-10 flex h-full w-full select-none items-center justify-center bg-inherit text-center font-semibold outline-none transition-all",
+                "relative z-10 flex h-full w-full select-none items-center justify-center bg-inherit text-center font-semibold outline-hidden transition-all",
                 "text-neutral-800 dark:text-neutral-300",
                 "text-2xl",
-                "h-20 rounded focus:outline-neutral-300 dark:focus:outline-neutral-600",
+                "h-20 rounded-sm focus:outline-neutral-300 dark:focus:outline-neutral-600",
               )}
             />
           </div>

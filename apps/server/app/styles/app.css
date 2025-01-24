@@ -1,57 +1,77 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
-@layer components {
-  .content-container {
-    @apply container mx-auto max-w-4xl px-4;
+@config '../../tailwind.config.ts';
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
   }
+}
 
-  .customScrollBar::-webkit-scrollbar {
+@utility content-container {
+  @apply container mx-auto max-w-4xl px-4;
+}
+
+@utility customScrollBar {
+  &::-webkit-scrollbar {
     @apply w-1 bg-transparent;
   }
 
-  .customScrollBar::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar-thumb {
     @apply rounded-full bg-neutral-200 dark:bg-neutral-700;
   }
 }
 
-body {
-  scrollbar-gutter: stable;
-  overflow-y: scroll;
-}
+@layer utilities {
+  body {
+    scrollbar-gutter: stable;
+    overflow-y: scroll;
+  }
 
-/* Removes arrows from input number */
-input::-webkit-outer-spin-button,
-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
+  /* Removes arrows from input number */
+  input::-webkit-outer-spin-button,
+  input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
 
-input[type="number"] {
-  -moz-appearance: textfield;
+  input[type='number'] {
+    -moz-appearance: textfield;
+  }
 }
 
 @layer base {
   :root {
-    --sidebar-background: theme(colors.neutral.50);
-    --sidebar-foreground: theme(colors.neutral.950);
-    --sidebar-primary: theme(colors.blue.500);
-    --sidebar-primary-foreground: theme(colors.neutral.950);
-    --sidebar-accent: theme(colors.neutral.200);
-    --sidebar-accent-foreground: theme(colors.neutral.950);
-    --sidebar-border: theme(colors.neutral.300);
-    --sidebar-ring: theme(colors.neutral.300);
+    --sidebar-background: var(--color-neutral-50);
+    --sidebar-foreground: var(--color-neutral-950);
+    --sidebar-primary: var(--color-blue-500);
+    --sidebar-primary-foreground: var(--color-neutral-950);
+    --sidebar-accent: var(--color-neutral-200);
+    --sidebar-accent-foreground: var(--color-neutral-950);
+    --sidebar-border: var(--color-neutral-300);
+    --sidebar-ring: var(--color-neutral-300);
   }
   .dark {
-    --sidebar-background: theme(colors.neutral.950);
-    --sidebar-foreground: theme(colors.neutral.50);
-    --sidebar-primary: theme(colors.blue.500);
-    --sidebar-primary-foreground: theme(colors.neutral.50);
-    --sidebar-accent: theme(colors.neutral.800);
-    --sidebar-accent-foreground: theme(colors.neutral.50);
-    --sidebar-border: theme(colors.neutral.800);
-    --sidebar-ring: theme(colors.neutral.800);
+    --sidebar-background: var(--color-neutral-950);
+    --sidebar-foreground: var(--color-neutral-50);
+    --sidebar-primary: var(--color-blue-500);
+    --sidebar-primary-foreground: var(--color-neutral-50);
+    --sidebar-accent: var(--color-neutral-800);
+    --sidebar-accent-foreground: var(--color-neutral-50);
+    --sidebar-border: var(--color-neutral-800);
+    --sidebar-ring: var(--color-neutral-800);
   }
 }
 

@@ -107,7 +107,7 @@ export const ViewController = ({
         variant="ghost"
         size="icon"
         asChild
-        className="rounded"
+        className="rounded-sm"
       >
         {switchingYears ? (
           <Link
@@ -162,7 +162,7 @@ export const ViewController = ({
         aria-label="Next month"
         variant="ghost"
         size="icon"
-        className="rounded"
+        className="rounded-sm"
         asChild
       >
         {switchingYears ? (

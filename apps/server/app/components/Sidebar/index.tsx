@@ -125,7 +125,7 @@ export const AppSidebar = () => {
               </DropdownMenuTrigger>
               <DropdownMenuContent
                 side="top"
-                className="w-[--radix-popper-anchor-width]"
+                className="w-(--radix-popper-anchor-width)"
               >
                 <ThemeSwitcher className="mb-2 w-full" />
                 <DropdownMenuItem
