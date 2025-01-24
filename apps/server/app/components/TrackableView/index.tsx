@@ -1,6 +1,4 @@
-import { useEffect } from "react";
 import { cn } from "@shad/utils";
-import { Link } from "@tanstack/react-router";
 import {
   eachMonthOfInterval,
   endOfMonth,
@@ -10,7 +8,6 @@ import {
   startOfMonth,
   startOfYear,
 } from "date-fns";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 import type { PureDataRecord } from "@tyl/helpers/trackables";
 import { mapDataToRange } from "@tyl/helpers/trackables";
@@ -19,8 +16,7 @@ import { Button } from "~/@shad/components/button";
 import { TrackableNoteEditable } from "~/components/TrackableNote";
 import { useTrackableFlags } from "~/components/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
-import { YearSelector } from "~/components/TrackableView/yearSelector";
-import { Route } from "~/routes/app/trackables/$id/view";
+import { ViewController } from "~/components/TrackableView/viewController";
 import { useZeroTrackableData } from "~/utils/useZ";
 import DayCellRouter from "../DayCell";
 
@@ -66,21 +62,19 @@ const MonthVisualList = ({
   const prefaceWith = data[0] ? getISODay(data[0].date) - 1 : 0;
 
   return (
-    <div
-      className={cn(
-        "grid gap-1",
-        mini
-          ? "auto-rows-[48px]"
-          : "auto-rows-[48px] sm:auto-rows-[56px] md:auto-rows-[64px]",
-      )}
-    >
+    <div className={cn("grid grid-cols-[min-content_1fr] gap-4")}>
       {data.map((el, i) => {
         return (
-          <DayCellRouter
-            key={i}
-            {...el}
-            labelType={mini ? "outside" : "auto"}
-          />
+          <>
+            <div className="text-3xl font-extralight opacity-30">
+              {format(el.date, "dd")}
+            </div>
+            <DayCellRouter
+              key={i}
+              {...el}
+              labelType={mini ? "outside" : "auto"}
+            />{" "}
+          </>
         );
       })}
     </div>
@@ -153,135 +147,6 @@ const YearFetcher = ({
           </div>
         );
       })}
-    </div>
-  );
-};
-
-const getIncrementedDate = (
-  add: number,
-  year: TVDateValue,
-  month: TVDateValue,
-) => {
-  if (month === "list" && year !== "list") {
-    return { year: year + add, month: month };
-  }
-
-  if (month === "list" || year === "list") {
-    return { year, month };
-  }
-
-  let newMonth = month + add;
-  let newYear = year;
-  if (newMonth < 0) {
-    newMonth = 11;
-    newYear = year - 1;
-  }
-
-  if (newMonth > 11) {
-    newMonth = 0;
-    newYear = year + 1;
-  }
-  return { year: newYear, month: newMonth };
-};
-
-export const ViewController = ({
-  year,
-
-  month,
-}: {
-  year: TVDateValue;
-  month: TVDateValue;
-}) => {
-  const now = new Date();
-  const navigate = Route.useNavigate();
-
-  const toPrev = getIncrementedDate(-1, year, month);
-  const toNext = getIncrementedDate(1, year, month);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.shiftKey && e.metaKey) {
-        if (e.key === "ArrowLeft") {
-          void navigate({ search: (prev) => ({ ...prev, ...toPrev }) });
-        } else if (e.key === "ArrowRight") {
-          void navigate({ search: (prev) => ({ ...prev, ...toNext }) });
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [navigate, toPrev, toNext]);
-
-  return (
-    <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-      <div className="flex items-baseline gap-2 self-center">
-        <YearSelector
-          value={typeof year === "number" ? year : undefined}
-          onChange={(v) =>
-            navigate({ search: (prev) => ({ ...prev, year: v }) })
-          }
-        />
-
-        {typeof year === "number" && typeof month === "number" && (
-          <>
-            <div className="pl-4 text-xl font-light text-neutral-200 dark:text-neutral-800">
-              /
-            </div>
-            <Link
-              from={Route.fullPath}
-              search={(prev) => ({
-                ...prev,
-                month: "list",
-              })}
-            >
-              <Button name="months" variant="ghost">
-                {format(new Date(year, month, 1), "MMMM")}
-              </Button>
-            </Link>
-          </>
-        )}
-      </div>
-      <div className="flex w-fit gap-2 self-end">
-        <Button
-          aria-label="Previous month"
-          variant="outline"
-          size="icon"
-          asChild
-        >
-          <Link
-            from={Route.fullPath}
-            search={(prev) => ({ ...prev, ...toPrev })}
-          >
-            <ChevronLeftIcon className="h-4 w-4" />
-          </Link>
-        </Button>
-
-        <Button aria-label="Next month" variant="outline" size="icon" asChild>
-          <Link
-            from={Route.fullPath}
-            search={(prev) => ({ ...prev, ...toNext })}
-          >
-            <ChevronRightIcon className="h-4 w-4" />{" "}
-          </Link>
-        </Button>
-
-        <Button aria-label="Current month" variant="outline" asChild>
-          <Link
-            from={Route.fullPath}
-            search={(prev) => ({
-              ...prev,
-              month: now.getMonth(),
-              year: now.getFullYear(),
-            })}
-            activeProps={{
-              className: "pointer-events-none opacity-50",
-            }}
-          >
-            Today
-          </Link>
-        </Button>
-      </div>
     </div>
   );
 };

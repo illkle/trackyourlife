@@ -4,6 +4,7 @@ import { cn } from "@shad/utils";
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 
 import { SidebarProvider } from "~/@shad/components/sidebar";
+import { EditorModalProvider } from "~/components/EditorModal";
 import Header, { HeaderLogo } from "~/components/Header";
 import { AppSidebar, SidebarToggle } from "~/components/Sidebar";
 import { schema } from "~/schema";
@@ -31,16 +32,18 @@ function AppComponent() {
       <MainPreloader>
         <SidebarProvider>
           <AppSidebar />
-          <div className={cn("h-full max-h-full min-h-screen w-full", "")}>
-            <Header>
-              <SidebarToggle />
-              <Link to={"/app"}>
-                <HeaderLogo />
-              </Link>
-            </Header>
-            <div className="mx-auto box-border w-full pt-4 max-xl:col-span-2">
-              <Outlet />
-            </div>
+          <div className={cn("rel h-full max-h-full min-h-screen w-full")}>
+            <EditorModalProvider>
+              <Header>
+                <SidebarToggle />
+                <Link to={"/app"}>
+                  <HeaderLogo />
+                </Link>
+              </Header>
+              <div className="mx-auto box-border w-full pt-4 max-xl:col-span-2">
+                <Outlet />
+              </div>
+            </EditorModalProvider>
           </div>
         </SidebarProvider>
       </MainPreloader>

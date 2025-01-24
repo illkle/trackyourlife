@@ -40,7 +40,6 @@ export const getSession = createServerFn({ method: "GET" }).handler(
   },
 );
 
-
 const iconPrefix = (path: string) =>
   process.env.SITE === "stage" ? `/stg${path}` : path;
 
@@ -124,13 +123,11 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <SingletonProvider>
           <LazyMotionProvider>
             <ThemeProvider defaultTheme="dark" attribute="class">
-              <EditorModalProvider>
-                <UserPreloader>{children}</UserPreloader>
-                <ScrollRestoration />
-                <TanStackRouterDevtools position="bottom-right" />
-                <ReactQueryDevtools buttonPosition="bottom-left" />
-                <Scripts />
-              </EditorModalProvider>
+              <UserPreloader>{children}</UserPreloader>
+              <ScrollRestoration />
+              <TanStackRouterDevtools position="bottom-right" />
+              <ReactQueryDevtools buttonPosition="bottom-left" />
+              <Scripts />
             </ThemeProvider>
           </LazyMotionProvider>
         </SingletonProvider>

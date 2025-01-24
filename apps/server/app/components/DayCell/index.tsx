@@ -4,7 +4,7 @@ import { format, isAfter, isBefore, isSameDay } from "date-fns";
 
 import type { DbTrackableSelect } from "@tyl/db/schema";
 
-import { DayCellText } from "~/components/DayCell/DayCellText";
+import { DayCellTextPopup } from "~/components/DayCell/DayCellTextPopup";
 import { useTrackableFlags } from "~/components/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
 import { useRecordUpdateHandler } from "~/utils/useZ";
@@ -12,7 +12,7 @@ import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
 
 export const DayCellBaseClasses =
-  "@container w-full h-full relative select-none overflow-hidden border-transparent  border-2 rounded-sm";
+  "w-full h-full relative select-none overflow-hidden border-transparent border-2 rounded-sm";
 
 export const DayCellBaseClassesFocus =
   "outline-none focus:outline-neutral-300 dark:focus:outline-neutral-600";
@@ -112,7 +112,7 @@ export const DayCellTypeRouter = ({
   }
 
   if (type === "text") {
-    return <DayCellText></DayCellText>;
+    return <DayCellTextPopup></DayCellTextPopup>;
   }
 
   throw new Error("Unsupported trackable type");

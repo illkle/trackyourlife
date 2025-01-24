@@ -79,23 +79,16 @@ export const EditorModalProvider = ({
 
   return (
     <>
-      <m.div
+      <div
         ref={wrapperRef}
         className={cn(
-          "fixed bottom-4 left-1/2 z-[9999] w-full max-w-[500px] -translate-x-1/2 rounded-md border border-neutral-800 bg-neutral-950 shadow-2xl shadow-neutral-950",
+          "fixed bottom-14 left-1/2 z-[9999] w-full max-w-[500px] rounded-md border border-neutral-800 bg-neutral-950 shadow-2xl shadow-neutral-950",
+          "translate-x-[calc(-50%+var(--sidebar-offset)/2)] transition-all",
+          isOpen ? "opacity-100" : "opacity-0",
         )}
-        animate={{
-          opacity: isOpen ? 1 : 0,
-          y: isOpen ? 0 : "100px",
-          x: "-50%",
-        }}
-        transition={{
-          duration: 0.3,
-          ease: [0.2, 0.2, 0.4, 1.1],
-        }}
       >
         <div className="px-4 pb-2 pt-8" ref={portalRef}></div>
-      </m.div>
+      </div>
       <EditorModalContext.Provider
         value={{
           registerClient: reg,
