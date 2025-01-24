@@ -16,44 +16,23 @@ import type { PureDataRecord } from "@tyl/helpers/trackables";
 import { mapDataToRange } from "@tyl/helpers/trackables";
 
 import { Button } from "~/@shad/components/button";
-import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
 import { TrackableNoteEditable } from "~/components/TrackableNote";
+import { useTrackableFlags } from "~/components/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
 import { YearSelector } from "~/components/TrackableView/yearSelector";
 import { Route } from "~/routes/app/trackables/$id/view";
 import { useZeroTrackableData } from "~/utils/useZ";
 import DayCellRouter from "../DayCell";
 
-const TextMonthEditor = ({
-  data,
-  prefaceDays,
-  mini,
-}: {
-  data: PureDataRecord[];
-  prefaceDays: number;
-  mini?: boolean;
-}) => {
-  return (
-    <div className="flex flex-col gap-4">
-      <div>
-        <div style={{ gridColumn: `span ${prefaceDays}` }}></div>
-
-        {data.map((el, i) => {
-          return <DayCellRouter key={i} {...el} />;
-        })}
-      </div>
-    </div>
-  );
-};
-
 const MonthVisualCalendar = ({
   data,
-  prefaceDays,
   mini,
 }: {
   data: PureDataRecord[];
-  prefaceDays: number;
   mini?: boolean;
 }) => {
+  const prefaceWith = data[0] ? getISODay(data[0].date) - 1 : 0;
+
   return (
     <div
       className={cn(
@@ -63,8 +42,38 @@ const MonthVisualCalendar = ({
           : "auto-rows-[48px] sm:auto-rows-[56px] md:auto-rows-[64px]",
       )}
     >
-      <div style={{ gridColumn: `span ${prefaceDays}` }}></div>
+      <div style={{ gridColumn: `span ${prefaceWith}` }}></div>
+      {data.map((el, i) => {
+        return (
+          <DayCellRouter
+            key={i}
+            {...el}
+            labelType={mini ? "outside" : "auto"}
+          />
+        );
+      })}
+    </div>
+  );
+};
 
+const MonthVisualList = ({
+  data,
+  mini,
+}: {
+  data: PureDataRecord[];
+  mini?: boolean;
+}) => {
+  const prefaceWith = data[0] ? getISODay(data[0].date) - 1 : 0;
+
+  return (
+    <div
+      className={cn(
+        "grid gap-1",
+        mini
+          ? "auto-rows-[48px]"
+          : "auto-rows-[48px] sm:auto-rows-[56px] md:auto-rows-[64px]",
+      )}
+    >
       {data.map((el, i) => {
         return (
           <DayCellRouter
@@ -86,12 +95,12 @@ export const MonthFetcher = ({
   mini?: boolean;
 }) => {
   const { id } = useTrackableMeta();
-
+  const { getFlag } = useTrackableFlags();
+  const flag = getFlag(id, "AnyMonthViewType");
   const firstDayDate = startOfMonth(date).getTime();
   const lastDayDate = endOfMonth(date).getTime();
-  const prefaceWith = getISODay(firstDayDate) - 1;
 
-  const [data, s] = useZeroTrackableData({
+  const [data] = useZeroTrackableData({
     id,
     firstDay: firstDayDate,
     lastDay: lastDayDate,
@@ -101,11 +110,13 @@ export const MonthFetcher = ({
 
   return (
     <div key={`${firstDayDate}-${lastDayDate}`}>
-      <MonthVisualCalendar
-        data={mappedData}
-        prefaceDays={prefaceWith}
-        mini={mini}
-      />
+      <MonthVisualList data={mappedData} mini={mini} />
+    </div>
+  );
+
+  return (
+    <div key={`${firstDayDate}-${lastDayDate}`}>
+      <MonthVisualCalendar data={mappedData} mini={mini} />
     </div>
   );
 };

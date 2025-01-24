@@ -1,16 +1,11 @@
 import type { ReactNode } from "react";
+import type { z } from "zod";
 import { createContext, memo, useContext, useMemo } from "react";
 import { useQuery } from "@rocicorp/zero/react";
-import { z } from "zod";
 
-import {
-  ZColorValue,
-  ZNumberColorCoding,
-  ZNumberProgressBounds,
-} from "@tyl/db/jsonValidators";
-
+import type { ITrackableFlagKey } from "~/components/TrackableProviders/trackableFlags";
 import type { ITrackableFlagsZero } from "~/schema";
-import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
+import { FlagsValidators } from "~/components/TrackableProviders/trackableFlags";
 import { useZ } from "~/utils/useZ";
 
 /*
@@ -21,19 +16,12 @@ import { useZ } from "~/utils/useZ";
  * I think it can be optimized further by caching some calculations that are the same in each daycell
  */
 
-const FlagsValidators = {
-  BooleanCheckedColor: ZColorValue,
-  BooleanUncheckedColor: ZColorValue,
-  NumberProgessBounds: ZNumberProgressBounds,
-  NumberColorCoding: ZNumberColorCoding,
+/*
+  Note that those functions are not typically used by components themselves.
+  There is a TrackableProvider(nearby file) that wraps getFlag and setFlag and closes over id.
+*/
 
-  AnyTrackingStart: z.date(),
-  AnyNote: z.string(),
-};
-
-export type ITrackableFlagKey = keyof typeof FlagsValidators;
-
-export type ITrackableFlagValue<K extends ITrackableFlagKey> = z.infer<
+type ITrackableFlagValue<K extends ITrackableFlagKey> = z.infer<
   (typeof FlagsValidators)[K]
 >;
 
@@ -49,16 +37,16 @@ interface ITrackableFlagsContext {
   ) => Promise<void>;
 }
 
-const TrackableFlagsContext = createContext<ITrackableFlagsContext>({
-  getFlag: () => undefined,
-  setFlag: () => Promise.resolve(),
-});
+export const TrackableFlagsContext =
+  createContext<ITrackableFlagsContext | null>(null);
 
 type TrackableId = string;
-
 type MapKey = `${TrackableId}-${ITrackableFlagKey}`;
 
-const createFlagsMap = (flags: readonly ITrackableFlagsZero[]) => {
+/*
+  Takes a list of flags(from zero query) and returns a map of flags for provider
+*/
+export const createFlagsMap = (flags: readonly ITrackableFlagsZero[]) => {
   const flagMap = new Map<MapKey, ITrackableFlagValue<ITrackableFlagKey>>();
 
   flags.forEach((flag) => {
@@ -79,6 +67,9 @@ export type ITrackableFlagsKV = {
   [K in ITrackableFlagKey]: ITrackableFlagValue<K> | undefined;
 };
 
+/*
+  Helper for settings form
+*/
 export const createFlagsObjectWithoutId = (
   flags: readonly ITrackableFlagsZero[],
 ) => {
@@ -161,20 +152,15 @@ export const TrackableFlagsProviderMock = ({
   );
 };
 
+// Todo delete
 export const useTrackableFlags = () => {
-  return useContext(TrackableFlagsContext);
-};
+  const context = useContext(TrackableFlagsContext);
 
-export const useTrackableFlagIdLock = () => {
-  const inCtx = useContext(TrackableFlagsContext);
+  if (!context) {
+    throw new Error(
+      "UseTrackableFlags must be used within a TrackableFlagsProvider.",
+    );
+  }
 
-  const { id } = useTrackableMeta();
-
-  return {
-    getFlag: (key: ITrackableFlagKey) => inCtx.getFlag(id, key),
-    setFlag: (
-      key: ITrackableFlagKey,
-      value: ITrackableFlagValue<ITrackableFlagKey>,
-    ) => inCtx.setFlag(id, key, value),
-  };
+  return context;
 };

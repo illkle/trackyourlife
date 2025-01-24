@@ -26,9 +26,9 @@ import {
 import { Spinner } from "~/@shad/components/spinner";
 import DeleteButton from "~/components/DeleteButton";
 import { FavoriteButton } from "~/components/FavoriteButton";
-import TrackableProvider from "~/components/Providers/TrackableProvider";
-import { TrackableFlagsProvider } from "~/components/TrackableFlags/TrackableFlagsProvider";
 import { TrackableNameEditable } from "~/components/TrackableName";
+import { TrackableFlagsProvider } from "~/components/TrackableProviders/TrackableFlagsProvider";
+import TrackableProvider from "~/components/TrackableProviders/TrackableProvider";
 import { useZ, useZeroTrackable } from "~/utils/useZ";
 
 const paramsSchema = z.object({

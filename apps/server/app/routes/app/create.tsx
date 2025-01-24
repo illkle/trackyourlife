@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import type { DbTrackableInsert } from "@tyl/db/schema";
 import { cloneDeep } from "@tyl/helpers";
 
-import type { ITrackableFlagsKV } from "~/components/TrackableFlags/TrackableFlagsProvider";
+import type { ITrackableFlagsKV } from "~/components/TrackableProviders/TrackableFlagsProvider";
 import type { ITrackableZeroInsert } from "~/schema";
 import { Input } from "~/@shad/components/input";
 import TrackableSettings from "~/components/CreateAndSettingsFlows";

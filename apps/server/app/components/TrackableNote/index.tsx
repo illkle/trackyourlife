@@ -16,8 +16,8 @@ import {
   DrawerTrigger,
 } from "~/@shad/components/drawer";
 import { Textarea } from "~/@shad/components/textarea";
-import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
-import { useTrackableFlags } from "~/components/TrackableFlags/TrackableFlagsProvider";
+import { useTrackableFlags } from "~/components/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
 export const TrackableNoteEditable = () => {

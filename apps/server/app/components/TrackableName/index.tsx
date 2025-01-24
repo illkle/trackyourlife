@@ -15,7 +15,7 @@ import {
   DrawerTrigger,
 } from "~/@shad/components/drawer";
 import { Input } from "~/@shad/components/input";
-import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
+import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 import { useZ, useZeroTrackable } from "~/utils/useZ";
 

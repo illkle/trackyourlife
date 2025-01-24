@@ -9,7 +9,7 @@ import { m } from "framer-motion";
 import type { DbTrackableSelect } from "@tyl/db/schema";
 import { presetsMap } from "@tyl/helpers/colorPresets";
 
-import type { ITrackableFlagsKV } from "~/components/TrackableFlags/TrackableFlagsProvider";
+import type { ITrackableFlagsKV } from "~/components/TrackableProviders/TrackableFlagsProvider";
 import type { ITrackableZero } from "~/schema";
 import { Button } from "~/@shad/components/button";
 import { DrawerMobileTitleProvider } from "~/@shad/components/drawer";
@@ -19,8 +19,8 @@ import ColorInput from "~/components/Colors/colorInput";
 import { SettingsTitle } from "~/components/CreateAndSettingsFlows/settingsTitle";
 import DatePicker from "~/components/DatePicker";
 import { DayCellContext, DayCellTypeRouter } from "~/components/DayCell";
-import TrackableProvider from "~/components/Providers/TrackableProvider";
-import { TrackableFlagsProviderMock } from "~/components/TrackableFlags/TrackableFlagsProvider";
+import { TrackableFlagsProviderMock } from "~/components/TrackableProviders/TrackableFlagsProvider";
+import TrackableProvider from "~/components/TrackableProviders/TrackableProvider";
 import NumberColorSelector from "../Colors/numberColorSelector";
 import NumberLimitsSelector from "./numberLimitsSelector";
 

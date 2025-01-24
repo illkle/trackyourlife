@@ -16,7 +16,7 @@ import {
 } from "~/components/DayCell";
 import { EditorModal } from "~/components/EditorModal";
 import { LazyTextEditor, SubmitHook } from "~/components/LazyTextEditor";
-import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
+import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
 export const DayCellText = () => {

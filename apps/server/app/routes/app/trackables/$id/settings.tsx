@@ -5,13 +5,13 @@ import { TriangleAlert } from "lucide-react";
 
 import { cloneDeep } from "@tyl/helpers";
 
-import type { ITrackableFlagsKV } from "~/components/TrackableFlags/TrackableFlagsProvider";
+import type { ITrackableFlagsKV } from "~/components/TrackableProviders/TrackableFlagsProvider";
 import { Alert } from "~/@shad/components/alert";
 import { Button } from "~/@shad/components/button";
 import { Spinner } from "~/@shad/components/spinner";
 import TrackableSettings from "~/components/CreateAndSettingsFlows";
-import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
-import { createFlagsObjectWithoutId } from "~/components/TrackableFlags/TrackableFlagsProvider";
+import { createFlagsObjectWithoutId } from "~/components/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
 import { useZ } from "~/utils/useZ";
 
 export const Route = createFileRoute("/app/trackables/$id/settings")({

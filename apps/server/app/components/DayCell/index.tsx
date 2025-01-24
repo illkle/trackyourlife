@@ -5,8 +5,8 @@ import { format, isAfter, isBefore, isSameDay } from "date-fns";
 import type { DbTrackableSelect } from "@tyl/db/schema";
 
 import { DayCellText } from "~/components/DayCell/DayCellText";
-import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
-import { useTrackableFlags } from "~/components/TrackableFlags/TrackableFlagsProvider";
+import { useTrackableFlags } from "~/components/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
 import { useRecordUpdateHandler } from "~/utils/useZ";
 import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";

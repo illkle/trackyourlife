@@ -11,8 +11,8 @@ import {
   LabelInside,
   useDayCellContext,
 } from "~/components/DayCell";
-import { useTrackableMeta } from "~/components/Providers/TrackableProvider";
-import { useTrackableFlags } from "~/components/TrackableFlags/TrackableFlagsProvider";
+import { useTrackableFlags } from "~/components/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
 import { useAllowAnimation } from "~/utils/useAllowAnimation";
 
 const ANIMATION_TIME = 0.3;
