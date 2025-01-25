@@ -7,8 +7,8 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { AnimatePresence, m } from "framer-motion";
 import { TrashIcon } from "lucide-react";
+import { AnimatePresence, m } from "motion/react";
 import { useMediaQuery } from "usehooks-ts";
 
 import { clamp } from "@tyl/helpers";
@@ -486,7 +486,7 @@ export const ControllerPoint = ({
         className="absolute bottom-0 left-0 h-full w-full rounded-sm bg-neutral-100 dark:bg-neutral-800"
       >
         <TrashIcon
-          className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-neutral-800 dark:text-neutral-100"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-neutral-800 dark:text-neutral-100"
           size={11}
           style={{
             opacity: range(50, 100, 0, 1, dragAwayPercent),
@@ -498,7 +498,7 @@ export const ControllerPoint = ({
       <div
         id={`${rootId}-${id}`}
         className={cn(
-          "absolute left-0 top-0 h-[calc(100%+2px)] w-[calc(100%+2px)]",
+          "absolute top-0 left-0 h-[calc(100%+2px)] w-[calc(100%+2px)]",
           isTouch && "h-[calc(100%+10px)] w-[calc(100%+10px)]",
         )}
         {...handlers}

@@ -2,7 +2,7 @@ import { Fragment, useMemo } from "react";
 import { cn } from "@shad/utils";
 import { Link } from "@tanstack/react-router";
 import { format, isLastDayOfMonth, subDays } from "date-fns";
-import { m } from "framer-motion";
+import { m } from "motion/react";
 
 import { mapDataToRange, sortTrackableList } from "@tyl/helpers/trackables";
 

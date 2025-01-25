@@ -5,8 +5,8 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
 import { zodValidator } from "@tanstack/zod-form-adapter";
-import { AnimatePresence, m } from "framer-motion";
 import { XIcon } from "lucide-react";
+import { AnimatePresence, m } from "motion/react";
 import { z } from "zod";
 
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
@@ -123,7 +123,7 @@ const Register = () => {
               type="email"
               name="email"
               id="email"
-              className="z-2 relative"
+              className="relative z-2"
               placeholder="person@somemail.com"
             />
             <FieldInfo field={field} />
@@ -131,7 +131,7 @@ const Register = () => {
         )}
       />
 
-      <h4 className="mb-2 mt-4">Name</h4>
+      <h4 className="mt-4 mb-2">Name</h4>
       <form.Field
         name="name"
         children={(field) => (
@@ -150,7 +150,7 @@ const Register = () => {
           </>
         )}
       />
-      <h4 className="mb-2 mt-4">Password</h4>
+      <h4 className="mt-4 mb-2">Password</h4>
       <form.Field
         name="password"
         children={(field) => (
@@ -235,7 +235,7 @@ const Login = () => {
               type="email"
               name="email"
               id="email"
-              className="z-2 relative"
+              className="relative z-2"
               placeholder="person@somemail.com"
             />
             <FieldInfo field={field} />
@@ -243,7 +243,7 @@ const Login = () => {
         )}
       />
       <div className="flex items-baseline justify-between">
-        <h4 className="mb-2 mt-4">Password</h4>
+        <h4 className="mt-4 mb-2">Password</h4>
         <Link
           className="text-sm text-neutral-500 dark:text-neutral-400"
           to="/auth/forgotpassword"

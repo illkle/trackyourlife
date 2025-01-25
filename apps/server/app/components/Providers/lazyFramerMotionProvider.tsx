@@ -1,12 +1,10 @@
 import type { ReactNode } from "react";
-import { LazyMotion } from "framer-motion";
+import { domMax, LazyMotion } from "motion/react";
 
-const loadFeatures = () =>
-  import("./lazyFramerMotion").then((res) => res.default);
-
+// Currently loading sync because https://github.com/TanStack/router/discussions/2764
 export function LazyMotionProvider({ children }: { children: ReactNode }) {
   return (
-    <LazyMotion features={loadFeatures} strict>
+    <LazyMotion features={domMax} strict>
       {children}
     </LazyMotion>
   );

@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
-import { LayoutGroup, m } from "framer-motion";
+import { LayoutGroup, m } from "motion/react";
 
 import { cn } from "../utils";
 
@@ -34,7 +34,7 @@ const RadioTabItem = React.forwardRef<
       <RadioGroupPrimitive.Item
         ref={ref}
         className={cn(
-          "relative inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 text-sm font-medium ring-offset-white transition-all focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=checked]:text-neutral-950 data-[state=checked]:shadow-sm dark:ring-offset-neutral-950 dark:focus-visible:ring-neutral-300 dark:data-[state=checked]:text-neutral-50",
+          "relative inline-flex items-center justify-center rounded-md px-3 text-sm font-medium whitespace-nowrap ring-offset-white transition-all focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50 data-[state=checked]:text-neutral-950 data-[state=checked]:shadow-sm dark:ring-offset-neutral-950 dark:focus-visible:ring-neutral-300 dark:data-[state=checked]:text-neutral-50",
           className,
         )}
         {...props}
@@ -47,7 +47,7 @@ const RadioTabItem = React.forwardRef<
             initial={false}
             transition={{ duration: 0.2, ease: "easeInOut" }}
             layoutId={`indicator-tabs`}
-            className="z-1 absolute h-4 h-full w-full rounded-md bg-white dark:bg-neutral-950"
+            className="absolute z-1 h-4 h-full w-full rounded-md bg-white dark:bg-neutral-950"
           />
         </RadioGroupPrimitive.Indicator>
       </RadioGroupPrimitive.Item>

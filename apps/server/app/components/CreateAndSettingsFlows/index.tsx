@@ -4,7 +4,7 @@ import { cn } from "@shad/utils";
 import { useForm } from "@tanstack/react-form";
 import { useStore } from "@tanstack/react-store";
 import { isAfter, isSameDay, subDays } from "date-fns";
-import { m } from "framer-motion";
+import { m } from "motion/react";
 
 import type { DbTrackableSelect } from "@tyl/db/schema";
 import { presetsMap } from "@tyl/helpers/colorPresets";

@@ -11,7 +11,6 @@ import {
   isSameMonth,
   startOfMonth,
 } from "date-fns";
-import { AnimatePresence, m } from "framer-motion";
 import {
   CalendarIcon,
   ChevronLeftIcon,
@@ -19,6 +18,7 @@ import {
   ChevronsLeftIcon,
   ChevronsRightIcon,
 } from "lucide-react";
+import { AnimatePresence, m } from "motion/react";
 import { useResizeObserver } from "usehooks-ts";
 
 import { Button, buttonVariants } from "~/@shad/components/button";
@@ -176,7 +176,7 @@ const DatePicker = ({
               variants={variants}
               custom={moveDirection * 0.1}
               key={cursor.toString()}
-              className="pointer-events-none select-none whitespace-nowrap"
+              className="pointer-events-none whitespace-nowrap select-none"
             >
               {format(cursor, "MMMM yyyy")}
             </m.div>

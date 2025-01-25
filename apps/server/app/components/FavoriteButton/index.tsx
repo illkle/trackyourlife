@@ -1,5 +1,5 @@
-import { m } from "framer-motion";
 import { HeartIcon } from "lucide-react";
+import { m } from "motion/react";
 
 import type { ButtonProps } from "~/@shad/components/button";
 import type { TrackableListItem } from "~/utils/useZ";

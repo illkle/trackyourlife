@@ -1,5 +1,5 @@
 import { Fragment, useMemo, useState } from "react";
-import { AnimatePresence, m } from "framer-motion";
+import { AnimatePresence, m } from "motion/react";
 
 import type { IColorHSL, IColorRGB, IColorValue } from "@tyl/db/jsonValidators";
 import { clamp } from "@tyl/helpers/animation";

@@ -7,12 +7,12 @@ import {
   ScrollRestoration,
 } from "@tanstack/react-router";
 import { createServerFn, Meta, Scripts } from "@tanstack/start";
-import { ThemeProvider } from "next-themes";
 import { getWebRequest } from "vinxi/http";
 
 import { auth } from "~/auth/server";
 import { EditorModalProvider } from "~/components/EditorModal";
 import { LazyMotionProvider } from "~/components/Providers/lazyFramerMotionProvider";
+import { ThemeProvider } from "~/components/Providers/next-themes/themes";
 import { SingletonProvider } from "~/components/Providers/singletonProvider";
 import appCss from "~/styles/app.css?url";
 import textEditorCss from "~/styles/textEditor.css?url";
