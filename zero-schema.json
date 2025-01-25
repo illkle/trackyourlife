@@ -176,117 +176,312 @@
           ]
         ]
       }
+    },
+    "TYL_trackableFlags": {
+      "row": {
+        "select": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "user_id"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ],
+        "insert": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "user_id"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ],
+        "update": {},
+        "delete": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "user_id"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ]
+      }
+    },
+    "TYL_userFlags": {
+      "row": {
+        "select": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "userId"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ],
+        "insert": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "userId"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ],
+        "update": {},
+        "delete": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "userId"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ]
+      }
     }
   },
   "schema": {
     "version": 2,
     "tables": {
       "TYL_trackable": {
-        "tableName": "TYL_trackable",
-        "primaryKey": [
-          "id"
-        ],
+        "name": "TYL_trackable",
         "columns": {
-          "attached_note": {
+          "user_id": {
             "type": "string",
-            "optional": false
+            "optional": false,
+            "customType": null
           },
           "id": {
             "type": "string",
-            "optional": false
+            "optional": false,
+            "customType": null
           },
           "name": {
             "type": "string",
-            "optional": false
-          },
-          "settings": {
-            "type": "json",
-            "optional": false
+            "optional": false,
+            "customType": null
           },
           "type": {
             "type": "string",
-            "optional": false
-          },
-          "user_id": {
-            "type": "string",
-            "optional": false
+            "optional": false,
+            "customType": null
           }
         },
-        "relationships": {
-          "trackableGroup": {
-            "sourceField": [
-              "id"
-            ],
-            "destField": [
-              "trackableId"
-            ],
-            "destSchema": "TYL_trackableGroup"
-          },
-          "trackableRecord": {
-            "sourceField": [
-              "id"
-            ],
-            "destField": [
-              "trackableId"
-            ],
-            "destSchema": "TYL_trackableRecord"
-          }
-        }
-      },
-      "TYL_trackableGroup": {
-        "tableName": "TYL_trackableGroup",
         "primaryKey": [
-          "trackableId",
-          "group"
-        ],
-        "columns": {
-          "group": {
-            "type": "string",
-            "optional": false
-          },
-          "trackableId": {
-            "type": "string",
-            "optional": false
-          },
-          "user_id": {
-            "type": "string",
-            "optional": false
-          }
-        },
-        "relationships": {}
+          "id"
+        ]
       },
       "TYL_trackableRecord": {
-        "tableName": "TYL_trackableRecord",
-        "primaryKey": [
-          "recordId"
-        ],
+        "name": "TYL_trackableRecord",
         "columns": {
-          "createdAt": {
-            "type": "number",
-            "optional": false
+          "recordId": {
+            "type": "string",
+            "optional": false,
+            "customType": null
           },
           "date": {
             "type": "number",
-            "optional": false
-          },
-          "recordId": {
-            "type": "string",
-            "optional": false
+            "optional": false,
+            "customType": null
           },
           "trackableId": {
             "type": "string",
-            "optional": false
+            "optional": false,
+            "customType": null
+          },
+          "value": {
+            "type": "json",
+            "optional": false,
+            "customType": null
           },
           "user_id": {
             "type": "string",
-            "optional": false
+            "optional": false,
+            "customType": null
           },
-          "value": {
-            "type": "string",
-            "optional": false
+          "createdAt": {
+            "type": "number",
+            "optional": true,
+            "customType": null
           }
         },
-        "relationships": {}
+        "primaryKey": [
+          "recordId"
+        ]
+      },
+      "TYL_trackableGroup": {
+        "name": "TYL_trackableGroup",
+        "columns": {
+          "trackableId": {
+            "type": "string",
+            "optional": false,
+            "customType": null
+          },
+          "group": {
+            "type": "string",
+            "optional": false,
+            "customType": null
+          },
+          "user_id": {
+            "type": "string",
+            "optional": false,
+            "customType": null
+          }
+        },
+        "primaryKey": [
+          "trackableId",
+          "group"
+        ]
+      },
+      "TYL_trackableFlags": {
+        "name": "TYL_trackableFlags",
+        "columns": {
+          "user_id": {
+            "type": "string",
+            "optional": false,
+            "customType": null
+          },
+          "trackableId": {
+            "type": "string",
+            "optional": false,
+            "customType": null
+          },
+          "key": {
+            "type": "string",
+            "optional": false,
+            "customType": null
+          },
+          "value": {
+            "type": "json",
+            "optional": true,
+            "customType": null
+          }
+        },
+        "primaryKey": [
+          "user_id",
+          "trackableId",
+          "key"
+        ]
+      },
+      "TYL_userFlags": {
+        "name": "TYL_userFlags",
+        "columns": {
+          "userId": {
+            "type": "string",
+            "optional": false,
+            "customType": null
+          },
+          "key": {
+            "type": "string",
+            "optional": false,
+            "customType": null
+          },
+          "value": {
+            "type": "json",
+            "optional": true,
+            "customType": null
+          }
+        },
+        "primaryKey": [
+          "userId",
+          "key"
+        ]
+      }
+    },
+    "relationships": {
+      "TYL_trackable": {
+        "trackableGroup": [
+          {
+            "sourceField": [
+              "id"
+            ],
+            "destField": [
+              "trackableId"
+            ],
+            "destSchema": "TYL_trackableGroup",
+            "cardinality": "many"
+          }
+        ],
+        "trackableRecord": [
+          {
+            "sourceField": [
+              "id"
+            ],
+            "destField": [
+              "trackableId"
+            ],
+            "destSchema": "TYL_trackableRecord",
+            "cardinality": "many"
+          }
+        ],
+        "trackableFlag": [
+          {
+            "sourceField": [
+              "id"
+            ],
+            "destField": [
+              "trackableId"
+            ],
+            "destSchema": "TYL_trackableFlags",
+            "cardinality": "many"
+          }
+        ]
       }
     }
   }
