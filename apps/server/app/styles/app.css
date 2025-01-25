@@ -20,20 +20,6 @@
   }
 }
 
-@utility content-container {
-  @apply container mx-auto max-w-4xl px-4;
-}
-
-@utility customScrollBar {
-  &::-webkit-scrollbar {
-    @apply w-1 bg-transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    @apply rounded-full bg-neutral-200 dark:bg-neutral-700;
-  }
-}
-
 @layer utilities {
   body {
     scrollbar-gutter: stable;
@@ -49,6 +35,19 @@
 
   input[type="number"] {
     -moz-appearance: textfield;
+  }
+
+  .content-container {
+    @apply container mx-auto max-w-4xl px-4;
+  }
+  .customScrollBar {
+    &::-webkit-scrollbar {
+      @apply w-1 bg-transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      @apply rounded-full bg-neutral-200 dark:bg-neutral-700;
+    }
   }
 }
 
