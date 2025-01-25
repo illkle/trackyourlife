@@ -29,6 +29,7 @@
     "@remirror/pm": "^3.0.0",
     "@remirror/react": "^3.0.1",
     "@rocicorp/zero": "0.12.2025012501",
+    "@tailwindcss/postcss": "^4.0.0",
     "@tailwindcss/vite": "^4.0.0",
     "@tanstack/react-form": "^0.41.0",
     "@tanstack/react-query": "catalog:",

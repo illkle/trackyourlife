@@ -52,6 +52,7 @@ function RouteComponent() {
     await z.mutateBatch(async (m) => {
       const p = Object.entries(settings).map(([key, value]) =>
         m.TYL_trackableFlags.insert({
+          user_id: z.userID,
           key,
           trackableId: id,
           value,

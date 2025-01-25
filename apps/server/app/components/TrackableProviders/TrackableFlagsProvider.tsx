@@ -118,9 +118,10 @@ const TrackableFlagsProviderNonMemo = ({
     const validated = FlagsValidators[key].parse(value);
 
     await z.mutate.TYL_trackableFlags.upsert({
+      user_id: z.userID,
       trackableId: trackableId,
       key: key,
-      value: validated as never,
+      value: validated,
     });
   };
 

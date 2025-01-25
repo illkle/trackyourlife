@@ -10,6 +10,10 @@ import {
   table,
 } from "@rocicorp/zero";
 
+/*
+  When making any changes here make sure to run `pnpm build:zero-schema` before committing.
+*/
+
 const TYL_trackableRecord = table("TYL_trackableRecord")
   .columns({
     recordId: string(),

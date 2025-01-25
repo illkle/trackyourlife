@@ -64,8 +64,7 @@ export const useZeroTrackable = ({ id }: { id: string }) => {
   const zero = useZ();
   const q = zero.query.TYL_trackable.one()
     .where("id", id)
-    .related("trackableGroup")
-    .related("trackableFlag");
+    .related("trackableGroup");
 
   return useQuery(q);
 };
@@ -145,7 +144,6 @@ export const usePreloadCore = () => {
     .preload();
 
   zero.query.TYL_userFlags.where("userId", zero.userID).preload();
-  zero.query.TYL_trackableFlags.preload();
 };
 
 export const useZeroGroupList = (group: string) => {

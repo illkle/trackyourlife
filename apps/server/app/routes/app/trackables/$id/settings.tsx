@@ -66,6 +66,7 @@ function RouteComponent() {
           await z.mutateBatch(async (m) => {
             const p = Object.entries(v).map(([key, value]) =>
               m.TYL_trackableFlags.upsert({
+                user_id: z.userID,
                 key,
                 trackableId: id,
                 value: cloneDeep(value),

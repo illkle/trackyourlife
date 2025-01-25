@@ -22,7 +22,7 @@ export const FlagsValidators = {
   NumberProgessBounds: ZNumberProgressBounds,
   NumberColorCoding: ZNumberColorCoding,
 
-  AnyTrackingStart: z.date(),
+  AnyTrackingStart: z.string().date(),
   AnyNote: z.string(),
   AnyMonthViewType: z.enum(["calendar", "list"]).default("calendar"),
 };

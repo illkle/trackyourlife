@@ -34,7 +34,7 @@ const confg = defineConfig({
         "top-level-await": true,
       },
     },
-    plugins: [tsConfigPaths({ projects: ["./tsconfig.json"] }), tailwindcss()],
+    plugins: [tsConfigPaths({ projects: ["./tsconfig.json"] })],
   },
 });
 
