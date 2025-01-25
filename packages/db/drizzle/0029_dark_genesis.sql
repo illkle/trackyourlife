@@ -5,3 +5,4 @@ DO $$ BEGIN
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
+ALTER TABLE "TYL_trackableFlags" ADD CONSTRAINT "TYL_trackableFlags_user_id_trackableId_key_pk" PRIMARY KEY("user_id","trackableId","key");--> statement-breakpoint
