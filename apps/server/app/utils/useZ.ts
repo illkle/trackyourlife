@@ -65,7 +65,7 @@ export const useZeroTrackable = ({ id }: { id: string }) => {
   const q = zero.query.TYL_trackable.one()
     .where("id", id)
     .related("trackableGroup")
-    .related("trackableFlags");
+    .related("trackableFlag");
 
   return useQuery(q);
 };

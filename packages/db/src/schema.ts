@@ -142,6 +142,9 @@ export const trackable = pgTable(
 export const trackableFlags = pgTable(
   "trackableFlags",
   {
+    user_id: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
     trackableId: uuid("trackableId")
       .notNull()
       .references(() => trackable.id, { onDelete: "cascade" }),
@@ -149,7 +152,7 @@ export const trackableFlags = pgTable(
     value: json("value").default({}),
   },
   (t) => ({
-    pk: primaryKey({ columns: [t.trackableId, t.key] }),
+    pk: primaryKey({ columns: [t.user_id, t.trackableId, t.key] }),
   }),
 );
 

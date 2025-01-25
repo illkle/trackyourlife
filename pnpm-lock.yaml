@@ -284,8 +284,8 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1(@remirror/pm@3.0.0)(@types/node@22.10.5)(@types/react-dom@18.3.1)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@rocicorp/zero':
-        specifier: 0.11.2025011402
-        version: 0.11.2025011402
+        specifier: 0.12.2025012501
+        version: 0.12.2025012501
       '@tailwindcss/vite':
         specifier: ^4.0.0
         version: 4.0.0(vite@6.0.7(@types/node@22.10.5)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.31.6)(tsx@4.19.2)(yaml@2.4.5))
@@ -4383,8 +4383,8 @@ packages:
     resolution: {integrity: sha512-bm+VUdF4CnKVjUj/dSCmVu0hjcyXaF/nKkw2rNhZUjGeBOMRy/hh8z/32h311es4dxCVvcZ3+QHQHMxF2YG5Kw==}
     hasBin: true
 
-  '@rocicorp/zero@0.11.2025011402':
-    resolution: {integrity: sha512-9auqKPPXeZHVlGdFbhl2qTHmCjYWV/BQILiDUeBRCtME0bVokg3RKv8gF/MhB/kBZ5OyptDJC+dJaADcKecyog==}
+  '@rocicorp/zero@0.12.2025012501':
+    resolution: {integrity: sha512-lL+1dspZAo6xEsLZi/BlelN2sk+BL4zKLTITSaMLCKSgMgaf2zDPQ0zaSKSVLNedAgYKexFMMZmsoqSSFxM/3A==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -16787,7 +16787,7 @@ snapshots:
       bindings: 1.5.0
       prebuild-install: 7.1.2
 
-  '@rocicorp/zero@0.11.2025011402':
+  '@rocicorp/zero@0.12.2025012501':
     dependencies:
       '@badrap/valita': 0.3.11
       '@databases/escape-identifier': 1.0.3
