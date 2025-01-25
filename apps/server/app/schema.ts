@@ -19,7 +19,7 @@ const TYL_trackableRecord = table("TYL_trackableRecord")
     recordId: string(),
     date: number(),
     trackableId: string(),
-    value: json(),
+    value: string(),
     user_id: string(),
     createdAt: number().optional(),
   })

@@ -20,6 +20,10 @@
   }
 }
 
+button:not(:disabled) {
+  cursor: pointer;
+}
+
 @layer utilities {
   body {
     scrollbar-gutter: stable;
@@ -38,7 +42,7 @@
   }
 
   .content-container {
-    @apply container mx-auto max-w-4xl px-4;
+    @apply mx-auto max-w-4xl px-4;
   }
   .customScrollBar {
     &::-webkit-scrollbar {

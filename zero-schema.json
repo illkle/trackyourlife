@@ -346,7 +346,7 @@
             "customType": null
           },
           "value": {
-            "type": "json",
+            "type": "string",
             "optional": false,
             "customType": null
           },

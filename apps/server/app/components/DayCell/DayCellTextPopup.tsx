@@ -53,7 +53,7 @@ export const DayCellTextPopup = () => {
   const c = (
     <button
       className={cn(
-        "flex-col text-ellipsis border-2 p-1 text-left text-neutral-700 dark:text-neutral-500 sm:p-2",
+        "flex-col border-2 p-1 text-left text-ellipsis text-neutral-700 sm:p-2 dark:text-neutral-500",
         DayCellBaseClasses,
         isOpen
           ? "border-neutral-500 dark:border-neutral-700"
@@ -69,7 +69,7 @@ export const DayCellTextPopup = () => {
       }}
     >
       {labelType === "auto" && <LabelInside />}
-      <div className="flex h-full max-w-full items-center overflow-hidden text-ellipsis whitespace-nowrap text-xs font-normal sm:text-sm">
+      <div className="flex h-full max-w-full items-center overflow-hidden text-xs font-normal text-ellipsis whitespace-nowrap sm:text-sm">
         {pretty}
       </div>
     </button>
@@ -85,7 +85,7 @@ export const DayCellTextPopup = () => {
             setIsOpen(v);
           }}
         >
-          <div className="absolute left-0 top-0 z-10 flex h-8 w-full items-center justify-between border-b border-neutral-200 px-4 text-sm font-bold dark:border-neutral-800">
+          <div className="absolute top-0 left-0 z-10 flex h-8 w-full items-center justify-between border-b border-neutral-200 px-4 text-sm font-bold dark:border-neutral-800">
             {format(date, "MMM d")}{" "}
             <span className="text-xs font-normal opacity-50">{name}</span>
           </div>
