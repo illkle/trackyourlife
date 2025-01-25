@@ -1,4 +1,3 @@
-import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import {
   createFileRoute,
   Link,
@@ -10,25 +9,40 @@ import {
   ArchiveRestoreIcon,
   CalendarDaysIcon,
   ImportIcon,
+  LayoutTemplateIcon,
+  ListIcon,
   MoreHorizontalIcon,
   SettingsIcon,
   TrashIcon,
 } from "lucide-react";
 import { z } from "zod";
 
+import type { ITrackableFlagType } from "~/components/TrackableProviders/trackableFlags";
 import { AlertDialogTrigger } from "~/@shad/components/alert-dialog";
 import { Button } from "~/@shad/components/button";
 import {
+  DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "~/@shad/components/dropdown-menu";
 import { Spinner } from "~/@shad/components/spinner";
 import DeleteButton from "~/components/DeleteButton";
 import { FavoriteButton } from "~/components/FavoriteButton";
 import { TrackableNameEditable } from "~/components/TrackableName";
-import { TrackableFlagsProvider } from "~/components/TrackableProviders/TrackableFlagsProvider";
-import TrackableProvider from "~/components/TrackableProviders/TrackableProvider";
+import {
+  TrackableFlagsProvider,
+  useTrackableFlags,
+} from "~/components/TrackableProviders/TrackableFlagsProvider";
+import TrackableProvider, {
+  useTrackableMeta,
+} from "~/components/TrackableProviders/TrackableProvider";
 import { useZ, useZeroTrackable } from "~/utils/useZ";
 
 const paramsSchema = z.object({
@@ -57,15 +71,9 @@ function RouteComponent() {
   const params = Route.useParams();
   const loc = useLocation();
 
-  const z = useZ();
-
   const isView = loc.pathname === `/app/trackables/${params.id}/view`;
 
   const [trackable] = useZeroTrackable({ id: params.id });
-
-  const isArchived = trackable?.trackableGroup.some(
-    (tg) => tg.group === "archived",
-  );
 
   if (!trackable) {
     return (
@@ -74,6 +82,10 @@ function RouteComponent() {
       </div>
     );
   }
+
+  const isArchived = trackable.trackableGroup.some(
+    (tg) => tg.group === "archived",
+  );
 
   return (
     <TrackableFlagsProvider trackableIds={[params.id]}>
@@ -103,69 +115,12 @@ function RouteComponent() {
                   >
                     <Button variant="outline">
                       <CalendarDaysIcon className="h-4 w-4" />
-                      <span className="max-md:hidden">Calendar</span>
+                      <span className="max-md:hidden">View</span>
                     </Button>
                   </Link>
                 </>
               )}
-
-              <DeleteButton className="w-full" id={params.id}>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline">
-                      <MoreHorizontalIcon className="h-4 w-4" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent
-                    side="bottom"
-                    align="end"
-                    className="min-w-44"
-                  >
-                    <DropdownMenuItem className="cursor-pointer" asChild>
-                      <Link
-                        to={"/app/trackables/$id/import"}
-                        params={{ id: params.id }}
-                      >
-                        <ImportIcon className="mr-1" /> Import
-                      </Link>
-                    </DropdownMenuItem>
-
-                    <DropdownMenuItem
-                      className="cursor-pointer"
-                      onClick={() => {
-                        if (isArchived) {
-                          void z.mutate.TYL_trackableGroup.delete({
-                            trackableId: params.id,
-                            group: "archived",
-                          });
-                        } else {
-                          void z.mutate.TYL_trackableGroup.upsert({
-                            trackableId: params.id,
-                            group: "archived",
-                            user_id: z.userID,
-                          });
-                        }
-                      }}
-                    >
-                      {isArchived ? (
-                        <>
-                          <ArchiveRestoreIcon className="mr-1" /> Unarchve
-                        </>
-                      ) : (
-                        <>
-                          <ArchiveIcon className="mr-1" /> Archive
-                        </>
-                      )}
-                    </DropdownMenuItem>
-
-                    <AlertDialogTrigger name="delete" asChild>
-                      <DropdownMenuItem className="cursor-pointer">
-                        <TrashIcon className="mr-1" /> Delete
-                      </DropdownMenuItem>
-                    </AlertDialogTrigger>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </DeleteButton>
+              <TrackableDropdown isArchived={isArchived} />
             </div>
           </div>
           <hr className="my-4 h-[1px] border-none bg-neutral-900 opacity-10 outline-hidden dark:bg-neutral-50" />
@@ -175,3 +130,98 @@ function RouteComponent() {
     </TrackableFlagsProvider>
   );
 }
+
+const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
+  const z = useZ();
+
+  const { id } = useTrackableMeta();
+  const { getFlag, setFlag } = useTrackableFlags();
+
+  const monthViewStyle = getFlag(id, "AnyMonthViewType");
+
+  const setMonthViewStyle = async (
+    style: ITrackableFlagType<"AnyMonthViewType">,
+  ) => {
+    await setFlag(id, "AnyMonthViewType", style);
+  };
+
+  return (
+    <DeleteButton className="w-full" id={id}>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="outline">
+            <MoreHorizontalIcon className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent side="bottom" align="end" className="min-w-44">
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger>
+              <LayoutTemplateIcon className="mr-1" />
+              Month View Style
+            </DropdownMenuSubTrigger>
+            <DropdownMenuPortal>
+              <DropdownMenuSubContent>
+                <DropdownMenuRadioGroup
+                  value={monthViewStyle}
+                  className="min-w-46"
+                  onValueChange={(style) =>
+                    void setMonthViewStyle(
+                      style as ITrackableFlagType<"AnyMonthViewType">,
+                    )
+                  }
+                >
+                  <DropdownMenuRadioItem value="calendar">
+                    Calendar
+                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="list">
+                    List
+                  </DropdownMenuRadioItem>
+                </DropdownMenuRadioGroup>
+              </DropdownMenuSubContent>
+            </DropdownMenuPortal>
+          </DropdownMenuSub>
+
+          <DropdownMenuItem className="cursor-pointer" asChild>
+            <Link to={"/app/trackables/$id/import"} params={{ id: id }}>
+              <ImportIcon className="mr-1" /> Import
+            </Link>
+          </DropdownMenuItem>
+
+          <DropdownMenuItem
+            className="cursor-pointer"
+            onClick={() => {
+              if (isArchived) {
+                void z.mutate.TYL_trackableGroup.delete({
+                  trackableId: id,
+                  group: "archived",
+                });
+              } else {
+                void z.mutate.TYL_trackableGroup.upsert({
+                  trackableId: id,
+                  group: "archived",
+                  user_id: z.userID,
+                });
+              }
+            }}
+          >
+            {isArchived ? (
+              <>
+                <ArchiveRestoreIcon className="mr-1" /> Unarchve
+              </>
+            ) : (
+              <>
+                <ArchiveIcon className="mr-1" /> Archive
+              </>
+            )}
+          </DropdownMenuItem>
+
+          <AlertDialogTrigger name="delete" asChild>
+            <DropdownMenuItem className="cursor-pointer">
+              <TrashIcon className="mr-1" /> Delete
+            </DropdownMenuItem>
+          </AlertDialogTrigger>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </DeleteButton>
+  );
+};

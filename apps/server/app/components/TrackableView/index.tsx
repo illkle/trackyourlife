@@ -1,3 +1,4 @@
+import { Fragment } from "react/jsx-runtime";
 import { cn } from "@shad/utils";
 import {
   eachMonthOfInterval,
@@ -5,6 +6,7 @@ import {
   endOfYear,
   format,
   getISODay,
+  isToday,
   startOfMonth,
   startOfYear,
 } from "date-fns";
@@ -12,6 +14,7 @@ import {
 import type { PureDataRecord } from "@tyl/helpers/trackables";
 import { mapDataToRange } from "@tyl/helpers/trackables";
 
+import type { ITrackableFlagType } from "~/components/TrackableProviders/trackableFlags";
 import { Button } from "~/@shad/components/button";
 import { TrackableNoteEditable } from "~/components/TrackableNote";
 import { useTrackableFlags } from "~/components/TrackableProviders/TrackableFlagsProvider";
@@ -52,29 +55,26 @@ const MonthVisualCalendar = ({
   );
 };
 
-const MonthVisualList = ({
-  data,
-  mini,
-}: {
-  data: PureDataRecord[];
-  mini?: boolean;
-}) => {
-  const prefaceWith = data[0] ? getISODay(data[0].date) - 1 : 0;
-
+const MonthVisualList = ({ data }: { data: PureDataRecord[] }) => {
   return (
-    <div className={cn("grid grid-cols-[min-content_1fr] gap-4")}>
+    <div
+      className={cn("grid auto-rows-[64px] grid-cols-[max-content_1fr] gap-3")}
+    >
       {data.map((el, i) => {
         return (
-          <>
-            <div className="text-3xl font-extralight opacity-30">
+          <Fragment key={i}>
+            <h5
+              className={cn(
+                "-translate-y-0.5 font-mono text-3xl leading-[100%] font-extralight select-none",
+                isToday(el.date)
+                  ? "text-neutral-950 dark:text-neutral-100"
+                  : "text-neutral-700 dark:text-neutral-600",
+              )}
+            >
               {format(el.date, "dd")}
-            </div>
-            <DayCellRouter
-              key={i}
-              {...el}
-              labelType={mini ? "outside" : "auto"}
-            />{" "}
-          </>
+            </h5>
+            <DayCellRouter key={i} {...el} labelType={"none"} />
+          </Fragment>
         );
       })}
     </div>
@@ -84,13 +84,15 @@ const MonthVisualList = ({
 export const MonthFetcher = ({
   date,
   mini,
+  forceViewType,
 }: {
   date: Date;
   mini?: boolean;
+  forceViewType?: ITrackableFlagType<"AnyMonthViewType">;
 }) => {
   const { id } = useTrackableMeta();
   const { getFlag } = useTrackableFlags();
-  const flag = getFlag(id, "AnyMonthViewType");
+  const viewType = forceViewType ?? getFlag(id, "AnyMonthViewType");
   const firstDayDate = startOfMonth(date).getTime();
   const lastDayDate = endOfMonth(date).getTime();
 
@@ -102,11 +104,13 @@ export const MonthFetcher = ({
 
   const mappedData = mapDataToRange(firstDayDate, lastDayDate, data);
 
-  return (
-    <div key={`${firstDayDate}-${lastDayDate}`}>
-      <MonthVisualList data={mappedData} mini={mini} />
-    </div>
-  );
+  if (viewType === "list") {
+    return (
+      <div key={`${firstDayDate}-${lastDayDate}`}>
+        <MonthVisualList data={mappedData} />
+      </div>
+    );
+  }
 
   return (
     <div key={`${firstDayDate}-${lastDayDate}`}>

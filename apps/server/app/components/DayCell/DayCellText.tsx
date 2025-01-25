@@ -1,38 +1,8 @@
-import { useMemo, useState } from "react";
-import { cn } from "@shad/utils";
-import { format } from "date-fns";
-
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerTitle,
-  DrawerTrigger,
-} from "~/@shad/components/drawer";
-import {
-  DayCellBaseClasses,
-  LabelInside,
-  useDayCellContext,
-} from "~/components/DayCell";
-import { EditorModal } from "~/components/EditorModal";
-import { LazyTextEditor, SubmitHook } from "~/components/LazyTextEditor";
-import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
-import { useIsDesktop } from "~/utils/useIsDesktop";
+import { useDayCellContext } from "~/components/DayCell";
+import { LazyTextEditor } from "~/components/LazyTextEditor";
 
 export const DayCellText = () => {
-  const { name } = useTrackableMeta();
-
-  const { value, onChange, createdAt, date, labelType } = useDayCellContext();
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  const isDesktop = useIsDesktop();
-
-  const pretty = useMemo(() => {
-    if (!value) return "";
-
-    return value.split("\n")[0];
-  }, [value]);
+  const { value, onChange, createdAt, date } = useDayCellContext();
 
   return (
     <div className="h-full w-full flex-col overflow-y-scroll rounded-xs border-2 border-neutral-200 text-sm dark:border-neutral-900">
@@ -42,13 +12,7 @@ export const DayCellText = () => {
         contentTimestamp={createdAt ?? 0}
         updateContent={onChange}
         className="h-full p-1"
-      >
-        <SubmitHook
-          onSubmit={() => {
-            setIsOpen(false);
-          }}
-        ></SubmitHook>
-      </LazyTextEditor>
+      ></LazyTextEditor>
     </div>
   );
 };

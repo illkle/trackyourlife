@@ -1,11 +1,17 @@
 import type { ReactNode } from "react";
-import type { z } from "zod";
 import { createContext, memo, useContext, useMemo } from "react";
 import { useQuery } from "@rocicorp/zero/react";
 
-import type { ITrackableFlagKey } from "~/components/TrackableProviders/trackableFlags";
+import type {
+  ITrackableFlagKey,
+  ITrackableFlagsKV,
+  ITrackableFlagValue,
+} from "~/components/TrackableProviders/trackableFlags";
 import type { ITrackableFlagsZero } from "~/schema";
-import { FlagsValidators } from "~/components/TrackableProviders/trackableFlags";
+import {
+  FlagDefaults,
+  FlagsValidators,
+} from "~/components/TrackableProviders/trackableFlags";
 import { useZ } from "~/utils/useZ";
 
 /*
@@ -21,19 +27,15 @@ import { useZ } from "~/utils/useZ";
   There is a TrackableProvider(nearby file) that wraps getFlag and setFlag and closes over id.
 */
 
-type ITrackableFlagValue<K extends ITrackableFlagKey> = z.infer<
-  (typeof FlagsValidators)[K]
->;
-
 interface ITrackableFlagsContext {
   getFlag: <K extends ITrackableFlagKey>(
     trackableId: string,
     key: K,
-  ) => ITrackableFlagValue<K> | undefined;
+  ) => ITrackableFlagValue<K>;
   setFlag: <K extends ITrackableFlagKey>(
     trackableId: string,
     key: K,
-    value: ITrackableFlagValue<K> | undefined,
+    value: ITrackableFlagValue<K>,
   ) => Promise<void>;
 }
 
@@ -54,17 +56,16 @@ export const createFlagsMap = (flags: readonly ITrackableFlagsZero[]) => {
       return;
     }
     const validator = FlagsValidators[flag.key as ITrackableFlagKey];
-    flagMap.set(
-      `${flag.trackableId}--${flag.key as ITrackableFlagKey}`,
-      validator.parse(flag.value),
-    );
+    const parsed = validator.safeParse(flag.value);
+    if (parsed.success) {
+      flagMap.set(
+        `${flag.trackableId}--${flag.key as ITrackableFlagKey}`,
+        parsed.data,
+      );
+    }
   });
 
   return flagMap;
-};
-
-export type ITrackableFlagsKV = {
-  [K in ITrackableFlagKey]: ITrackableFlagValue<K> | undefined;
 };
 
 /*
@@ -80,8 +81,14 @@ export const createFlagsObjectWithoutId = (
       return;
     }
     const validator = FlagsValidators[flag.key as ITrackableFlagKey];
-    //@ts-expect-error This is correct
-    object[flag.key as ITrackableFlagKey] = validator.parse(flag.value);
+
+    const parsed = validator.safeParse(flag.value);
+
+    if (parsed.success) {
+      const key = flag.key as ITrackableFlagKey;
+      // @ts-expect-error this is fine
+      object[key] = parsed.data;
+    }
   });
 
   return object;
@@ -107,7 +114,13 @@ const TrackableFlagsProviderNonMemo = ({
   }, [flags]);
 
   const getFlag: ITrackableFlagsContext["getFlag"] = (trackableId, key) => {
-    return flagsMap.get(`${trackableId}--${key}`);
+    const flag = flagsMap.get(`${trackableId}--${key}`);
+
+    if (!flag) {
+      return FlagDefaults[key];
+    }
+
+    return flag;
   };
 
   const setFlag: ITrackableFlagsContext["setFlag"] = async (

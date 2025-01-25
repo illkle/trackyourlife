@@ -67,7 +67,7 @@ export const DayCellRouter = ({
   const now = new Date();
   const isToday = isSameDay(date, now);
   const isOutOfRange =
-    isAfter(date, now) || Boolean(trackingStart && isBefore(date, now));
+    isAfter(date, now) || Boolean(trackingStart && isBefore(now, date));
 
   const onChange = useRecordUpdateHandler(date, recordId);
 
