@@ -136,11 +136,10 @@ export const usePreloadCore = () => {
   const now = new Date();
 
   zero.query.TYL_trackable.related("trackableRecord", (q) =>
-    q
-      .where("date", ">=", subMonths(now, 2).getTime())
-      .where("date", "<=", addMonths(now, 2).getTime()),
+    q.where("date", ">=", subMonths(now, 3).getTime()),
   )
     .related("trackableGroup")
+    .related("trackableFlag")
     .preload();
 
   zero.query.TYL_userFlags.where("userId", zero.userID).preload();
