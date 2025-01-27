@@ -7,10 +7,6 @@ import { useIsomorphicLayoutEffect } from "usehooks-ts";
 
 import { throttle } from "@tyl/helpers";
 import { makeColorString } from "@tyl/helpers/colorTools";
-import {
-  getValueToColorFunc,
-  getValueToProgressPercentage,
-} from "@tyl/helpers/trackables";
 
 import {
   Drawer,
@@ -49,17 +45,6 @@ export const DayCellNumber = () => {
 
   const { onChange, labelType, date, values } = useDayCellContext();
   const { value, recordId } = values[0] ?? {};
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const valueToColor = useCallback(getValueToColorFunc(colorCoding), [
-    colorCoding,
-  ]);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const valueToProgressPercentage = useCallback(
-    getValueToProgressPercentage(progressBounds),
-    [progressBounds],
-  );
 
   const [internalNumber, setInternalNumber] = useState(getNumberSafe(value));
   const internalNumberRef = useRef(internalNumber);
@@ -134,11 +119,11 @@ export const DayCellNumber = () => {
     debouncedUpdateValue.flush();
   };
 
-  const progress = valueToProgressPercentage(internalNumber);
+  const progress = progressBounds.map(internalNumber);
 
   const color = useMemo(() => {
-    return valueToColor(internalNumber);
-  }, [internalNumber, valueToColor]);
+    return colorCoding.valueToColor(internalNumber);
+  }, [internalNumber, colorCoding]);
 
   const [drawerOpen, setDrawerOpen] = useState(false);
 

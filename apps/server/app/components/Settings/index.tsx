@@ -1,7 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { createServerFn } from "@tanstack/start";
 import { KeyRound, MailCheck, MailQuestionIcon, UserIcon } from "lucide-react";
-import { getWebRequest } from "vinxi/server";
 
 import { Button } from "~/@shad/components/button";
 import {
@@ -11,7 +9,6 @@ import {
   CardTitle,
 } from "~/@shad/components/card";
 import { authClient } from "~/auth/client";
-import { auth } from "~/auth/server";
 import { EmailChangeForm } from "~/components/AuthFlows/emailChange";
 import { PasswordChangeForm } from "~/components/AuthFlows/passwordChange";
 import { SendVerificationEmailButton } from "~/components/AuthFlows/sendVerificationEmail";

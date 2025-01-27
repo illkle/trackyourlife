@@ -4,8 +4,9 @@ import { useQuery } from "@rocicorp/zero/react";
 
 import type {
   ITrackableFlagKey,
-  ITrackableFlagsKV,
+  ITrackableFlagsInputKV,
   ITrackableFlagValue,
+  ITrackableFlagValueInput,
 } from "~/components/TrackableProviders/trackableFlags";
 import type { ITrackableFlagsZero } from "~/schema";
 import {
@@ -35,7 +36,7 @@ interface ITrackableFlagsContext {
   setFlag: <K extends ITrackableFlagKey>(
     trackableId: string,
     key: K,
-    value: ITrackableFlagValue<K>,
+    value: ITrackableFlagValueInput<K>,
   ) => Promise<void>;
 }
 
@@ -66,32 +67,6 @@ export const createFlagsMap = (flags: readonly ITrackableFlagsZero[]) => {
   });
 
   return flagMap;
-};
-
-/*
-  Helper for settings form
-*/
-export const createFlagsObjectWithoutId = (
-  flags: readonly ITrackableFlagsZero[],
-) => {
-  const object = {} as ITrackableFlagsKV;
-
-  flags.forEach((flag) => {
-    if (!(flag.key in FlagsValidators)) {
-      return;
-    }
-    const validator = FlagsValidators[flag.key as ITrackableFlagKey];
-
-    const parsed = validator.safeParse(flag.value);
-
-    if (parsed.success) {
-      const key = flag.key as ITrackableFlagKey;
-      // @ts-expect-error this is fine
-      object[key] = parsed.data;
-    }
-  });
-
-  return object;
 };
 
 const TrackableFlagsProviderNonMemo = ({
@@ -128,13 +103,17 @@ const TrackableFlagsProviderNonMemo = ({
     key,
     value,
   ) => {
-    const validated = FlagsValidators[key].parse(value);
+    const validated = FlagsValidators[key].safeParse(value);
+
+    if (!validated.success) {
+      throw new Error("Invalid flag value");
+    }
 
     await z.mutate.TYL_trackableFlags.upsert({
       user_id: z.userID,
       trackableId: trackableId,
       key: key,
-      value: validated,
+      value: value,
     });
   };
 
@@ -152,12 +131,18 @@ export const TrackableFlagsProviderMock = ({
   flags,
 }: {
   children: ReactNode;
-  flags: ITrackableFlagsKV;
+  flags: ITrackableFlagsInputKV;
 }) => {
   return (
     <TrackableFlagsContext.Provider
       value={{
-        getFlag: (_, key) => flags[key],
+        getFlag: (_, key) => {
+          const parsed = FlagsValidators[key].safeParse(flags[key]);
+          if (!parsed.success) {
+            return FlagDefaults[key];
+          }
+          return parsed.data;
+        },
         setFlag: () => Promise.resolve(),
       }}
     >

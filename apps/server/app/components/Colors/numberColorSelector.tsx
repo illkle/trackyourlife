@@ -4,7 +4,11 @@ import { cn } from "@shad/utils";
 import { PlusCircleIcon, XIcon } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 
-import type { IColorCodingValue, IColorValue } from "@tyl/db/jsonValidators";
+import type {
+  IColorCodingValue,
+  IColorCodingValueInput,
+  IColorValue,
+} from "@tyl/db/jsonValidators";
 import { clamp } from "@tyl/helpers";
 import { presetsMap } from "@tyl/helpers/colorPresets";
 import {
@@ -288,12 +292,12 @@ const NumberColorSelector = ({
   value,
   onChange,
 }: {
-  value: IColorCodingValue[];
-  onChange: (v: NonNullable<IColorCodingValue[]>) => void;
+  value: IColorCodingValueInput[];
+  onChange: (v: NonNullable<IColorCodingValueInput[]>) => void;
 }) => {
-  const [innerValue, setInnerValue] = useState(
+  const [innerValue, setInnerValue] = useState<IColorCodingValue[]>(
     value.length
-      ? value
+      ? value.map((v) => ({ ...v, id: uuidv4() }))
       : [
           { point: 0, color: presetsMap.red, id: uuidv4() },
           { point: 100, color: presetsMap.green, id: uuidv4() },

@@ -5,12 +5,12 @@ import { TriangleAlert } from "lucide-react";
 
 import { cloneDeep } from "@tyl/helpers";
 
-import type { ITrackableFlagsKV } from "~/components/TrackableProviders/TrackableFlagsProvider";
+import type { ITrackableFlagsInputKV } from "~/components/TrackableProviders/trackableFlags";
+import type { ITrackableFlagsZero } from "~/schema";
 import { Alert } from "~/@shad/components/alert";
 import { Button } from "~/@shad/components/button";
 import { Spinner } from "~/@shad/components/spinner";
 import TrackableSettings from "~/components/CreateAndSettingsFlows";
-import { createFlagsObjectWithoutId } from "~/components/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
 import { useZ } from "~/utils/useZ";
 
@@ -29,7 +29,7 @@ function RouteComponent() {
   );
 
   const [isPending, setIsPending] = useState(true);
-  const [stableValue, setStableValue] = useState<ITrackableFlagsKV | null>(
+  const [stableValue, setStableValue] = useState<ITrackableFlagsZero[] | null>(
     null,
   );
   const [hasUpdate, setHasUpdate] = useState(false);
@@ -44,7 +44,7 @@ function RouteComponent() {
       setHasUpdate(true);
       return;
     }
-    setStableValue(createFlagsObjectWithoutId(flags));
+    setStableValue(flags);
     setIsPending(false);
   }, [status.type, flags]);
 
@@ -62,7 +62,7 @@ function RouteComponent() {
         key={formKey}
         trackableType={type}
         initialSettings={stableValue}
-        handleSave={async (v: ITrackableFlagsKV) => {
+        handleSave={async (v: ITrackableFlagsInputKV) => {
           await z.mutateBatch(async (m) => {
             const p = Object.entries(v).map(([key, value]) =>
               m.TYL_trackableFlags.upsert({
@@ -95,7 +95,7 @@ function RouteComponent() {
               size="sm"
               className="w-full"
               onClick={() => {
-                setStableValue(createFlagsObjectWithoutId(flags));
+                setStableValue(flags);
                 setHasUpdate(false);
                 setFormKey((k) => k + 1);
               }}

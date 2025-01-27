@@ -1,9 +1,8 @@
 import type { CSSProperties, MouseEvent } from "react";
-import { useMemo, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { cn } from "@shad/utils";
 
 import { clamp } from "@tyl/helpers";
-import { getDayCellBooleanColors } from "@tyl/helpers/trackables";
 
 import {
   DayCellBaseClasses,
@@ -24,18 +23,12 @@ export const DayCellBoolean = () => {
   const { labelType, onChange, values } = useDayCellContext();
   const { value, recordId } = values[0] ?? {};
 
-  const activeColor = getFlag(id, "BooleanCheckedColor");
-  const inactiveColor = getFlag(id, "BooleanUncheckedColor");
-
-  const {
-    themeActiveDark,
-    themeActiveLight,
-    themeInactiveDark,
-    themeInactiveLight,
-  } = useMemo(
-    () => getDayCellBooleanColors(activeColor, inactiveColor),
-    [activeColor, inactiveColor],
+  const { lightMode: themeActiveLight, darkMode: themeActiveDark } = getFlag(
+    id,
+    "BooleanCheckedColor",
   );
+  const { lightMode: themeInactiveLight, darkMode: themeInactiveDark } =
+    getFlag(id, "BooleanUncheckedColor");
 
   // Even though we're not using any values from context it's useful to check whether it's provided
 

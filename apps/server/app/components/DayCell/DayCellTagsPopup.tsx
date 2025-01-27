@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { format } from "date-fns";
-import { SendIcon, XIcon } from "lucide-react";
+import { CornerRightUp, XIcon } from "lucide-react";
 
 import {
   findClosestDarkmode,
@@ -21,6 +21,7 @@ import { cn } from "~/@shad/utils";
 import { LabelInside, useDayCellContext } from "~/components/DayCell";
 import { EditorModal } from "~/components/EditorModal";
 import { useTheme } from "~/components/Providers/next-themes/themes";
+import { useTrackableFlags } from "~/components/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
@@ -31,7 +32,14 @@ const SubInput = () => {
     [values],
   );
 
+  const { id } = useTrackableMeta();
+  const { getFlag } = useTrackableFlags();
+
+  const options = ["test"];
+
   const [value, setValue] = useState("");
+
+  const opts = options.filter((v) => v.startsWith(value));
 
   const send = async () => {
     if (!value.length) return;
@@ -43,24 +51,32 @@ const SubInput = () => {
   };
 
   return (
-    <div className="mt-2 flex w-full items-center gap-2 px-0.5">
-      <Input
-        value={value}
-        autoFocus
-        onChange={(e) => {
-          setValue(e.target.value);
-        }}
-        onKeyUp={(e) => {
-          if (e.key === "Enter") {
-            void send();
-          }
-        }}
-        className="w-full"
-      />
-      <Button variant="outline" size="icon" onClick={send}>
-        <SendIcon size={16} />
-      </Button>
-    </div>
+    <>
+      <div className="mt-2 flex w-full items-center gap-2 px-0.5">
+        <Input
+          value={value}
+          autoFocus
+          onChange={(e) => {
+            setValue(e.target.value);
+          }}
+          onKeyUp={(e) => {
+            if (e.key === "Enter") {
+              void send();
+            }
+          }}
+          className="w-full"
+        />
+        <Button variant="outline" size="icon" onClick={send}>
+          <CornerRightUp size={16} />
+        </Button>
+      </div>
+
+      <div className="mt-2 flex gap-1 text-sm">
+        {opts.map((v) => (
+          <div key={v}>{v}</div>
+        ))}
+      </div>
+    </>
   );
 };
 

@@ -9,9 +9,9 @@ export const colorRGB = z.object({
 });
 
 export const colorHSL = z.object({
-  h: z.number().min(0).max(360).default(0),
-  s: z.number().min(0).max(100).default(0),
-  l: z.number().min(0).max(100).default(0),
+  h: z.number().min(0).max(360),
+  s: z.number().min(0).max(100),
+  l: z.number().min(0).max(100),
 });
 
 export const ZColorValue = z.object({
@@ -30,7 +30,7 @@ export const ZColorCodingValue = z.object({
 
 export const ZNumberColorCoding = z.object({
   enabled: z.boolean().optional(),
-  colors: z.array(ZColorCodingValue).optional().default([]),
+  colors: z.array(ZColorCodingValue).optional(),
 });
 
 /* Other stuff */
@@ -46,6 +46,8 @@ export type IColorHSL = z.infer<typeof colorHSL>;
 export type IColorValue = z.infer<typeof ZColorValue>;
 
 export type IColorCodingValue = z.infer<typeof ZColorCodingValue>;
+
+export type IColorCodingValueInput = z.input<typeof ZColorCodingValue>;
 
 export type INumberProgressBounds = z.infer<typeof ZNumberProgressBounds>;
 export type INumberColorCoding = z.infer<typeof ZNumberColorCoding>;

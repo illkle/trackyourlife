@@ -30,7 +30,7 @@ export interface PureDataRecord {
   readonly disabled: boolean;
 }
 
-interface RecordValue {
+export interface RecordValue {
   readonly recordId: string;
   /** Will never actually be undefined, but this makes for simpler inherited types in daycell */
   readonly value?: string;
@@ -110,37 +110,45 @@ export const mapDataToRange = (
   return result;
 };
 
-export const getValueToColorFunc = (colorCoding?: INumberColorCoding) => {
-  return (displayedNumber: number) => {
+export class NumberColorCodingMapper {
+  colorCoding?: INumberColorCoding;
+  constructor(colorCoding: INumberColorCoding) {
+    this.colorCoding = colorCoding;
+  }
+
+  valueToColor(displayedNumber: number) {
     if (
-      !colorCoding?.enabled ||
-      !colorCoding.colors.length ||
+      !this.colorCoding?.enabled ||
+      !this.colorCoding.colors.length ||
       displayedNumber === 0
     ) {
       return presetsMap.neutral;
     }
     return getColorAtPosition({
-      value: colorCoding.colors,
+      value: this.colorCoding.colors,
       point: displayedNumber,
     });
-  };
-};
+  }
+}
 
-export const getValueToProgressPercentage = (
-  progress?: INumberProgressBounds,
-) => {
-  return (val: number | undefined) => {
+export class NumberProgressMapper {
+  progress?: INumberProgressBounds;
+  constructor(progress?: INumberProgressBounds) {
+    this.progress = progress;
+  }
+
+  map(val: number | undefined) {
     if (
-      !progress?.enabled ||
-      typeof progress.max === "undefined" ||
-      typeof progress.min === "undefined" ||
+      !this.progress?.enabled ||
+      typeof this.progress.max === "undefined" ||
+      typeof this.progress.min === "undefined" ||
       typeof val === "undefined"
     ) {
       return null;
     }
-    return range(progress.min, progress.max, 0, 100, val);
-  };
-};
+    return range(this.progress.min, this.progress.max, 0, 100, val);
+  }
+}
 
 export const getDayCellBooleanColors = (
   activeColor?: IColorValue,

@@ -43,6 +43,11 @@ export const makeColorFromChroma = (c: chroma.Color) => {
 export const makeColorString = (color: IColorHSL) =>
   `hsl(${color.h}, ${color.s}%, ${color.l}%)`;
 
+export const makeColorStrings = (color: IColorValue) => ({
+  lightMode: makeColorString(color.lightMode),
+  darkMode: makeColorString(color.darkMode),
+});
+
 export const getContrastierColorForDay = ({ h, s, l }: IColorHSL) => {
   const withBlack = chroma.contrast(
     chroma.hsl(h, s / 100, l / 100),
