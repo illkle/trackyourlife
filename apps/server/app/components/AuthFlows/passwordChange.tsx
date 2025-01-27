@@ -81,7 +81,7 @@ export const PasswordChangeForm = ({ className }: { className?: string }) => {
             )}
           />
 
-          <h4 className="mb-2 mt-4">New password</h4>
+          <h4 className="mt-4 mb-2">New password</h4>
           <form.Field
             name="newPassword"
             children={(field) => (

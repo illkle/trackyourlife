@@ -189,7 +189,7 @@ export const trackableRecord = pgTable(
   },
   (t) => ({
     /*
-     This table has an additional trigger written manually in 0026_trigger_v2.sql. It makes it so:
+     This table has an additional trigger written manually in 0030_trigger_v3.sql. It makes it so:
      - Simple trackables (boolean, number, text) can only have one record per day.
       - On insert date is truncated to hour 0 minute 0 second 0.
       - If after truncating there is an existing record for that day, it gets updated instead.

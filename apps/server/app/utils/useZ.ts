@@ -12,11 +12,7 @@ export const useZ = () => {
   return useZero<Schema>();
 };
 
-interface TrackableRangeBase {
-  orderBy?: "asc" | "desc";
-}
-
-interface TrackableRangeParams extends TrackableRangeBase {
+interface TrackableRangeParams {
   firstDay: number;
   lastDay: number;
 }
@@ -43,7 +39,7 @@ export type TrackableListItem = Row<Schema["tables"]["TYL_trackable"]> & {
 export const useZeroTrackableListWithData = (params: TrackableRangeParams) => {
   const zero = useZ();
 
-  // WAITING TODO: add not extest for acrchived when zero fixes it
+  // WAITING TODO: add `not exists` for archived when zero fixes it
   const q = zero.query.TYL_trackable.orderBy("name", "asc")
     .related("trackableRecord", (q) =>
       q
@@ -53,7 +49,7 @@ export const useZeroTrackableListWithData = (params: TrackableRangeParams) => {
             cmp("date", "<=", params.lastDay),
           ),
         )
-        .orderBy("date", params.orderBy ?? "asc"),
+        .orderBy("date", "asc"),
     )
     .related("trackableGroup");
 
@@ -81,7 +77,7 @@ const useTrackableQuery = (params: ByIdParams) => {
       cmp("date", ">=", params.firstDay),
       cmp("date", "<=", params.lastDay),
     ),
-  ).orderBy("date", params.orderBy ?? "asc");
+  ).orderBy("date", "asc");
 };
 
 export const useZeroTrackableData = ({ id, firstDay, lastDay }: ByIdParams) => {
@@ -171,14 +167,23 @@ export const useZeroInGroup = (trackableId: string, group: string) => {
   return useQuery(q);
 };
 
-export const useRecordUpdateHandler = (date: Date, recordId?: string) => {
+export const useRecordUpdateHandler = (date: Date) => {
   const { id } = useTrackableMeta();
 
   const z = useZ();
 
   return useCallback(
-    async (val: string, timestamp?: number) => {
+    async (val: string, recordId?: string, timestamp?: number) => {
       const d = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
+
+      console.log("upserting", {
+        recordId: recordId ?? uuidv4(),
+        date: d,
+        trackableId: id,
+        value: val,
+        user_id: z.userID,
+        createdAt: timestamp,
+      });
 
       await z.mutate.TYL_trackableRecord.upsert({
         recordId: recordId ?? uuidv4(),
@@ -189,6 +194,19 @@ export const useRecordUpdateHandler = (date: Date, recordId?: string) => {
         createdAt: timestamp,
       });
     },
-    [date, id, z, recordId],
+    [date, id, z],
+  );
+};
+
+export const useRecordDeleteHandler = () => {
+  const z = useZ();
+
+  return useCallback(
+    async (recordId: string) => {
+      await z.mutate.TYL_trackableRecord.delete({
+        recordId: recordId,
+      });
+    },
+    [z],
   );
 };

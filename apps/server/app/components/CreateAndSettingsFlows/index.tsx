@@ -7,9 +7,8 @@ import { isAfter, isSameDay, subDays } from "date-fns";
 import { m } from "motion/react";
 
 import type { DbTrackableSelect } from "@tyl/db/schema";
-import { presetsMap } from "@tyl/helpers/colorPresets";
 
-import type { ITrackableFlagsKV } from "~/components/TrackableProviders/TrackableFlagsProvider";
+import type { ITrackableFlagsKV } from "~/components/TrackableProviders/trackableFlags";
 import type { ITrackableZero } from "~/schema";
 import { Button } from "~/@shad/components/button";
 import { DrawerMobileTitleProvider } from "~/@shad/components/drawer";
@@ -19,6 +18,7 @@ import ColorInput from "~/components/Colors/colorInput";
 import { SettingsTitle } from "~/components/CreateAndSettingsFlows/settingsTitle";
 import DatePicker from "~/components/DatePicker";
 import { DayCellContext, DayCellTypeRouter } from "~/components/DayCell";
+import { FlagDefaults } from "~/components/TrackableProviders/trackableFlags";
 import { TrackableFlagsProviderMock } from "~/components/TrackableProviders/TrackableFlagsProvider";
 import TrackableProvider from "~/components/TrackableProviders/TrackableProvider";
 import NumberColorSelector from "../Colors/numberColorSelector";
@@ -41,7 +41,7 @@ export const SettingsCommon = ({
                 date={
                   field.state.value ? new Date(field.state.value) : undefined
                 }
-                onChange={(v) => field.handleChange(v)}
+                onChange={(v) => field.handleChange(v.toUTCString())}
                 limits={{
                   start: new Date(1990, 0, 1),
                   end: new Date(),
@@ -69,7 +69,7 @@ export const SettingsBoolean = ({
           <>
             <DrawerMobileTitleProvider title="Checked color">
               <ColorInput
-                value={field.state.value ?? presetsMap.green}
+                value={field.state.value}
                 onChange={(v) => {
                   field.handleChange(v);
                 }}
@@ -85,7 +85,7 @@ export const SettingsBoolean = ({
           <>
             <DrawerMobileTitleProvider title="Unchecked color">
               <ColorInput
-                value={field.state.value ?? presetsMap.neutral}
+                value={field.state.value}
                 onChange={(v) => {
                   field.handleChange(v);
                 }}
@@ -108,126 +108,64 @@ export const SettingsNumber = ({
       <div>
         <SettingsTitle>Progress</SettingsTitle>
 
-        <form.Subscribe
-          selector={(state) => [state.values.NumberProgessBounds]}
-          children={([numberProgessBounds]) =>
-            numberProgessBounds ? (
-              <form.Field
-                name="NumberProgessBounds.enabled"
-                children={(field) => (
-                  <div className="mb-2 flex items-center space-x-2">
-                    <Switch
-                      id="show-progress"
-                      checked={field.state.value ?? false}
-                      onCheckedChange={(v) => {
-                        field.handleChange(v);
-                      }}
-                    />
-                    <Label htmlFor="show-progress">Show progress</Label>
-                  </div>
-                )}
+        <form.Field
+          name="NumberProgessBounds.enabled"
+          children={(field) => (
+            <div className="mb-2 flex items-center space-x-2">
+              <Switch
+                id="show-progress"
+                checked={field.state.value ?? false}
+                onCheckedChange={(v) => {
+                  field.handleChange(v);
+                }}
               />
-            ) : (
-              <form.Field
-                name="NumberProgessBounds"
-                children={(field) => (
-                  <div className="mb-2 flex items-center space-x-2">
-                    <Switch
-                      id="show-progress"
-                      checked={field.state.value ? true : false}
-                      onCheckedChange={() => {
-                        field.handleChange({ enabled: true });
-                      }}
-                    />
-                    <Label htmlFor="show-progress">Show progress</Label>
-                  </div>
-                )}
-              />
-            )
-          }
+              <Label htmlFor="show-progress">Show progress</Label>
+            </div>
+          )}
         />
 
-        <form.Subscribe
-          selector={(state) => [state.values.NumberProgessBounds]}
-          children={([v]) =>
-            v?.enabled && (
-              <form.Field
-                name="NumberProgessBounds"
-                children={(field) =>
-                  field.state.value && (
-                    <NumberLimitsSelector
-                      value={field.state.value}
-                      onChange={(v) => {
-                        field.handleChange(v);
-                      }}
-                    />
-                  )
-                }
-              />
-            )
-          }
+        <form.Field
+          name="NumberProgessBounds"
+          children={(field) => (
+            <NumberLimitsSelector
+              value={field.state.value}
+              onChange={(v) => {
+                field.handleChange(v);
+              }}
+            />
+          )}
         />
       </div>
 
       <m.div layout layoutRoot>
         <SettingsTitle>Color coding</SettingsTitle>
 
-        <form.Subscribe
-          selector={(state) => [state.values.NumberProgessBounds]}
-          children={([numberProgessBounds]) =>
-            numberProgessBounds ? (
-              <form.Field
-                name="NumberColorCoding.enabled"
-                children={(field) => (
-                  <div className="mb-2 flex items-center space-x-2">
-                    <Switch
-                      id="color-coding-enabled"
-                      checked={field.state.value ?? false}
-                      onCheckedChange={(v) => {
-                        field.handleChange(v);
-                      }}
-                    />
-                    <Label htmlFor="show-progress">Enable color coding</Label>
-                  </div>
-                )}
+        <form.Field
+          name="NumberColorCoding.enabled"
+          children={(field) => (
+            <div className="mb-2 flex items-center space-x-2">
+              <Switch
+                id="color-coding-enabled"
+                checked={field.state.value ?? false}
+                onCheckedChange={(v) => {
+                  field.handleChange(v);
+                }}
               />
-            ) : (
-              <form.Field
-                name="NumberColorCoding"
-                children={(field) => (
-                  <div className="mb-2 flex items-center space-x-2">
-                    <Switch
-                      id="color-coding-enabled"
-                      checked={field.state.value ? true : false}
-                      onCheckedChange={() => {
-                        field.handleChange({ enabled: true, colors: [] });
-                      }}
-                    />
-                    <Label htmlFor="show-progress">Enable color coding</Label>
-                  </div>
-                )}
-              />
-            )
-          }
+              <Label htmlFor="show-progress">Enable color coding</Label>
+            </div>
+          )}
         />
 
-        <form.Subscribe
-          selector={(state) => [state.values.NumberColorCoding]}
-          children={([cc]) =>
-            cc?.enabled && (
-              <form.Field
-                name="NumberColorCoding.colors"
-                children={(field) => (
-                  <NumberColorSelector
-                    value={field.state.value}
-                    onChange={(v) => {
-                      field.handleChange(v);
-                    }}
-                  />
-                )}
-              />
-            )
-          }
+        <form.Field
+          name="NumberColorCoding.colors"
+          children={(field) => (
+            <NumberColorSelector
+              value={field.state.value}
+              onChange={(v) => {
+                field.handleChange(v);
+              }}
+            />
+          )}
         />
       </m.div>
     </>
@@ -265,8 +203,7 @@ const TrackableMock = ({
               date: date,
               isToday: isSameDay(date, now),
               isOutOfRange: isAfter(date, now),
-              value,
-              recordId: "1",
+              values: [{ value, recordId: "1", createdAt: null }],
               onChange,
               labelType: "auto",
             }}
@@ -293,7 +230,7 @@ const TrackableSettings = ({
   customSaveButtonText?: string;
 }) => {
   const form = useForm<ITrackableFlagsKV>({
-    defaultValues: initialSettings,
+    defaultValues: initialSettings ?? FlagDefaults,
     onSubmit: async (v) => {
       await handleSave(v.value);
     },

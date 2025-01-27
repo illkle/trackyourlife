@@ -77,7 +77,7 @@ const ForgotPasswordForm = () => {
                   type="email"
                   name="email"
                   id="email"
-                  className="z-2 relative"
+                  className="relative z-2"
                   placeholder="person@somemail.com"
                 />
                 <FieldInfo field={field} />

@@ -135,7 +135,7 @@ export const YearSelectorOld = ({
               onChange={(e) => setValueInternal(e.target.value)}
               onBlur={handleRealSave}
               className={cn(
-                "relative z-10 flex h-full w-full select-none items-center justify-center bg-inherit text-center font-semibold outline-hidden transition-all",
+                "relative z-10 flex h-full w-full items-center justify-center bg-inherit text-center font-semibold outline-hidden transition-all select-none",
                 "text-neutral-800 dark:text-neutral-300",
                 "text-2xl",
                 "h-20 rounded-sm focus:outline-neutral-300 dark:focus:outline-neutral-600",
@@ -169,7 +169,7 @@ export const YearSelectorOld = ({
           onClick={() => {
             if (value) onChange(value + 1);
           }}
-          className="absolute right-[1rem] top-1/2 flex w-12 -translate-y-1/2 translate-x-full items-center justify-end bg-neutral-50 pr-2 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-neutral-950"
+          className="absolute top-1/2 right-[1rem] flex w-12 -translate-y-1/2 translate-x-full items-center justify-end bg-neutral-50 pr-2 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-neutral-950"
         >
           <ChevronRightIcon size={16} />
         </Button>
@@ -179,7 +179,7 @@ export const YearSelectorOld = ({
           onClick={() => {
             if (value) onChange(value - 1);
           }}
-          className="absolute left-[1rem] top-1/2 flex w-12 -translate-x-full -translate-y-1/2 items-center justify-start bg-neutral-50 pl-2 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-neutral-950"
+          className="absolute top-1/2 left-[1rem] flex w-12 -translate-x-full -translate-y-1/2 items-center justify-start bg-neutral-50 pl-2 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-neutral-950"
         >
           <ChevronLeftIcon size={16} />
         </Button>

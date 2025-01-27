@@ -85,7 +85,7 @@ export const EmailChangeForm = ({ className }: { className?: string }) => {
                   type="email"
                   name="newEmail"
                   id="newEmail"
-                  className="z-2 relative"
+                  className="relative z-2"
                   placeholder="person@somemail.com"
                 />
                 <FieldInfo field={field} />

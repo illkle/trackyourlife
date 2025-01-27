@@ -97,7 +97,6 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
   const [data, info] = useZeroTrackableListWithData({
     firstDay: firstDay,
     lastDay,
-    orderBy: "desc",
   });
 
   const sorted = sortTrackableList(

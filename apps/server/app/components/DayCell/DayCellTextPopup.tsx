@@ -22,7 +22,8 @@ import { useIsDesktop } from "~/utils/useIsDesktop";
 export const DayCellTextPopup = () => {
   const { name } = useTrackableMeta();
 
-  const { value, onChange, createdAt, date, labelType } = useDayCellContext();
+  const { onChange, date, labelType, values } = useDayCellContext();
+  const { value, recordId, createdAt } = values[0] ?? {};
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -38,7 +39,7 @@ export const DayCellTextPopup = () => {
     <LazyTextEditor
       content={value ?? ""}
       contentTimestamp={createdAt ?? 0}
-      updateContent={onChange}
+      updateContent={(content, ts) => onChange(content, recordId, ts)}
       className="mt-2"
       autoFocus={true}
     >

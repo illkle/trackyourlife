@@ -204,6 +204,13 @@
       "when": 1737805100669,
       "tag": "0029_dark_genesis",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1737997825411,
+      "tag": "0030_trigger_v3",
+      "breakpoints": true
     }
   ]
 }

@@ -21,7 +21,8 @@ export const DayCellBoolean = () => {
   const { id } = useTrackableMeta();
 
   const { getFlag } = useTrackableFlags();
-  const { labelType, value, onChange } = useDayCellContext();
+  const { labelType, onChange, values } = useDayCellContext();
+  const { value, recordId } = values[0] ?? {};
 
   const activeColor = getFlag(id, "BooleanCheckedColor");
   const inactiveColor = getFlag(id, "BooleanUncheckedColor");
@@ -72,7 +73,7 @@ export const DayCellBoolean = () => {
 
     const newVal = isActive ? "false" : "true";
 
-    await onChange(newVal);
+    await onChange(newVal, recordId);
   };
 
   return (

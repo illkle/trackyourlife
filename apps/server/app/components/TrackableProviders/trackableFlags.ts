@@ -30,7 +30,7 @@ export const FlagsValidators = {
 /**
  * Default values for flags. Value from here is used when flag is not set in db.
  */
-export const FlagDefaults: ITrackableFlags = {
+export const FlagDefaults: ITrackableFlagsKV = {
   AnyMonthViewType: "calendar",
   AnyNote: "",
   AnyTrackingStart: undefined,
@@ -53,10 +53,6 @@ export const FlagDefaults: ITrackableFlags = {
  */
 export type ITrackableFlagType<K extends ITrackableFlagKey> =
   ITrackableFlagValue<K>;
-
-const _i = z.object({ ...FlagsValidators });
-
-type ITrackableFlags = z.infer<typeof _i>;
 
 export type ITrackableFlagKey = keyof typeof FlagsValidators;
 

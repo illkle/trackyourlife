@@ -3,7 +3,7 @@ import { useIsomorphicLayoutEffect } from "usehooks-ts";
 
 import { clamp } from "@tyl/helpers/animation";
 
-import { Input } from "~/@shad/components/input";
+import { Input } from "~/@shad/components/input-w-details";
 import { cn } from "~/@shad/utils";
 
 export const BetterNumberInput = ({

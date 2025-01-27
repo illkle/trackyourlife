@@ -21,7 +21,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/@shad/components/drawer";
-import { Input } from "~/@shad/components/input";
+import { Input } from "~/@shad/components/input-w-details";
 import { BetterNumberInput } from "~/components/Colors/betterNumberInput";
 import { ColorDisplay } from "~/components/Colors/colorDisplay";
 import ColorPicker from "~/components/Colors/colorPicker";

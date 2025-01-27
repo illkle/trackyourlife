@@ -194,3 +194,24 @@ export const findModeColorsFromUserSelect = (c: IColorHSL) => {
     darkMode,
   };
 };
+
+export const stringToColorHSL = (input: string): IColorHSL => {
+  input = input.toLowerCase();
+
+  let hash = 5381;
+  for (let i = 0; i < input.length; i++) {
+    hash = (hash * 33) ^ input.charCodeAt(i);
+  }
+
+  hash = hash >>> 0;
+
+  const h = hash % 360; // Hue: 0-360
+  const s = 70 + (hash % 30); // Saturation: 70-100%
+  const l = 50 + (hash % 20); // Lightness: 50-70%
+
+  return {
+    h: h,
+    s: s,
+    l: l,
+  };
+};

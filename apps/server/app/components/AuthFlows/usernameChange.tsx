@@ -77,7 +77,7 @@ export const UsernameChangeForm = ({ className }: { className?: string }) => {
                   type="text"
                   name="newUsername"
                   id="newUsername"
-                  className="z-2 relative"
+                  className="relative z-2"
                   placeholder="johndoe"
                 />
                 <FieldInfo field={field} />

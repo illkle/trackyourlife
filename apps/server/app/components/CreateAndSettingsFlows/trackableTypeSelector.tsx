@@ -87,7 +87,6 @@ export const TrackableTypeSelector = ({
       <RadioGroupItem
         value="tags"
         id="tags"
-        disabled
         className={cn(commonClasses, "sm:col-span-3")}
         asChild
       >

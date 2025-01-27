@@ -47,7 +47,8 @@ export const DayCellNumber = () => {
   const colorCoding = getFlag(id, "NumberColorCoding");
   const progressBounds = getFlag(id, "NumberProgessBounds");
 
-  const { value, onChange, labelType, date } = useDayCellContext();
+  const { onChange, labelType, date, values } = useDayCellContext();
+  const { value, recordId } = values[0] ?? {};
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const valueToColor = useCallback(getValueToColorFunc(colorCoding), [
@@ -96,7 +97,7 @@ export const DayCellNumber = () => {
   const debouncedUpdateValue = useCallback(
     throttle(
       () => {
-        void onChange(String(internalNumberRef.current));
+        void onChange(String(internalNumberRef.current), recordId);
       },
       1000,
       { leading: false },

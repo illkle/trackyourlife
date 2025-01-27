@@ -2,7 +2,9 @@ import { useDayCellContext } from "~/components/DayCell";
 import { LazyTextEditor } from "~/components/LazyTextEditor";
 
 export const DayCellText = () => {
-  const { value, onChange, createdAt, date } = useDayCellContext();
+  const { values, onChange, createdAt, date } = useDayCellContext();
+
+  const { value, recordId } = values[0] ?? {};
 
   return (
     <div className="h-full w-full flex-col overflow-y-scroll rounded-xs border-2 border-neutral-200 text-sm dark:border-neutral-900">
@@ -10,7 +12,7 @@ export const DayCellText = () => {
         debug={date.getDate() === 1}
         content={value ?? ""}
         contentTimestamp={createdAt ?? 0}
-        updateContent={onChange}
+        updateContent={(content, ts) => onChange(content, recordId, ts)}
         className="h-full p-1"
       ></LazyTextEditor>
     </div>

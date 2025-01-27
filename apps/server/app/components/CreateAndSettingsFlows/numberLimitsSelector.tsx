@@ -3,7 +3,7 @@ import { cn } from "@shad/utils";
 
 import type { INumberProgressBounds } from "@tyl/db/jsonValidators";
 
-import { Input } from "~/@shad/components/input";
+import { Input } from "~/@shad/components/input-w-details";
 
 export interface IRangeLabelSelector {
   value: INumberProgressBounds;
@@ -44,7 +44,7 @@ const NumberLimitsSelector = ({
       )}
     >
       <div className="w-52 text-neutral-400 dark:text-neutral-500">0%</div>
-      <div className="w-52 text-neutral-400 dark:text-neutral-500 max-sm:row-start-3 max-sm:row-end-3">
+      <div className="w-52 text-neutral-400 max-sm:row-start-3 max-sm:row-end-3 dark:text-neutral-500">
         100%
       </div>
       <Input

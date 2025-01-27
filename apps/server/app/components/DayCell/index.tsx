@@ -3,11 +3,13 @@ import { cn } from "@shad/utils";
 import { format, isAfter, isBefore, isSameDay } from "date-fns";
 
 import type { DbTrackableSelect } from "@tyl/db/schema";
+import type { PureDataRecord } from "@tyl/helpers/trackables";
 
+import { DayCellTagsPopup } from "~/components/DayCell/DayCellTagsPopup";
 import { DayCellTextPopup } from "~/components/DayCell/DayCellTextPopup";
 import { useTrackableFlags } from "~/components/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
-import { useRecordUpdateHandler } from "~/utils/useZ";
+import { useRecordDeleteHandler, useRecordUpdateHandler } from "~/utils/useZ";
 import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
 
@@ -17,16 +19,23 @@ export const DayCellBaseClasses =
 export const DayCellBaseClassesFocus =
   "outline-hidden focus:outline-neutral-300 dark:focus:outline-neutral-600";
 
-interface IDayCellContext {
-  date: Date;
+interface DayCellRouterProps extends PureDataRecord {
+  className?: string;
+  labelType: IDayCellLabelType;
+}
+
+export type IDayCellLabelType = "auto" | "outside" | "none";
+
+export interface IDayCellContext extends Omit<PureDataRecord, "disabled"> {
   isToday: boolean;
   isOutOfRange: boolean;
-  value?: string;
-  recordId?: string;
-  onChange: (v: string) => void | Promise<void>;
-  createdAt?: number | null;
-
-  labelType?: "auto" | "outside" | "none";
+  onChange: (
+    v: string,
+    recordId?: string,
+    timestamp?: number,
+  ) => void | Promise<void>;
+  onDelete: (recordId: string) => void | Promise<void>;
+  labelType?: IDayCellLabelType;
 }
 
 export const DayCellContext = createContext<IDayCellContext | null>(null);
@@ -40,21 +49,10 @@ export const useDayCellContext = () => {
   return context;
 };
 
-type DayCellRouterProps = Pick<
-  IDayCellContext,
-  "date" | "value" | "recordId" | "createdAt" | "labelType"
-> & {
-  className?: string;
-
-  onChange?: (v: string) => void;
-};
-
 export const DayCellRouter = ({
   date,
+  values,
   labelType = "auto",
-  recordId,
-  value,
-  createdAt,
   className,
 }: DayCellRouterProps) => {
   const { id } = useTrackableMeta();
@@ -69,7 +67,8 @@ export const DayCellRouter = ({
   const isOutOfRange =
     isAfter(date, now) || Boolean(trackingStart && isBefore(now, date));
 
-  const onChange = useRecordUpdateHandler(date, recordId);
+  const onChange = useRecordUpdateHandler(date);
+  const onDelete = useRecordDeleteHandler();
 
   return (
     <DayCellContext.Provider
@@ -77,10 +76,9 @@ export const DayCellRouter = ({
         date,
         isToday,
         isOutOfRange,
-        value,
-        recordId,
+        values,
         onChange,
-        createdAt,
+        onDelete,
         labelType,
       }}
     >
@@ -113,6 +111,10 @@ export const DayCellTypeRouter = ({
 
   if (type === "text") {
     return <DayCellTextPopup></DayCellTextPopup>;
+  }
+
+  if (type === "tags") {
+    return <DayCellTagsPopup></DayCellTagsPopup>;
   }
 
   throw new Error("Unsupported trackable type");
