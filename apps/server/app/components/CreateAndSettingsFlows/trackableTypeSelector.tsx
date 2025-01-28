@@ -93,9 +93,7 @@ export const TrackableTypeSelector = ({
         <Card>
           <CardHeader>
             <RenderTrackableIcon size={20} type="tags" />
-            <CardTitle className="flex items-center gap-2">
-              Tags <SoonBadge />
-            </CardTitle>
+            <CardTitle className="flex items-center gap-2">Tags</CardTitle>
             <CardDescription>
               A collection of values where frequency is being tracked. Emotions
               you felt, general activities you did, etc.

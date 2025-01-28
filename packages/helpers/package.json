@@ -23,6 +23,7 @@
     "@date-fns/tz": "catalog:",
     "chroma-js": "^3.1.2",
     "date-fns": "catalog:",
+    "fuzzysort": "^3.1.0",
     "lodash-es": "^4.17.21"
   },
   "devDependencies": {

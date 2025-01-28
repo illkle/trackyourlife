@@ -55,10 +55,7 @@ export const DayCellRouter = ({
   labelType = "auto",
   className,
 }: DayCellRouterProps) => {
-  const { id } = useTrackableMeta();
-
-  const { type } = useTrackableMeta();
-
+  const { id, type } = useTrackableMeta();
   const { getFlag } = useTrackableFlags();
   const trackingStart = getFlag(id, "AnyTrackingStart");
 

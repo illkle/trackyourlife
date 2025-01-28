@@ -4,6 +4,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { stringToColorHSL } from "@tyl/helpers/colorTools";
 
 import { Input } from "~/@shad/components/input";
+import { ScrollArea, ScrollBar } from "~/@shad/components/scroll-area";
 
 export const Route = createFileRoute("/app/testing")({
   component: RouteComponent,
@@ -34,12 +35,11 @@ const DemoComp = () => {
 
 function RouteComponent() {
   return (
-    <div className="class flex h-[1000px] flex-col">
-      <DemoComp />
-      <DemoComp />
-      <DemoComp />
-      <DemoComp />
-      <DemoComp />
+    <div className="class flex w-32 flex-col">
+      <ScrollArea className="h-[40px]">
+        <div className="h-[80px] w-full bg-red-500"></div>
+        <ScrollBar orientation="vertical" />
+      </ScrollArea>
     </div>
   );
 }

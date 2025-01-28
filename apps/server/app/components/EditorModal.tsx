@@ -86,7 +86,7 @@ export const EditorModalProvider = ({
           isOpen ? "" : "hidden",
         )}
       >
-        <div className="px-4 pt-8 pb-2" ref={portalRef}></div>
+        <div ref={portalRef}></div>
       </div>
       <EditorModalContext.Provider
         value={{

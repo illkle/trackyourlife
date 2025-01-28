@@ -10,6 +10,7 @@ import { makeColorStrings } from "@tyl/helpers/colorTools";
 import {
   NumberColorCodingMapper,
   NumberProgressMapper,
+  TagsValuesMapper,
 } from "@tyl/helpers/trackables";
 
 import type { ITrackableFlagsZero } from "~/schema";
@@ -38,7 +39,7 @@ export const FlagsValidators = {
     (v) => new NumberColorCodingMapper(v),
   ),
 
-  TagsValues: z.array(z.string()).transform((v) => new Set(v)),
+  TagsValues: z.array(z.string()).transform((v) => new TagsValuesMapper(v)),
 };
 
 /**

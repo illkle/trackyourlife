@@ -4,9 +4,9 @@ import {
   isSameDay,
   startOfTomorrow,
 } from "date-fns";
+import fuzzysort from "fuzzysort";
 
 import type {
-  IColorValue,
   INumberColorCoding,
   INumberProgressBounds,
 } from "@tyl/db/jsonValidators";
@@ -14,7 +14,7 @@ import type { DbTrackableSelect } from "@tyl/db/schema";
 
 import { range } from "./animation";
 import { presetsMap } from "./colorPresets";
-import { getColorAtPosition, makeColorString } from "./colorTools";
+import { getColorAtPosition } from "./colorTools";
 
 // Comes from db
 export interface DataRecord {
@@ -119,7 +119,7 @@ export class NumberColorCodingMapper {
   valueToColor(displayedNumber: number) {
     if (
       !this.colorCoding?.enabled ||
-      !this.colorCoding.colors.length ||
+      !this.colorCoding.colors?.length ||
       displayedNumber === 0
     ) {
       return presetsMap.neutral;
@@ -150,30 +150,30 @@ export class NumberProgressMapper {
   }
 }
 
-export const getDayCellBooleanColors = (
-  activeColor?: IColorValue,
-  inactiveColor?: IColorValue,
-) => {
-  const themeActiveLight = makeColorString(
-    activeColor?.lightMode ?? presetsMap.green.lightMode,
-  );
-  const themeActiveDark = makeColorString(
-    activeColor?.darkMode ?? presetsMap.green.darkMode,
-  );
-  const themeInactiveLight = makeColorString(
-    inactiveColor?.lightMode ?? presetsMap.neutral.lightMode,
-  );
-  const themeInactiveDark = makeColorString(
-    inactiveColor?.darkMode ?? presetsMap.neutral.darkMode,
-  );
+export class TagsValuesMapper {
+  values: Set<string>;
+  prepared: Fuzzysort.Prepared[];
 
-  return {
-    themeActiveDark,
-    themeActiveLight,
-    themeInactiveDark,
-    themeInactiveLight,
-  };
-};
+  constructor(values: string[]) {
+    this.values = new Set(values);
+    this.prepared = values.map((v) => fuzzysort.prepare(v));
+  }
+
+  getSuggestions(value: string) {
+    return fuzzysort
+      .go(value, this.prepared, {
+        threshold: 0.3,
+        limit: 10,
+        all: true,
+      })
+      .map((v) => v.target);
+  }
+
+  addAndReturnArray(value: string) {
+    if (this.values.has(value)) return Array.from(this.values);
+    return [...Array.from(this.values), value];
+  }
+}
 
 interface Group {
   readonly group: string;

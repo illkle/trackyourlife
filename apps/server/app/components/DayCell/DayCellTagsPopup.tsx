@@ -1,13 +1,16 @@
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { format } from "date-fns";
 import { CornerRightUp, XIcon } from "lucide-react";
 
+import type { TagsValuesMapper } from "@tyl/helpers/trackables";
+import { clamp } from "@tyl/helpers";
 import {
   findClosestDarkmode,
   findClosestLightmode,
   stringToColorHSL,
 } from "@tyl/helpers/colorTools";
 
+import { Badge } from "~/@shad/components/badge";
 import { Button } from "~/@shad/components/button";
 import {
   Drawer,
@@ -17,6 +20,7 @@ import {
   DrawerTrigger,
 } from "~/@shad/components/drawer";
 import { Input } from "~/@shad/components/input";
+import { ScrollArea, ScrollBar } from "~/@shad/components/scroll-area";
 import { cn } from "~/@shad/utils";
 import { LabelInside, useDayCellContext } from "~/components/DayCell";
 import { EditorModal } from "~/components/EditorModal";
@@ -33,50 +37,115 @@ const SubInput = () => {
   );
 
   const { id } = useTrackableMeta();
-  const { getFlag } = useTrackableFlags();
+  const { getFlag, setFlag } = useTrackableFlags();
+  const tagsValues = getFlag(id, "TagsValues");
 
-  const options = ["test"];
+  const [selectedSuggestion, setSelectedSuggestion] = useState(-1);
 
-  const [value, setValue] = useState("");
+  const valueRef = useRef("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const opts = options.filter((v) => v.startsWith(value));
+  const [suggestions, setSuggestions] = useState<string[]>(
+    tagsValues.getSuggestions(""),
+  );
 
-  const send = async () => {
-    if (!value.length) return;
+  const actualSelected = clamp(selectedSuggestion, -1, suggestions.length - 1);
 
-    if (!valuesSet.has(value)) {
-      await onChange(value, undefined, new Date().getTime());
+  if (selectedSuggestion !== actualSelected) {
+    setSelectedSuggestion(actualSelected);
+  }
+
+  const updateSelected = (v: number) => {
+    setSelectedSuggestion(v);
+    const target = suggestions[v];
+    if (target) {
+      refMap.current.get(target)?.scrollIntoView({ behavior: "smooth" });
     }
-    setValue("");
   };
 
+  const send = async (passedValue?: string) => {
+    const v =
+      selectedSuggestion === -1
+        ? (passedValue ?? valueRef.current)
+        : suggestions[selectedSuggestion];
+
+    if (!v) return;
+
+    if (!valuesSet.has(v)) {
+      await onChange(v, undefined, new Date().getTime());
+      await setFlag(id, "TagsValues", tagsValues.addAndReturnArray(v));
+    }
+    if (inputRef.current) {
+      inputRef.current.value = "";
+    }
+    updateSuggestions("", tagsValues);
+  };
+
+  const refMap = useRef<Map<string, HTMLButtonElement>>(new Map());
+
+  const updateSuggestions = useCallback(
+    (query: string, tagsValues: TagsValuesMapper) => {
+      setSuggestions(tagsValues.getSuggestions(query));
+    },
+    [],
+  );
+
+  useEffect(() => {
+    setSuggestions(tagsValues.getSuggestions(""));
+  }, [tagsValues, updateSuggestions]);
+
   return (
-    <>
-      <div className="mt-2 flex w-full items-center gap-2 px-0.5">
+    <div>
+      <div className="mx-2 mt-2 flex items-center gap-2 px-0.5">
         <Input
-          value={value}
+          ref={inputRef}
           autoFocus
           onChange={(e) => {
-            setValue(e.target.value);
+            valueRef.current = e.target.value;
+            updateSuggestions(e.target.value, tagsValues);
           }}
           onKeyUp={(e) => {
             if (e.key === "Enter") {
               void send();
             }
+            if (e.key === "ArrowDown") {
+              updateSelected(selectedSuggestion + 1);
+            }
+            if (e.key === "ArrowUp") {
+              updateSelected(selectedSuggestion - 1);
+            }
           }}
           className="w-full"
         />
-        <Button variant="outline" size="icon" onClick={send}>
+        <Button variant="outline" size="icon" onClick={() => send()}>
           <CornerRightUp size={16} />
         </Button>
       </div>
 
-      <div className="mt-2 flex gap-1 text-sm">
-        {opts.map((v) => (
-          <div key={v}>{v}</div>
-        ))}
-      </div>
-    </>
+      <ScrollArea className="h-10">
+        <ScrollBar orientation="horizontal" />
+        <div className="mt-2 flex w-max gap-1 px-2 text-sm">
+          {suggestions.map((v, i) => (
+            <button
+              key={i}
+              ref={(el) => {
+                if (el) {
+                  refMap.current.set(v, el);
+                }
+              }}
+              onClick={() => send(v)}
+            >
+              <Badge
+                className="cursor-pointer"
+                variant={i === actualSelected ? "default" : "outline"}
+              >
+                {v}
+              </Badge>
+            </button>
+          ))}
+        </div>
+      </ScrollArea>
+    </div>
   );
 };
 
@@ -93,39 +162,42 @@ export const DayCellTagsPopup = () => {
   const isDesktop = useIsDesktop();
 
   const e = (
-    <div className="flex flex-col py-2">
-      <div className="flex flex-shrink overflow-y-scroll">
-        <div className="flex w-full flex-wrap gap-0.5">
-          {values.map((v) => (
-            <div
-              key={v.recordId}
-              className={cn(
-                "flex w-fit max-w-full items-center gap-1 overflow-hidden rounded-xs px-1 text-sm text-nowrap text-ellipsis",
-              )}
-              style={{
-                backgroundColor: getStyleHashed(
-                  v.value ?? "",
-                  resolvedTheme ?? "",
-                ),
-              }}
-            >
-              <span className="text-neutral-950 dark:text-neutral-100">
-                {v.value}
-              </span>
-              <Button
-                variant="ghost"
-                className="h-4 rounded-sm px-1"
-                size={"sm"}
-                onClick={() => onDelete(v.recordId)}
+    <>
+      <div className="h-[60px] px-2 pt-2">
+        <ScrollArea className="flex h-full">
+          <div className="flex flex-wrap gap-0.5">
+            {values.map((v) => (
+              <div
+                key={v.recordId}
+                className={cn(
+                  "flex w-fit max-w-full items-center gap-1 overflow-hidden rounded px-1 text-sm text-nowrap text-ellipsis",
+                )}
+                style={{
+                  backgroundColor: getStyleHashed(
+                    v.value ?? "",
+                    resolvedTheme ?? "",
+                  ),
+                }}
               >
-                <XIcon size={14} />
-              </Button>
-            </div>
-          ))}
-        </div>
+                <span className="text-neutral-950 dark:text-neutral-100">
+                  {v.value}
+                </span>
+                <Button
+                  variant="ghost"
+                  className="h-4 rounded-sm px-1"
+                  size={"sm"}
+                  onClick={() => onDelete(v.recordId)}
+                >
+                  <XIcon size={14} />
+                </Button>
+              </div>
+            ))}
+          </div>
+          <ScrollBar orientation="vertical" />
+        </ScrollArea>
       </div>
       <SubInput />
-    </div>
+    </>
   );
 
   const c = (
@@ -144,7 +216,7 @@ export const DayCellTagsPopup = () => {
           <div
             key={v.recordId}
             className={cn(
-              "max-w-fit overflow-hidden rounded-xs px-1 text-nowrap text-ellipsis",
+              "max-w-fit overflow-hidden rounded px-1 text-nowrap text-ellipsis",
               longDate ? "first:ml-5.5" : "first:ml-3.5",
             )}
             style={{
@@ -173,12 +245,14 @@ export const DayCellTagsPopup = () => {
             setIsOpen(v);
           }}
         >
-          <div className="absolute top-0 left-0 z-10 flex h-8 w-full items-center justify-between border-b border-neutral-200 px-4 text-sm font-bold dark:border-neutral-800">
-            {format(date, "MMM d")}{" "}
-            <span className="text-xs font-normal opacity-50">{name}</span>
-          </div>
-          <div className="customScrollBar h-full max-h-[min(60svh,60vh,150px)] overflow-y-scroll">
-            {e}
+          <div className="relative flex flex-col">
+            <div className="top-0 left-0 z-10 flex h-8 w-full items-center justify-between border-b border-neutral-200 px-4 text-sm font-bold dark:border-neutral-800">
+              {format(date, "MMM d")}{" "}
+              <span className="text-xs font-normal opacity-50">{name}</span>
+            </div>
+            <div className="flex max-h-[min(60svh,60vh,150px)] flex-col">
+              {e}
+            </div>
           </div>
         </EditorModal>
       </>
