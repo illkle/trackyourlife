@@ -163,7 +163,6 @@ export class TagsValuesMapper {
     return fuzzysort
       .go(value, this.prepared, {
         threshold: 0.3,
-        limit: 10,
         all: true,
       })
       .map((v) => v.target);

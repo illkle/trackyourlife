@@ -46,7 +46,9 @@ export const DayCellNumber = () => {
   const { onChange, labelType, date, values } = useDayCellContext();
   const { value, recordId } = values[0] ?? {};
 
-  const [internalNumber, setInternalNumber] = useState(getNumberSafe(value));
+  const [internalNumber, setInternalNumber] = useState(() =>
+    getNumberSafe(value),
+  );
   const internalNumberRef = useRef(internalNumber);
   const [rawInput, setRawInput] = useState<string>(String(internalNumber));
 

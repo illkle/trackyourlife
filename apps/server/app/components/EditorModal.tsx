@@ -1,3 +1,4 @@
+import type { HTMLAttributes, ReactNode } from "react";
 import { createContext, useContext, useId, useRef, useState } from "react";
 import { useIsomorphicLayoutEffect } from "usehooks-ts";
 
@@ -86,7 +87,10 @@ export const EditorModalProvider = ({
           isOpen ? "" : "hidden",
         )}
       >
-        <div ref={portalRef}></div>
+        <div
+          className="flex max-h-[calc(20svh)] flex-col"
+          ref={portalRef}
+        ></div>
       </div>
       <EditorModalContext.Provider
         value={{
@@ -137,4 +141,22 @@ export const EditorModal = ({
   }
 
   return null;
+};
+
+// TODO: add ref expose
+export const EditorModalTitle = ({
+  children,
+  ...args
+}: HTMLAttributes<HTMLDivElement> & { children: ReactNode }) => {
+  return (
+    <div
+      {...args}
+      className={cn(
+        args.className,
+        "flex items-center justify-between border-b border-neutral-200 px-4 py-1 text-sm font-bold dark:border-neutral-800",
+      )}
+    >
+      {children}
+    </div>
+  );
 };

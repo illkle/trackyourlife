@@ -58,7 +58,7 @@ const MiniTrackable = ({
                   {...day}
                   labelType="none"
                   key={index}
-                  className="min-h-16"
+                  className="max-h-16 min-h-16"
                 />
               </div>
             );

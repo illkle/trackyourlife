@@ -88,6 +88,8 @@ const TrackableFlagsProviderNonMemo = ({
     return createFlagsMap(flags);
   }, [flags]);
 
+  // Todo: memo
+
   const getFlag: ITrackableFlagsContext["getFlag"] = (trackableId, key) => {
     const flag = flagsMap.get(`${trackableId}--${key}`);
 

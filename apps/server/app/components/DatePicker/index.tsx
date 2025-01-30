@@ -57,7 +57,9 @@ const DatePicker = ({
   const calRef = useRef<HTMLDivElement>(null);
   const [isOpened, setIsOpened] = useState(false);
 
-  const [cursor, setCursor] = useState(startOfMonth(innerDate ?? dateNow));
+  const [cursor, setCursor] = useState(() =>
+    startOfMonth(innerDate ?? dateNow),
+  );
 
   const wrapRef = useRef(null);
 
