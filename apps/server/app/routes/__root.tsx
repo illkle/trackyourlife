@@ -1,16 +1,10 @@
 import type { QueryClient } from "@tanstack/react-query";
 import * as React from "react";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import {
-  createRootRouteWithContext,
-  Outlet,
-  ScrollRestoration,
-} from "@tanstack/react-router";
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { createServerFn, Meta, Scripts } from "@tanstack/start";
-import { getWebRequest } from "vinxi/http";
+import { getWebRequest } from "@tanstack/start/server";
 
 import { auth } from "~/auth/server";
-import { EditorModalProvider } from "~/components/EditorModal";
 import { LazyMotionProvider } from "~/components/Providers/lazyFramerMotionProvider";
 import { ThemeProvider } from "~/components/Providers/next-themes/themes";
 import { SingletonProvider } from "~/components/Providers/singletonProvider";
@@ -23,6 +17,7 @@ export const getSession = createServerFn({ method: "GET" }).handler(
   async () => {
     try {
       const r = getWebRequest();
+      if (!r) throw new Error("No request");
 
       const sessionInfo = await auth.api.getSession({
         headers: r.headers,
@@ -124,9 +119,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <LazyMotionProvider>
             <ThemeProvider defaultTheme="dark" attribute="class">
               <UserPreloader>{children}</UserPreloader>
-              <ScrollRestoration />
               <TanStackRouterDevtools position="bottom-right" />
-              <ReactQueryDevtools buttonPosition="bottom-left" />
               <Scripts />
             </ThemeProvider>
           </LazyMotionProvider>

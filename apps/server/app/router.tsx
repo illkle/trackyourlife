@@ -22,6 +22,7 @@ export function createRouter() {
     defaultSsr: false,
     defaultErrorComponent: DefaultCatchBoundary,
     defaultNotFoundComponent: NotFound,
+    scrollRestoration: true,
   });
 
   return routerWithQueryClient(r, queryClient);
