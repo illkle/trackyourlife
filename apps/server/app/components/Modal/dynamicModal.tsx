@@ -1,11 +1,11 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { createContext, useContext, useMemo } from "react";
+import { m } from "motion/react";
 
 import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogTitle,
   DialogTrigger,
 } from "~/@shad/components/dialog";
 import {
@@ -21,7 +21,11 @@ import {
   PopoverTrigger,
 } from "~/@shad/components/popover";
 import { cn } from "~/@shad/utils";
-import { EditorModal, EditorModalTitle } from "~/components/EditorModal";
+import {
+  EditorModal,
+  EditorModalTitle,
+  setIgnoreEditorModalClose,
+} from "~/components/EditorModal";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
 interface DynamicModalContext {
@@ -127,14 +131,17 @@ export const DynamicModalTrigger = ({
   editorProps?: ButtonProps;
   className?: string;
 }) => {
-  const { desktopMode, isDesktop, open, onOpenChange } =
+  const { desktopMode, isDesktop, onOpenChange } =
     useContext(DynamicModalContext);
 
   if (isDesktop) {
     if (desktopMode === "editor") {
       return (
         <button
-          onClick={() => onOpenChange(!open)}
+          onClick={(e) => {
+            setIgnoreEditorModalClose(e.nativeEvent);
+            onOpenChange(true);
+          }}
           {...editorProps}
           className={cn(className, editorProps?.className)}
         >
@@ -177,7 +184,6 @@ export const DynamicModalTrigger = ({
 type PopoverContentProps = React.ComponentProps<typeof PopoverContent>;
 type DialogContentProps = React.ComponentProps<typeof DialogContent>;
 type DrawerContentProps = React.ComponentProps<typeof DrawerContent>;
-type EditorContentProps = React.HTMLAttributes<HTMLDivElement>;
 
 export const DynamicModalContent = ({
   children,
@@ -199,7 +205,8 @@ export const DynamicModalContent = ({
     if (desktopMode === "editor") {
       return (
         <EditorModal open={open} onOpenChange={onOpenChange}>
-          {children}
+       
+            {children}
         </EditorModal>
       );
     }

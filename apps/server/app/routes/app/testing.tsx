@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { ScrollArea, ScrollAreaViewport } from "@radix-ui/react-scroll-area";
 import { createFileRoute } from "@tanstack/react-router";
 import { m } from "motion/react";
 
-import { stringToColorHSL } from "@tyl/helpers/colorTools";
-
-import { Input } from "~/@shad/components/input";
-import { ScrollBar } from "~/@shad/components/scroll-area";
 import { cn } from "~/@shad/utils";
-import { EditorModal } from "~/components/EditorModal";
+import {
+  DynamicModal,
+  DynamicModalContent,
+  DynamicModalDescription,
+  DynamicModalEditorTitle,
+  DynamicModalTrigger,
+} from "~/components/Modal/dynamicModal";
 
 export const Route = createFileRoute("/app/testing")({
   component: RouteComponent,
@@ -18,27 +19,23 @@ const DropAModal = ({ className }: { className?: string }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <>
-      <button onClick={() => setIsOpen(true)}>Drop a modal</button>
+    <DynamicModal open={isOpen} onOpenChange={setIsOpen}>
+      <DynamicModalTrigger>Drop a modal</DynamicModalTrigger>
+      <DynamicModalContent>
+        <DynamicModalEditorTitle>Drop a modal</DynamicModalEditorTitle>
+        <DynamicModalDescription>Drop a modal</DynamicModalDescription>
 
-      {isOpen && (
-        <EditorModal open={isOpen} onOpenChange={setIsOpen}>
+        <m.div layout layoutId="aslijdjaskld" className={cn(className)}>
           <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 4 }}
-            layout
-            exit={{ opacity: 0 }}
-            layoutId="aslijdjaskld"
-            className={cn(className)}
+            layout="preserve-aspect"
+            layoutId="asdasd"
+            className="h-full w-full"
           >
-            <m.div layout layoutId="asdasd" className="h-full w-full">
-              {Math.random()}
-            </m.div>
+            {Math.random()}
           </m.div>
-        </EditorModal>
-      )}
-    </>
+        </m.div>
+      </DynamicModalContent>
+    </DynamicModal>
   );
 };
 

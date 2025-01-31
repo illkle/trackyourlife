@@ -276,14 +276,7 @@ export const DayCellTagsPopup = () => {
 
         <ScrollArea className="mb-3 flex h-full max-h-[400px] flex-col px-4 md:mr-11 md:mb-0.5">
           <ScrollBar orientation="vertical" />
-          <m.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 4 }}
-            layout
-            exit={{ opacity: 0 }}
-            className="flex flex-wrap gap-0.5 pt-2 pb-2"
-          >
+          <div className="flex flex-wrap gap-0.5 pt-2 pb-2">
             {values.map((v) => (
               <div
                 key={v.recordId}
@@ -310,7 +303,7 @@ export const DayCellTagsPopup = () => {
                 </Button>
               </div>
             ))}
-          </m.div>
+          </div>
         </ScrollArea>
         <SubInput />
       </DynamicModalContent>

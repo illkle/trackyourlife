@@ -1,10 +1,11 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { createContext, useContext, useId, useRef, useState } from "react";
 import { useIsomorphicLayoutEffect } from "usehooks-ts";
 
 import "~/@shad/components/dialog";
 
-import { AnimatePresence, LayoutGroup, m } from "motion/react";
+import React from "react";
+import { AnimatePresence, m } from "motion/react";
 import { createPortal } from "react-dom";
 import { useOnClickOutside } from "usehooks-ts";
 
@@ -18,7 +19,7 @@ interface EditorModalApi {
   currentId: string | null;
 }
 
-const EditorModalContext = createContext<EditorModalApi>({
+export const EditorModalContext = createContext<EditorModalApi>({
   registerClient: () => {
     return;
   },
@@ -57,12 +58,14 @@ export const EditorModalProvider = ({
     }
   };
 
-  const portalRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   useOnClickOutside(
     wrapperRef,
-    () => {
+    (e) => {
+      if (e.ignoreEditorModalClose) {
+        return;
+      }
       if (currentId) {
         unreg(currentId);
       }
@@ -80,20 +83,18 @@ export const EditorModalProvider = ({
 
   return (
     <>
-      <m.div
-        ref={wrapperRef}
-        data-hidden={!isOpen}
-        layout
-        layoutId={`editor-modal`}
-        layoutRoot
-        transition={{ duration: 2, ease: "easeInOut" }}
-        className={cn(
-          "fixed bottom-12 left-1/2 z-9999 max-h-[calc(20svh)] w-full max-w-[500px] rounded-md border border-neutral-800 bg-neutral-950 shadow-2xl shadow-neutral-950",
-          "translate-x-[calc(-50%+var(--sidebar-offset)/2)] transition-all",
-          "data-[hidden=true]:pointer-events-none data-[hidden=true]:opacity-0",
-          "opacity-100 duration-1000 data-[hidden=true]:opacity-0",
-        )}
-      ></m.div>
+      <AnimatePresence>
+        <m.div
+          ref={wrapperRef}
+          data-hidden={!isOpen}
+          transition={{ duration: 2, ease: "easeInOut" }}
+          className={cn(
+            "fixed bottom-12 left-1/2 z-9999",
+            "translate-x-[calc(-50%+var(--sidebar-offset)/2)] transition-all",
+            "data-[hidden=true]:pointer-events-none data-[hidden=true]:opacity-0",
+          )}
+        ></m.div>
+      </AnimatePresence>
       <EditorModalContext.Provider
         value={{
           registerClient: reg,
@@ -139,11 +140,24 @@ export const EditorModal = ({
   }, [open]);
 
   return (
-    <AnimatePresence mode="wait">
+    <>
       {currentId === id && portalTarget.current && (
-        <>{createPortal(children, portalTarget.current)}</>
+        <>
+          {createPortal(
+            <m.div
+              style={{
+                transformOrigin: "bottom",
+              }}
+              className="flex h-fit max-h-[200px] w-[500px] flex-col rounded-md border border-neutral-800 bg-neutral-950 shadow-2xl shadow-neutral-950"
+            >
+              {children}
+            </m.div>,
+            portalTarget.current,
+            currentId,
+          )}
+        </>
       )}
-    </AnimatePresence>
+    </>
   );
 };
 
@@ -157,8 +171,6 @@ export const EditorModalTitle = ({
 }) => {
   return (
     <m.div
-      layout
-      layoutId="editor-modal-title"
       className={cn(
         className,
         "flex items-center justify-between border-b border-neutral-200 px-4 py-1 text-sm font-bold dark:border-neutral-800",
@@ -168,3 +180,21 @@ export const EditorModalTitle = ({
     </m.div>
   );
 };
+
+export const setIgnoreEditorModalClose = (
+  e: MouseEvent | TouchEvent | FocusEvent,
+) => {
+  e.ignoreEditorModalClose = true;
+};
+
+declare global {
+  interface MouseEvent {
+    ignoreEditorModalClose?: boolean;
+  }
+  interface TouchEvent {
+    ignoreEditorModalClose?: boolean;
+  }
+  interface FocusEvent {
+    ignoreEditorModalClose?: boolean;
+  }
+}
