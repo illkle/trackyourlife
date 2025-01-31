@@ -9,6 +9,7 @@ import {
 } from "react";
 import { format } from "date-fns";
 import { CornerRightUp, XIcon } from "lucide-react";
+import { m } from "motion/react";
 
 import { clamp } from "@tyl/helpers";
 import {
@@ -263,19 +264,26 @@ export const DayCellTagsPopup = () => {
       </DynamicModalTrigger>
       <DynamicModalContent key={date.getTime()}>
         <DynamicModalDrawerTitle>
-          {format(date, "MMM d")}
+          {format(date, "MMMM d")}
         </DynamicModalDrawerTitle>
 
         <DynamicModalEditorTitle>
-          {format(date, "MMM d")}
+          {format(date, "MMMM d")}
           <span className="text-xs font-normal opacity-50">{name}</span>
         </DynamicModalEditorTitle>
 
         <DynamicModalDescription>{name}</DynamicModalDescription>
 
-        <ScrollArea className="mr-11 mb-0.5 flex max-h-[400px] flex-col px-4">
+        <ScrollArea className="mb-3 flex h-full max-h-[400px] flex-col px-4 md:mr-11 md:mb-0.5">
           <ScrollBar orientation="vertical" />
-          <div className="flex flex-wrap gap-0.5 pt-2">
+          <m.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 4 }}
+            layout
+            exit={{ opacity: 0 }}
+            className="flex flex-wrap gap-0.5 pt-2 pb-2"
+          >
             {values.map((v) => (
               <div
                 key={v.recordId}
@@ -302,7 +310,7 @@ export const DayCellTagsPopup = () => {
                 </Button>
               </div>
             ))}
-          </div>
+          </m.div>
         </ScrollArea>
         <SubInput />
       </DynamicModalContent>

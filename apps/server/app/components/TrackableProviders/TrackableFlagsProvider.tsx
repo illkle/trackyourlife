@@ -28,6 +28,8 @@ import { useZ } from "~/utils/useZ";
   There is a TrackableProvider(nearby file) that wraps getFlag and setFlag and closes over id.
 */
 
+// TS 5.8 talks about improving some stuff with paraameter retunr inference, maybe something can be refactored when it's released
+//https://devblogs.microsoft.com/typescript/announcing-typescript-5-8-beta/#a-note-on-limitations
 interface ITrackableFlagsContext {
   getFlag: <K extends ITrackableFlagKey>(
     trackableId: string,

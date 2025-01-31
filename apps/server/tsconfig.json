@@ -11,6 +11,6 @@
     "checkJs": false,
     "types": ["vite/client"]
   },
-  "include": ["**/*.ts", "**/*.tsx"],
+  "include": ["**/*.ts", "**/*.tsx", "app/auth/plugin-test"],
   "exclude": ["node_modules"]
 }

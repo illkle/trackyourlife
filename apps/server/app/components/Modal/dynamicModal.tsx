@@ -249,7 +249,9 @@ export const DynamicModalDescription = ({
     return <></>;
   }
 
-  return <DrawerDescription>{children}</DrawerDescription>;
+  return (
+    <DrawerDescription className="text-center">{children}</DrawerDescription>
+  );
 };
 
 export const DynamicModalDrawerTitle = ({

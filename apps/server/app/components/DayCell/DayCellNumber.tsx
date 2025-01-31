@@ -209,6 +209,7 @@ export const DayCellNumber = () => {
                 : "text-neutral-800 dark:text-neutral-300",
               "text-xs @[4rem]:text-lg",
               "overflow-hidden",
+              isEditing && "hidden",
               drawerOpen &&
                 "outline outline-neutral-300 dark:outline-neutral-600",
             )}

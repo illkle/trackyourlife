@@ -1,10 +1,7 @@
 import type { QueryClient } from "@tanstack/react-query";
 import * as React from "react";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
-import { createServerFn, Meta, Scripts } from "@tanstack/start";
-import { getWebRequest } from "@tanstack/start/server";
-
-import { auth } from "~/auth/server";
+import { Meta, Scripts } from "@tanstack/start";
 import { LazyMotionProvider } from "~/components/Providers/lazyFramerMotionProvider";
 import { ThemeProvider } from "~/components/Providers/next-themes/themes";
 import { SingletonProvider } from "~/components/Providers/singletonProvider";
@@ -12,28 +9,6 @@ import appCss from "~/styles/app.css?url";
 import textEditorCss from "~/styles/textEditor.css?url";
 import { seo } from "~/utils/seo.js";
 import { ensureSessionInfo, UserPreloader } from "~/utils/useSessionInfo";
-
-export const getSession = createServerFn({ method: "GET" }).handler(
-  async () => {
-    try {
-      const r = getWebRequest();
-      if (!r) throw new Error("No request");
-
-      const sessionInfo = await auth.api.getSession({
-        headers: r.headers,
-      });
-
-      const { token } = await auth.api.getToken({
-        headers: r.headers,
-      });
-
-      return { sessionInfo, token };
-    } catch (e) {
-      console.error(e);
-      return { sessionInfo: null, token: null };
-    }
-  },
-);
 
 const iconPrefix = (path: string) =>
   process.env.SITE === "stage" ? `/stg${path}` : path;

@@ -1,50 +1,53 @@
 import { useState } from "react";
 import { ScrollArea, ScrollAreaViewport } from "@radix-ui/react-scroll-area";
 import { createFileRoute } from "@tanstack/react-router";
+import { m } from "motion/react";
 
 import { stringToColorHSL } from "@tyl/helpers/colorTools";
 
 import { Input } from "~/@shad/components/input";
 import { ScrollBar } from "~/@shad/components/scroll-area";
+import { cn } from "~/@shad/utils";
+import { EditorModal } from "~/components/EditorModal";
 
 export const Route = createFileRoute("/app/testing")({
   component: RouteComponent,
 });
 
-const DemoComp = () => {
-  const [state, setState] = useState("");
-
-  const color = stringToColorHSL(state);
+const DropAModal = ({ className }: { className?: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="class flex flex-col">
-      <Input
-        value={state}
-        onChange={(e) => setState(e.target.value)}
-        placeholder="Enter a string"
-      />
+    <>
+      <button onClick={() => setIsOpen(true)}>Drop a modal</button>
 
-      <div
-        style={{ backgroundColor: `hsl(${color.h}, ${color.s}%, ${color.l}%)` }}
-        className="p-4"
-      >
-        {state}
-      </div>
-    </div>
+      {isOpen && (
+        <EditorModal open={isOpen} onOpenChange={setIsOpen}>
+          <m.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 4 }}
+            layout
+            exit={{ opacity: 0 }}
+            layoutId="aslijdjaskld"
+            className={cn(className)}
+          >
+            <m.div layout layoutId="asdasd" className="h-full w-full">
+              {Math.random()}
+            </m.div>
+          </m.div>
+        </EditorModal>
+      )}
+    </>
   );
 };
 
 function RouteComponent() {
   return (
     <div className="class flex max-h-[200px] w-32 flex-col bg-red-200">
-      <div className="h-[100px] w-full bg-green-500"></div>
-      <ScrollArea className="flex max-h-[100px] w-full flex-col bg-blue-500">
-        <ScrollAreaViewport h-max>
-          asljkdhjasjkldjasd asdjkljasdl askldjlaskd lkasjljkdjas askldjas
-        </ScrollAreaViewport>
+      <DropAModal className="h-5" />
 
-        <ScrollBar />
-      </ScrollArea>
+      <DropAModal className="h-16"></DropAModal>
     </div>
   );
 }

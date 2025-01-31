@@ -4,6 +4,7 @@ import { useIsomorphicLayoutEffect } from "usehooks-ts";
 
 import "~/@shad/components/dialog";
 
+import { AnimatePresence, LayoutGroup, m } from "motion/react";
 import { createPortal } from "react-dom";
 import { useOnClickOutside } from "usehooks-ts";
 
@@ -79,24 +80,25 @@ export const EditorModalProvider = ({
 
   return (
     <>
-      <div
+      <m.div
         ref={wrapperRef}
+        data-hidden={!isOpen}
+        layout
+        layoutId={`editor-modal`}
+        layoutRoot
+        transition={{ duration: 2, ease: "easeInOut" }}
         className={cn(
-          "fixed bottom-14 left-1/2 z-9999 w-full max-w-[500px] rounded-md border border-neutral-800 bg-neutral-950 shadow-2xl shadow-neutral-950",
+          "fixed bottom-12 left-1/2 z-9999 max-h-[calc(20svh)] w-full max-w-[500px] rounded-md border border-neutral-800 bg-neutral-950 shadow-2xl shadow-neutral-950",
           "translate-x-[calc(-50%+var(--sidebar-offset)/2)] transition-all",
-          isOpen ? "" : "hidden",
+          "data-[hidden=true]:pointer-events-none data-[hidden=true]:opacity-0",
+          "opacity-100 duration-1000 data-[hidden=true]:opacity-0",
         )}
-      >
-        <div
-          className="flex max-h-[calc(20svh)] flex-col"
-          ref={portalRef}
-        ></div>
-      </div>
+      ></m.div>
       <EditorModalContext.Provider
         value={{
           registerClient: reg,
           unregisterClient: unreg,
-          portalTarget: portalRef,
+          portalTarget: wrapperRef,
           currentId,
         }}
       >
@@ -136,27 +138,33 @@ export const EditorModal = ({
     }
   }, [open]);
 
-  if (currentId === id && portalTarget.current) {
-    return createPortal(children, portalTarget.current);
-  }
-
-  return null;
+  return (
+    <AnimatePresence mode="wait">
+      {currentId === id && portalTarget.current && (
+        <>{createPortal(children, portalTarget.current)}</>
+      )}
+    </AnimatePresence>
+  );
 };
 
 // TODO: add ref expose
 export const EditorModalTitle = ({
   children,
-  ...args
-}: HTMLAttributes<HTMLDivElement> & { children: ReactNode }) => {
+  className,
+}: {
+  children: ReactNode;
+  className?: string;
+}) => {
   return (
-    <div
-      {...args}
+    <m.div
+      layout
+      layoutId="editor-modal-title"
       className={cn(
-        args.className,
+        className,
         "flex items-center justify-between border-b border-neutral-200 px-4 py-1 text-sm font-bold dark:border-neutral-800",
       )}
     >
       {children}
-    </div>
+    </m.div>
   );
 };
