@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { SettingsTitle } from "~/components/CreateAndSettingsFlows/settingsTitle";
-import { Import } from "~/components/ImportExport";
+import { SettingsTitle } from "~/components/Trackable/CreateAndSettingsFlows/settingsTitle";
+import { Import } from "~/components/Trackable/ImportExport";
 
 export const Route = createFileRoute("/app/trackables/$id/import")({
   component: RouteComponent,

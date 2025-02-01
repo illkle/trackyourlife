@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
 
 import { Button } from "~/@shad/components/button";
-import TrackablesList from "~/components/TrackablesList";
+import TrackablesList from "~/components/Trackable/TrackablesList";
 
 const SHOW_DAYS = 6;
 

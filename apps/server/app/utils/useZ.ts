@@ -6,7 +6,7 @@ import { addMonths, addYears, subMonths } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 
 import type { Schema } from "~/schema";
-import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
+import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
 export const useZ = () => {
   return useZero<Schema>();

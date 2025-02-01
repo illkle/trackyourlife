@@ -6,7 +6,7 @@ import {
   Outlet,
 } from "@tanstack/react-router";
 
-import Header, { HeaderLogo } from "~/components/Header";
+import Header, { HeaderLogo } from "~/components/Layout/Header";
 import { useSessionInfo } from "~/utils/useSessionInfo";
 
 export const Route = createFileRoute("/auth")({

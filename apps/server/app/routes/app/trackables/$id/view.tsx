@@ -1,7 +1,7 @@
 import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
-import TrackableView from "~/components/TrackableView";
+import TrackableView from "~/components/Trackable/TrackableView";
 import {
   usePreloadTrackableMonthView,
   usePreloadTrackableYearView,

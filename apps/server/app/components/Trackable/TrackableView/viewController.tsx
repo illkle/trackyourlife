@@ -8,11 +8,10 @@ import {
   ChevronsRight,
 } from "lucide-react";
 
-import type { TVDateValue } from "~/components/TrackableView";
+import type { TVDateValue } from "~/components/Trackable/TrackableView";
 import { Button } from "~/@shad/components/button";
-import { useSidebar } from "~/@shad/components/sidebar";
 import { cn } from "~/@shad/utils";
-import { YearSelector } from "~/components/TrackableView/yearSelector";
+import { YearSelector } from "~/components/Trackable/TrackableView/yearSelector";
 import { Route } from "~/routes/app/trackables/$id/view";
 
 const getIncrementedDate = (
@@ -60,7 +59,6 @@ export const ViewController = ({
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      console.log(e.key);
       if (e.altKey) {
         if (e.shiftKey) {
           setSwitchingYears(true);

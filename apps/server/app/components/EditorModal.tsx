@@ -5,7 +5,7 @@ import { useIsomorphicLayoutEffect } from "usehooks-ts";
 import "~/@shad/components/dialog";
 
 import React from "react";
-import { AnimatePresence, m } from "motion/react";
+import { m } from "motion/react";
 import { createPortal } from "react-dom";
 import { useOnClickOutside } from "usehooks-ts";
 
@@ -83,18 +83,16 @@ export const EditorModalProvider = ({
 
   return (
     <>
-      <AnimatePresence>
-        <m.div
-          ref={wrapperRef}
-          data-hidden={!isOpen}
-          transition={{ duration: 2, ease: "easeInOut" }}
-          className={cn(
-            "fixed bottom-12 left-1/2 z-9999",
-            "translate-x-[calc(-50%+var(--sidebar-offset)/2)] transition-all",
-            "data-[hidden=true]:pointer-events-none data-[hidden=true]:opacity-0",
-          )}
-        ></m.div>
-      </AnimatePresence>
+      <m.div
+        ref={wrapperRef}
+        data-hidden={!isOpen}
+        transition={{ duration: 2, ease: "easeInOut" }}
+        className={cn(
+          "fixed bottom-12 left-1/2 z-9999",
+          "translate-x-[calc(-50%+var(--sidebar-offset)/2)] transition-all",
+          "data-[hidden=true]:pointer-events-none data-[hidden=true]:opacity-0",
+        )}
+      ></m.div>
       <EditorModalContext.Provider
         value={{
           registerClient: reg,

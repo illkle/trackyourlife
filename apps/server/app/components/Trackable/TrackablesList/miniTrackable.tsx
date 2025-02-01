@@ -6,8 +6,8 @@ import type { PureDataRecord } from "@tyl/helpers/trackables";
 
 import type { TrackableListItem } from "~/utils/useZ";
 import DayCellRouter from "~/components/DayCell";
-import { FavoriteButton } from "~/components/FavoriteButton";
-import { TrackableNameText } from "~/components/TrackableName";
+import { FavoriteButton } from "~/components/Trackable/FavoriteButton";
+import { TrackableNameText } from "~/components/Trackable/TrackableName";
 
 const MiniTrackable = ({
   className,

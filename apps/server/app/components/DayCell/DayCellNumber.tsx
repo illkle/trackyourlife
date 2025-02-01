@@ -20,8 +20,8 @@ import {
   LabelInside,
   useDayCellContext,
 } from "~/components/DayCell";
-import { useTrackableFlags } from "~/components/TrackableProviders/TrackableFlagsProvider";
-import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
+import { useTrackableFlags } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
 const getNumberSafe = (v: string | undefined) => {

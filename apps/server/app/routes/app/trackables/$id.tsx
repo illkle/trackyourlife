@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { z } from "zod";
 
-import type { ITrackableFlagType } from "~/components/TrackableProviders/trackableFlags";
+import type { ITrackableFlagType } from "~/components/Trackable/TrackableProviders/trackableFlags";
 import { AlertDialogTrigger } from "~/@shad/components/alert-dialog";
 import { Button } from "~/@shad/components/button";
 import {
@@ -33,16 +33,16 @@ import {
   DropdownMenuTrigger,
 } from "~/@shad/components/dropdown-menu";
 import { Spinner } from "~/@shad/components/spinner";
-import DeleteButton from "~/components/DeleteButton";
-import { FavoriteButton } from "~/components/FavoriteButton";
-import { TrackableNameEditable } from "~/components/TrackableName";
+import DeleteButton from "~/components/Trackable/DeleteButton";
+import { FavoriteButton } from "~/components/Trackable/FavoriteButton";
+import { TrackableNameEditable } from "~/components/Trackable/TrackableName";
 import {
   TrackableFlagsProvider,
   useTrackableFlags,
-} from "~/components/TrackableProviders/TrackableFlagsProvider";
+} from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import TrackableProvider, {
   useTrackableMeta,
-} from "~/components/TrackableProviders/TrackableProvider";
+} from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { useZ, useZeroTrackable } from "~/utils/useZ";
 
 const paramsSchema = z.object({

@@ -9,9 +9,9 @@ import { mapDataToRange, sortTrackableList } from "@tyl/helpers/trackables";
 import { Button } from "~/@shad/components/button";
 import { Spinner } from "~/@shad/components/spinner";
 import DayCellRouter from "~/components/DayCell";
-import { TrackableNameText } from "~/components/TrackableName";
-import { TrackableFlagsProvider } from "~/components/TrackableProviders/TrackableFlagsProvider";
-import TrackableProvider from "~/components/TrackableProviders/TrackableProvider";
+import { TrackableNameText } from "~/components/Trackable/TrackableName";
+import { TrackableFlagsProvider } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import TrackableProvider from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { useZeroTrackableListWithData } from "~/utils/useZ";
 import MiniTrackable from "./miniTrackable";
 

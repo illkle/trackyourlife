@@ -10,20 +10,20 @@ import { v4 as uuidv4 } from "uuid";
 import type { DbTrackableSelect } from "@tyl/db/schema";
 import type { RecordValue } from "@tyl/helpers/trackables";
 
-import type { ITrackableFlagsInputKV } from "~/components/TrackableProviders/trackableFlags";
+import type { ITrackableFlagsInputKV } from "~/components/Trackable/TrackableProviders/trackableFlags";
 import type { ITrackableFlagsZero, ITrackableZero } from "~/schema";
 import { Button } from "~/@shad/components/button";
 import { DrawerMobileTitleProvider } from "~/@shad/components/drawer";
 import { Label } from "~/@shad/components/label";
 import { Switch } from "~/@shad/components/switch";
 import ColorInput from "~/components/Colors/colorInput";
-import { SettingsTitle } from "~/components/CreateAndSettingsFlows/settingsTitle";
+import NumberColorSelector from "~/components/Colors/numberColorSelector";
 import DatePicker from "~/components/DatePicker";
 import { DayCellContext, DayCellTypeRouter } from "~/components/DayCell";
-import { createFlagsForSettingsForm } from "~/components/TrackableProviders/trackableFlags";
-import { TrackableFlagsProviderMock } from "~/components/TrackableProviders/TrackableFlagsProvider";
-import TrackableProvider from "~/components/TrackableProviders/TrackableProvider";
-import NumberColorSelector from "../Colors/numberColorSelector";
+import { SettingsTitle } from "~/components/Trackable/CreateAndSettingsFlows/settingsTitle";
+import { createFlagsForSettingsForm } from "~/components/Trackable/TrackableProviders/trackableFlags";
+import { TrackableFlagsProviderMock } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import TrackableProvider from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import NumberLimitsSelector from "./numberLimitsSelector";
 
 type FormType = ReactFormExtendedApi<ITrackableFlagsInputKV>;

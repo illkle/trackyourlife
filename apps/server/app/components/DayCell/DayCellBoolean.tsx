@@ -10,8 +10,8 @@ import {
   LabelInside,
   useDayCellContext,
 } from "~/components/DayCell";
-import { useTrackableFlags } from "~/components/TrackableProviders/TrackableFlagsProvider";
-import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
+import { useTrackableFlags } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { useAllowAnimation } from "~/utils/useAllowAnimation";
 
 const ANIMATION_TIME = 0.3;

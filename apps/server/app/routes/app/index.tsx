@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { DailyList } from "~/components/TrackablesList";
+import { DailyList } from "~/components/Trackable/TrackablesList";
 
 const SHOW_DAYS = 7;
 

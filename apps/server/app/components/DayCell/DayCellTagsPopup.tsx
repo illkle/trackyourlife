@@ -33,8 +33,8 @@ import {
   DynamicModalTrigger,
 } from "~/components/Modal/dynamicModal";
 import { useTheme } from "~/components/Providers/next-themes/themes";
-import { useTrackableFlags } from "~/components/TrackableProviders/TrackableFlagsProvider";
-import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
+import { useTrackableFlags } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
 const InputWithSuggestions = ({
   onSubmit,

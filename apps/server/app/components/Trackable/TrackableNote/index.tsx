@@ -1,6 +1,7 @@
 import { useState } from "react";
+import { StickyNoteIcon } from "lucide-react";
 
-import type { TrackableListItem } from "~/utils/useZ";
+import { Button } from "~/@shad/components/button";
 import {
   Dialog,
   DialogContent,
@@ -14,23 +15,19 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/@shad/components/drawer";
-import { Input } from "~/@shad/components/input";
-import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
+import { Textarea } from "~/@shad/components/textarea";
+import { useTrackableFlags } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
-import { useZ, useZeroTrackable } from "~/utils/useZ";
 
-export const TrackableNameEditable = () => {
+export const TrackableNoteEditable = () => {
   const { id } = useTrackableMeta();
 
-  const z = useZ();
+  const { getFlag, setFlag } = useTrackableFlags();
 
-  const [trackable] = useZeroTrackable({ id });
-  const updateName = (name: string) => {
-    void z.mutate.TYL_trackable.update({
-      id,
-      name,
-    });
-  };
+  const note = getFlag(id, "AnyNote");
+
+  const hasNote = Boolean(note);
 
   const [isEditing, setIsEditing] = useState(false);
 
@@ -38,39 +35,45 @@ export const TrackableNameEditable = () => {
 
   const isDesktop = useIsDesktop();
 
-  const saveHandler = () => {
-    void updateName(internalValue);
+  const display = hasNote ? (
+    <p className="cursor-pointer rounded-md bg-inherit px-2 py-1 text-left text-sm whitespace-pre-wrap md:text-base dark:text-neutral-300">
+      {note}
+    </p>
+  ) : (
+    <Button variant="outline" className="w-fit gap-2">
+      <StickyNoteIcon />
+      <span className="max-lg:hidden">Add note</span>{" "}
+    </Button>
+  );
+  const saveHandler = async () => {
+    await setFlag(id, "AnyNote", internalValue);
     setIsEditing(false);
   };
 
-  const display = (
-    <h2 className="w-full truncate bg-inherit text-left text-xl font-semibold md:text-2xl">
-      {trackable?.name ? trackable.name : `Unnamed ${trackable?.type ?? ""}`}
-    </h2>
-  );
-
   const openChangeHandler = (v: boolean) => {
     if (v === true) {
-      setInternalValue(trackable?.name ?? "");
+      setInternalValue(note);
     }
     setIsEditing(v);
   };
 
+  const title = <>{hasNote ? "Edit" : "Create"} attached note</>;
+
   return isDesktop ? (
     <Dialog open={isEditing} onOpenChange={openChangeHandler}>
-      <DialogTrigger>{display}</DialogTrigger>
+      <DialogTrigger asChild>{display}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Rename Trackable</DialogTitle>
+          <DialogTitle>{title}</DialogTitle>
         </DialogHeader>
-        <Input
+        <Textarea
           autoFocus
-          className="w-full"
+          className="min-h-64 w-full"
           value={internalValue}
           onChange={(e) => setInternalValue(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              saveHandler();
+              void saveHandler();
             }
           }}
         />
@@ -82,14 +85,14 @@ export const TrackableNameEditable = () => {
       onClose={() => setIsEditing(false)}
       onOpenChange={openChangeHandler}
     >
-      <DrawerTrigger>{display}</DrawerTrigger>
+      <DrawerTrigger asChild>{display}</DrawerTrigger>
       <DrawerContent className="py-4">
-        <DrawerTitle>Rename Trackable</DrawerTitle>
+        <DrawerTitle>{title}</DrawerTitle>
 
         <div className="p-6">
-          <Input
+          <Textarea
             autoFocus
-            className="w-full text-center"
+            className="min-h-48 w-full text-left"
             value={internalValue}
             onChange={(e) => setInternalValue(e.target.value)}
             onBlur={saveHandler}
@@ -97,15 +100,5 @@ export const TrackableNameEditable = () => {
         </div>
       </DrawerContent>
     </Drawer>
-  );
-};
-
-export const TrackableNameText = ({
-  trackable,
-}: {
-  trackable: TrackableListItem;
-}) => {
-  return (
-    <>{trackable.name.length ? trackable.name : `Unnamed ${trackable.type}`}</>
   );
 };

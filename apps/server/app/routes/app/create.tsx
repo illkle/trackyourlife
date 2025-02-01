@@ -5,12 +5,12 @@ import { v4 as uuidv4 } from "uuid";
 import type { DbTrackableInsert } from "@tyl/db/schema";
 import { cloneDeep } from "@tyl/helpers";
 
-import type { ITrackableFlagsKV } from "~/components/TrackableProviders/trackableFlags";
+import type { ITrackableFlagsInputKV } from "~/components/Trackable/TrackableProviders/trackableFlags";
 import type { ITrackableZeroInsert } from "~/schema";
 import { Input } from "~/@shad/components/input";
-import TrackableSettings from "~/components/CreateAndSettingsFlows";
-import { SettingsTitle } from "~/components/CreateAndSettingsFlows/settingsTitle";
-import { TrackableTypeSelector } from "~/components/CreateAndSettingsFlows/trackableTypeSelector";
+import TrackableSettings from "~/components/Trackable/CreateAndSettingsFlows";
+import { SettingsTitle } from "~/components/Trackable/CreateAndSettingsFlows/settingsTitle";
+import { TrackableTypeSelector } from "~/components/Trackable/CreateAndSettingsFlows/trackableTypeSelector";
 import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { useZ } from "~/utils/useZ";
 
@@ -40,7 +40,7 @@ function RouteComponent() {
     setNewOne(update);
   };
 
-  const createTrackable = async (settings: ITrackableFlagsKV) => {
+  const createTrackable = async (settings: ITrackableFlagsInputKV) => {
     const id = uuidv4();
     await z.mutate.TYL_trackable.insert({
       id,

@@ -17,7 +17,7 @@ import {
   DynamicModalEditorTitle,
   DynamicModalTrigger,
 } from "~/components/Modal/dynamicModal";
-import { useTrackableMeta } from "~/components/TrackableProviders/TrackableProvider";
+import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
 export const DayCellTextPopup = () => {
   const { name } = useTrackableMeta();

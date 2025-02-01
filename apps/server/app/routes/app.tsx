@@ -5,8 +5,8 @@ import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 
 import { SidebarProvider } from "~/@shad/components/sidebar";
 import { EditorModalProvider } from "~/components/EditorModal";
-import Header, { HeaderLogo } from "~/components/Header";
-import { AppSidebar, SidebarToggle } from "~/components/Sidebar";
+import Header, { HeaderLogo } from "~/components/Layout/Header";
+import { AppSidebar, SidebarToggle } from "~/components/Layout/Sidebar";
 import { schema } from "~/schema";
 import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { usePreloadCore } from "~/utils/useZ";
