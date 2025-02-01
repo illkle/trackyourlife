@@ -8,7 +8,7 @@ import {
   LabelInside,
   useDayCellContext,
 } from "~/components/DayCell";
-import { LazyTextEditor, SubmitHook } from "~/components/LazyTextEditor";
+import { LazyTextEditor, SubmitHook } from "~/components/Inputs/LazyTextEditor";
 import {
   DynamicModal,
   DynamicModalContent,

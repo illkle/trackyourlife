@@ -1,6 +1,5 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { createContext, useContext, useMemo } from "react";
-import { m } from "motion/react";
 
 import {
   Dialog,
@@ -205,8 +204,7 @@ export const DynamicModalContent = ({
     if (desktopMode === "editor") {
       return (
         <EditorModal open={open} onOpenChange={onOpenChange}>
-       
-            {children}
+          {children}
         </EditorModal>
       );
     }

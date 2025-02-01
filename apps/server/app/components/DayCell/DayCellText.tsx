@@ -1,5 +1,5 @@
 import { useDayCellContext } from "~/components/DayCell";
-import { LazyTextEditor } from "~/components/LazyTextEditor";
+import { LazyTextEditor } from "~/components/Inputs/LazyTextEditor";
 
 export const DayCellText = () => {
   const { values, onChange, date } = useDayCellContext();

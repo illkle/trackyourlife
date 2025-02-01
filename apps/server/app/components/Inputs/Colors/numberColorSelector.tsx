@@ -26,13 +26,13 @@ import {
   DrawerTrigger,
 } from "~/@shad/components/drawer";
 import { Input } from "~/@shad/components/input-w-details";
-import { BetterNumberInput } from "~/components/Colors/betterNumberInput";
-import { ColorDisplay } from "~/components/Colors/colorDisplay";
-import ColorPicker from "~/components/Colors/colorPicker";
+import { BetterNumberInput } from "~/components/Inputs/Colors/betterNumberInput";
+import { ColorDisplay } from "~/components/Inputs/Colors/colorDisplay";
+import ColorPicker from "~/components/Inputs/Colors/colorPicker";
 import {
   ControllerPoint,
   ControllerRoot,
-} from "~/components/Colors/dragController";
+} from "~/components/Inputs/Colors/dragController";
 import { useIsMobile } from "~/utils/useIsDesktop";
 
 const getActualMin = (

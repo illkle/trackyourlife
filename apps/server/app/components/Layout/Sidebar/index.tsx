@@ -32,7 +32,7 @@ import {
 } from "~/@shad/components/sidebar";
 import { authClient } from "~/auth/client";
 import { CoreLinks } from "~/components/Layout/Header";
-import { ThemeSwitcher } from "~/components/Settings/themeSwitcher";
+import { ThemeSwitcher } from "~/components/UserAppSettings/themeSwitcher";
 import { RenderTrackableIcon } from "~/utils/trackableIcons";
 import { invalidateSession, useSessionAuthed } from "~/utils/useSessionInfo";
 import { useZeroTrackablesList } from "~/utils/useZ";

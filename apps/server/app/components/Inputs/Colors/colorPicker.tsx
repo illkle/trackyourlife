@@ -17,7 +17,7 @@ import { cn } from "~/@shad/utils";
 import {
   ControllerPoint,
   ControllerRoot,
-} from "~/components/Colors/dragController";
+} from "~/components/Inputs/Colors/dragController";
 import { BetterNumberInput } from "./betterNumberInput";
 
 const hueGradient =

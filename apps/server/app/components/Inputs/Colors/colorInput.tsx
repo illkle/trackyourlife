@@ -13,8 +13,8 @@ import {
   DrawerTrigger,
 } from "~/@shad/components/drawer";
 import { Popover, PopoverTrigger } from "~/@shad/components/popover";
-import { ColorDisplay } from "~/components/Colors/colorDisplay";
-import ColorPicker from "~/components/Colors/colorPicker";
+import { ColorDisplay } from "~/components/Inputs/Colors/colorDisplay";
+import ColorPicker from "~/components/Inputs/Colors/colorPicker";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
 const ColorInput = ({
