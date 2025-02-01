@@ -5,6 +5,7 @@ import { format, isAfter, isBefore, isSameDay } from "date-fns";
 import type { DbTrackableSelect } from "@tyl/db/schema";
 import type { PureDataRecord } from "@tyl/helpers/trackables";
 
+import { DayCellLogsPopup } from "~/components/DayCell/DayCellLogsPopup";
 import { DayCellTagsPopup } from "~/components/DayCell/DayCellTagsPopup";
 import { DayCellTextPopup } from "~/components/DayCell/DayCellTextPopup";
 import { useTrackableFlags } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
@@ -100,19 +101,24 @@ export const DayCellTypeRouter = ({
   }
 
   if (type === "boolean") {
-    return <DayCellBoolean></DayCellBoolean>;
+    return <DayCellBoolean />;
   }
 
   if (type === "number") {
-    return <DayCellNumber></DayCellNumber>;
+    return <DayCellNumber />;
   }
 
   if (type === "text") {
-    return <DayCellTextPopup></DayCellTextPopup>;
+    return <DayCellTextPopup />;
   }
 
   if (type === "tags") {
-    return <DayCellTagsPopup></DayCellTagsPopup>;
+    return <DayCellTagsPopup />;
+  }
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (type === "logs") {
+    return <DayCellLogsPopup />;
   }
 
   throw new Error("Unsupported trackable type");

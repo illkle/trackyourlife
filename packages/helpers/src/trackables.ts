@@ -35,6 +35,10 @@ export interface RecordValue {
   /** Will never actually be undefined, but this makes for simpler inherited types in daycell */
   readonly value?: string;
   readonly createdAt: number | null;
+  /**
+   * Only relevant for logs, which can store exact timestamp
+   */
+  readonly timestamp: number;
 }
 
 /**
@@ -83,17 +87,25 @@ export const mapDataToRange = (
       const dataRecord = data[dataPointer];
       if (!dataRecord) break;
 
-      if (isBefore(dataRecord.date, day.getTime())) {
-        dataPointer++;
-        continue;
-      }
+      /**
+       * We store dates in UTC, but zero reads them and assumes local timesone
+       */
+      const recordDateInCorrectTimezone = convertDateFromDbToLocal(
+        dataRecord.date,
+      );
 
-      if (!isSameDay(day.getTime(), dataRecord.date)) {
+      if (!isSameDay(day, recordDateInCorrectTimezone)) {
+        if (isBefore(dataRecord.date, day.getTime())) {
+          dataPointer++;
+          continue;
+        }
+
         break;
       }
 
       dayRecord.values.push({
         value: dataRecord.value,
+        timestamp: convertDateFromDbToLocal(dataRecord.date).getTime(),
         createdAt: dataRecord.createdAt,
         recordId: dataRecord.recordId,
       });
@@ -108,6 +120,18 @@ export const mapDataToRange = (
   }
 
   return result;
+};
+
+const convertDateFromDbToLocal = (date: number) => {
+  const d = new Date(date);
+  return new Date(
+    d.getUTCFullYear(),
+    d.getUTCMonth(),
+    d.getUTCDate(),
+    d.getUTCHours(),
+    d.getUTCMinutes(),
+    d.getUTCSeconds(),
+  );
 };
 
 export class NumberColorCodingMapper {

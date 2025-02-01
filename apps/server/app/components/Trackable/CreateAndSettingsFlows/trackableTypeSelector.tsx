@@ -11,12 +11,6 @@ import { RadioGroup } from "~/@shad/components/radio-group";
 import { cn } from "~/@shad/utils";
 import { RenderTrackableIcon } from "~/utils/trackableIcons";
 
-const SoonBadge = () => (
-  <div className="font-regular w-fit rounded-lg px-2 py-0.5 text-xs font-normal dark:bg-neutral-700 dark:text-neutral-200">
-    Soon
-  </div>
-);
-
 export const TrackableTypeSelector = ({
   type,
   setType,
@@ -104,16 +98,13 @@ export const TrackableTypeSelector = ({
       <RadioGroupItem
         value="logs"
         id="logs"
-        disabled
         className={cn(commonClasses, "sm:col-span-3")}
         asChild
       >
         <Card>
           <CardHeader>
             <RenderTrackableIcon size={20} type="logs" />
-            <CardTitle className="flex items-center gap-2">
-              Logs <SoonBadge />
-            </CardTitle>
+            <CardTitle className="flex items-center gap-2">Logs</CardTitle>
             <CardDescription>
               Collection of values that are relatively unique each time and
               where record attributes are important. Can be tasks closed today,

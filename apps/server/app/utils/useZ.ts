@@ -2,7 +2,14 @@
 import type { Row } from "@rocicorp/zero";
 import { useCallback, useMemo } from "react";
 import { useQuery, useZero } from "@rocicorp/zero/react";
-import { addMonths, addYears, subMonths } from "date-fns";
+import {
+  addMonths,
+  addYears,
+  endOfDay,
+  isSameDay,
+  startOfDay,
+  subMonths,
+} from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 
 import type { Schema } from "~/schema";
@@ -45,11 +52,12 @@ export const useZeroTrackableListWithData = (params: TrackableRangeParams) => {
       q
         .where(({ cmp, and }) =>
           and(
-            cmp("date", ">=", params.firstDay),
-            cmp("date", "<=", params.lastDay),
+            cmp("date", ">=", startOfDay(params.firstDay).getTime()),
+            cmp("date", "<=", endOfDay(params.lastDay).getTime()),
           ),
         )
-        .orderBy("date", "asc"),
+        .orderBy("date", "asc")
+        .orderBy("createdAt", "asc"),
     )
     .related("trackableGroup");
 
@@ -74,10 +82,12 @@ const useTrackableQuery = (params: ByIdParams) => {
   return zero.query.TYL_trackableRecord.where(({ cmp, and }) =>
     and(
       cmp("trackableId", params.id),
-      cmp("date", ">=", params.firstDay),
-      cmp("date", "<=", params.lastDay),
+      cmp("date", ">=", startOfDay(params.firstDay).getTime()),
+      cmp("date", "<=", endOfDay(params.lastDay).getTime()),
     ),
-  ).orderBy("date", "asc");
+  )
+    .orderBy("date", "asc")
+    .orderBy("createdAt", "asc");
 };
 
 export const useZeroTrackableData = ({ id, firstDay, lastDay }: ByIdParams) => {
@@ -167,23 +177,42 @@ export const useZeroInGroup = (trackableId: string, group: string) => {
   return useQuery(q);
 };
 
+const generateDateTime = (date: Date, storeTime?: boolean) => {
+  if (storeTime) {
+    const d = new Date();
+
+    if (isSameDay(date, d)) {
+      return Date.UTC(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        d.getHours(),
+        d.getMinutes(),
+        d.getSeconds(),
+      );
+    }
+
+    return Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      23,
+      59,
+      59,
+    );
+  }
+
+  return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
+};
+
 export const useRecordUpdateHandler = (date: Date) => {
-  const { id } = useTrackableMeta();
+  const { id, type } = useTrackableMeta();
 
   const z = useZ();
 
   return useCallback(
     async (val: string, recordId?: string, timestamp?: number) => {
-      const d = Date.UTC(date.getFullYear(), date.getMonth(), date.getDate());
-
-      console.log("upserting", {
-        recordId: recordId ?? uuidv4(),
-        date: d,
-        trackableId: id,
-        value: val,
-        user_id: z.userID,
-        createdAt: timestamp,
-      });
+      const d = generateDateTime(date, type === "logs");
 
       await z.mutate.TYL_trackableRecord.upsert({
         recordId: recordId ?? uuidv4(),
@@ -194,7 +223,7 @@ export const useRecordUpdateHandler = (date: Date) => {
         createdAt: timestamp,
       });
     },
-    [date, id, z],
+    [date, id, z, type],
   );
 };
 

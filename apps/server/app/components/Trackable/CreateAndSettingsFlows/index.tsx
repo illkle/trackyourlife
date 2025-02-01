@@ -242,9 +242,7 @@ const TrackableMock = ({
   index: number;
   length: number;
 }) => {
-  const [values, setValues] = useState<RecordValue[]>([
-    { value: "", recordId: "1", createdAt: 1 },
-  ]);
+  const [values, setValues] = useState<RecordValue[]>([]);
 
   const settings = useStore(form.store, (state) => state.values);
 
@@ -318,7 +316,10 @@ const TrackableSettings = ({
   return (
     <div>
       <SettingsTitle>Preview</SettingsTitle>
-      <div className="grid grid-cols-3 gap-1 md:grid-cols-6">
+      <div
+        key={trackableType}
+        className="grid grid-cols-3 gap-1 md:grid-cols-6"
+      >
         {Array(6)
           .fill("")
           .map((_, i) => {
