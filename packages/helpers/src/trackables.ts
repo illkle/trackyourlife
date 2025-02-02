@@ -122,7 +122,7 @@ export const mapDataToRange = (
   return result;
 };
 
-const convertDateFromDbToLocal = (date: number) => {
+export const convertDateFromDbToLocal = (date: number) => {
   const d = new Date(date);
   return new Date(
     d.getUTCFullYear(),
@@ -131,6 +131,19 @@ const convertDateFromDbToLocal = (date: number) => {
     d.getUTCHours(),
     d.getUTCMinutes(),
     d.getUTCSeconds(),
+  );
+};
+
+export const convertDateFromLocalToDb = (date: Date) => {
+  return Number(
+    Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds(),
+    ),
   );
 };
 

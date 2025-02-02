@@ -9,7 +9,6 @@ import { Input } from "~/@shad/components/input";
 import { ScrollArea, ScrollBar } from "~/@shad/components/scroll-area";
 import { cn } from "~/@shad/utils";
 import { LabelInside, useDayCellContext } from "~/components/DayCell";
-import EditableText from "~/components/Inputs/EditableText";
 import {
   DynamicModal,
   DynamicModalContent,
@@ -24,21 +23,36 @@ import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/Trac
 
 const LogsEntry = ({
   value,
-  onSubmit,
+  onEdit,
   onDelete,
+  isBeingEdited,
+  isEditing,
 }: {
   value: RecordValue;
-  onSubmit: (v: string) => void;
+  isBeingEdited: boolean;
+  isEditing: boolean;
+  onEdit: () => void;
   onDelete: () => void;
 }) => {
   return (
-    <div className="flex gap-2">
-      <span>{format(value.timestamp, "HH:mm:ss")}</span>
-      <EditableText value={value.value} updater={onSubmit} />
+    <div className="flex w-full items-center justify-between gap-2">
+      <button
+        className={cn(
+          "flex items-baseline gap-2 text-neutral-950 dark:text-neutral-100",
+          isBeingEdited && "text-blue-500",
+          isEditing && !isBeingEdited && "opacity-30",
+        )}
+        onClick={onEdit}
+      >
+        <span className="text-xs text-neutral-400 dark:text-neutral-600">
+          {format(value.timestamp, "HH:mm:ss")}
+        </span>
+        {value.value}
+      </button>
       <Button
         variant="ghost"
         size="sm"
-        className="h-fit p-1 opacity-50 hover:opacity-100"
+        className="h-fit self-center p-0.5 opacity-50 hover:opacity-100"
         onClick={onDelete}
       >
         <XIcon size={14} />
@@ -58,6 +72,12 @@ export const DayCellLogsPopup = () => {
   const { id } = useTrackableMeta();
   const { getFlag } = useTrackableFlags();
   const monthViewType = getFlag(id, "AnyMonthViewType");
+
+  const [editTargetIndex, setEditTargetIndex] = useState<number | null>(null);
+
+  const editTarget = editTargetIndex !== null ? values[editTargetIndex] : null;
+
+  const longDate = date.getDate() >= 10;
 
   return (
     <DynamicModal open={isOpen} onOpenChange={setIsOpen}>
@@ -88,6 +108,9 @@ export const DayCellLogsPopup = () => {
                   key={v.recordId}
                   className={cn(
                     "max-w-fit overflow-hidden text-nowrap text-ellipsis",
+                    monthViewType === "calendar" &&
+                      labelType === "auto" &&
+                      (longDate ? "first:ml-5.5" : "first:ml-3.5"),
                   )}
                 >
                   <span className="text-neutral-950 dark:text-neutral-100">
@@ -113,23 +136,42 @@ export const DayCellLogsPopup = () => {
 
         <ScrollArea className="mb-3 flex h-full max-h-[400px] flex-col px-4 md:mr-11 md:mb-0.5">
           <ScrollBar orientation="vertical" />
-          {values.map((v) => (
-            <LogsEntry
-              key={v.recordId}
-              value={v}
-              onSubmit={(newVal) => {
-                void onChange(newVal, v.recordId);
-              }}
-              onDelete={() => {
-                void onDelete(v.recordId);
-              }}
-            />
-          ))}
+          <div className="flex flex-col py-1.5">
+            {values.map((v, i) => (
+              <LogsEntry
+                key={v.recordId}
+                value={v}
+                isBeingEdited={editTargetIndex === i}
+                isEditing={editTargetIndex !== null}
+                onEdit={() => {
+                  if (editTargetIndex === i) {
+                    setEditTargetIndex(null);
+                  } else {
+                    setEditTargetIndex(i);
+                  }
+                }}
+                onDelete={() => {
+                  void onDelete(v.recordId);
+                }}
+              />
+            ))}
+          </div>
         </ScrollArea>
         <div className="px-2 pb-4">
           <InputEditor
+            key={editTargetIndex}
+            initialValue={editTarget?.value ?? ""}
             onSubmit={(newVal) => {
-              void onChange(newVal, undefined, new Date().getTime());
+              if (!newVal) return;
+              if (editTarget) {
+                void onChange(
+                  newVal,
+                  editTarget.recordId,
+                  editTarget.createdAt ?? undefined,
+                );
+              } else {
+                void onChange(newVal, undefined, new Date().getTime());
+              }
             }}
           />
         </div>
@@ -138,8 +180,14 @@ export const DayCellLogsPopup = () => {
   );
 };
 
-const InputEditor = ({ onSubmit }: { onSubmit: (v: string) => void }) => {
-  const [value, setValue] = useState("");
+const InputEditor = ({
+  onSubmit,
+  initialValue,
+}: {
+  onSubmit: (v: string) => void;
+  initialValue: string;
+}) => {
+  const [value, setValue] = useState(initialValue);
 
   return (
     <div className="flex gap-2">
@@ -148,12 +196,23 @@ const InputEditor = ({ onSubmit }: { onSubmit: (v: string) => void }) => {
         onKeyDown={(e) => {
           if (e.key === "Enter") {
             void onSubmit(value);
+            e.preventDefault();
+            setValue("");
           }
         }}
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}
       />
-      <Button variant="outline" size="icon" onClick={() => onSubmit(value)}>
+      <Button
+        variant="outline"
+        size="icon"
+        onClick={() => {
+          onSubmit(value);
+          setValue("");
+        }}
+      >
         <CornerRightUp size={16} />
       </Button>
     </div>

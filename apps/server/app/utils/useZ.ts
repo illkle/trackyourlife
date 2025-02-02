@@ -12,6 +12,8 @@ import {
 } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 
+import { convertDateFromLocalToDb } from "@tyl/helpers/trackables";
+
 import type { Schema } from "~/schema";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
@@ -52,8 +54,16 @@ export const useZeroTrackableListWithData = (params: TrackableRangeParams) => {
       q
         .where(({ cmp, and }) =>
           and(
-            cmp("date", ">=", startOfDay(params.firstDay).getTime()),
-            cmp("date", "<=", endOfDay(params.lastDay).getTime()),
+            cmp(
+              "date",
+              ">=",
+              convertDateFromLocalToDb(startOfDay(params.firstDay)),
+            ),
+            cmp(
+              "date",
+              "<=",
+              convertDateFromLocalToDb(endOfDay(params.lastDay)),
+            ),
           ),
         )
         .orderBy("date", "asc")
@@ -82,8 +92,8 @@ const useTrackableQuery = (params: ByIdParams) => {
   return zero.query.TYL_trackableRecord.where(({ cmp, and }) =>
     and(
       cmp("trackableId", params.id),
-      cmp("date", ">=", startOfDay(params.firstDay).getTime()),
-      cmp("date", "<=", endOfDay(params.lastDay).getTime()),
+      cmp("date", ">=", convertDateFromLocalToDb(startOfDay(params.firstDay))),
+      cmp("date", "<=", convertDateFromLocalToDb(endOfDay(params.lastDay))),
     ),
   )
     .orderBy("date", "asc")

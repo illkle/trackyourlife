@@ -2,6 +2,8 @@ import type { ChangeEvent, FocusEvent, KeyboardEvent, MouseEvent } from "react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@shad/utils";
 
+import { Input } from "~/@shad/components/input";
+
 interface IEditableTextBase {
   classNameInput?: string;
   classNameText?: string;
@@ -101,14 +103,14 @@ const EditableText = ({
 
   if (editMode) {
     return (
-      <input
+      <Input
         inputMode={isNumber ? "decimal" : "text"}
         type={isNumber ? "number" : "text"}
         ref={inputRef}
         value={inputVal}
         onChange={handelEdit}
         onBlur={() => void commit()}
-        className={cn(className, classNameInput)}
+        className={cn("h-fit p-0 px-1 text-base", className, classNameInput)}
         onKeyUp={handleKeyUp}
         style={style}
       />

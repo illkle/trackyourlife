@@ -146,7 +146,10 @@ export const EditorModal = ({
               style={{
                 transformOrigin: "bottom",
               }}
-              className="flex h-fit max-h-[200px] w-[500px] flex-col rounded-md border border-neutral-800 bg-neutral-950 shadow-2xl shadow-neutral-950"
+              className={cn(
+                "flex h-fit max-h-[200px] w-[500px] flex-col rounded-md border shadow-2xl",
+                "border-neutral-200 dark:border-neutral-800 dark:bg-neutral-950 dark:shadow-neutral-950",
+              )}
             >
               {children}
             </m.div>,
