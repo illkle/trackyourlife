@@ -59,6 +59,16 @@ const TYL_trackable = table("TYL_trackable")
   })
   .primaryKey("id");
 
+const TYL_trackableRecordAttributes = table("TYL_trackableRecordAttributes")
+  .columns({
+    user_id: string(),
+    trackableId: string(),
+    recordId: string(),
+    key: string(),
+    value: string(),
+  })
+  .primaryKey("user_id", "trackableId", "recordId", "key");
+
 const trackableRelationships = relationships(TYL_trackable, ({ many }) => ({
   trackableGroup: many({
     sourceField: ["id"],
@@ -75,6 +85,11 @@ const trackableRelationships = relationships(TYL_trackable, ({ many }) => ({
     destSchema: TYL_trackableFlags,
     destField: ["trackableId"],
   }),
+  trackableRecordAttributes: many({
+    sourceField: ["id"],
+    destSchema: TYL_trackableRecordAttributes,
+    destField: ["trackableId"],
+  }),
 }));
 
 export const schema = createSchema(2, {
@@ -84,6 +99,7 @@ export const schema = createSchema(2, {
     TYL_trackableGroup,
     TYL_trackableFlags,
     TYL_userFlags,
+    TYL_trackableRecordAttributes,
   ],
   relationships: [trackableRelationships],
 });
@@ -118,6 +134,11 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
   const allowIfOwnerTrackableFlags = (
     authData: AuthData,
     { cmp }: ExpressionBuilder<Schema, "TYL_trackableFlags">,
+  ) => cmp("user_id", "=", authData.sub);
+
+  const allowIfOwnerTrackableRecordAttributes = (
+    authData: AuthData,
+    { cmp }: ExpressionBuilder<Schema, "TYL_trackableRecordAttributes">,
   ) => cmp("user_id", "=", authData.sub);
 
   return {
@@ -164,6 +185,15 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
         select: [allowIfOwnerUserFlags],
         preMutation: [allowIfOwnerUserFlags],
         postMutation: [allowIfOwnerUserFlags],
+      },
+    },
+    TYL_trackableRecordAttributes: {
+      row: {
+        insert: [allowIfOwnerTrackableRecordAttributes],
+        delete: [allowIfOwnerTrackableRecordAttributes],
+        select: [allowIfOwnerTrackableRecordAttributes],
+        preMutation: [allowIfOwnerTrackableRecordAttributes],
+        postMutation: [allowIfOwnerTrackableRecordAttributes],
       },
     },
   };

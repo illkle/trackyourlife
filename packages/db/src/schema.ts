@@ -91,9 +91,7 @@ export const userFlags = pgTable(
     key: text("key").notNull(),
     value: json("value").default({}),
   },
-  (t) => ({
-    pk: primaryKey({ columns: [t.userId, t.key] }),
-  }),
+  (t) => [primaryKey({ columns: [t.userId, t.key] })],
 );
 
 export const userFlagsRelations = relations(userFlags, ({ one }) => ({
@@ -130,10 +128,10 @@ export const trackable = pgTable(
     name: text("name").notNull(),
     type: trackableTypeEnum("type").notNull(),
   },
-  (t) => ({
-    user_id_idx: uniqueIndex("user_id_idx").on(t.user_id, t.id),
-    user_id_name_idx: index("user_id_name_idx").on(t.user_id, t.name),
-  }),
+  (t) => [
+    uniqueIndex("user_id_idx").on(t.user_id, t.id),
+    index("user_id_name_idx").on(t.user_id, t.name),
+  ],
 );
 
 /*
@@ -151,9 +149,7 @@ export const trackableFlags = pgTable(
     key: text("key").notNull(),
     value: json("value").default({}),
   },
-  (t) => ({
-    pk: primaryKey({ columns: [t.user_id, t.trackableId, t.key] }),
-  }),
+  (t) => [primaryKey({ columns: [t.user_id, t.trackableId, t.key] })],
 );
 
 export const trackableFlagsRelations = relations(trackableFlags, ({ one }) => ({
@@ -187,7 +183,7 @@ export const trackableRecord = pgTable(
     */
     createdAt: bigint("createdAt", { mode: "number" }),
   },
-  (t) => ({
+  (t) => [
     /*
      This table has an additional trigger written manually in 0030_trigger_v3.sql. It makes it so:
      - Simple trackables (boolean, number, text) can only have one record per day.
@@ -195,9 +191,29 @@ export const trackableRecord = pgTable(
       - If after truncating there is an existing record for that day, it gets updated instead.
      - Tags must be unique. If on insert there is an existing tag with the same value, the insert is cancelled.
     */
-    trackable_date_idx: index("trackable_date_idx").on(t.trackableId, t.date),
-    user_date_idx: index("user_date_idx").on(t.user_id, t.date),
-  }),
+    index("trackable_date_idx").on(t.trackableId, t.date),
+    index("user_date_idx").on(t.user_id, t.date),
+  ],
+);
+
+export const trackableRecordAttributes = pgTable(
+  "trackableRecordAttributes",
+  {
+    user_id: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    trackableId: uuid("trackableId")
+      .notNull()
+      .references(() => trackable.id, { onDelete: "cascade" }),
+    recordId: uuid("recordId")
+      .notNull()
+      .references(() => trackableRecord.recordId, { onDelete: "cascade" }),
+    key: text("key").notNull(),
+    value: text("value"),
+  },
+  (t) => [
+    primaryKey({ columns: [t.user_id, t.trackableId, t.recordId, t.key] }),
+  ],
 );
 
 export const recordRelations = relations(trackableRecord, ({ one }) => ({
@@ -222,9 +238,7 @@ export const trackableGroup = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
   },
-  (t) => ({
-    pk: primaryKey({ columns: [t.trackableId, t.group] }),
-  }),
+  (t) => [primaryKey({ columns: [t.trackableId, t.group] })],
 );
 
 export const trackableGroupRelations = relations(trackableGroup, ({ one }) => ({

@@ -211,6 +211,13 @@
       "when": 1737997825411,
       "tag": "0030_trigger_v3",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1738521287267,
+      "tag": "0031_open_the_fallen",
+      "breakpoints": true
     }
   ]
 }
