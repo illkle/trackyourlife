@@ -196,6 +196,12 @@ export const trackableRecord = pgTable(
   ],
 );
 
+export const trackableRecordAttributesTypeEnum = pgEnum("attributeType", [
+  "boolean",
+  "number",
+  "text",
+]);
+
 export const trackableRecordAttributes = pgTable(
   "trackableRecordAttributes",
   {
@@ -210,6 +216,7 @@ export const trackableRecordAttributes = pgTable(
       .references(() => trackableRecord.recordId, { onDelete: "cascade" }),
     key: text("key").notNull(),
     value: text("value"),
+    type: trackableRecordAttributesTypeEnum("type").notNull(),
   },
   (t) => [
     primaryKey({ columns: [t.user_id, t.trackableId, t.recordId, t.key] }),

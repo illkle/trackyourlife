@@ -66,6 +66,7 @@ const TYL_trackableRecordAttributes = table("TYL_trackableRecordAttributes")
     recordId: string(),
     key: string(),
     value: string(),
+    type: string<"boolean" | "number" | "text">(),
   })
   .primaryKey("user_id", "trackableId", "recordId", "key");
 

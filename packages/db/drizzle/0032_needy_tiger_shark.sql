@@ -1,0 +1,1 @@
+ALTER TABLE "TYL_trackableRecordAttributes" ADD COLUMN "type" "type" NOT NULL;

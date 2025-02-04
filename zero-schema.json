@@ -294,6 +294,65 @@
           ]
         ]
       }
+    },
+    "TYL_trackableRecordAttributes": {
+      "row": {
+        "select": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "user_id"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ],
+        "insert": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "user_id"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ],
+        "update": {},
+        "delete": [
+          [
+            "allow",
+            {
+              "type": "simple",
+              "left": {
+                "type": "column",
+                "name": "user_id"
+              },
+              "right": {
+                "type": "static",
+                "anchor": "authData",
+                "field": "sub"
+              },
+              "op": "="
+            }
+          ]
+        ]
+      }
     }
   },
   "schema": {
@@ -442,6 +501,47 @@
           "userId",
           "key"
         ]
+      },
+      "TYL_trackableRecordAttributes": {
+        "name": "TYL_trackableRecordAttributes",
+        "columns": {
+          "user_id": {
+            "type": "string",
+            "optional": false,
+            "customType": null
+          },
+          "trackableId": {
+            "type": "string",
+            "optional": false,
+            "customType": null
+          },
+          "recordId": {
+            "type": "string",
+            "optional": false,
+            "customType": null
+          },
+          "key": {
+            "type": "string",
+            "optional": false,
+            "customType": null
+          },
+          "value": {
+            "type": "string",
+            "optional": false,
+            "customType": null
+          },
+          "type": {
+            "type": "string",
+            "optional": false,
+            "customType": null
+          }
+        },
+        "primaryKey": [
+          "user_id",
+          "trackableId",
+          "recordId",
+          "key"
+        ]
       }
     },
     "relationships": {
@@ -479,6 +579,18 @@
               "trackableId"
             ],
             "destSchema": "TYL_trackableFlags",
+            "cardinality": "many"
+          }
+        ],
+        "trackableRecordAttributes": [
+          {
+            "sourceField": [
+              "id"
+            ],
+            "destField": [
+              "trackableId"
+            ],
+            "destSchema": "TYL_trackableRecordAttributes",
             "cardinality": "many"
           }
         ]
