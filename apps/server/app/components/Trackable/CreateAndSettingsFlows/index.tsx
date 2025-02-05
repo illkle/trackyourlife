@@ -1,14 +1,6 @@
 import type { ReactFormExtendedApi } from "@tanstack/react-form";
-import { useState } from "react";
-import { cn } from "@shad/utils";
 import { useForm } from "@tanstack/react-form";
-import { useStore } from "@tanstack/react-store";
-import { isAfter, isSameDay, subDays } from "date-fns";
 import { m } from "motion/react";
-import { v4 as uuidv4 } from "uuid";
-
-import type { DbTrackableSelect } from "@tyl/db/schema";
-import type { RecordValue } from "@tyl/helpers/trackables";
 
 import type { ITrackableFlagsInputKV } from "~/components/Trackable/TrackableProviders/trackableFlags";
 import type { ITrackableFlagsZero, ITrackableZero } from "~/schema";
@@ -16,14 +8,11 @@ import { Button } from "~/@shad/components/button";
 import { DrawerMobileTitleProvider } from "~/@shad/components/drawer";
 import { Label } from "~/@shad/components/label";
 import { Switch } from "~/@shad/components/switch";
-import { DayCellContext, DayCellTypeRouter } from "~/components/DayCell";
 import ColorInput from "~/components/Inputs/Colors/colorInput";
 import NumberColorSelector from "~/components/Inputs/Colors/numberColorSelector";
 import DatePicker from "~/components/Inputs/DatePicker";
 import { SettingsTitle } from "~/components/Trackable/CreateAndSettingsFlows/settingsTitle";
 import { createFlagsForSettingsForm } from "~/components/Trackable/TrackableProviders/trackableFlags";
-import { TrackableFlagsProviderMock } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
-import TrackableProvider from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import NumberLimitsSelector from "./numberLimitsSelector";
 
 type FormType = ReactFormExtendedApi<ITrackableFlagsInputKV>;
@@ -52,6 +41,48 @@ export const SettingsCommon = ({ form }: { form: FormType }) => {
         )}
       />
     </div>
+  );
+};
+
+export const SettingsLogs = ({ form }: { form: FormType }) => {
+  return (
+    <>
+      <SettingsTitle>Attributes Settings</SettingsTitle>
+      <form.Field
+        name="LogsAddToSavedAttributes"
+        children={(field) => (
+          <div className="mb-2 flex items-center space-x-2">
+            <Switch
+              id="add-attributes-from-editor"
+              checked={field.state.value}
+              onCheckedChange={(v) => {
+                field.handleChange(v);
+              }}
+            />
+            <Label htmlFor="add-attributes-from-editor">
+              When adding a new attribute also add it to saved attributes
+            </Label>
+          </div>
+        )}
+      />
+      <form.Field
+        name="LogsOnlySavedAttributes"
+        children={(field) => (
+          <div className="mb-2 flex items-center space-x-2">
+            <Switch
+              id="only-allow-saved-attributes"
+              checked={field.state.value}
+              onCheckedChange={(v) => {
+                field.handleChange(v);
+              }}
+            />
+            <Label htmlFor="only-allow-saved-attributes">
+              Only allow adding attributes that are saved
+            </Label>
+          </div>
+        )}
+      />
+    </>
   );
 };
 
@@ -229,72 +260,6 @@ export const SettingsNumber = ({ form }: { form: FormType }) => {
   );
 };
 
-const TrackableMock = ({
-  type,
-  form,
-  className,
-  index,
-  length,
-}: {
-  type: DbTrackableSelect["type"];
-  form: FormType;
-  className?: string;
-  index: number;
-  length: number;
-}) => {
-  const [values, setValues] = useState<RecordValue[]>([]);
-
-  const settings = useStore(form.store, (state) => state.values);
-
-  const now = new Date();
-  const date = subDays(now, length - 2 - index);
-
-  return (
-    <div className={cn("relative w-full", className)}>
-      <TrackableFlagsProviderMock flags={settings}>
-        <TrackableProvider
-          trackable={{ id: "1", type, name: "Not a real trackable yet" }}
-        >
-          <DayCellContext.Provider
-            value={{
-              date: date,
-              isToday: isSameDay(date, now),
-              isOutOfRange: isAfter(date, now),
-              values,
-              onChange: (v, id, createdAt) => {
-                if (values.some((p) => p.recordId === id)) {
-                  setValues((prev) =>
-                    prev.map((p) =>
-                      p.recordId === id ? { ...p, value: v } : p,
-                    ),
-                  );
-                } else {
-                  setValues((prev) => [
-                    ...prev,
-                    {
-                      value: v,
-                      recordId: uuidv4(),
-                      createdAt: createdAt ?? null,
-                    },
-                  ]);
-                }
-              },
-              labelType: "auto",
-              onDelete: (id) => {
-                setValues((prev) => prev.filter((p) => p.recordId !== id));
-              },
-            }}
-          >
-            <div className={cn("flex flex-1 flex-col", className)}>
-              <DayCellTypeRouter type={type}></DayCellTypeRouter>
-            </div>
-          </DayCellContext.Provider>
-        </TrackableProvider>
-      </TrackableFlagsProviderMock>
-    </div>
-  );
-};
-
 const TrackableSettings = ({
   trackableType,
   initialSettings = [],
@@ -315,30 +280,10 @@ const TrackableSettings = ({
 
   return (
     <div>
-      <SettingsTitle>Preview</SettingsTitle>
-      <div
-        key={trackableType}
-        className="grid grid-cols-3 gap-1 md:grid-cols-6"
-      >
-        {Array(6)
-          .fill("")
-          .map((_, i) => {
-            return (
-              <TrackableMock
-                className="h-20"
-                key={i}
-                index={i}
-                type={trackableType}
-                form={form}
-                length={6}
-              />
-            );
-          })}
-      </div>
-
       <SettingsCommon form={form} />
       {trackableType === "boolean" && <SettingsBoolean form={form} />}
       {trackableType === "number" && <SettingsNumber form={form} />}
+      {trackableType === "logs" && <SettingsLogs form={form} />}
       <Button
         isLoading={form.state.isSubmitting}
         className="mt-4 w-full"

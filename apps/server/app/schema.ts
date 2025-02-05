@@ -70,6 +70,19 @@ const TYL_trackableRecordAttributes = table("TYL_trackableRecordAttributes")
   })
   .primaryKey("user_id", "trackableId", "recordId", "key");
 
+const trackableRecordRelationships = relationships(
+  TYL_trackableRecord,
+  ({ many }) => {
+    return {
+      trackableRecordAttributes: many({
+        sourceField: ["recordId"],
+        destSchema: TYL_trackableRecordAttributes,
+        destField: ["recordId"],
+      }),
+    };
+  },
+);
+
 const trackableRelationships = relationships(TYL_trackable, ({ many }) => ({
   trackableGroup: many({
     sourceField: ["id"],
@@ -102,7 +115,7 @@ export const schema = createSchema(2, {
     TYL_userFlags,
     TYL_trackableRecordAttributes,
   ],
-  relationships: [trackableRelationships],
+  relationships: [trackableRelationships, trackableRecordRelationships],
 });
 
 export type Schema = typeof schema;

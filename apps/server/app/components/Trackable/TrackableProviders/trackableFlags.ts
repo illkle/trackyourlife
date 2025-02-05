@@ -40,6 +40,12 @@ export const FlagsValidators = {
   ),
 
   TagsValues: z.array(z.string()).transform((v) => new TagsValuesMapper(v)),
+
+  LogsOnlySavedAttributes: z.boolean(),
+  LogsAddToSavedAttributes: z.boolean(),
+  LogsSavedAttributes: z.array(
+    z.object({ name: z.string(), type: z.enum(["boolean", "number", "text"]) }),
+  ),
 };
 
 /**
@@ -61,6 +67,9 @@ export const FlagDefaultInputs: ITrackableFlagsInputKV = {
     colors: [],
   },
   TagsValues: [],
+  LogsSavedAttributes: [],
+  LogsAddToSavedAttributes: true,
+  LogsOnlySavedAttributes: false,
 };
 
 const fullObject = z.object(FlagsValidators);

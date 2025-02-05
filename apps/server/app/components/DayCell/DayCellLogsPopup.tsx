@@ -218,3 +218,7 @@ const InputEditor = ({
     </div>
   );
 };
+
+const AttributesEditor = ({ attributes }: { attributes: RecordValue[] }) => {
+  return <div>AttributesEditor</div>;
+};

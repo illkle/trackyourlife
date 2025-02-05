@@ -67,7 +67,8 @@ export const useZeroTrackableListWithData = (params: TrackableRangeParams) => {
           ),
         )
         .orderBy("date", "asc")
-        .orderBy("createdAt", "asc"),
+        .orderBy("createdAt", "asc")
+        .related("trackableRecordAttributes"),
     )
     .related("trackableGroup");
 
@@ -97,7 +98,8 @@ const useTrackableQuery = (params: ByIdParams) => {
     ),
   )
     .orderBy("date", "asc")
-    .orderBy("createdAt", "asc");
+    .orderBy("createdAt", "asc")
+    .related("trackableRecordAttributes");
 };
 
 export const useZeroTrackableData = ({ id, firstDay, lastDay }: ByIdParams) => {
@@ -126,6 +128,7 @@ export const usePreloadTrackableMonthView = ({
   zero.query.TYL_trackableRecord.where("trackableId", id)
     .where("date", ">=", addMonths(now, -3).getTime())
     .where("date", "<=", addMonths(now, 15).getTime())
+    .related("trackableRecordAttributes")
     .preload();
 };
 
@@ -143,6 +146,7 @@ export const usePreloadTrackableYearView = ({
   zero.query.TYL_trackableRecord.where("trackableId", id)
     .where("date", ">=", addYears(now, -2).getTime())
     .where("date", "<=", addYears(now, 2).getTime())
+    .related("trackableRecordAttributes")
     .preload();
 };
 
@@ -152,7 +156,9 @@ export const usePreloadCore = () => {
   const now = new Date();
 
   zero.query.TYL_trackable.related("trackableRecord", (q) =>
-    q.where("date", ">=", subMonths(now, 3).getTime()),
+    q
+      .where("date", ">=", subMonths(now, 3).getTime())
+      .related("trackableRecordAttributes"),
   )
     .related("trackableGroup")
     .related("trackableFlag")
