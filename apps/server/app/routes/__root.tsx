@@ -2,6 +2,7 @@ import type { QueryClient } from "@tanstack/react-query";
 import * as React from "react";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { Meta, Scripts } from "@tanstack/start";
+
 import { LazyMotionProvider } from "~/components/Providers/lazyFramerMotionProvider";
 import { ThemeProvider } from "~/components/Providers/next-themes/themes";
 import { SingletonProvider } from "~/components/Providers/singletonProvider";
@@ -94,7 +95,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <LazyMotionProvider>
             <ThemeProvider defaultTheme="dark" attribute="class">
               <UserPreloader>{children}</UserPreloader>
-              <TanStackRouterDevtools position="bottom-right" />
               <Scripts />
             </ThemeProvider>
           </LazyMotionProvider>

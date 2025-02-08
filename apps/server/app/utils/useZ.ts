@@ -12,7 +12,10 @@ import {
 } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 
-import { convertDateFromLocalToDb } from "@tyl/helpers/trackables";
+import {
+  convertDateFromLocalToDb,
+  RecordAttribute,
+} from "@tyl/helpers/trackables";
 
 import type { Schema } from "~/schema";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
@@ -230,16 +233,43 @@ export const useRecordUpdateHandler = (date: Date) => {
     async (val: string, recordId?: string, timestamp?: number) => {
       const d = generateDateTime(date, type === "logs");
 
+      const rid = recordId ?? uuidv4();
+
       await z.mutate.TYL_trackableRecord.upsert({
-        recordId: recordId ?? uuidv4(),
+        recordId: rid,
         date: d,
         trackableId: id,
         value: val,
         user_id: z.userID,
         createdAt: timestamp,
       });
+      return rid;
     },
     [date, id, z, type],
+  );
+};
+
+export const useAttrbutesUpdateHandler = () => {
+  const { id } = useTrackableMeta();
+
+  const z = useZ();
+
+  return useCallback(
+    async (recordId: string, attributes: readonly RecordAttribute[]) => {
+      const promises = attributes.map((a) =>
+        z.mutate.TYL_trackableRecordAttributes.upsert({
+          recordId: recordId,
+          trackableId: id,
+          key: a.key,
+          value: a.value,
+          type: a.type,
+          user_id: z.userID,
+        }),
+      );
+
+      await Promise.allSettled(promises);
+    },
+    [id, z],
   );
 };
 

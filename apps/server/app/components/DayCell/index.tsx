@@ -10,7 +10,11 @@ import { DayCellTagsPopup } from "~/components/DayCell/DayCellTagsPopup";
 import { DayCellTextPopup } from "~/components/DayCell/DayCellTextPopup";
 import { useTrackableFlags } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
-import { useRecordDeleteHandler, useRecordUpdateHandler } from "~/utils/useZ";
+import {
+  useAttrbutesUpdateHandler,
+  useRecordDeleteHandler,
+  useRecordUpdateHandler,
+} from "~/utils/useZ";
 import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
 
@@ -30,13 +34,10 @@ export type IDayCellLabelType = "auto" | "outside" | "none";
 export interface IDayCellContext extends Omit<PureDataRecord, "disabled"> {
   isToday: boolean;
   isOutOfRange: boolean;
-  onChange: (
-    v: string,
-    recordId?: string,
-    timestamp?: number,
-  ) => void | Promise<void>;
-  onDelete: (recordId: string) => void | Promise<void>;
+  onChange: ReturnType<typeof useRecordUpdateHandler>;
+  onDelete: ReturnType<typeof useRecordDeleteHandler>;
   labelType?: IDayCellLabelType;
+  onChangeAttributes: ReturnType<typeof useAttrbutesUpdateHandler>;
 }
 
 export const DayCellContext = createContext<IDayCellContext | null>(null);
@@ -68,6 +69,7 @@ export const DayCellRouter = ({
 
   const onChange = useRecordUpdateHandler(date);
   const onDelete = useRecordDeleteHandler();
+  const onChangeAttributes = useAttrbutesUpdateHandler();
 
   return (
     <DayCellContext.Provider
@@ -79,6 +81,7 @@ export const DayCellRouter = ({
         onChange,
         onDelete,
         labelType,
+        onChangeAttributes,
       }}
     >
       <div className={cn("flex flex-1 flex-col", className)}>

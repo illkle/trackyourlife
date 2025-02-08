@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useId, useState } from "react";
+import { useForm } from "@tanstack/react-form";
 import { format } from "date-fns";
 import { CornerRightUp, XIcon } from "lucide-react";
 
-import type { RecordValue } from "@tyl/helpers/trackables";
+import type { RecordAttribute, RecordValue } from "@tyl/helpers/trackables";
 
 import { Button } from "~/@shad/components/button";
 import { Input } from "~/@shad/components/input";
+import { Label } from "~/@shad/components/label";
 import { ScrollArea, ScrollBar } from "~/@shad/components/scroll-area";
 import { cn } from "~/@shad/utils";
 import { LabelInside, useDayCellContext } from "~/components/DayCell";
@@ -17,7 +19,6 @@ import {
   DynamicModalEditorTitle,
   DynamicModalTrigger,
 } from "~/components/Modal/dynamicModal";
-import { useTheme } from "~/components/Providers/next-themes/themes";
 import { useTrackableFlags } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
@@ -63,9 +64,8 @@ const LogsEntry = ({
 
 export const DayCellLogsPopup = () => {
   const { name } = useTrackableMeta();
-  const { values, date, labelType, onDelete, onChange } = useDayCellContext();
-
-  const { resolvedTheme } = useTheme();
+  const { values, date, labelType, onDelete, onChange, onChangeAttributes } =
+    useDayCellContext();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -75,7 +75,8 @@ export const DayCellLogsPopup = () => {
 
   const [editTargetIndex, setEditTargetIndex] = useState<number | null>(null);
 
-  const editTarget = editTargetIndex !== null ? values[editTargetIndex] : null;
+  const editTarget =
+    editTargetIndex !== null ? values[editTargetIndex] : undefined;
 
   const longDate = date.getDate() >= 10;
 
@@ -160,17 +161,36 @@ export const DayCellLogsPopup = () => {
         <div className="px-2 pb-4">
           <InputEditor
             key={editTargetIndex}
-            initialValue={editTarget?.value ?? ""}
-            onSubmit={(newVal) => {
-              if (!newVal) return;
+            initialValue={editTarget}
+            onSubmit={async (newVal) => {
+              if (!newVal.value) return;
               if (editTarget) {
                 void onChange(
-                  newVal,
+                  newVal.value,
                   editTarget.recordId,
                   editTarget.createdAt ?? undefined,
                 );
+
+                void onChangeAttributes(
+                  editTarget.recordId,
+                  newVal.attributes.map((a) => ({
+                    ...a,
+                    recordId: editTarget.recordId,
+                    trackableId: id,
+                  })),
+                );
               } else {
-                void onChange(newVal, undefined, new Date().getTime());
+                const recordId = await onChange(
+                  newVal.value,
+                  undefined,
+                  new Date().getTime(),
+                );
+
+                void onChangeAttributes(recordId, newVal.attributes);
+              }
+
+              if (editTargetIndex !== null) {
+                setEditTargetIndex(null);
               }
             }}
           />
@@ -180,45 +200,150 @@ export const DayCellLogsPopup = () => {
   );
 };
 
+type FormInputType = Pick<RecordValue, "attributes" | "value">;
+interface FormType {
+  value: string;
+  attributes: RecordAttribute[];
+}
+
 const InputEditor = ({
   onSubmit,
   initialValue,
 }: {
-  onSubmit: (v: string) => void;
-  initialValue: string;
+  onSubmit: (v: FormType) => void;
+  initialValue?: FormInputType;
 }) => {
-  const [value, setValue] = useState(initialValue);
+  const { id } = useTrackableMeta();
+  const { getFlag } = useTrackableFlags();
+  const attrs = getFlag(id, "LogsSavedAttributes");
+
+  const form = useForm<FormType>({
+    defaultValues: {
+      value: initialValue?.value ?? "",
+      attributes: attrs.map((a) => ({
+        key: a.key,
+        value: initialValue?.attributes[a.key]?.value ?? "",
+        type: a.type,
+      })),
+    },
+    onSubmit: (data) => {
+      void onSubmit(data.value);
+    },
+  });
 
   return (
-    <div className="flex gap-2">
-      <Input
-        autoFocus
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            void onSubmit(value);
-            e.preventDefault();
-            setValue("");
-          }
-        }}
-        value={value}
-        onChange={(e) => {
-          setValue(e.target.value);
-        }}
-      />
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => {
-          onSubmit(value);
-          setValue("");
-        }}
-      >
-        <CornerRightUp size={16} />
-      </Button>
+    <div>
+      <div className="flex gap-2">
+        <form.Field
+          name="value"
+          children={(field) => (
+            <Input
+              autoFocus
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  void form.handleSubmit();
+                  e.preventDefault();
+                }
+              }}
+              value={field.state.value}
+              onChange={(e) => {
+                field.handleChange(e.target.value);
+              }}
+            />
+          )}
+        />
+
+        <Button
+          variant="outline"
+          size="icon"
+          onClick={() => {
+            void form.handleSubmit();
+          }}
+        >
+          <CornerRightUp size={16} />
+        </Button>
+      </div>
+
+      <div className="flex gap-2">
+        <form.Field
+          name="attributes"
+          mode="array"
+          children={(field) => {
+            return (
+              <>
+                {field.state.value.map((a, i) => {
+                  return (
+                    <form.Field
+                      key={i}
+                      name={`attributes[${i}].value`}
+                      children={(subField) => {
+                        console.log("render");
+                        return (
+                          <AttrbuteEditor
+                            visibleName={attrs[i]?.visibleName ?? a.key}
+                            type={a.type}
+                            value={subField.state.value}
+                            onChange={(v) => subField.handleChange(v)}
+                          />
+                        );
+                      }}
+                    ></form.Field>
+                  );
+                })}
+              </>
+            );
+          }}
+        />
+      </div>
     </div>
   );
 };
 
-const AttributesEditor = ({ attributes }: { attributes: RecordValue[] }) => {
-  return <div>AttributesEditor</div>;
+const AttrbuteEditor = ({
+  visibleName,
+  type,
+  value,
+  onChange,
+}: {
+  visibleName: string;
+  type: "text" | "number" | "boolean";
+  value?: string;
+  onChange: (v: string) => void;
+}) => {
+  const id = useId();
+  const inputId = `${id}-${visibleName}`;
+
+  return (
+    <div>
+      <Label className="opacity-60" htmlFor={inputId}>
+        {visibleName}
+      </Label>
+      {type === "text" && (
+        <Input
+          id={inputId}
+          value={value}
+          className="h-6"
+          onChange={(e) => onChange(e.target.value)}
+        />
+      )}
+      {type === "number" && (
+        <Input
+          id={inputId}
+          type="number"
+          className="h-6"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      )}
+      {type === "boolean" && (
+        <Input
+          id={inputId}
+          type="checkbox"
+          className="h-6"
+          checked={value === "true"}
+          onChange={(e) => onChange(e.target.checked.toString())}
+        />
+      )}
+    </div>
+  );
 };

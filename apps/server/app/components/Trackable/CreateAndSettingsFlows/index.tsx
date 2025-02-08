@@ -11,6 +11,7 @@ import { Switch } from "~/@shad/components/switch";
 import ColorInput from "~/components/Inputs/Colors/colorInput";
 import NumberColorSelector from "~/components/Inputs/Colors/numberColorSelector";
 import DatePicker from "~/components/Inputs/DatePicker";
+import { LogsAttributeList } from "~/components/Trackable/CreateAndSettingsFlows/logsAttributeCreator";
 import { SettingsTitle } from "~/components/Trackable/CreateAndSettingsFlows/settingsTitle";
 import { createFlagsForSettingsForm } from "~/components/Trackable/TrackableProviders/trackableFlags";
 import NumberLimitsSelector from "./numberLimitsSelector";
@@ -49,37 +50,14 @@ export const SettingsLogs = ({ form }: { form: FormType }) => {
     <>
       <SettingsTitle>Attributes Settings</SettingsTitle>
       <form.Field
-        name="LogsAddToSavedAttributes"
+        name="LogsSavedAttributes"
         children={(field) => (
-          <div className="mb-2 flex items-center space-x-2">
-            <Switch
-              id="add-attributes-from-editor"
-              checked={field.state.value}
-              onCheckedChange={(v) => {
-                field.handleChange(v);
-              }}
-            />
-            <Label htmlFor="add-attributes-from-editor">
-              When adding a new attribute also add it to saved attributes
-            </Label>
-          </div>
-        )}
-      />
-      <form.Field
-        name="LogsOnlySavedAttributes"
-        children={(field) => (
-          <div className="mb-2 flex items-center space-x-2">
-            <Switch
-              id="only-allow-saved-attributes"
-              checked={field.state.value}
-              onCheckedChange={(v) => {
-                field.handleChange(v);
-              }}
-            />
-            <Label htmlFor="only-allow-saved-attributes">
-              Only allow adding attributes that are saved
-            </Label>
-          </div>
+          <LogsAttributeList
+            items={field.state.value}
+            onChange={(v) => {
+              field.handleChange(v);
+            }}
+          />
         )}
       />
     </>

@@ -22,6 +22,13 @@ export interface DataRecord {
   readonly value: string;
   readonly recordId: string;
   readonly createdAt: number | null;
+  readonly trackableRecordAttributes: readonly RecordAttribute[];
+}
+
+export interface RecordAttribute {
+  readonly key: string;
+  readonly value: string;
+  readonly type: "text" | "number" | "boolean";
 }
 
 export interface PureDataRecord {
@@ -39,6 +46,7 @@ export interface RecordValue {
    * Only relevant for logs, which can store exact timestamp
    */
   readonly timestamp: number;
+  readonly attributes: Record<string, RecordAttribute>;
 }
 
 /**
@@ -108,6 +116,13 @@ export const mapDataToRange = (
         timestamp: convertDateFromDbToLocal(dataRecord.date).getTime(),
         createdAt: dataRecord.createdAt,
         recordId: dataRecord.recordId,
+        attributes: dataRecord.trackableRecordAttributes.reduce(
+          (acc, a) => {
+            acc[a.key] = a;
+            return acc;
+          },
+          {} as Record<string, RecordAttribute>,
+        ),
       });
       dataPointer++;
     }

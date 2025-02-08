@@ -25,6 +25,15 @@ import type { ITrackableFlagsZero } from "~/schema";
  * - If it's a flag for specific type add it to corresponding ITrackableFlagKey(Boolean\Number\...)
  * - If it's a flag where each daycell will need result of same computation based on flag value(i.e Set lookup), add it as zod transform.
  */
+
+export const LogsSavedAttributesValidator = z.object({
+  key: z.string(),
+  visibleName: z.string(),
+  type: z.enum(["boolean", "number", "text"]),
+});
+
+export type ILogsSavedAttribute = z.infer<typeof LogsSavedAttributesValidator>;
+
 export const FlagsValidators = {
   AnyTrackingStart: z.string().date().or(z.null()),
   AnyNote: z.string(),
@@ -41,11 +50,7 @@ export const FlagsValidators = {
 
   TagsValues: z.array(z.string()).transform((v) => new TagsValuesMapper(v)),
 
-  LogsOnlySavedAttributes: z.boolean(),
-  LogsAddToSavedAttributes: z.boolean(),
-  LogsSavedAttributes: z.array(
-    z.object({ name: z.string(), type: z.enum(["boolean", "number", "text"]) }),
-  ),
+  LogsSavedAttributes: z.array(LogsSavedAttributesValidator),
 };
 
 /**
@@ -68,8 +73,6 @@ export const FlagDefaultInputs: ITrackableFlagsInputKV = {
   },
   TagsValues: [],
   LogsSavedAttributes: [],
-  LogsAddToSavedAttributes: true,
-  LogsOnlySavedAttributes: false,
 };
 
 const fullObject = z.object(FlagsValidators);
