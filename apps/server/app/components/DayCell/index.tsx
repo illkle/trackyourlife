@@ -8,7 +8,7 @@ import type { PureDataRecord } from "@tyl/helpers/trackables";
 import { DayCellLogsPopup } from "~/components/DayCell/DayCellLogsPopup";
 import { DayCellTagsPopup } from "~/components/DayCell/DayCellTagsPopup";
 import { DayCellTextPopup } from "~/components/DayCell/DayCellTextPopup";
-import { useTrackableFlags } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import {
   useAttrbutesUpdateHandler,
@@ -59,8 +59,7 @@ export const DayCellRouter = ({
 }: DayCellRouterProps) => {
   // TODO: memo?
   const { id, type } = useTrackableMeta();
-  const { getFlag } = useTrackableFlags();
-  const trackingStart = getFlag(id, "AnyTrackingStart");
+  const trackingStart = useTrackableFlag(id, "AnyTrackingStart");
 
   const now = new Date();
   const isToday = isSameDay(date, now);

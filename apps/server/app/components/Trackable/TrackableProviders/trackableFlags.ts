@@ -51,6 +51,8 @@ export const FlagsValidators = {
   TagsValues: z.array(z.string()).transform((v) => new TagsValuesMapper(v)),
 
   LogsSavedAttributes: z.array(LogsSavedAttributesValidator),
+
+  AnyTestFlag: z.string(),
 };
 
 /**
@@ -73,6 +75,7 @@ export const FlagDefaultInputs: ITrackableFlagsInputKV = {
   },
   TagsValues: [],
   LogsSavedAttributes: [],
+  AnyTestFlag: "test",
 };
 
 const fullObject = z.object(FlagsValidators);

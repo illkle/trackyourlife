@@ -20,7 +20,7 @@ import {
   LabelInside,
   useDayCellContext,
 } from "~/components/DayCell";
-import { useTrackableFlags } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
@@ -39,9 +39,8 @@ export const DayCellNumber = () => {
   const isDesktop = useIsDesktop();
 
   const { id } = useTrackableMeta();
-  const { getFlag } = useTrackableFlags();
-  const colorCoding = getFlag(id, "NumberColorCoding");
-  const progressBounds = getFlag(id, "NumberProgessBounds");
+  const colorCoding = useTrackableFlag(id, "NumberColorCoding");
+  const progressBounds = useTrackableFlag(id, "NumberProgessBounds");
 
   const { onChange, labelType, date, values } = useDayCellContext();
   const { value, recordId } = values[0] ?? {};

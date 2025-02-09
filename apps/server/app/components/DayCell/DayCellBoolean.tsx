@@ -10,7 +10,7 @@ import {
   LabelInside,
   useDayCellContext,
 } from "~/components/DayCell";
-import { useTrackableFlags } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { useAllowAnimation } from "~/utils/useAllowAnimation";
 
@@ -19,16 +19,13 @@ const ANIMATION_TIME = 0.3;
 export const DayCellBoolean = () => {
   const { id } = useTrackableMeta();
 
-  const { getFlag } = useTrackableFlags();
   const { labelType, onChange, values } = useDayCellContext();
   const { value, recordId } = values[0] ?? {};
 
-  const { lightMode: themeActiveLight, darkMode: themeActiveDark } = getFlag(
-    id,
-    "BooleanCheckedColor",
-  );
+  const { lightMode: themeActiveLight, darkMode: themeActiveDark } =
+    useTrackableFlag(id, "BooleanCheckedColor");
   const { lightMode: themeInactiveLight, darkMode: themeInactiveDark } =
-    getFlag(id, "BooleanUncheckedColor");
+    useTrackableFlag(id, "BooleanUncheckedColor");
 
   // Even though we're not using any values from context it's useful to check whether it's provided
 

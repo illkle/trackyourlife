@@ -16,17 +16,18 @@ import {
   DrawerTrigger,
 } from "~/@shad/components/drawer";
 import { Textarea } from "~/@shad/components/textarea";
-import { useTrackableFlags } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import {
+  useSetTrackableFlag,
+  useTrackableFlag,
+} from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
 export const TrackableNoteEditable = () => {
   const { id } = useTrackableMeta();
 
-  const { getFlag, setFlag } = useTrackableFlags();
-
-  const note = getFlag(id, "AnyNote");
-
+  const note = useTrackableFlag(id, "AnyNote");
+  const setFlag = useSetTrackableFlag();
   const hasNote = Boolean(note);
 
   const [isEditing, setIsEditing] = useState(false);

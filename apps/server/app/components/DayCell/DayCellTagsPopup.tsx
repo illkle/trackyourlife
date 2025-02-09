@@ -32,7 +32,10 @@ import {
   DynamicModalTrigger,
 } from "~/components/Modal/dynamicModal";
 import { useTheme } from "~/components/Providers/next-themes/themes";
-import { useTrackableFlags } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import {
+  useSetTrackableFlag,
+  useTrackableFlag,
+} from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
 const InputWithSuggestions = ({
@@ -173,8 +176,8 @@ const SubInput = () => {
   );
 
   const { id } = useTrackableMeta();
-  const { getFlag, setFlag } = useTrackableFlags();
-  const tagsValues = getFlag(id, "TagsValues");
+  const tagsValues = useTrackableFlag(id, "TagsValues");
+  const setFlag = useSetTrackableFlag();
 
   const getSuggestions = (v: string) => {
     return tagsValues.getSuggestions(v).filter((v) => !valuesSet.has(v));
@@ -205,8 +208,7 @@ export const DayCellTagsPopup = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { id } = useTrackableMeta();
-  const { getFlag } = useTrackableFlags();
-  const monthViewType = getFlag(id, "AnyMonthViewType");
+  const monthViewType = useTrackableFlag(id, "AnyMonthViewType");
 
   return (
     <DynamicModal open={isOpen} onOpenChange={setIsOpen}>

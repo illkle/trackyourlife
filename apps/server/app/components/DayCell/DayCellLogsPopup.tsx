@@ -19,7 +19,7 @@ import {
   DynamicModalEditorTitle,
   DynamicModalTrigger,
 } from "~/components/Modal/dynamicModal";
-import { useTrackableFlags } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
 const LogsEntry = ({
@@ -70,8 +70,7 @@ export const DayCellLogsPopup = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { id } = useTrackableMeta();
-  const { getFlag } = useTrackableFlags();
-  const monthViewType = getFlag(id, "AnyMonthViewType");
+  const monthViewType = useTrackableFlag(id, "AnyMonthViewType");
 
   const [editTargetIndex, setEditTargetIndex] = useState<number | null>(null);
 
@@ -214,8 +213,7 @@ const InputEditor = ({
   initialValue?: FormInputType;
 }) => {
   const { id } = useTrackableMeta();
-  const { getFlag } = useTrackableFlags();
-  const attrs = getFlag(id, "LogsSavedAttributes");
+  const attrs = useTrackableFlag(id, "LogsSavedAttributes");
 
   const form = useForm<FormType>({
     defaultValues: {

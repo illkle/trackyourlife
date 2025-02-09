@@ -18,7 +18,7 @@ import type { ITrackableFlagType } from "~/components/Trackable/TrackableProvide
 import { Button } from "~/@shad/components/button";
 import DayCellRouter from "~/components/DayCell";
 import { TrackableNoteEditable } from "~/components/Trackable/TrackableNote";
-import { useTrackableFlags } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { ViewController } from "~/components/Trackable/TrackableView/viewController";
 import { useZeroTrackableData } from "~/utils/useZ";
@@ -91,8 +91,9 @@ export const MonthFetcher = ({
   forceViewType?: ITrackableFlagType<"AnyMonthViewType">;
 }) => {
   const { id } = useTrackableMeta();
-  const { getFlag } = useTrackableFlags();
-  const viewType = forceViewType ?? getFlag(id, "AnyMonthViewType");
+
+  const vt = useTrackableFlag(id, "AnyMonthViewType");
+  const viewType = forceViewType ?? vt;
   const firstDayDate = startOfMonth(date).getTime();
   const lastDayDate = endOfMonth(date).getTime();
 

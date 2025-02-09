@@ -1,9 +1,14 @@
-import { useRef } from "react";
+import type { HTMLMotionProps } from "motion/react";
+import type { CSSProperties } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Store, useStore } from "@tanstack/react-store";
+import { m } from "motion/react";
 import { useOnClickOutside } from "usehooks-ts";
 
 import { Input } from "~/@shad/components/input";
-import { GoodDrawer } from "~/components/Modal/goodDrawer";
+import { useSidebar } from "~/@shad/components/sidebar";
+import { cn } from "~/@shad/utils";
+import { useIsMobile } from "~/utils/useIsDesktop";
 
 /**
  * I much prefer the radix-style modals where content is declared inside component that opens the modal
@@ -33,6 +38,13 @@ export const openDayEditor = (data: EditorModalRegisterInput) => {
 };
 
 export const closeDayEditor = () => {
+  const modal = document.getElementById("editorModal");
+  // To prevent ios keyboard from staying despite focused input being removed
+  if (modal && document.activeElement instanceof HTMLElement) {
+    if (modal.contains(document.activeElement)) {
+      document.activeElement.blur();
+    }
+  }
   store.setState((state) => ({ ...state, data: null }));
 };
 
@@ -49,6 +61,8 @@ export const EditorModalV2 = () => {
   const isCollapsed = useStore(store, (state) => state.isCollapsed);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
+  const isMobile = useIsMobile();
+
   useOnClickOutside(
     wrapperRef,
     (e) => {
@@ -56,7 +70,11 @@ export const EditorModalV2 = () => {
       if (e.ignoreEditorModalClose) {
         return;
       }
-      collapseDayEditor();
+      if (isMobile) {
+        closeDayEditor();
+      } else {
+        collapseDayEditor();
+      }
     },
     "mouseup",
   );
@@ -64,22 +82,21 @@ export const EditorModalV2 = () => {
   const state = dayData ? (isCollapsed ? "collapsed" : "opened") : "closed";
 
   return (
-    <GoodDrawer
-      ref={wrapperRef}
-      data-state={state}
-      onClick={() => {
-        if (state === "collapsed") {
-          expandDayEditor();
-        }
-      }}
-    >
+    <MiniDrawer ref={wrapperRef} state={state}>
       <div
         key={dayData?.date.toISOString() + (dayData?.trackableId ?? "")}
         className="min-h-24 p-2 pt-4"
       >
-        <Input autoFocus />
+        <Input
+          autoFocus
+          onBlur={() => {
+            if (isMobile) {
+              closeDayEditor();
+            }
+          }}
+        />
       </div>
-    </GoodDrawer>
+    </MiniDrawer>
   );
 };
 
@@ -100,3 +117,85 @@ declare global {
     ignoreEditorModalClose?: boolean;
   }
 }
+
+/**
+ * Inspired by https://vaul.emilkowal.ski/
+ * there are multiple problems with it:
+ * - on desktop when not using DrawerTriger there is no way to make page behind interacrable(this is a bug)
+ * - on mobile drawer inputs with autofocus animate incorrectly on close.
+ * - I fixed it back in the day, but it got broken again afte 1.0 refactors
+ * - maintainer is slow to respond
+ * - library is too complex for our use case
+ * It's possible to patch package or figure out how to fix stuff there, but for now this will do
+ */
+
+export const MiniDrawer = React.forwardRef<
+  HTMLDivElement,
+  HTMLMotionProps<"div"> & {
+    state: "closed" | "collapsed" | "opened";
+  }
+>(({ children, state, ...props }, ref) => {
+  const { isMobile, state: sidebarState } = useSidebar();
+
+  const outerRef = useRef<HTMLDivElement>(null);
+
+  const [offset, setOffset] = useState(-1);
+
+  useEffect(() => {
+    const getOffset = () => {
+      const vvh = window.visualViewport?.height ?? window.innerHeight;
+      return vvh - window.innerHeight;
+    };
+    setOffset(getOffset());
+
+    if (outerRef.current) {
+      window.visualViewport?.addEventListener("resize", () => {
+        setOffset(getOffset());
+      });
+    }
+  }, [outerRef]);
+
+  return (
+    <m.div
+      id="editorModal"
+      ref={outerRef}
+      data-sidebar-offset={isMobile ? false : sidebarState === "expanded"}
+      data-state={state}
+      style={
+        {
+          "--keyborad-offset": offset + "px",
+        } as CSSProperties
+      }
+      className={cn(
+        "fixed bottom-0 left-1/2 z-50",
+        "data-[state=closed]:translate-y-full data-[state=closed]:opacity-0",
+        "data-[state=collapsed]:translate-y-[calc(100%-24px+var(--keyborad-offset))]",
+        "data-[state=opened]:translate-y-[var(--keyborad-offset)]",
+        "data-[sidebar-offset=false]:-translate-x-1/2 data-[sidebar-offset=true]:translate-x-[calc(-50%+var(--sidebar-offset)/2)]",
+        "transition-all duration-350",
+        "data-[hidden=true]:pointer-events-none data-[hidden=true]:opacity-0",
+        isMobile && state === "opened" && "hideCaretAnimation",
+        props.className,
+      )}
+      onClick={() => {
+        if (state === "collapsed") {
+          expandDayEditor();
+        }
+      }}
+      {...props}
+    >
+      <m.div
+        ref={ref}
+        style={{
+          transformOrigin: "bottom",
+        }}
+        className={cn(
+          "h-fit max-h-[200px] w-[500px] max-w-[100vw] rounded-t-md border border-b-0 shadow-2xl",
+          "border-neutral-200 dark:border-neutral-800 dark:bg-neutral-950 dark:shadow-neutral-950",
+        )}
+      >
+        {children}
+      </m.div>
+    </m.div>
+  );
+});

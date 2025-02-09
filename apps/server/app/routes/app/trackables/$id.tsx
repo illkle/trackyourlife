@@ -10,7 +10,6 @@ import {
   CalendarDaysIcon,
   ImportIcon,
   LayoutTemplateIcon,
-  ListIcon,
   MoreHorizontalIcon,
   SettingsIcon,
   TrashIcon,
@@ -38,7 +37,8 @@ import { FavoriteButton } from "~/components/Trackable/FavoriteButton";
 import { TrackableNameEditable } from "~/components/Trackable/TrackableName";
 import {
   TrackableFlagsProvider,
-  useTrackableFlags,
+  useSetTrackableFlag,
+  useTrackableFlag,
 } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import TrackableProvider, {
   useTrackableMeta,
@@ -135,9 +135,9 @@ const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
   const z = useZ();
 
   const { id } = useTrackableMeta();
-  const { getFlag, setFlag } = useTrackableFlags();
+  const setFlag = useSetTrackableFlag();
 
-  const monthViewStyle = getFlag(id, "AnyMonthViewType");
+  const monthViewStyle = useTrackableFlag(id, "AnyMonthViewType");
 
   const setMonthViewStyle = async (
     style: ITrackableFlagType<"AnyMonthViewType">,

@@ -144,3 +144,26 @@ button:not(:disabled) {
     @apply fill-neutral-950;
   }
 }
+
+/**
+ * On iOS when modal with autofocused input animates in while keyboard is also opening the css parts animate fine,
+ * but native ios cursor make a janky jump instead of moving smoothly.
+ * Therefore it's hidden until input is fully in place.
+ */
+.hideCaretAnimation {
+  input {
+    animation: hideCaretAnimation 0.6s;
+  }
+}
+
+@keyframes hideCaretAnimation {
+  0% {
+    caret-color: transparent;
+  }
+  99% {
+    caret-color: transparent;
+  }
+  100% {
+    caret-color: unset;
+  }
+}
