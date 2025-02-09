@@ -10,6 +10,7 @@ import { createPortal } from "react-dom";
 import { useOnClickOutside } from "usehooks-ts";
 
 import { cn } from "~/@shad/utils";
+import { GoodDrawer } from "~/components/Modal/goodDrawer";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
 interface EditorModalApi {
@@ -83,16 +84,7 @@ export const EditorModalProvider = ({
 
   return (
     <>
-      <m.div
-        ref={wrapperRef}
-        data-hidden={!isOpen}
-        transition={{ duration: 2, ease: "easeInOut" }}
-        className={cn(
-          "fixed bottom-12 left-1/2 z-9999",
-          "translate-x-[calc(-50%+var(--sidebar-offset)/2)] transition-all",
-          "data-[hidden=true]:pointer-events-none data-[hidden=true]:opacity-0",
-        )}
-      ></m.div>
+      <GoodDrawer ref={wrapperRef} data-hidden={!isOpen} />
       <EditorModalContext.Provider
         value={{
           registerClient: reg,
@@ -140,23 +132,7 @@ export const EditorModal = ({
   return (
     <>
       {currentId === id && portalTarget.current && (
-        <>
-          {createPortal(
-            <m.div
-              style={{
-                transformOrigin: "bottom",
-              }}
-              className={cn(
-                "flex h-fit max-h-[200px] w-[500px] flex-col rounded-md border shadow-2xl",
-                "border-neutral-200 dark:border-neutral-800 dark:bg-neutral-950 dark:shadow-neutral-950",
-              )}
-            >
-              {children}
-            </m.div>,
-            portalTarget.current,
-            currentId,
-          )}
-        </>
+        <>{createPortal(children, portalTarget.current, currentId)}</>
       )}
     </>
   );

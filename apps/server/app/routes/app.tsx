@@ -5,6 +5,7 @@ import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 
 import { SidebarProvider } from "~/@shad/components/sidebar";
 import { EditorModalProvider } from "~/components/EditorModal";
+import { EditorModalV2 } from "~/components/EditorModalV2";
 import Header, { HeaderLogo } from "~/components/Layout/Header";
 import { AppSidebar, SidebarToggle } from "~/components/Layout/Sidebar";
 import { schema } from "~/schema";
@@ -44,6 +45,7 @@ function AppComponent() {
                 <Outlet />
               </div>
             </EditorModalProvider>
+            <EditorModalV2 />
           </div>
         </SidebarProvider>
       </MainPreloader>
