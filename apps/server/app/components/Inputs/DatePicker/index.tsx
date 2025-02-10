@@ -17,6 +17,7 @@ import {
   ChevronRightIcon,
   ChevronsLeftIcon,
   ChevronsRightIcon,
+  XIcon,
 } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
 import { useResizeObserver } from "usehooks-ts";
@@ -39,6 +40,7 @@ const DatePicker = ({
     start: new Date(2000, 0, 1),
     end: new Date(2040, 0, 1),
   },
+  disableClear = false,
 }: {
   date: Date | undefined;
   onChange: (d: Date) => void;
@@ -47,6 +49,7 @@ const DatePicker = ({
     end: Date;
   };
   className?: string;
+  disableClear?: boolean;
 }) => {
   const dateNow = new Date();
 
@@ -129,7 +132,7 @@ const DatePicker = ({
   const mobileTitle = useContext(DrawerMobileTitleContext);
 
   return (
-    <div className={className}>
+    <div className={cn("relative flex", className)}>
       <DynamicModal
         open={isOpened}
         onOpenChange={setIsOpened}
@@ -236,10 +239,12 @@ const DatePicker = ({
             </div>
           </m.div>
         </DynamicModalContent>
+
         <DynamicModalTrigger>
           <div
             className={cn(
               buttonVariants({ variant: "outline" }),
+              !disableClear && "rounded-r-none",
               "min-w-[200px]",
             )}
           >
@@ -249,6 +254,16 @@ const DatePicker = ({
             <CalendarIcon size={16} className="ml-auto" />
           </div>
         </DynamicModalTrigger>
+        {!disableClear && (
+          <Button
+            variant={"outline"}
+            disabled={!innerDate}
+            size={"icon"}
+            className="rounded-l-none border-l-0"
+          >
+            <XIcon size={16} />
+          </Button>
+        )}
       </DynamicModal>
     </div>
   );

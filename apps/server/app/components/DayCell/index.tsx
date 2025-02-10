@@ -66,9 +66,11 @@ export const DayCellRouter = ({
   const isOutOfRange =
     isAfter(date, now) || Boolean(trackingStart && isBefore(now, date));
 
-  const onChange = useRecordUpdateHandler(date);
+  const onChange = useRecordUpdateHandler({ date, id, type });
   const onDelete = useRecordDeleteHandler();
-  const onChangeAttributes = useAttrbutesUpdateHandler();
+  const onChangeAttributes = useAttrbutesUpdateHandler({
+    trackableId: id,
+  });
 
   return (
     <DayCellContext.Provider

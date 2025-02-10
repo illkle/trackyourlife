@@ -217,6 +217,11 @@ export type ITrackableZero = Row<Schema["tables"]["TYL_trackable"]>;
 
 export type ITrackableFlagsZero = Row<Schema["tables"]["TYL_trackableFlags"]>;
 
+export type ITrackableRecordZero = Row<Schema["tables"]["TYL_trackableRecord"]>;
+export type ITrackableRecordAttributeZero = Row<
+  Schema["tables"]["TYL_trackableRecordAttributes"]
+>;
+
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P];
 };

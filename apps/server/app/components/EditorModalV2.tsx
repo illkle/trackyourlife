@@ -5,9 +5,9 @@ import { Store, useStore } from "@tanstack/react-store";
 import { m } from "motion/react";
 import { useOnClickOutside } from "usehooks-ts";
 
-import { Input } from "~/@shad/components/input";
 import { useSidebar } from "~/@shad/components/sidebar";
 import { cn } from "~/@shad/utils";
+import { PopupEditor } from "~/components/PopupEditor";
 import { useIsMobile } from "~/utils/useIsDesktop";
 
 /**
@@ -24,7 +24,7 @@ interface EditorModalRegisterInput {
   date: Date;
 }
 
-const store = new Store<
+export const editorModalStore = new Store<
   { data: EditorModalRegisterInput | null } & {
     isCollapsed: boolean;
   }
@@ -33,8 +33,39 @@ const store = new Store<
   isCollapsed: false,
 });
 
+export const useAmIOpenInStore = (me: EditorModalRegisterInput) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    const listener = (v: {
+      currentVal: { data: EditorModalRegisterInput | null };
+    }) => {
+      const { date, trackableId } = v.currentVal.data ?? {};
+
+      const isMe =
+        date && trackableId
+          ? me.trackableId === trackableId && me.date === date
+          : false;
+
+      setIsOpen(isMe);
+    };
+
+    editorModalStore.listeners.add(listener);
+
+    return () => {
+      editorModalStore.listeners.delete(listener);
+    };
+  }, [me.date, me.trackableId]);
+
+  return isOpen;
+};
+
 export const openDayEditor = (data: EditorModalRegisterInput) => {
-  store.setState((state) => ({ ...state, data, isCollapsed: false }));
+  editorModalStore.setState((state) => ({
+    ...state,
+    data,
+    isCollapsed: false,
+  }));
 };
 
 export const closeDayEditor = () => {
@@ -45,20 +76,20 @@ export const closeDayEditor = () => {
       document.activeElement.blur();
     }
   }
-  store.setState((state) => ({ ...state, data: null }));
+  editorModalStore.setState((state) => ({ ...state, data: null }));
 };
 
 export const collapseDayEditor = () => {
-  store.setState((state) => ({ ...state, isCollapsed: true }));
+  editorModalStore.setState((state) => ({ ...state, isCollapsed: true }));
 };
 
 export const expandDayEditor = () => {
-  store.setState((state) => ({ ...state, isCollapsed: false }));
+  editorModalStore.setState((state) => ({ ...state, isCollapsed: false }));
 };
 
 export const EditorModalV2 = () => {
-  const dayData = useStore(store, (state) => state.data);
-  const isCollapsed = useStore(store, (state) => state.isCollapsed);
+  const dayData = useStore(editorModalStore, (state) => state.data);
+  const isCollapsed = useStore(editorModalStore, (state) => state.isCollapsed);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const isMobile = useIsMobile();
@@ -84,17 +115,12 @@ export const EditorModalV2 = () => {
   return (
     <MiniDrawer ref={wrapperRef} state={state}>
       <div
+        className="max-h-[200px]"
         key={dayData?.date.toISOString() + (dayData?.trackableId ?? "")}
-        className="min-h-24 p-2 pt-4"
       >
-        <Input
-          autoFocus
-          onBlur={() => {
-            if (isMobile) {
-              closeDayEditor();
-            }
-          }}
-        />
+        {dayData && (
+          <PopupEditor date={dayData.date} trackableId={dayData.trackableId} />
+        )}
       </div>
     </MiniDrawer>
   );
@@ -190,7 +216,7 @@ export const MiniDrawer = React.forwardRef<
           transformOrigin: "bottom",
         }}
         className={cn(
-          "h-fit max-h-[200px] w-[500px] max-w-[100vw] rounded-t-md border border-b-0 shadow-2xl",
+          "h-fit w-[500px] max-w-[100vw] rounded-t-md border border-b-0 shadow-2xl",
           "border-neutral-200 dark:border-neutral-800 dark:bg-neutral-950 dark:shadow-neutral-950",
         )}
       >

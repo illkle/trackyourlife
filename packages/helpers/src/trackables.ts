@@ -14,7 +14,7 @@ import type { DbTrackableSelect } from "@tyl/db/schema";
 
 import { range } from "./animation";
 import { presetsMap } from "./colorPresets";
-import { getColorAtPosition } from "./colorTools";
+import { findClosestDarkmode, findClosestLightmode, getColorAtPosition, stringToColorHSL } from "./colorTools";
 
 // Comes from db
 export interface DataRecord {
@@ -257,4 +257,13 @@ export const sortTrackableList = <
   });
 
   return newList;
+};
+
+export const getTagStyleHashed = (v: string, theme: string) => {
+  const c = stringToColorHSL(v);
+
+  const cc =
+    theme === "dark" ? findClosestDarkmode(c) : findClosestLightmode(c);
+
+  return `hsl(${cc.h}, ${cc.s}%, ${cc.l}%)`;
 };

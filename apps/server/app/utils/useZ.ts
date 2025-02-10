@@ -224,9 +224,15 @@ const generateDateTime = (date: Date, storeTime?: boolean) => {
   return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 };
 
-export const useRecordUpdateHandler = (date: Date) => {
-  const { id, type } = useTrackableMeta();
-
+export const useRecordUpdateHandler = ({
+  date,
+  id,
+  type,
+}: {
+  date: Date;
+  id: string;
+  type: string;
+}) => {
   const z = useZ();
 
   return useCallback(
@@ -249,9 +255,11 @@ export const useRecordUpdateHandler = (date: Date) => {
   );
 };
 
-export const useAttrbutesUpdateHandler = () => {
-  const { id } = useTrackableMeta();
-
+export const useAttrbutesUpdateHandler = ({
+  trackableId,
+}: {
+  trackableId: string;
+}) => {
   const z = useZ();
 
   return useCallback(
@@ -259,7 +267,7 @@ export const useAttrbutesUpdateHandler = () => {
       const promises = attributes.map((a) =>
         z.mutate.TYL_trackableRecordAttributes.upsert({
           recordId: recordId,
-          trackableId: id,
+          trackableId: trackableId,
           key: a.key,
           value: a.value,
           type: a.type,
@@ -269,7 +277,7 @@ export const useAttrbutesUpdateHandler = () => {
 
       await Promise.allSettled(promises);
     },
-    [id, z],
+    [trackableId, z],
   );
 };
 
@@ -284,4 +292,27 @@ export const useRecordDeleteHandler = () => {
     },
     [z],
   );
+};
+
+export const useTrackableDay = ({
+  date,
+  trackableId,
+}: {
+  date: Date;
+  trackableId: string;
+}) => {
+  const zero = useZ();
+
+  const q = zero.query.TYL_trackable.where("id", "=", trackableId)
+    .one()
+    .related("trackableRecord", (q) =>
+      q.where(({ cmp, and }) =>
+        and(
+          cmp("date", ">=", convertDateFromLocalToDb(startOfDay(date))),
+          cmp("date", "<=", convertDateFromLocalToDb(endOfDay(date))),
+        ),
+      ),
+    );
+
+  return useQuery(q);
 };
