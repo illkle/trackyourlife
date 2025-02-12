@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { useForm } from "@tanstack/react-form";
-import { format } from "date-fns";
+import { format, max, min } from "date-fns";
+import { CheckIcon, XIcon } from "lucide-react";
 import { z } from "zod";
 
 import type {
@@ -8,6 +9,7 @@ import type {
   ITrackableRecordZero,
   ITrackableZero,
 } from "~/schema";
+import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
 import { Button } from "~/@shad/components/button";
 import { Label } from "~/@shad/components/label";
 import { Separator } from "~/@shad/components/separator";
@@ -15,13 +17,21 @@ import { Spinner } from "~/@shad/components/spinner";
 import { Switch } from "~/@shad/components/switch";
 import DatePicker from "~/components/Inputs/DatePicker";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
-import { useZeroTrackableData } from "~/utils/useZ";
+import {
+  updateAttributesRaw,
+  updateValueRaw,
+  useZ,
+  useZeroTrackableData,
+} from "~/utils/useZ";
 
 interface DateRange {
   from?: Date;
   to?: Date;
 }
 
+/**
+ * Wrapper Export component
+ */
 export const ExportTrackable = () => {
   const form = useForm<DateRange>({
     defaultValues: {
@@ -123,16 +133,18 @@ const dataToExportFormat = (
   const hasAttrbibutes = attrTypes.includes(type);
 
   return data.map((record) => ({
-    ...record,
+    value: record.value,
     date: new Date(record.date).toISOString(),
-    user_id: undefined,
-    trackableId: undefined,
+    createdAt: record.createdAt,
     trackableRecordAttributes: hasAttrbibutes
       ? record.trackableRecordAttributes
       : undefined,
   }));
 };
 
+/**
+ * Component that loads data by date range and shows buttons to download export files
+ */
 const ExportLoader = ({ selected }: { selected: DateRange }) => {
   const { id, type } = useTrackableMeta();
 
@@ -158,59 +170,10 @@ const ExportLoader = ({ selected }: { selected: DateRange }) => {
     URL.revokeObjectURL(url);
   };
 
-  const exportDataAsCsv = () => {
-    // First collect all possible attribute keys
-    const attributeKeys = new Set<string>();
-    data.forEach((record) => {
-      record.trackableRecordAttributes.forEach((attr) => {
-        attributeKeys.add(attr.key);
-      });
-    });
-
-    // Base columns (excluding attributes)
-    const baseColumns: (keyof ExportRecords)[] = [
-      "date",
-      "value",
-      "recordId",
-      "createdAt",
-    ];
-    const allColumns = [...baseColumns, ...Array.from(attributeKeys)];
-    const header = allColumns.join(",");
-
-    const rows = data.map((record) => {
-      const attributesMap = Object.fromEntries(
-        record.trackableRecordAttributes.map((attr) => [attr.key, attr.value]),
-      );
-
-      const rowValues = allColumns.map((column) => {
-        if (baseColumns.includes(column as keyof ExportRecords)) {
-          return record[column as keyof ExportRecords];
-        }
-
-        const attrValue = attributesMap[column];
-
-        return attrValue ?? "";
-      });
-
-      return rowValues.join(",");
-    });
-
-    const csvContent = [header, ...rows].join("\n");
-    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `trackable-export-${format(new Date(), "yyyy-MM-dd HH:mm:ss")}.csv`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-  };
-
   if (status.type !== "complete") {
     return (
       <div className="flex items-center gap-1">
-        <Spinner /> {data.length} records loaded {status.type}
+        <Spinner /> Collecting data...
       </div>
     );
   }
@@ -223,9 +186,6 @@ const ExportLoader = ({ selected }: { selected: DateRange }) => {
       <div className="mt-2 flex items-center gap-2">
         <Button variant="outline" onClick={exportDataAsJson}>
           JSON
-        </Button>
-        <Button variant="outline" onClick={exportDataAsCsv}>
-          CSV
         </Button>
 
         <Switch
@@ -244,6 +204,9 @@ const ExportLoader = ({ selected }: { selected: DateRange }) => {
   );
 };
 
+/**
+ * Import wrapper component
+ */
 export const Import = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
@@ -279,7 +242,7 @@ export const Import = () => {
           <Button variant="outline">CSV</Button>
         </div>
       </div>
-      {selectedFile && <ImportProcessor file={selectedFile} />}
+      {selectedFile && <ImportProcessor file={selectedFile} className="mt-4" />}
     </div>
   );
 };
@@ -290,13 +253,13 @@ const zImportJson = z.object({
     .datetime()
     .transform((val) => new Date(val)),
   value: z.string(),
-  recordId: z.string().optional(),
-  createdAt: z.number().optional(),
+  createdAt: z.number().nullable().optional(),
   trackableRecordAttributes: z
     .array(
       z.object({
         key: z.string(),
         value: z.string(),
+        type: z.enum(["text", "number", "boolean"]),
       }),
     )
     .optional(),
@@ -348,16 +311,12 @@ const analyzeData = (data: ImportJson[], type: ITrackableZero["type"]) => {
         acc.latestDate = item.date;
       }
 
-      if (!item.recordId) {
-        acc.recordIdPresent = false;
-      }
-
       const typeCheck = isValueOfExpectedType(item.value, type);
 
       if (!typeCheck) {
         acc.typeCheckMisses++;
 
-        if (acc.typeCheckMissExamples.length < 5) {
+        if (acc.typeCheckMissExamples.length < 3) {
           acc.typeCheckMissExamples.push(item.value);
         }
       }
@@ -370,7 +329,6 @@ const analyzeData = (data: ImportJson[], type: ITrackableZero["type"]) => {
       latestDate: undefined as Date | undefined,
       typeCheckMisses: 0,
       typeCheckMissExamples: [] as string[],
-      recordIdPresent: true,
     },
   );
 
@@ -384,7 +342,18 @@ const analyzeData = (data: ImportJson[], type: ITrackableZero["type"]) => {
     ...info,
     hasAttrbibutes,
     itemsCount,
+    latestDate: info.latestDate,
+    earliestDate: info.earliestDate,
   };
+};
+
+type ProcessorStatus = "idle" | "loading" | "error" | "success";
+
+const processorStatusComponents: Record<ProcessorStatus, React.ReactNode> = {
+  idle: <Spinner disabled />,
+  loading: <Spinner />,
+  error: <XIcon />,
+  success: <CheckIcon />,
 };
 
 const useProcessor = <T, A extends unknown[]>(
@@ -400,6 +369,8 @@ const useProcessor = <T, A extends unknown[]>(
   const process = useCallback(
     async (...args: A) => {
       try {
+        setError(null);
+        setState(null);
         setStatus("loading");
         const res = await fn(...args);
         setState(res);
@@ -417,10 +388,17 @@ const useProcessor = <T, A extends unknown[]>(
   return { status, error, state, process };
 };
 
-const ImportProcessor = ({ file }: { file: File }) => {
-  const [data, setData] = useState<ExportRecords[]>([]);
-
-  const { id, type } = useTrackableMeta();
+/**
+ * Takes imported file and checks in for validitiy, shows form to confirm export
+ */
+const ImportProcessor = ({
+  file,
+  className,
+}: {
+  file: File;
+  className?: string;
+}) => {
+  const { type } = useTrackableMeta();
 
   const parsing = useProcessor(parseJson);
   const analyzing = useProcessor(analyzeData);
@@ -434,7 +412,7 @@ const ImportProcessor = ({ file }: { file: File }) => {
       if (file.type === "application/json") {
         const parsed = await pp(file);
         if (!parsed) return;
-        const analyzed = await ap(parsed, type);
+        await ap(parsed, type);
       }
     },
     [type, ap, pp],
@@ -444,27 +422,234 @@ const ImportProcessor = ({ file }: { file: File }) => {
     void fileProcessing(file);
   }, [file, fileProcessing]);
 
-  const [importSettings, setImportSettings] = useState<{
-    priority: "import" | "existing";
+  return (
+    <div className={className}>
+      <div className="text-sm opacity-50">{file.name}</div>
+
+      <div className="mt-2 flex items-center gap-2">
+        {processorStatusComponents[parsing.status]}
+        <div>Parsing</div>
+      </div>
+
+      {parsing.error && (
+        <Alert variant="destructive" className="mt-2 w-fit">
+          <AlertTitle>Parsing error</AlertTitle>
+          <AlertDescription>{parsing.error.message}</AlertDescription>
+        </Alert>
+      )}
+
+      <div className="mt-2">
+        <div className="mt-2 flex items-center gap-2">
+          {processorStatusComponents[analyzing.status]}
+          <div>Analyzing</div>
+        </div>
+      </div>
+      {analyzing.error && (
+        <Alert variant="destructive" className="mt-2 w-fit">
+          <AlertTitle>
+            Analysis error(should not happen, likely a bug)
+          </AlertTitle>
+          <AlertDescription>{analyzing.error.message}</AlertDescription>
+        </Alert>
+      )}
+
+      {analyzing.state && (
+        <>
+          {analyzing.state.typeCheckMisses > 0 && (
+            <Alert variant="destructive" className="mt-2 w-fit">
+              <AlertTitle>Warning: Mismatching types</AlertTitle>
+              <AlertDescription>
+                Encountered value
+                {analyzing.state.typeCheckMisses > 1 ? "s" : ""} that do not
+                match current trackable type ({type}).
+                <br />
+                You can still import these, but your data likely won't work as
+                expected.
+                <br /> <br />
+                <div>
+                  {analyzing.state.typeCheckMissExamples.map(
+                    (example, index) => (
+                      <div className="overflow-ellipsis" key={index + 1}>
+                        {example}
+                      </div>
+                    ),
+                  )}
+                  {analyzing.state.typeCheckMisses >
+                    analyzing.state.typeCheckMissExamples.length && (
+                    <div className="text-xs opacity-50">
+                      +{" "}
+                      {analyzing.state.typeCheckMisses -
+                        analyzing.state.typeCheckMissExamples.length}{" "}
+                      more...
+                    </div>
+                  )}
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <div className="mt-2">
+            <div className="flex flex-wrap gap-3">
+              <div>Records: {analyzing.state.itemsCount}</div>
+              {analyzing.state.hasAttrbibutes && (
+                <div>Attributes: {analyzing.state.attributesCount}</div>
+              )}
+            </div>
+          </div>
+        </>
+      )}
+
+      {parsing.state && analyzing.state && (
+        <ImportForm parse={parsing.state} analysis={analyzing.state} />
+      )}
+    </div>
+  );
+};
+
+/**
+ * Form that confirms already validated export
+ */
+const ImportForm = ({
+  parse,
+  analysis,
+}: {
+  parse: Awaited<ReturnType<typeof parseJson>>;
+  analysis: Awaited<ReturnType<typeof analyzeData>>;
+}) => {
+  const { type, id: trackableId } = useTrackableMeta();
+
+  const z = useZ();
+
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const form = useForm<{
+    from: Date;
+    to: Date;
   }>({
-    priority: "existing",
+    defaultValues: {
+      from: analysis.earliestDate,
+      to: analysis.latestDate,
+    },
+    onSubmit: async (formData) => {
+      try {
+        const withinRange = parse.filter((item) => {
+          return (
+            item.date >= formData.value.from && item.date <= formData.value.to
+          );
+        });
+
+        // TODO: make promise all(this is quite fast already though)
+        for (const item of withinRange) {
+          const id = await updateValueRaw(
+            z,
+            trackableId,
+            item.date,
+            type,
+            item.value,
+            undefined,
+            item.createdAt ?? undefined,
+          );
+
+          if (item.trackableRecordAttributes) {
+            await updateAttributesRaw(
+              z,
+              trackableId,
+              id,
+              item.trackableRecordAttributes,
+            );
+          }
+        }
+        setSuccess(true);
+      } catch (error) {
+        setError(error as Error);
+      }
+    },
   });
 
   return (
     <div>
-      <div>
-        <h4>Parsing</h4>
-        <p>{parsing.status}</p>
-        {parsing.error && <p>{parsing.error.message}</p>}
-      </div>
+      <form
+        onSubmit={async (e) => {
+          e.preventDefault();
+          await form.handleSubmit();
+        }}
+        className="flex flex-col gap-4 sm:flex-row sm:items-end"
+      >
+        <div>
+          <h4 className="mb-1">From</h4>
+          <form.Subscribe
+            selector={(state) => ({
+              to: state.values.to,
+            })}
+            children={(state) => (
+              <form.Field
+                name="from"
+                children={(field) => {
+                  return (
+                    <DatePicker
+                      date={field.state.value}
+                      onChange={(date) => field.handleChange(date)}
+                      limits={{
+                        start: analysis.earliestDate,
+                        end: min([analysis.latestDate, state.to]),
+                      }}
+                    />
+                  );
+                }}
+              />
+            )}
+          />
+        </div>
+        <div>
+          <h4 className="mb-1">To</h4>
+          <form.Subscribe
+            selector={(state) => ({
+              from: state.values.from,
+            })}
+            children={(state) => (
+              <form.Field
+                name="to"
+                children={(field) => {
+                  return (
+                    <DatePicker
+                      date={field.state.value}
+                      onChange={(date) => field.handleChange(date)}
+                      limits={{
+                        start: max([analysis.earliestDate, state.from]),
+                        end: analysis.latestDate,
+                      }}
+                    />
+                  );
+                }}
+              />
+            )}
+          />
+        </div>
 
-      <div>
-        <h4>Analyzing</h4>
-        <p>{analyzing.status}</p>
-        {analyzing.error && <p>{analyzing.error.message}</p>}
+        <Button
+          isLoading={form.state.isSubmitting}
+          disabled={form.state.isSubmitting || form.state.isSubmitted}
+          variant={"outline"}
+          type="submit"
+        >
+          Import
+        </Button>
+      </form>
 
-        {analyzing.state && <div>{JSON.stringify(analyzing.state)}</div>}
-      </div>
+      {success && (
+        <Alert className="mt-2 w-fit">
+          <AlertTitle>Done</AlertTitle>
+          <AlertDescription>Data imported successfully</AlertDescription>
+        </Alert>
+      )}
+
+      {error && (
+        <Alert variant="destructive" className="mt-2 w-fit">
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error.message}</AlertDescription>
+        </Alert>
+      )}
     </div>
   );
 };

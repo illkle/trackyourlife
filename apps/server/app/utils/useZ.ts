@@ -12,13 +12,10 @@ import {
 } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 
-import {
-  convertDateFromLocalToDb,
-  RecordAttribute,
-} from "@tyl/helpers/trackables";
+import type { RecordAttribute } from "@tyl/helpers/trackables";
+import { convertDateFromLocalToDb } from "@tyl/helpers/trackables";
 
 import type { Schema } from "~/schema";
-import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
 export const useZ = () => {
   return useZero<Schema>();
@@ -224,6 +221,29 @@ const generateDateTime = (date: Date, storeTime?: boolean) => {
   return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 };
 
+export const updateValueRaw = async (
+  z: ReturnType<typeof useZ>,
+  trackableId: string,
+  date: Date,
+  type: string,
+  val: string,
+  recordId?: string,
+  timestamp?: number,
+) => {
+  const d = generateDateTime(date, type === "logs");
+
+  const rid = recordId ?? uuidv4();
+
+  await z.mutate.TYL_trackableRecord.upsert({
+    recordId: rid,
+    date: d,
+    trackableId,
+    value: val,
+    user_id: z.userID,
+    createdAt: timestamp,
+  });
+  return rid;
+};
 export const useRecordUpdateHandler = ({
   date,
   id,
@@ -237,22 +257,30 @@ export const useRecordUpdateHandler = ({
 
   return useCallback(
     async (val: string, recordId?: string, timestamp?: number) => {
-      const d = generateDateTime(date, type === "logs");
-
-      const rid = recordId ?? uuidv4();
-
-      await z.mutate.TYL_trackableRecord.upsert({
-        recordId: rid,
-        date: d,
-        trackableId: id,
-        value: val,
-        user_id: z.userID,
-        createdAt: timestamp,
-      });
-      return rid;
+      return await updateValueRaw(z, id, date, type, val, recordId, timestamp);
     },
     [date, id, z, type],
   );
+};
+
+export const updateAttributesRaw = async (
+  z: ReturnType<typeof useZ>,
+  trackableId: string,
+  recordId: string,
+  attributes: readonly RecordAttribute[],
+) => {
+  const promises = attributes.map((a) =>
+    z.mutate.TYL_trackableRecordAttributes.upsert({
+      recordId: recordId,
+      trackableId: trackableId,
+      key: a.key,
+      value: a.value,
+      type: a.type,
+      user_id: z.userID,
+    }),
+  );
+
+  await Promise.allSettled(promises);
 };
 
 export const useAttrbutesUpdateHandler = ({
@@ -264,18 +292,7 @@ export const useAttrbutesUpdateHandler = ({
 
   return useCallback(
     async (recordId: string, attributes: readonly RecordAttribute[]) => {
-      const promises = attributes.map((a) =>
-        z.mutate.TYL_trackableRecordAttributes.upsert({
-          recordId: recordId,
-          trackableId: trackableId,
-          key: a.key,
-          value: a.value,
-          type: a.type,
-          user_id: z.userID,
-        }),
-      );
-
-      await Promise.allSettled(promises);
+      return await updateAttributesRaw(z, trackableId, recordId, attributes);
     },
     [trackableId, z],
   );

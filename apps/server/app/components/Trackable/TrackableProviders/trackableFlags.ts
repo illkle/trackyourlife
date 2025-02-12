@@ -38,6 +38,7 @@ export const FlagsValidators = {
   AnyTrackingStart: z.string().date().or(z.null()),
   AnyNote: z.string(),
   AnyMonthViewType: z.enum(["calendar", "list"]),
+  AnyLastDedupeStrategy: z.string(),
 
   BooleanCheckedColor: ZColorValue.transform(makeColorStrings),
   BooleanUncheckedColor: ZColorValue.transform(makeColorStrings),
@@ -64,6 +65,7 @@ export const FlagDefaultInputs: ITrackableFlagsInputKV = {
   AnyMonthViewType: "calendar",
   AnyNote: "",
   AnyTrackingStart: null,
+  AnyLastDedupeStrategy: "",
   BooleanCheckedColor: presetsMap.green,
   BooleanUncheckedColor: presetsMap.neutral,
   NumberProgessBounds: {
