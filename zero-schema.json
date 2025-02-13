@@ -594,6 +594,20 @@
             "cardinality": "many"
           }
         ]
+      },
+      "TYL_trackableRecord": {
+        "trackableRecordAttributes": [
+          {
+            "sourceField": [
+              "recordId"
+            ],
+            "destField": [
+              "recordId"
+            ],
+            "destSchema": "TYL_trackableRecordAttributes",
+            "cardinality": "many"
+          }
+        ]
       }
     }
   }

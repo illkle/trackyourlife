@@ -39,16 +39,9 @@ export const NumberFormatter = new Intl.NumberFormat("en-US", {
 
 export const DayCellNumber = () => {
   const { id } = useTrackableMeta();
-  const colorCoding = useTrackableFlag(id, "NumberColorCoding");
 
   const { onChange, labelType, values } = useDayCellContext();
   const { value, recordId } = values[0] ?? {};
-
-  const internalNumber = 0;
-
-  const color = useMemo(() => {
-    return colorCoding.valueToColor(internalNumber);
-  }, [internalNumber, colorCoding]);
 
   const isMobile = useIsMobile();
 
@@ -77,12 +70,6 @@ export const DayCellNumber = () => {
         "relative",
         "focus-within:border-neutral-300 dark:focus-within:border-neutral-600 dark:data-[empty=false]:focus-within:border-neutral-600",
       )}
-      style={
-        {
-          "--themeLight": makeColorString(color.lightMode),
-          "--themeDark": makeColorString(color.darkMode),
-        } as CSSProperties
-      }
     >
       {labelType === "auto" && <LabelInside />}
       {!isMobile && (
@@ -119,11 +106,19 @@ const ProgressBar = () => {
 
   const { id } = useTrackableMeta();
   const progressBounds = useTrackableFlag(id, "NumberProgessBounds");
+
   const progress = progressBounds.map(internalNumber);
 
   if (!progress) return null;
 
-  return <div className={cn("")} style={{ height: `${progress}%` }}></div>;
+  return (
+    <div
+      className={cn(
+        "absolute bottom-0 left-0 w-full bg-[var(--themeLight)] dark:bg-[var(--themeDark)]",
+      )}
+      style={{ height: `${progress}%` }}
+    ></div>
+  );
 };
 
 const FormatterFader = ({
@@ -241,6 +236,13 @@ export const NumberInputWrapper = forwardRef<
     }
   };
 
+  const { id } = useTrackableMeta();
+  const colorCoding = useTrackableFlag(id, "NumberColorCoding");
+
+  const color = useMemo(() => {
+    return colorCoding.valueToColor(internalNumber);
+  }, [internalNumber, colorCoding]);
+
   return (
     <>
       <NumberInputContext.Provider
@@ -252,7 +254,17 @@ export const NumberInputWrapper = forwardRef<
           onBlur: handleInputBlur,
         }}
       >
-        <div ref={ref} data-empty={internalNumber === 0} {...props}>
+        <div
+          ref={ref}
+          data-empty={internalNumber === 0}
+          style={
+            {
+              "--themeLight": makeColorString(color.lightMode),
+              "--themeDark": makeColorString(color.darkMode),
+            } as CSSProperties
+          }
+          {...props}
+        >
           {children}
         </div>
       </NumberInputContext.Provider>

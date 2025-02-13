@@ -193,5 +193,4 @@ export const sendEmail = async (to: string, subject: string, html: string) => {
     subject,
     html,
   });
-  console.log("EMAIL SENT", r);
 };

@@ -208,7 +208,6 @@ const InputEditor = ({
                       key={i}
                       name={`attributes[${i}].value`}
                       children={(subField) => {
-                        console.log("render");
                         return (
                           <AttrbuteEditor
                             visibleName={attrs[i]?.visibleName ?? a.key}

@@ -261,7 +261,7 @@ type ImportJson = z.infer<typeof zImportJson>;
 const parseJson = async (file: File) => {
   const text = await file.text();
   const data = JSON.parse(text) as unknown;
-  console.log(data);
+
   const parsed = z.array(zImportJson).parse(data);
 
   return parsed;

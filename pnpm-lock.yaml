@@ -284,8 +284,8 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1(@remirror/pm@3.0.0)(@types/node@22.10.5)(@types/react-dom@18.3.1)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@rocicorp/zero':
-        specifier: 0.13.2025013101
-        version: 0.13.2025013101
+        specifier: 0.14.2025021202
+        version: 0.14.2025021202
       '@tailwindcss/postcss':
         specifier: ^4.0.0
         version: 4.0.0
@@ -4399,8 +4399,8 @@ packages:
     resolution: {integrity: sha512-bm+VUdF4CnKVjUj/dSCmVu0hjcyXaF/nKkw2rNhZUjGeBOMRy/hh8z/32h311es4dxCVvcZ3+QHQHMxF2YG5Kw==}
     hasBin: true
 
-  '@rocicorp/zero@0.13.2025013101':
-    resolution: {integrity: sha512-L3IgpM5k3F8Bk78HoFFN136d23SFOtXhVVs8QIEr0iDYTN9cGbo0YUNhkV4HqEOPCKvMZDe1i6o9JnSu0CKMNw==}
+  '@rocicorp/zero@0.14.2025021202':
+    resolution: {integrity: sha512-QT2Lj4Q4IXeLlN8z4CnpQJPsDV8XFQq6HXC73/gAvGVwSMYNZSaAscjnI3DNAbznihtSc20Z8fB8jxelt7jaWA==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -8316,9 +8316,6 @@ packages:
     resolution: {integrity: sha512-28vvUnnKQ/dBwiCQtwJw7QauYnE7yd2Cyp4tTTJpvglX4EMpbflcdBgrgToX2j71B3YvugK/NH3BGUk+E/p/Fw==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
-
-  magic-stopwatch@1.0.1:
-    resolution: {integrity: sha512-TEw2BmxonXw6YtluZis5CXRkyuA+4hoX41EK2r2x2TAxCHpjscVHxOdauQ10T6Gu7Er1y4d3ZojsGa+m6jfTEw==}
 
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
@@ -16963,7 +16960,7 @@ snapshots:
       bindings: 1.5.0
       prebuild-install: 7.1.2
 
-  '@rocicorp/zero@0.13.2025013101':
+  '@rocicorp/zero@0.14.2025021202':
     dependencies:
       '@badrap/valita': 0.3.11
       '@databases/escape-identifier': 1.0.3
@@ -16995,7 +16992,6 @@ snapshots:
       js-xxhash: 4.0.0
       json-custom-numbers: 3.1.1
       kasi: 1.1.0
-      magic-stopwatch: 1.0.1
       nanoid: 5.0.9
       pg: 8.12.0
       pg-format: pg-format-fix@1.0.5
@@ -22175,8 +22171,6 @@ snapshots:
   lucide-react@0.469.0(react@18.2.0):
     dependencies:
       react: 18.2.0
-
-  magic-stopwatch@1.0.1: {}
 
   magic-string@0.30.17:
     dependencies:

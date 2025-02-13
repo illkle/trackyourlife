@@ -139,7 +139,6 @@ export const EditorModalV2 = () => {
   useOnClickOutside(
     wrapperRef,
     (e) => {
-      console.log("clicked outside", e.ignoreEditorModalClose);
       if (e.ignoreEditorModalClose) {
         return;
       }
@@ -238,8 +237,8 @@ export const MiniDrawer = React.forwardRef<
         "fixed bottom-0 left-1/2 z-50",
         "data-[state=closed]:translate-y-full data-[state=closed]:opacity-0",
         "data-[state=collapsed]:translate-y-[calc(100%-24px)]",
-        "data-[state=opened]:translate-y-[calc(100vh-var(--viewport-offset))]",
-        "data-[sidebar-offset=false]:-translate-x-1/2 data-[sidebar-offset=true]:translate-x-[calc(-50%+var(--sidebar-offset)/2)]",
+        "data-[state=opened]:translate-y-[calc(100vh-var(--viewport-offset,0px))]",
+        "data-[sidebar-offset=false]:-translate-x-1/2 data-[sidebar-offset=true]:translate-x-[calc(-50%+var(--sidebar-offset,0px)/2)]",
         "transition-all duration-350",
         "data-[hidden=true]:pointer-events-none data-[hidden=true]:opacity-0",
         isMobile && state === "opened" && "hideCaretAnimation",
