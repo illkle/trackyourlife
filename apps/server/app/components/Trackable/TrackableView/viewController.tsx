@@ -57,6 +57,11 @@ export const ViewController = ({
   const toPrevYear = getIncrementedDate(-12, year, month);
   const toNextYear = getIncrementedDate(12, year, month);
 
+  const toToday = {
+    year: now.getFullYear(),
+    month: now.getMonth(),
+  };
+
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.altKey) {
@@ -94,92 +99,105 @@ export const ViewController = ({
   const [switchingYears, setSwitchingYears] = useState(false);
 
   return (
-    <div
-      className={cn(
-        "border-sidebar-border group fixed bottom-2 left-1/2 z-20 flex items-center rounded-md border dark:bg-neutral-950",
-        "translate-x-[calc(-50%+var(--sidebar-offset)/2)]",
-      )}
-    >
-      <Button
-        aria-label="Previous month"
-        variant="ghost"
-        size="icon"
-        asChild
-        className="rounded-sm"
-      >
-        {switchingYears ? (
-          <Link
-            from={Route.fullPath}
-            search={(prev) => ({ ...prev, ...toPrevYear })}
-          >
-            <ChevronsLeft className="h-4 w-4" />
-          </Link>
-        ) : (
-          <Link
-            from={Route.fullPath}
-            search={(prev) => ({ ...prev, ...toPrev })}
-          >
-            <ChevronLeftIcon className="h-4 w-4" />
-          </Link>
+    <>
+      <div
+        className={cn(
+          "border-sidebar-border group mb-4 ml-auto flex w-fit items-center rounded-md border dark:bg-neutral-950",
         )}
-      </Button>
-
-      <div className="flex items-center justify-center">
-        <YearSelector
-          value={typeof year === "number" ? year : undefined}
-          onChange={(v) =>
-            navigate({ search: (prev) => ({ ...prev, year: v }) })
-          }
-          onFocus={() => setSwitchingYears(true)}
-          onBlur={() => setSwitchingYears(false)}
-          className={cn(switchingYears ? "opacity-100" : "opacity-50")}
-        />
-
-        {typeof year === "number" && typeof month === "number" && (
-          <>
+      >
+        <Button
+          aria-label="Previous month"
+          variant="ghost"
+          size="icon"
+          asChild
+          className="rounded-sm"
+        >
+          {switchingYears ? (
             <Link
               from={Route.fullPath}
-              search={(prev) => ({
-                ...prev,
-                month: "list",
-              })}
-              className={cn(
-                switchingYears ? "opacity-50" : "opacity-100",
-                "p-2 leading-none",
-              )}
+              search={(prev) => ({ ...prev, ...toPrevYear })}
             >
-              <Button name="months" variant="link" className="h-auto p-0">
-                {format(new Date(year, month, 1), "MMMM")}
-              </Button>
+              <ChevronsLeft className="h-4 w-4" />
             </Link>
-          </>
-        )}
-      </div>
+          ) : (
+            <Link
+              from={Route.fullPath}
+              search={(prev) => ({ ...prev, ...toPrev })}
+            >
+              <ChevronLeftIcon className="h-4 w-4" />
+            </Link>
+          )}
+        </Button>
 
-      <Button
-        aria-label="Next month"
-        variant="ghost"
-        size="icon"
-        className="rounded-sm"
-        asChild
-      >
-        {switchingYears ? (
-          <Link
-            from={Route.fullPath}
-            search={(prev) => ({ ...prev, ...toNextYear })}
-          >
-            <ChevronsRight className="h-4 w-4" />
-          </Link>
-        ) : (
-          <Link
-            from={Route.fullPath}
-            search={(prev) => ({ ...prev, ...toNext })}
-          >
-            <ChevronRightIcon className="h-4 w-4" />{" "}
-          </Link>
-        )}
-      </Button>
-    </div>
+        <div className="flex items-center justify-center">
+          <YearSelector
+            value={typeof year === "number" ? year : undefined}
+            onChange={(v) =>
+              navigate({ search: (prev) => ({ ...prev, year: v }) })
+            }
+            className={"opacity-50 focus:opacity-100"}
+          />
+
+          {typeof year === "number" && typeof month === "number" && (
+            <>
+              <Link
+                from={Route.fullPath}
+                search={(prev) => ({
+                  ...prev,
+                  month: "list",
+                })}
+                className={cn(
+                  switchingYears ? "opacity-50" : "opacity-100",
+                  "p-2 leading-none",
+                )}
+              >
+                <Button
+                  name="months"
+                  variant="link"
+                  className="h-auto w-full min-w-20 shrink-0 p-0"
+                >
+                  {format(new Date(year, month, 1), "MMMM")}
+                </Button>
+              </Link>
+            </>
+          )}
+        </div>
+
+        <Button
+          aria-label="Next month"
+          variant="ghost"
+          size="icon"
+          className="rounded-sm rounded-r-none"
+          asChild
+        >
+          {switchingYears ? (
+            <Link
+              from={Route.fullPath}
+              search={(prev) => ({ ...prev, ...toNextYear })}
+            >
+              <ChevronsRight className="h-4 w-4" />
+            </Link>
+          ) : (
+            <Link
+              from={Route.fullPath}
+              search={(prev) => ({ ...prev, ...toNext })}
+            >
+              <ChevronRightIcon className="h-4 w-4" />{" "}
+            </Link>
+          )}
+        </Button>
+
+        <Button
+          variant={"ghost"}
+          onClick={() =>
+            navigate({ search: (prev) => ({ ...prev, ...toToday }) })
+          }
+          className="rounded-l-none border-l border-neutral-800"
+        >
+          Today
+        </Button>
+      </div>
+    </>
   );
 };
 

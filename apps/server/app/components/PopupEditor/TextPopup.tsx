@@ -1,19 +1,12 @@
 import { useRef, useState } from "react";
 import { CornerRightUp } from "lucide-react";
 
-import type { ITrackableRecordZero } from "~/schema";
-import type { useRecordUpdateHandler } from "~/utils/useZ";
 import { Button } from "~/@shad/components/button";
 import { Textarea } from "~/@shad/components/textarea";
+import type { PopupEditorProps } from "~/components/PopupEditor";
 
-export const TextPopupEditor = ({
-  values,
-  onChange,
-}: {
-  values: readonly ITrackableRecordZero[];
-  onChange: ReturnType<typeof useRecordUpdateHandler>;
-}) => {
-  const { value, recordId } = values[0] ?? {};
+export const TextPopupEditor = ({ data, onChange }: PopupEditorProps) => {
+  const { value, recordId } = data.values[0] ?? {};
 
   const [isEdited, setIsEdited] = useState(false);
 

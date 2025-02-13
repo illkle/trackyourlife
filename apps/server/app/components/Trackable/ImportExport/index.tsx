@@ -232,15 +232,6 @@ export const Import = () => {
           />
           <Button variant="outline">JSON</Button>
         </div>
-        <div className="relative">
-          <input
-            type="file"
-            accept=".csv"
-            onChange={handleFileImport}
-            className="absolute inset-0 cursor-pointer opacity-0"
-          />
-          <Button variant="outline">CSV</Button>
-        </div>
       </div>
       {selectedFile && <ImportProcessor file={selectedFile} className="mt-4" />}
     </div>

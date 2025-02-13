@@ -35,7 +35,11 @@ export const LogsSavedAttributesValidator = z.object({
 export type ILogsSavedAttribute = z.infer<typeof LogsSavedAttributesValidator>;
 
 export const FlagsValidators = {
-  AnyTrackingStart: z.string().date().or(z.null()),
+  AnyTrackingStart: z
+    .string()
+    .date()
+    .or(z.null())
+    .transform((v) => (v ? new Date(v) : null)),
   AnyNote: z.string(),
   AnyMonthViewType: z.enum(["calendar", "list"]),
   AnyLastDedupeStrategy: z.string(),

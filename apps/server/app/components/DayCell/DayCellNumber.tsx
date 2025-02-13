@@ -1,28 +1,30 @@
 import type React from "react";
 import type { CSSProperties } from "react";
-import { useCallback, useMemo, useRef, useState } from "react";
+import {
+  createContext,
+  forwardRef,
+  useCallback,
+  useContext,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { cn } from "@shad/utils";
-import { format } from "date-fns";
 import { useIsomorphicLayoutEffect } from "usehooks-ts";
 
 import { throttle } from "@tyl/helpers";
 import { makeColorString } from "@tyl/helpers/colorTools";
 
 import {
-  Drawer,
-  DrawerContent,
-  DrawerTitle,
-  DrawerTrigger,
-} from "~/@shad/components/drawer";
-import {
   DayCellBaseClasses,
   DayCellBaseClassesFocus,
   LabelInside,
   useDayCellContext,
 } from "~/components/DayCell";
+import { openDayEditor } from "~/components/EditorModalV2";
 import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
-import { useIsDesktop } from "~/utils/useIsDesktop";
+import { useIsMobile } from "~/utils/useIsDesktop";
 
 const getNumberSafe = (v: string | undefined) => {
   if (!v) return 0;
@@ -36,22 +38,143 @@ export const NumberFormatter = new Intl.NumberFormat("en-US", {
 });
 
 export const DayCellNumber = () => {
-  const isDesktop = useIsDesktop();
-
   const { id } = useTrackableMeta();
   const colorCoding = useTrackableFlag(id, "NumberColorCoding");
-  const progressBounds = useTrackableFlag(id, "NumberProgessBounds");
 
-  const { onChange, labelType, date, values } = useDayCellContext();
+  const { onChange, labelType, values } = useDayCellContext();
   const { value, recordId } = values[0] ?? {};
 
+  const internalNumber = 0;
+
+  const color = useMemo(() => {
+    return colorCoding.valueToColor(internalNumber);
+  }, [internalNumber, colorCoding]);
+
+  const isMobile = useIsMobile();
+
+  return (
+    <NumberInputWrapper
+      value={value}
+      onChange={async (v) => {
+        await onChange(v, recordId);
+      }}
+      onClick={() => {
+        if (isMobile) {
+          openDayEditor({
+            trackableId: id,
+            date: new Date(),
+          });
+        }
+      }}
+      className={cn(
+        DayCellBaseClasses,
+        DayCellBaseClassesFocus,
+        "group items-center justify-center overflow-visible",
+        "transition-all ease-in-out",
+        "cursor-pointer",
+        "border-neutral-200 dark:border-neutral-900",
+        "data-[empty=false]:border-[var(--themeLight)] dark:data-[empty=false]:border-[var(--themeDark)]",
+        "relative",
+        "focus-within:border-neutral-300 dark:focus-within:border-neutral-600 dark:data-[empty=false]:focus-within:border-neutral-600",
+      )}
+      style={
+        {
+          "--themeLight": makeColorString(color.lightMode),
+          "--themeDark": makeColorString(color.darkMode),
+        } as CSSProperties
+      }
+    >
+      {labelType === "auto" && <LabelInside />}
+      {!isMobile && (
+        <NumberInput
+          className={cn(
+            ...classes,
+            "peer opacity-0 group-hover:opacity-100 focus:opacity-100",
+          )}
+        />
+      )}
+      <FormatterFader
+        className={cn(
+          "absolute top-0 left-0 z-100 h-full w-full",
+          ...classes,
+          "pointer-events-none",
+          !isMobile && "opacity-100 group-hover:opacity-0 peer-focus:opacity-0",
+        )}
+      />
+      <ProgressBar />
+    </NumberInputWrapper>
+  );
+};
+
+const classes = [
+  "text-center text-xs font-semibold @[4rem]:text-xl",
+  "absolute top-0 left-1/2 z-10 flex h-full w-full -translate-x-1/2 items-center justify-center bg-inherit outline-hidden select-none",
+  "text-neutral-200 dark:text-neutral-800",
+  "data-[empty=false]:text-neutral-800 dark:data-[empty=false]:text-neutral-300",
+  "selection:bg-neutral-300 dark:selection:bg-neutral-600",
+];
+
+const ProgressBar = () => {
+  const { internalNumber } = useNumberInputContext();
+
+  const { id } = useTrackableMeta();
+  const progressBounds = useTrackableFlag(id, "NumberProgessBounds");
+  const progress = progressBounds.map(internalNumber);
+
+  if (!progress) return null;
+
+  return <div className={cn("")} style={{ height: `${progress}%` }}></div>;
+};
+
+const FormatterFader = ({
+  className,
+  ...props
+}: React.ComponentProps<"div">) => {
+  const { internalNumber } = useNumberInputContext();
+
+  const isBigNumber = internalNumber >= 10000;
+
+  const displayedValue = isBigNumber
+    ? NumberFormatter.format(internalNumber)
+    : internalNumber;
+
+  return (
+    <div data-empty={internalNumber === 0} {...props} className={cn(className)}>
+      {displayedValue}
+    </div>
+  );
+};
+
+const NumberInputContext = createContext<{
+  internalNumber: number;
+  updateValue: (value: string) => void;
+  onFocus: React.FocusEventHandler<HTMLInputElement>;
+  onBlur: React.FocusEventHandler<HTMLInputElement>;
+  rawInput: string;
+} | null>(null);
+
+export const useNumberInputContext = () => {
+  const context = useContext(NumberInputContext);
+  if (!context) {
+    throw new Error("NumberInputContext not found");
+  }
+  return context;
+};
+export const NumberInputWrapper = forwardRef<
+  HTMLDivElement,
+  Omit<React.ComponentProps<"div">, "onChange"> & {
+    value?: string;
+    onChange: (value: string) => void;
+    children?: React.ReactNode;
+  }
+>(({ value, onChange, children, ...props }, ref) => {
   const [internalNumber, setInternalNumber] = useState(() =>
     getNumberSafe(value),
   );
   const internalNumberRef = useRef(internalNumber);
   const [rawInput, setRawInput] = useState<string>(String(internalNumber));
 
-  const [isEditing, setIsEditing] = useState(false);
+  const useEditing = useRef(false);
 
   const updateInternalNumber = (val: number) => {
     setInternalNumber(val);
@@ -62,7 +185,7 @@ export const DayCellNumber = () => {
     const numberSafe = getNumberSafe(value);
     if (internalNumber !== numberSafe) {
       updateInternalNumber(numberSafe);
-      if (!isEditing) {
+      if (!useEditing.current) {
         setRawInput(String(numberSafe));
       }
     }
@@ -73,27 +196,19 @@ export const DayCellNumber = () => {
     void debouncedUpdateValue();
   };
 
-  const isBigNumber = internalNumber >= 10000;
-
-  const displayedValue = isBigNumber
-    ? NumberFormatter.format(internalNumber)
-    : internalNumber;
-
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedUpdateValue = useCallback(
     throttle(
       () => {
-        void onChange(String(internalNumberRef.current), recordId);
+        void onChange(String(internalNumberRef.current));
       },
-      1000,
+      300,
       { leading: false },
     ),
     [onChange, internalNumberRef],
   );
 
-  const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { value } = e.target;
-
+  const handleInput = (value: string) => {
     //
     // This is needed to force decimal points to be "."
     // We need to force them because otherwise decimal input is bugged in safari
@@ -115,156 +230,70 @@ export const DayCellNumber = () => {
     if (String(internalNumber) !== rawInput) {
       setRawInput(String(internalNumber));
     }
-    setDrawerOpen(false);
-    setIsEditing(false);
+    useEditing.current = false;
     debouncedUpdateValue.flush();
   };
 
-  const progress = progressBounds.map(internalNumber);
-
-  const color = useMemo(() => {
-    return colorCoding.valueToColor(internalNumber);
-  }, [internalNumber, colorCoding]);
-
-  const [drawerOpen, setDrawerOpen] = useState(false);
-
   const focusHandler: React.FocusEventHandler<HTMLInputElement> = (e) => {
-    setIsEditing(true);
+    useEditing.current = true;
     if (internalNumber === 0) {
-      e.target.setSelectionRange(0, rawInput.length);
+      e.target.select();
     }
   };
 
   return (
-    <div
-      className={cn(
-        DayCellBaseClasses,
-        DayCellBaseClassesFocus,
-        "group items-center justify-center overflow-visible",
-        "transition-all ease-in-out",
-        "cursor-pointer",
-        internalNumber === 0
-          ? "border-neutral-200 dark:border-neutral-900"
-          : "border-[var(--themeLight)] dark:border-[var(--themeDark)]",
-        isEditing && "relative z-20",
-      )}
-      style={
-        {
-          "--themeLight": makeColorString(color.lightMode),
-          "--themeDark": makeColorString(color.darkMode),
-        } as CSSProperties
-      }
-    >
-      {labelType === "auto" && <LabelInside />}
-
-      <div className="absolute top-0 left-0 z-100 hidden -translate-y-full">
-        {internalNumber} {rawInput}
-      </div>
-
-      {progress !== null && (
-        <div
-          className={cn(
-            "absolute bottom-0 z-1 w-full bg-[var(--themeLight)] dark:bg-[var(--themeDark)]",
-          )}
-          style={{ height: `${progress}%` }}
-        ></div>
-      )}
-
-      {isDesktop ? (
-        <>
-          <input
-            inputMode={"decimal"}
-            type={"text"}
-            value={rawInput}
-            className={cn(
-              "peer",
-              "absolute top-0 left-1/2 z-10 flex h-full w-full -translate-x-1/2 items-center justify-center bg-inherit text-center font-semibold outline-hidden select-none group-hover:opacity-100",
-              internalNumber === 0
-                ? "text-neutral-200 dark:text-neutral-800"
-                : "text-neutral-800 dark:text-neutral-300",
-              "text-xs @[4rem]:text-xl",
-              "focus:absolute",
-              "group-hover:outline-neutral-100 dark:group-hover:outline-neutral-600",
-              "focus:outline-neutral-300 focus:group-hover:outline-neutral-300 dark:focus:outline-neutral-400 dark:focus:group-hover:outline-neutral-400",
-              "selection:bg-neutral-300 dark:selection:bg-neutral-600",
-              !isEditing ? "opacity-0" : "",
-            )}
-            onKeyUp={(e) => {
-              if (e.key === "Enter") {
-                const target = e.target as HTMLElement;
-                target.blur();
-              }
-            }}
-            onFocus={focusHandler}
-            onChange={handleInput}
-            onBlur={handleInputBlur}
-          />
-          <div
-            className={cn(
-              "peer-focused:opacity-0 peer-hover:opacity-0",
-              "relative z-5 flex h-full w-full items-center justify-center bg-inherit text-center font-semibold select-none",
-              internalNumber === 0
-                ? "text-neutral-200 dark:text-neutral-800"
-                : "text-neutral-800 dark:text-neutral-300",
-              "text-xs @[4rem]:text-lg",
-              "overflow-hidden",
-              isEditing && "hidden",
-              drawerOpen &&
-                "outline outline-neutral-300 dark:outline-neutral-600",
-            )}
-            onClick={() => {
-              setIsEditing(true);
-            }}
-          >
-            {displayedValue}
-          </div>
-        </>
-      ) : (
-        <Drawer
-          open={drawerOpen}
-          onOpenChange={setDrawerOpen}
-          shouldScaleBackground={false}
-          disablePreventScroll={true}
-          repositionInputs={false}
-        >
-          <DrawerTrigger
-            className={cn(
-              "relative z-10 flex h-full w-full items-center justify-center bg-inherit text-center font-semibold transition-all select-none",
-              internalNumber === 0
-                ? "text-neutral-200 dark:text-neutral-800"
-                : "text-neutral-800 dark:text-neutral-300",
-              "text-xs @[4rem]:text-lg",
-              "overflow-hidden",
-              drawerOpen &&
-                "outline outline-neutral-300 dark:outline-neutral-600",
-            )}
-          >
-            {displayedValue}
-          </DrawerTrigger>
-          <DrawerContent>
-            <DrawerTitle>{format(date, "d MMMM yyyy")}</DrawerTitle>
-            <div className="p-6">
-              <input
-                autoFocus={true}
-                inputMode={"decimal"}
-                type={"text"}
-                value={rawInput}
-                className={cn(
-                  "relative z-10 flex h-full w-full items-center justify-center rounded-sm bg-inherit text-center font-semibold outline-hidden transition-all select-none",
-                  internalNumber === 0
-                    ? "text-neutral-200 dark:text-neutral-800"
-                    : "text-neutral-800 dark:text-neutral-300",
-                  "text-2xl",
-                  "h-20 focus:outline-neutral-300 dark:focus:outline-neutral-600",
-                )}
-                onFocus={focusHandler}
-                onChange={handleInput}
-                onBlur={handleInputBlur}
-              />
-            </div>
-          </DrawerContent>
-        </Drawer>
-      )}
-    </div>
+    <>
+      <NumberInputContext.Provider
+        value={{
+          internalNumber,
+          rawInput,
+          updateValue: handleInput,
+          onFocus: focusHandler,
+          onBlur: handleInputBlur,
+        }}
+      >
+        <div ref={ref} data-empty={internalNumber === 0} {...props}>
+          {children}
+        </div>
+      </NumberInputContext.Provider>
+    </>
   );
-};
+});
+
+export const NumberInput = forwardRef<
+  HTMLInputElement,
+  Omit<
+    React.ComponentProps<"input">,
+    "onChange" | "value" | "type" | "inputMode"
+  >
+>((props, ref) => {
+  const { internalNumber, rawInput, onFocus, onBlur, updateValue } =
+    useNumberInputContext();
+
+  return (
+    <input
+      ref={ref}
+      value={rawInput}
+      onKeyUp={(e) => {
+        if (e.key === "Enter") {
+          const target = e.target as HTMLElement;
+          target.blur();
+        }
+        props.onKeyUp?.(e);
+      }}
+      data-empty={internalNumber === 0}
+      onFocus={(e) => {
+        onFocus(e);
+        props.onFocus?.(e);
+      }}
+      onBlur={(e) => {
+        onBlur(e);
+        props.onBlur?.(e);
+      }}
+      inputMode={"decimal"}
+      type={"text"}
+      {...props}
+      onChange={(v) => updateValue(v.target.value)}
+    />
+  );
+});

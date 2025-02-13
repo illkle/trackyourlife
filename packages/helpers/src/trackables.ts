@@ -14,7 +14,12 @@ import type { DbTrackableSelect } from "@tyl/db/schema";
 
 import { range } from "./animation";
 import { presetsMap } from "./colorPresets";
-import { findClosestDarkmode, findClosestLightmode, getColorAtPosition, stringToColorHSL } from "./colorTools";
+import {
+  findClosestDarkmode,
+  findClosestLightmode,
+  getColorAtPosition,
+  stringToColorHSL,
+} from "./colorTools";
 
 // Comes from db
 export interface DataRecord {
@@ -50,12 +55,15 @@ export interface RecordValue {
 }
 
 /**
- * Takes a data queired from db over a certain range and maps it to array of `PureDataRecord` where each record is day in range `start`->`end`(including both).
- * Data MUST be in ascending order.
+ * @param start Date or date.getTime() of first day. this day is included. time is ignored
+ * @param end Date or date.getTime() of last day. this day is included. time is ignored
+ * @param data data from db. must be in ascending order by datetime.
+ * @param orderBy by default asc, set to desc if you to output days in reverse
+ * @returns array of DataRecord's. Each record is a day.
  */
 export const mapDataToRange = (
-  start: number,
-  end: number,
+  start: number | Date,
+  end: number | Date,
   data: readonly DataRecord[],
   orderBy: "asc" | "desc" = "asc",
 ): PureDataRecord[] => {
@@ -76,7 +84,7 @@ export const mapDataToRange = (
   });
 
   const disabledAfter = startOfTomorrow().getTime();
-  const result = new Array(days.length) as PureDataRecord[];
+  const result: PureDataRecord[] = [];
 
   let dataPointer = 0;
 

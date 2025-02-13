@@ -26,11 +26,13 @@ import {
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
 export const TagsPopupEditor = ({
-  values,
+  data,
   onChange,
   onDelete,
 }: PopupEditorProps) => {
   const { resolvedTheme } = useTheme();
+
+  const values = data.values;
 
   const valuesSet = useMemo(
     () => new Set(values.map((v) => v.value)),
@@ -64,7 +66,10 @@ export const TagsPopupEditor = ({
               "flex w-fit max-w-full items-center gap-1 overflow-hidden rounded px-1 text-sm text-nowrap text-ellipsis",
             )}
             style={{
-              backgroundColor: getTagStyleHashed(v.value, resolvedTheme ?? ""),
+              backgroundColor: getTagStyleHashed(
+                v.value ?? "",
+                resolvedTheme ?? "",
+              ),
             }}
           >
             <span className="text-neutral-950 dark:text-neutral-100">

@@ -1,8 +1,10 @@
+import type { ListenerValue } from "@tanstack/react-store";
 import type { HTMLMotionProps } from "motion/react";
-import type { CSSProperties } from "react";
 import React, { useEffect, useRef, useState } from "react";
+import { useLocation } from "@tanstack/react-router";
 import { Store, useStore } from "@tanstack/react-store";
-import { m } from "motion/react";
+import { addDays, subDays } from "date-fns";
+import { AnimatePresence, m } from "motion/react";
 import { useOnClickOutside } from "usehooks-ts";
 
 import { useSidebar } from "~/@shad/components/sidebar";
@@ -19,16 +21,22 @@ import { useIsMobile } from "~/utils/useIsDesktop";
  * 4. Editor is basically main feature of the app
  */
 
+/**
+ * This is the modal itself.
+ * Content inside is located in component/PopupEditor.tsx
+ */
+
 interface EditorModalRegisterInput {
   trackableId: string;
   date: Date;
 }
 
-export const editorModalStore = new Store<
-  { data: EditorModalRegisterInput | null } & {
-    isCollapsed: boolean;
-  }
->({
+interface EditorModalStore {
+  data: EditorModalRegisterInput | null;
+  isCollapsed: boolean;
+}
+
+export const editorModalStore = new Store<EditorModalStore>({
   data: null,
   isCollapsed: false,
 });
@@ -37,9 +45,12 @@ export const useAmIOpenInStore = (me: EditorModalRegisterInput) => {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const listener = (v: {
-      currentVal: { data: EditorModalRegisterInput | null };
-    }) => {
+    const listener = (v: ListenerValue<EditorModalStore>) => {
+      if (v.currentVal.isCollapsed) {
+        setIsOpen(false);
+        return;
+      }
+
       const { date, trackableId } = v.currentVal.data ?? {};
 
       const isMe =
@@ -87,12 +98,43 @@ export const expandDayEditor = () => {
   editorModalStore.setState((state) => ({ ...state, isCollapsed: false }));
 };
 
+export const editorModalPreviousDay = () => {
+  editorModalStore.setState((state) => ({
+    ...state,
+    data: state.data
+      ? {
+          trackableId: state.data.trackableId,
+          date: subDays(state.data.date, 1),
+        }
+      : null,
+  }));
+};
+
+export const editorModalNextDay = () => {
+  editorModalStore.setState((state) => ({
+    ...state,
+    data: state.data
+      ? {
+          trackableId: state.data.trackableId,
+          date: addDays(state.data.date, 1),
+        }
+      : null,
+  }));
+};
 export const EditorModalV2 = () => {
   const dayData = useStore(editorModalStore, (state) => state.data);
   const isCollapsed = useStore(editorModalStore, (state) => state.isCollapsed);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
   const isMobile = useIsMobile();
+
+  const pathname = useLocation({
+    select: (location) => location.pathname,
+  });
+
+  useEffect(() => {
+    closeDayEditor();
+  }, [pathname]);
 
   useOnClickOutside(
     wrapperRef,
@@ -114,14 +156,17 @@ export const EditorModalV2 = () => {
 
   return (
     <MiniDrawer ref={wrapperRef} state={state}>
-      <div
-        className="max-h-[200px]"
-        key={dayData?.date.toISOString() + (dayData?.trackableId ?? "")}
-      >
+      <AnimatePresence>
         {dayData && (
-          <PopupEditor date={dayData.date} trackableId={dayData.trackableId} />
+          <m.div exit={{ opacity: 0 }} className="max-h-[200px]">
+            <PopupEditor
+              date={dayData.date}
+              trackableId={dayData.trackableId}
+              key={dayData.date.toISOString() + dayData.trackableId}
+            />
+          </m.div>
         )}
-      </div>
+      </AnimatePresence>
     </MiniDrawer>
   );
 };
@@ -149,10 +194,10 @@ declare global {
  * there are multiple problems with it:
  * - on desktop when not using DrawerTriger there is no way to make page behind interacrable(this is a bug)
  * - on mobile drawer inputs with autofocus animate incorrectly on close.
- * - I fixed it back in the day, but it got broken again afte 1.0 refactors
- * - maintainer is slow to respond
- * - library is too complex for our use case
- * It's possible to patch package or figure out how to fix stuff there, but for now this will do
+ * - I fixed mobile autofocus aniation back in the day, but it got broken again after 1.0 refactors
+ * - maintainer is slow to merge fixes
+ * - there are lot of features that we don't need and that make fixing stuff harder
+ * Therefore I decided to roll my own
  */
 
 export const MiniDrawer = React.forwardRef<
@@ -165,21 +210,23 @@ export const MiniDrawer = React.forwardRef<
 
   const outerRef = useRef<HTMLDivElement>(null);
 
-  const [offset, setOffset] = useState(-1);
-
   useEffect(() => {
-    const getOffset = () => {
-      const vvh = window.visualViewport?.height ?? window.innerHeight;
-      return vvh - window.innerHeight;
+    const updateDimensions = () => {
+      if (!window.visualViewport || !outerRef.current) return;
+      const offset =
+        document.documentElement.clientHeight -
+        (window.visualViewport.height + window.visualViewport.offsetTop);
+      outerRef.current.style.setProperty("--viewport-offset", offset + "px");
     };
-    setOffset(getOffset());
 
-    if (outerRef.current) {
-      window.visualViewport?.addEventListener("resize", () => {
-        setOffset(getOffset());
-      });
-    }
-  }, [outerRef]);
+    window.visualViewport?.addEventListener("resize", updateDimensions);
+    window.visualViewport?.addEventListener("scroll", updateDimensions);
+
+    return () => {
+      window.visualViewport?.removeEventListener("resize", updateDimensions);
+      window.visualViewport?.removeEventListener("scroll", updateDimensions);
+    };
+  }, []);
 
   return (
     <m.div
@@ -187,16 +234,11 @@ export const MiniDrawer = React.forwardRef<
       ref={outerRef}
       data-sidebar-offset={isMobile ? false : sidebarState === "expanded"}
       data-state={state}
-      style={
-        {
-          "--keyborad-offset": offset + "px",
-        } as CSSProperties
-      }
       className={cn(
         "fixed bottom-0 left-1/2 z-50",
         "data-[state=closed]:translate-y-full data-[state=closed]:opacity-0",
-        "data-[state=collapsed]:translate-y-[calc(100%-24px+var(--keyborad-offset))]",
-        "data-[state=opened]:translate-y-[var(--keyborad-offset)]",
+        "data-[state=collapsed]:translate-y-[calc(100%-24px)]",
+        "data-[state=opened]:translate-y-[calc(100vh-var(--viewport-offset))]",
         "data-[sidebar-offset=false]:-translate-x-1/2 data-[sidebar-offset=true]:translate-x-[calc(-50%+var(--sidebar-offset)/2)]",
         "transition-all duration-350",
         "data-[hidden=true]:pointer-events-none data-[hidden=true]:opacity-0",
@@ -218,6 +260,7 @@ export const MiniDrawer = React.forwardRef<
         className={cn(
           "h-fit w-[500px] max-w-[100vw] rounded-t-md border border-b-0 shadow-2xl",
           "border-neutral-200 dark:border-neutral-800 dark:bg-neutral-950 dark:shadow-neutral-950",
+          "pb-[100vh]",
         )}
       >
         {children}

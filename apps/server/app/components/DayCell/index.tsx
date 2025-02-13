@@ -85,7 +85,7 @@ export const DayCellRouter = ({
         onChangeAttributes,
       }}
     >
-      <div className={cn("flex flex-1 flex-col", className)}>
+      <div className={cn("relative flex flex-1 flex-col", className)}>
         {labelType === "outside" && <LabelOutside />}
         <DayCellTypeRouter type={type}></DayCellTypeRouter>
       </div>
@@ -165,6 +165,7 @@ export const LabelInside = () => {
       className={cn(
         "absolute top-0 left-1 z-10 text-base text-neutral-800 select-none",
         isToday ? "font-normal underline" : "font-light",
+        "text-xs sm:text-base",
       )}
     >
       {format(date, "d")}

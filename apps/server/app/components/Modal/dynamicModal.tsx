@@ -1,4 +1,4 @@
-import type { HTMLAttributes, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { createContext, useContext, useMemo } from "react";
 
 import {
@@ -20,16 +20,11 @@ import {
   PopoverTrigger,
 } from "~/@shad/components/popover";
 import { cn } from "~/@shad/utils";
-import {
-  EditorModal,
-  EditorModalTitle,
-  setIgnoreEditorModalClose,
-} from "~/components/EditorModal";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
 interface DynamicModalContext {
   isDesktop: boolean;
-  desktopMode: "editor" | "dialog" | "popover";
+  desktopMode: "dialog" | "popover";
   mobileMode: "drawer";
 
   open: boolean;
@@ -38,7 +33,7 @@ interface DynamicModalContext {
 
 const DynamicModalContext = createContext<DynamicModalContext>({
   isDesktop: false,
-  desktopMode: "editor",
+  desktopMode: "dialog",
   mobileMode: "drawer",
   open: false,
   onOpenChange: () => {
@@ -52,14 +47,14 @@ const DynamicModalContext = createContext<DynamicModalContext>({
  */
 export const DynamicModal = ({
   children,
-  desktopMode = "editor",
+  desktopMode = "dialog",
   mobileMode = "drawer",
   open,
   onOpenChange,
 }: {
   children: React.ReactNode;
-  desktopMode?: "editor" | "dialog" | "popover";
-  mobileMode?: "drawer";
+  desktopMode?: DynamicModalContext["desktopMode"];
+  mobileMode?: DynamicModalContext["mobileMode"];
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) => {
@@ -70,14 +65,6 @@ export const DynamicModal = ({
   }, [isDesktop, desktopMode, mobileMode, open, onOpenChange]);
 
   if (isDesktop) {
-    if (desktopMode === "editor") {
-      return (
-        <DynamicModalContext.Provider value={ctx}>
-          {children}
-        </DynamicModalContext.Provider>
-      );
-    }
-
     if (desktopMode === "popover") {
       return (
         <DynamicModalContext.Provider value={ctx}>
@@ -120,7 +107,6 @@ export const DynamicModalTrigger = ({
   popoverProps,
   dialogProps,
   drawerProps,
-  editorProps,
   className,
 }: {
   children: ReactNode;
@@ -130,25 +116,9 @@ export const DynamicModalTrigger = ({
   editorProps?: ButtonProps;
   className?: string;
 }) => {
-  const { desktopMode, isDesktop, onOpenChange } =
-    useContext(DynamicModalContext);
+  const { desktopMode, isDesktop } = useContext(DynamicModalContext);
 
   if (isDesktop) {
-    if (desktopMode === "editor") {
-      return (
-        <button
-          onClick={(e) => {
-            setIgnoreEditorModalClose(e.nativeEvent);
-            onOpenChange(true);
-          }}
-          {...editorProps}
-          className={cn(className, editorProps?.className)}
-        >
-          {children}
-        </button>
-      );
-    }
-
     if (desktopMode === "popover") {
       return (
         <PopoverTrigger
@@ -197,18 +167,9 @@ export const DynamicModalContent = ({
   drawerProps?: DrawerContentProps;
   className?: string;
 }) => {
-  const { desktopMode, isDesktop, open, onOpenChange } =
-    useContext(DynamicModalContext);
+  const { desktopMode, isDesktop } = useContext(DynamicModalContext);
 
   if (isDesktop) {
-    if (desktopMode === "editor") {
-      return (
-        <EditorModal open={open} onOpenChange={onOpenChange}>
-          {children}
-        </EditorModal>
-      );
-    }
-
     if (desktopMode === "popover") {
       return (
         <PopoverContent
@@ -270,18 +231,5 @@ export const DynamicModalDrawerTitle = ({
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!isDesktop && mobileMode === "drawer") {
     return <DrawerTitle {...args}>{children}</DrawerTitle>;
-  }
-};
-
-export const DynamicModalEditorTitle = ({
-  children,
-  ...args
-}: HTMLAttributes<HTMLDivElement> & {
-  children: ReactNode;
-}) => {
-  const { desktopMode, isDesktop } = useContext(DynamicModalContext);
-
-  if (isDesktop && desktopMode === "editor") {
-    return <EditorModalTitle {...args}>{children}</EditorModalTitle>;
   }
 };

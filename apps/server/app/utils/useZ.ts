@@ -323,12 +323,16 @@ export const useTrackableDay = ({
   const q = zero.query.TYL_trackable.where("id", "=", trackableId)
     .one()
     .related("trackableRecord", (q) =>
-      q.where(({ cmp, and }) =>
-        and(
-          cmp("date", ">=", convertDateFromLocalToDb(startOfDay(date))),
-          cmp("date", "<=", convertDateFromLocalToDb(endOfDay(date))),
-        ),
-      ),
+      q
+        .where(({ cmp, and }) =>
+          and(
+            cmp("date", ">=", convertDateFromLocalToDb(startOfDay(date))),
+            cmp("date", "<=", convertDateFromLocalToDb(endOfDay(date))),
+          ),
+        )
+        .orderBy("date", "asc")
+        .orderBy("createdAt", "asc")
+        .related("trackableRecordAttributes"),
     );
 
   return useQuery(q);

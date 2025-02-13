@@ -32,6 +32,8 @@ const MonthVisualCalendar = ({
 }) => {
   const prefaceWith = data[0] ? getISODay(data[0].date) - 1 : 0;
 
+  console.log(data);
+
   return (
     <div
       className={cn(
