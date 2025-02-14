@@ -133,10 +133,8 @@ export const TrackableFlagsProvider = memo(TrackableFlagsProviderNonMemo);
  * Keep in mind that for flags to be available you need to have TrackableFlagsFetcher with trackableId above.
  */
 export const useTrackableFlag: GetFlagFunction = (trackableId, key) => {
-  return (
-    useStore(FlagStorage, (state) => state[`${trackableId}--${key}`]) ??
-    FlagDefaults[key]
-  );
+  const v = useStore(FlagStorage, (state) => state[`${trackableId}--${key}`]);
+  return v ?? FlagDefaults[key];
 };
 
 export const useSetTrackableFlag = () => {

@@ -31,6 +31,7 @@ import {
   DynamicModalDrawerTitle,
   DynamicModalTrigger,
 } from "~/components/Modal/dynamicModal";
+import { useLinkedValue } from "~/utils/useDbLinkedValue";
 
 const DatePicker = ({
   date,
@@ -43,7 +44,7 @@ const DatePicker = ({
   disableClear = false,
 }: {
   date: Date | undefined;
-  onChange: (d: Date) => void;
+  onChange: (d?: Date) => void;
   limits: {
     start: Date;
     end: Date;
@@ -53,7 +54,13 @@ const DatePicker = ({
 }) => {
   const dateNow = new Date();
 
-  const [innerDate, setInnerDate] = useState(date);
+  const { internalValue: innerDate, updateHandler: setInnerDate } =
+    useLinkedValue({
+      value: date,
+      onChange,
+      timestamp: date?.getTime(),
+      alwaysUpdate: true,
+    });
 
   const calRef = useRef<HTMLDivElement>(null);
   const [isOpened, setIsOpened] = useState(false);
@@ -138,106 +145,110 @@ const DatePicker = ({
         onOpenChange={setIsOpened}
         desktopMode="popover"
       >
-        <DynamicModalContent className="overflow-hidden max-sm:m-auto max-sm:w-fit max-sm:pb-4 sm:relative">
-          <DynamicModalDrawerTitle>{mobileTitle}</DynamicModalDrawerTitle>
-          <DynamicModalDescription> </DynamicModalDescription>
-          <m.div
-            animate={{ height: height }}
-            transition={{ duration: 0.15, ease: "easeInOut" }}
-            className="flex w-full flex-col items-center md:w-fit"
-          >
-            <div ref={wrapRef}>
-              <div className="flex w-full items-center justify-between py-2">
-                <div className="flex">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    disabled={isSameMonth(limits.start, cursor)}
-                    onClick={() => moveCursorMonths(-12)}
+        <DynamicModalContent className="overflow-hidden">
+          <div className="relative max-sm:m-auto max-sm:w-fit max-sm:pb-4">
+            <DynamicModalDrawerTitle className="text-center">
+              {mobileTitle}
+            </DynamicModalDrawerTitle>
+            <DynamicModalDescription> </DynamicModalDescription>
+            <m.div
+              animate={{ height: height }}
+              transition={{ duration: 0.15, ease: "easeInOut" }}
+              className="flex w-full flex-col items-center md:w-fit"
+            >
+              <div ref={wrapRef}>
+                <div className="flex w-full items-center justify-between py-2">
+                  <div className="flex">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled={isSameMonth(limits.start, cursor)}
+                      onClick={() => moveCursorMonths(-12)}
+                    >
+                      <ChevronsLeftIcon size={16} />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled={isSameMonth(limits.start, cursor)}
+                      onClick={() => moveCursorMonths(-1)}
+                    >
+                      <ChevronLeftIcon size={16} />
+                    </Button>
+                  </div>
+                  <AnimatePresence
+                    mode="popLayout"
+                    initial={false}
+                    custom={moveDirection * 0.1}
                   >
-                    <ChevronsLeftIcon size={16} />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    disabled={isSameMonth(limits.start, cursor)}
-                    onClick={() => moveCursorMonths(-1)}
-                  >
-                    <ChevronLeftIcon size={16} />
-                  </Button>
+                    <m.div
+                      initial="enter"
+                      animate="middle"
+                      exit="exit"
+                      transition={{ duration: 0.15, ease: "easeInOut" }}
+                      variants={variants}
+                      custom={moveDirection * 0.1}
+                      key={cursor.toString()}
+                      className="pointer-events-none whitespace-nowrap select-none"
+                    >
+                      {format(cursor, "MMMM yyyy")}
+                    </m.div>
+                  </AnimatePresence>
+                  <div className="flex">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled={isSameMonth(dateNow, cursor)}
+                      onClick={() => moveCursorMonths(1)}
+                    >
+                      <ChevronRightIcon size={16} />
+                    </Button>
+
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      disabled={isSameMonth(dateNow, cursor)}
+                      onClick={() => moveCursorMonths(12)}
+                    >
+                      <ChevronsRightIcon size={16} />
+                    </Button>
+                  </div>
                 </div>
+
                 <AnimatePresence
                   mode="popLayout"
                   initial={false}
-                  custom={moveDirection * 0.1}
+                  custom={moveDirection * 0.5}
                 >
                   <m.div
                     initial="enter"
                     animate="middle"
                     exit="exit"
+                    custom={moveDirection * 0.5}
+                    className={"grid w-fit grid-cols-7 gap-1"}
                     transition={{ duration: 0.15, ease: "easeInOut" }}
                     variants={variants}
-                    custom={moveDirection * 0.1}
                     key={cursor.toString()}
-                    className="pointer-events-none whitespace-nowrap select-none"
                   >
-                    {format(cursor, "MMMM yyyy")}
+                    {prepend.map((_, i) => (
+                      <div key={`${cursor.getMonth()}—prep—${i}`}></div>
+                    ))}
+                    {dates.map((el) => (
+                      <Button
+                        className="h-9 sm:w-9"
+                        disabled={!inLimit(el)}
+                        variant={el === highlightSelected ? "default" : "ghost"}
+                        key={`${cursor.getMonth()}-${el}`}
+                        onClick={() => recordDate(el)}
+                      >
+                        {el}
+                      </Button>
+                    ))}
                   </m.div>
                 </AnimatePresence>
-                <div className="flex">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    disabled={isSameMonth(dateNow, cursor)}
-                    onClick={() => moveCursorMonths(1)}
-                  >
-                    <ChevronRightIcon size={16} />
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    disabled={isSameMonth(dateNow, cursor)}
-                    onClick={() => moveCursorMonths(12)}
-                  >
-                    <ChevronsRightIcon size={16} />
-                  </Button>
-                </div>
               </div>
-
-              <AnimatePresence
-                mode="popLayout"
-                initial={false}
-                custom={moveDirection * 0.5}
-              >
-                <m.div
-                  initial="enter"
-                  animate="middle"
-                  exit="exit"
-                  custom={moveDirection * 0.5}
-                  className={"grid w-fit grid-cols-7 gap-1"}
-                  transition={{ duration: 0.15, ease: "easeInOut" }}
-                  variants={variants}
-                  key={cursor.toString()}
-                >
-                  {prepend.map((_, i) => (
-                    <div key={`${cursor.getMonth()}—prep—${i}`}></div>
-                  ))}
-                  {dates.map((el) => (
-                    <Button
-                      className="h-9 sm:w-9"
-                      disabled={!inLimit(el)}
-                      variant={el === highlightSelected ? "default" : "ghost"}
-                      key={`${cursor.getMonth()}-${el}`}
-                      onClick={() => recordDate(el)}
-                    >
-                      {el}
-                    </Button>
-                  ))}
-                </m.div>
-              </AnimatePresence>
-            </div>
-          </m.div>
+            </m.div>
+          </div>
         </DynamicModalContent>
 
         <DynamicModalTrigger>

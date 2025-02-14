@@ -349,8 +349,7 @@ export const ControllerPoint = ({
 
   const isActive = typeof onValueChange === "function";
 
-  const isDragging = draggingId === id;
-
+  const isDraggingMe = draggingId === id;
   const xPercent = valueToX(x ?? 0);
   const yPercent = valueToY(y ?? 0);
 
@@ -378,7 +377,7 @@ export const ControllerPoint = ({
     };
   };
   const moveDrag = (e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isDragging) return;
+    if (!isDraggingMe) return;
 
     e.preventDefault();
     e.stopPropagation();
@@ -462,7 +461,7 @@ export const ControllerPoint = ({
       {...props}
     >
       <AnimatePresence>
-        {isTouch && isDragging && (
+        {isTouch && isDraggingMe && (
           <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

@@ -19,6 +19,7 @@ export const ZColorValue = z.object({
   darkMode: colorHSL,
   userSelect: colorHSL,
   manualMode: z.boolean().optional(),
+  timestamp: z.number().optional(),
 });
 
 export const ZColorCodingValue = z.object({
@@ -31,6 +32,7 @@ export const ZColorCodingValue = z.object({
 export const ZNumberColorCoding = z.object({
   enabled: z.boolean().optional(),
   colors: z.array(ZColorCodingValue).optional(),
+  timestamp: z.number().optional(),
 });
 
 /* Other stuff */

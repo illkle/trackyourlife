@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { cn } from "@shad/utils";
 import { PlusCircleIcon, XIcon } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
@@ -9,8 +9,7 @@ import type {
   IColorCodingValueInput,
   IColorValue,
 } from "@tyl/db/jsonValidators";
-import { clamp } from "@tyl/helpers";
-import { presetsMap } from "@tyl/helpers/colorPresets";
+import { clamp, cloneDeep } from "@tyl/helpers";
 import {
   getColorAtPosition,
   makeColorString,
@@ -33,6 +32,7 @@ import {
   ControllerPoint,
   ControllerRoot,
 } from "~/components/Inputs/Colors/dragController";
+import { useLinkedValue } from "~/utils/useDbLinkedValue";
 import { useIsMobile } from "~/utils/useIsDesktop";
 
 const getActualMin = (
@@ -132,6 +132,13 @@ const ControllerGradient = ({
     onChange(newVal);
   };
 
+  /* It is important to sort the values here, because to make gradient we need sorted values,
+   * but if you sort higher up pointereventcapture will get lost on sorting change despite react key
+   */
+  const sortedValues = useMemo(() => {
+    return [...value].sort((a, b) => a.point - b.point);
+  }, [value]);
+
   return (
     <>
       <div
@@ -139,8 +146,18 @@ const ControllerGradient = ({
         onTouchStart={(e) => e.preventDefault()}
         style={
           {
-            "--gradLight": makeCssGradient(value, minValue, maxValue, "light"),
-            "--gradDark": makeCssGradient(value, minValue, maxValue, "dark"),
+            "--gradLight": makeCssGradient(
+              sortedValues,
+              minValue,
+              maxValue,
+              "light",
+            ),
+            "--gradDark": makeCssGradient(
+              sortedValues,
+              minValue,
+              maxValue,
+              "dark",
+            ),
           } as CSSProperties
         }
       >
@@ -288,31 +305,40 @@ const ControllerGradient = ({
   );
 };
 
+const markNumbers = (value: IColorCodingValueInput[]): IColorCodingValue[] => {
+  return value.map((v) => ({ ...v, point: v.point, id: uuidv4() }));
+};
+
+const cloneAndSort = (value: IColorCodingValue[]): IColorCodingValue[] => {
+  return cloneDeep(value).sort((a, b) => a.point - b.point);
+};
+
 const NumberColorSelector = ({
   value,
+  timestamp,
   onChange,
 }: {
   value: IColorCodingValueInput[];
-  onChange: (v: NonNullable<IColorCodingValueInput[]>) => void;
+  onChange: (v: NonNullable<IColorCodingValueInput[]>, ts: number) => void;
+  timestamp?: number;
 }) => {
-  const [innerValue, setInnerValue] = useState<IColorCodingValue[]>(
-    value.length
-      ? value.map((v) => ({ ...v, id: uuidv4() }))
-      : [
-          { point: 0, color: presetsMap.red, id: uuidv4() },
-          { point: 100, color: presetsMap.green, id: uuidv4() },
-        ],
+  const onChangeProxy = useCallback(
+    (v: IColorCodingValue[], ts: number) => {
+      onChange(cloneAndSort(v), ts);
+    },
+    [onChange],
   );
 
-  const sorted = [...innerValue].sort((a, b) => a.point - b.point);
+  const { internalValue, updateHandler } = useLinkedValue({
+    value: markNumbers(value),
+    onChange: onChangeProxy,
+    timestamp,
+  });
 
   return (
     <ControllerGradient
-      value={sorted}
-      onChange={(v) => {
-        setInnerValue(v);
-        onChange(v);
-      }}
+      value={internalValue}
+      onChange={(v) => updateHandler(v)}
     />
   );
 };

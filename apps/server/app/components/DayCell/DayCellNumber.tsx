@@ -3,7 +3,6 @@ import type { CSSProperties } from "react";
 import {
   createContext,
   forwardRef,
-  useCallback,
   useContext,
   useMemo,
   useRef,
@@ -12,7 +11,6 @@ import {
 import { cn } from "@shad/utils";
 import { useIsomorphicLayoutEffect } from "usehooks-ts";
 
-import { throttle } from "@tyl/helpers";
 import { makeColorString } from "@tyl/helpers/colorTools";
 
 import {
@@ -24,6 +22,7 @@ import {
 import { openDayEditor } from "~/components/EditorModalV2";
 import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { useLinkedValue } from "~/utils/useDbLinkedValue";
 import { useIsMobile } from "~/utils/useIsDesktop";
 
 const getNumberSafe = (v: string | undefined) => {
@@ -155,53 +154,47 @@ export const useNumberInputContext = () => {
   }
   return context;
 };
+
 export const NumberInputWrapper = forwardRef<
   HTMLDivElement,
   Omit<React.ComponentProps<"div">, "onChange"> & {
     value?: string;
     onChange: (value: string) => void;
     children?: React.ReactNode;
+    timestamp?: number;
   }
->(({ value, onChange, children, ...props }, ref) => {
-  const [internalNumber, setInternalNumber] = useState(() =>
-    getNumberSafe(value),
-  );
-  const internalNumberRef = useRef(internalNumber);
+>(({ value, onChange, children, timestamp, ...props }, ref) => {
+  /**
+   * There are three places where state is stored:
+   * 1. DB. Throttled updates via useLinkedValue, passed as props
+   * 2. internalValue. This is string with a valid number. It periodically updates db and is used for calculations(progrees, color coding)
+   * 3. rawInput. This is the value of the input field. On update if state is valid number it updates
+   */
+  const { internalValue, updateHandler } = useLinkedValue({
+    value: value ?? "",
+    onChange,
+    timestamp: timestamp,
+  });
+
+  const internalNumber = getNumberSafe(internalValue);
+
   const [rawInput, setRawInput] = useState<string>(String(internalNumber));
+  const lastValidRawInput = useRef<string>(rawInput);
+
+  useIsomorphicLayoutEffect(() => {
+    /** If internal value changes to something other that last valid raw state then extenal update came in */
+    if (String(lastValidRawInput.current) !== String(rawInput)) {
+      setRawInput(rawInput);
+      lastValidRawInput.current = rawInput;
+    }
+  }, [rawInput]);
 
   const useEditing = useRef(false);
 
   const updateInternalNumber = (val: number) => {
-    setInternalNumber(val);
-    internalNumberRef.current = val;
+    updateHandler(String(val));
+    lastValidRawInput.current = String(val);
   };
-
-  useIsomorphicLayoutEffect(() => {
-    const numberSafe = getNumberSafe(value);
-    if (internalNumber !== numberSafe) {
-      updateInternalNumber(numberSafe);
-      if (!useEditing.current) {
-        setRawInput(String(numberSafe));
-      }
-    }
-  }, [value]);
-
-  const internalUpdate = (val: number) => {
-    updateInternalNumber(val);
-    void debouncedUpdateValue();
-  };
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedUpdateValue = useCallback(
-    throttle(
-      () => {
-        void onChange(String(internalNumberRef.current));
-      },
-      300,
-      { leading: false },
-    ),
-    [onChange, internalNumberRef],
-  );
 
   const handleInput = (value: string) => {
     //
@@ -217,7 +210,7 @@ export const NumberInputWrapper = forwardRef<
     const numeric = Number(replaced);
 
     if (!Number.isNaN(numeric)) {
-      internalUpdate(numeric);
+      updateInternalNumber(numeric);
     }
   };
 
@@ -226,7 +219,6 @@ export const NumberInputWrapper = forwardRef<
       setRawInput(String(internalNumber));
     }
     useEditing.current = false;
-    debouncedUpdateValue.flush();
   };
 
   const focusHandler: React.FocusEventHandler<HTMLInputElement> = (e) => {

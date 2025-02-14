@@ -46,6 +46,7 @@ export const makeColorString = (color: IColorHSL) =>
 export const makeColorStrings = (color: IColorValue) => ({
   lightMode: makeColorString(color.lightMode),
   darkMode: makeColorString(color.darkMode),
+  raw: color,
 });
 
 export const getContrastierColorForDay = ({ h, s, l }: IColorHSL) => {

@@ -5,12 +5,10 @@ import { v4 as uuidv4 } from "uuid";
 import type { DbTrackableInsert } from "@tyl/db/schema";
 import { cloneDeep } from "@tyl/helpers";
 
-import type { ITrackableFlagsInputKV } from "~/components/Trackable/TrackableProviders/trackableFlags";
 import type { ITrackableZeroInsert } from "~/schema";
+import { Button } from "~/@shad/components/button";
 import { Input } from "~/@shad/components/input";
-import TrackableSettings from "~/components/Trackable/CreateAndSettingsFlows";
-import { SettingsTitle } from "~/components/Trackable/CreateAndSettingsFlows/settingsTitle";
-import { TrackableTypeSelector } from "~/components/Trackable/CreateAndSettingsFlows/trackableTypeSelector";
+import { TrackableTypeSelector } from "~/components/Trackable/Settings/trackableTypeSelector";
 import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { useZ } from "~/utils/useZ";
 
@@ -40,7 +38,7 @@ function RouteComponent() {
     setNewOne(update);
   };
 
-  const createTrackable = async (settings: ITrackableFlagsInputKV) => {
+  const createTrackable = async () => {
     const id = uuidv4();
     await z.mutate.TYL_trackable.insert({
       id,
@@ -49,21 +47,8 @@ function RouteComponent() {
       user_id: sessionInfo.user.id,
     });
 
-    await z.mutateBatch(async (m) => {
-      const p = Object.entries(settings).map(([key, value]) =>
-        m.TYL_trackableFlags.insert({
-          user_id: z.userID,
-          key,
-          trackableId: id,
-          value: value,
-        }),
-      );
-
-      await Promise.all(p);
-    });
-
     await router.navigate({
-      to: `/app/trackables/${id}`,
+      to: `/app/trackables/${id}/settings`,
     });
   };
 
@@ -72,20 +57,22 @@ function RouteComponent() {
       <h3 className="w-full bg-inherit text-2xl font-semibold lg:text-3xl">
         Create new Trackable
       </h3>
-      <SettingsTitle>Name</SettingsTitle>
+
+      <div className="h-2"></div>
       <Input
         placeholder="Unnamed Trackable"
         onChange={(e) => (nameRef.current = e.target.value)}
       />
 
-      <SettingsTitle>Type</SettingsTitle>
+      <div className="h-2"></div>
       <TrackableTypeSelector type={newOne.type} setType={setType} />
 
-      <TrackableSettings
-        trackableType={newOne.type}
-        handleSave={createTrackable}
-        customSaveButtonText="Create Trackable"
-      />
+      <Button
+        className="mt-2 flex justify-center gap-2"
+        onClick={createTrackable}
+      >
+        Create
+      </Button>
     </div>
   );
 }

@@ -1,3 +1,4 @@
+import { parse } from "date-fns";
 import { z } from "zod";
 
 import {
@@ -39,7 +40,9 @@ export const FlagsValidators = {
     .string()
     .date()
     .or(z.null())
-    .transform((v) => (v ? new Date(v) : null)),
+    .transform((v) =>
+      v ? parse(v, "yyyy-MM-dd", new Date()).getTime() : null,
+    ), // converting to number because transtack store can't store reactive dates
   AnyNote: z.string(),
   AnyMonthViewType: z.enum(["calendar", "list"]),
   AnyLastDedupeStrategy: z.string(),
