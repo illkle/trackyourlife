@@ -145,8 +145,8 @@ export const mapDataToRange = (
   return result;
 };
 
-export const convertDateFromDbToLocal = (date: number) => {
-  const d = new Date(date);
+export const convertDateFromDbToLocal = (date: number | Date) => {
+  const d = typeof date === "number" ? new Date(date) : date;
   return new Date(
     d.getUTCFullYear(),
     d.getUTCMonth(),

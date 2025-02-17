@@ -3,6 +3,7 @@ import {
   bigint,
   boolean,
   index,
+  integer,
   json,
   pgEnum,
   pgTableCreator,
@@ -182,6 +183,10 @@ export const trackableRecord = pgTable(
       Stored as unix timestamp to avoid timezone issues and simplify sorting.
     */
     createdAt: bigint("createdAt", { mode: "number" }),
+    /*
+     * Set by external systems to identify the source of the record.
+     */
+    externalKey: text("externalKey"),
   },
   (t) => [
     /*
@@ -256,6 +261,37 @@ export const trackableGroupRelations = relations(trackableGroup, ({ one }) => ({
   user: one(user, {
     fields: [trackableGroup.user_id],
     references: [user.id],
+  }),
+}));
+
+/**
+ * Api management
+ */
+
+export const ingestApiKeys = pgTable(
+  "ingestApiKeys",
+  {
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    trackableId: uuid("trackableId")
+      .notNull()
+      .references(() => trackable.id, { onDelete: "cascade" }),
+    key: text("key").notNull(),
+    createdAt: timestamp("createdAt").notNull(),
+    daysLimit: integer("daysLimit").notNull(),
+  },
+  (t) => [primaryKey({ columns: [t.userId, t.trackableId, t.key] })],
+);
+
+export const ingestApiKeysRelations = relations(ingestApiKeys, ({ one }) => ({
+  user: one(user, {
+    fields: [ingestApiKeys.userId],
+    references: [user.id],
+  }),
+  trackable: one(trackable, {
+    fields: [ingestApiKeys.trackableId],
+    references: [trackable.id],
   }),
 }));
 

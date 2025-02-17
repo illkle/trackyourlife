@@ -238,13 +238,14 @@ export const Import = () => {
   );
 };
 
-const zImportJson = z.object({
+export const zImportJson = z.object({
   date: z
     .string()
     .datetime()
     .transform((val) => new Date(val)),
   value: z.string(),
   createdAt: z.number().nullable().optional(),
+  externalKey: z.string().optional(),
   trackableRecordAttributes: z
     .array(
       z.object({
@@ -279,7 +280,10 @@ const isValueOfExpectedType = (value: string, type: ITrackableZero["type"]) => {
   return true;
 };
 
-const analyzeData = (data: ImportJson[], type: ITrackableZero["type"]) => {
+export const analyzeData = (
+  data: ImportJson[],
+  type: ITrackableZero["type"],
+) => {
   const itemsCount = data.length;
 
   const firstOne = data[0];
@@ -292,6 +296,19 @@ const analyzeData = (data: ImportJson[], type: ITrackableZero["type"]) => {
     (acc, item) => {
       if (hasAttrbibutes) {
         acc.attributesCount += item.trackableRecordAttributes?.length ?? 0;
+      }
+
+      if (acc.hasKeys === null) {
+        if (item.externalKey) {
+          acc.hasKeys = true;
+        } else {
+          acc.hasKeys = false;
+        }
+      } else if (
+        (!item.externalKey && acc.hasKeys === true) ||
+        (item.externalKey && acc.hasKeys === false)
+      ) {
+        throw new Error("Mixed external keys and no external keys");
       }
 
       if (!acc.earliestDate || item.date < acc.earliestDate) {
@@ -315,6 +332,7 @@ const analyzeData = (data: ImportJson[], type: ITrackableZero["type"]) => {
       return acc;
     },
     {
+      hasKeys: null as null | true | false,
       attributesCount: 0,
       earliestDate: undefined as Date | undefined,
       latestDate: undefined as Date | undefined,
@@ -327,6 +345,10 @@ const analyzeData = (data: ImportJson[], type: ITrackableZero["type"]) => {
     throw new Error(
       "Something went wrong with date parsing, please report bug",
     );
+  }
+
+  if (info.hasKeys === null) {
+    throw new Error("Something went wrong with key parsing, please report bug");
   }
 
   return {
@@ -580,7 +602,9 @@ const ImportForm = ({
                   return (
                     <DatePicker
                       date={field.state.value}
-                      onChange={(date) => field.handleChange(date)}
+                      onChange={(date) =>
+                        field.handleChange(date ?? new Date(1970))
+                      }
                       limits={{
                         start: analysis.earliestDate,
                         end: min([analysis.latestDate, state.to]),
@@ -605,7 +629,9 @@ const ImportForm = ({
                   return (
                     <DatePicker
                       date={field.state.value}
-                      onChange={(date) => field.handleChange(date)}
+                      onChange={(date) =>
+                        field.handleChange(date ?? new Date())
+                      }
                       limits={{
                         start: max([analysis.earliestDate, state.from]),
                         end: analysis.latestDate,
@@ -644,3 +670,4 @@ const ImportForm = ({
     </div>
   );
 };
+
