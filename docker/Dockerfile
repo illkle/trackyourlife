@@ -44,7 +44,5 @@ COPY --from=installer /app/apps/server/package.json .
 # Copy app build
 COPY --from=installer --chown=tylrunner:nodejs /app/apps/server/.output ./output
 COPY --from=installer --chown=tylrunner:nodejs /app/apps/server/.vinxi ./vinxi
-# Copy drizzle folder. It will run migration on statup
-COPY --chown=tylrunner:nodejs /packages/db/drizzle  ./drizzle
  
 CMD ["node", "./output/server/index.mjs"]

@@ -15,9 +15,10 @@ services:
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
       - BETTER_AUTH_URL=${BETTER_AUTH_URL} # Domain for web container
     depends_on:
-      - init
-      condition: service_completed_successfully
-      - zerosync
+      init:
+        condition: service_completed_successfully
+      zerosync:
+        condition: service_healthy
   init:
     build:
       context: .
@@ -29,6 +30,7 @@ services:
       - ZERO_CHANGE_DB=${ZERO_CHANGE_DB}
     depends_on:
       - zerosync
+    restart: "no"
   zerosync:
     build:
       context: .
@@ -42,6 +44,12 @@ services:
       - ZERO_PORT=80
     volumes:
       - replica:/zero_data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 300s
 
 volumes:
   replica:

@@ -161,8 +161,10 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
         insert: [allowIfOwnerTrackableRecord],
         delete: [allowIfOwnerTrackableRecord],
         select: [allowIfOwnerTrackableRecord],
-        preMutation: [allowIfOwnerTrackableRecord],
-        postMutation: [allowIfOwnerTrackableRecord],
+        update: {
+          postMutation: [allowIfOwnerTrackableRecord],
+          preMutation: [allowIfOwnerTrackableRecord],
+        },
       },
     },
     TYL_trackable: {
@@ -170,8 +172,10 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
         insert: [allowIfOwnerTrackable],
         delete: [allowIfOwnerTrackable],
         select: [allowIfOwnerTrackable],
-        preMutation: [allowIfOwnerTrackable],
-        postMutation: [allowIfOwnerTrackable],
+        update: {
+          postMutation: [allowIfOwnerTrackable],
+          preMutation: [allowIfOwnerTrackable],
+        },
       },
     },
     TYL_trackableGroup: {
@@ -179,8 +183,10 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
         insert: [allowIfOwnerTrackableGroup],
         delete: [allowIfOwnerTrackableGroup],
         select: [allowIfOwnerTrackableGroup],
-        preMutation: [allowIfOwnerTrackableGroup],
-        postMutation: [allowIfOwnerTrackableGroup],
+        update: {
+          preMutation: [allowIfOwnerTrackableGroup],
+          postMutation: [allowIfOwnerTrackableGroup],
+        },
       },
     },
     TYL_trackableFlags: {
@@ -188,8 +194,10 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
         insert: [allowIfOwnerTrackableFlags],
         delete: [allowIfOwnerTrackableFlags],
         select: [allowIfOwnerTrackableFlags],
-        preMutation: [allowIfOwnerTrackableFlags],
-        postMutation: [allowIfOwnerTrackableFlags],
+        update: {
+          preMutation: [allowIfOwnerTrackableFlags],
+          postMutation: [allowIfOwnerTrackableFlags],
+        },
       },
     },
     TYL_userFlags: {
@@ -197,8 +205,10 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
         insert: [allowIfOwnerUserFlags],
         delete: [allowIfOwnerUserFlags],
         select: [allowIfOwnerUserFlags],
-        preMutation: [allowIfOwnerUserFlags],
-        postMutation: [allowIfOwnerUserFlags],
+        update: {
+          preMutation: [allowIfOwnerUserFlags],
+          postMutation: [allowIfOwnerUserFlags],
+        },
       },
     },
     TYL_trackableRecordAttributes: {
@@ -206,8 +216,10 @@ export const permissions = definePermissions<AuthData, Schema>(schema, () => {
         insert: [allowIfOwnerTrackableRecordAttributes],
         delete: [allowIfOwnerTrackableRecordAttributes],
         select: [allowIfOwnerTrackableRecordAttributes],
-        preMutation: [allowIfOwnerTrackableRecordAttributes],
-        postMutation: [allowIfOwnerTrackableRecordAttributes],
+        update: {
+          preMutation: [allowIfOwnerTrackableRecordAttributes],
+          postMutation: [allowIfOwnerTrackableRecordAttributes],
+        },
       },
     },
   };
