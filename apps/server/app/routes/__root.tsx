@@ -1,7 +1,11 @@
 import type { QueryClient } from "@tanstack/react-query";
 import * as React from "react";
-import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
-import { Meta, Scripts } from "@tanstack/start";
+import {
+  createRootRouteWithContext,
+  HeadContent,
+  Outlet,
+  Scripts,
+} from "@tanstack/react-router";
 
 import { LazyMotionProvider } from "~/components/Providers/lazyFramerMotionProvider";
 import { ThemeProvider } from "~/components/Providers/next-themes/themes";
@@ -87,7 +91,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html suppressHydrationWarning={true}>
       <head>
-        <Meta />
+        <HeadContent />
       </head>
 
       <body className="overscroll-none bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-50">
