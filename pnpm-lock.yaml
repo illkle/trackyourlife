@@ -284,8 +284,8 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1(@remirror/pm@3.0.0)(@types/node@22.10.5)(@types/react-dom@18.3.1)(@types/react@18.3.3)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       '@rocicorp/zero':
-        specifier: 0.14.2025021202
-        version: 0.14.2025021202
+        specifier: 0.15.2025021402
+        version: 0.15.2025021402
       '@tailwindcss/postcss':
         specifier: ^4.0.0
         version: 4.0.0
@@ -4399,8 +4399,8 @@ packages:
     resolution: {integrity: sha512-bm+VUdF4CnKVjUj/dSCmVu0hjcyXaF/nKkw2rNhZUjGeBOMRy/hh8z/32h311es4dxCVvcZ3+QHQHMxF2YG5Kw==}
     hasBin: true
 
-  '@rocicorp/zero@0.14.2025021202':
-    resolution: {integrity: sha512-QT2Lj4Q4IXeLlN8z4CnpQJPsDV8XFQq6HXC73/gAvGVwSMYNZSaAscjnI3DNAbznihtSc20Z8fB8jxelt7jaWA==}
+  '@rocicorp/zero@0.15.2025021402':
+    resolution: {integrity: sha512-mkclVphVuF1FmcFvrkHSW1IJaqqDZGX3OwiJdcCS8YaOh3Z0sx29d7t94AzxrvXP2J1U2fdxRcknQSDIembuXg==}
     engines: {node: '>=20'}
     hasBin: true
 
@@ -16960,7 +16960,7 @@ snapshots:
       bindings: 1.5.0
       prebuild-install: 7.1.2
 
-  '@rocicorp/zero@0.14.2025021202':
+  '@rocicorp/zero@0.15.2025021402':
     dependencies:
       '@badrap/valita': 0.3.11
       '@databases/escape-identifier': 1.0.3

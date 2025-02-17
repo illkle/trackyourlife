@@ -76,7 +76,6 @@
     "NODE_ENV",
     "DATABASE_URL",
     "TEST_URL",
-    "MIGRATE",
     "SITE",
     "BETTER_AUTH_SECRET",
     "BETTER_AUTH_URL",

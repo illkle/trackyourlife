@@ -1,4 +1,4 @@
-FROM node:20-alpine AS base
+FROM node:22-alpine AS base
  
 FROM base AS builder
 RUN apk update
@@ -6,7 +6,6 @@ RUN apk add --no-cache libc6-compat
 # Set working directory
 WORKDIR /app
 
-RUN npm install -g pnpm
 RUN npm install -g turbo@^2
 COPY . .
  

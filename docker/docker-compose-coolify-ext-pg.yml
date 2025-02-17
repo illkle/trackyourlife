@@ -1,6 +1,6 @@
 # This compose file is for https://coolify.io/ Context is set to "." becuase coolify effectively copies the compose file to root and runs it from there
 # It expects you to run pg database separately with replication set to logical https://zero.rocicorp.dev/docs/connecting-to-postgres
-# You will need to set domains for both containers. Then you will need to pass those domain to ENV variables and set VITE_ZERO_DOMAIN env as Build Variable.
+# You will need to set domains for both containers. Then you will need to pass those domains to ENV variables and set VITE_ZERO_DOMAIN env as Build Variable.
 services:
   web:
     build:
@@ -14,7 +14,21 @@ services:
       - DATABASE_URL=${DATABASE_URL}
       - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
       - BETTER_AUTH_URL=${BETTER_AUTH_URL} # Domain for web container
-      - MIGRATE=true
+    depends_on:
+      - init
+      condition: service_completed_successfully
+      - zerosync
+  init:
+    build:
+      context: .
+      dockerfile: ./docker/init.Dockerfile
+    environment:
+      - DATABASE_URL=${DATABASE_URL}
+      - ZERO_UPSTREAM_DB=${ZERO_UPSTREAM_DB}
+      - ZERO_CVR_DB=${ZERO_CVR_DB}
+      - ZERO_CHANGE_DB=${ZERO_CHANGE_DB}
+    depends_on:
+      - zerosync
   zerosync:
     build:
       context: .
