@@ -212,20 +212,33 @@ export const MiniDrawer = React.forwardRef<
   useEffect(() => {
     const updateDimensions = () => {
       if (!window.visualViewport || !outerRef.current) return;
-      const offset =
-        document.documentElement.clientHeight -
-        (window.visualViewport.height + window.visualViewport.offsetTop);
-      outerRef.current.style.setProperty("--viewport-offset", offset + "px");
+
+      /* The most stable way of positionning suggested by https://mathix.dev/blog/fix-html-elements-on-top-of-the-ios-keyboard-using-html-css-js
+       * I tried to to bottom-0 and translate by window.innerHeight - (window.visualViewport.height + window.visualViewport.offsetTop), but that breaks when ios url bar is collapsed
+       * And absolute + top window.visualViewport.height + window.scrollY - elHeight that suggested sometimes is supper jittery on scroll.
+       */
+      const position = Math.max(
+        0,
+        window.innerHeight -
+          window.visualViewport.height -
+          window.visualViewport.offsetTop,
+      );
+
+      outerRef.current.style.setProperty("--bottom-position", position + "px");
     };
 
+    updateDimensions();
+
+    window.addEventListener("resize", updateDimensions);
     window.visualViewport?.addEventListener("resize", updateDimensions);
     window.visualViewport?.addEventListener("scroll", updateDimensions);
 
     return () => {
       window.visualViewport?.removeEventListener("resize", updateDimensions);
       window.visualViewport?.removeEventListener("scroll", updateDimensions);
+      window.removeEventListener("resize", updateDimensions);
     };
-  }, []);
+  }, [outerRef]);
 
   return (
     <m.div
@@ -234,10 +247,10 @@ export const MiniDrawer = React.forwardRef<
       data-sidebar-offset={isMobile ? false : sidebarState === "expanded"}
       data-state={state}
       className={cn(
-        "fixed bottom-0 left-1/2 z-50",
+        "left-1/2 z-50",
         "data-[state=closed]:translate-y-full data-[state=closed]:opacity-0",
         "data-[state=collapsed]:translate-y-[calc(100%-24px)]",
-        "data-[state=opened]:translate-y-[calc(100vh-var(--viewport-offset,0px))]",
+        "fixed bottom-[var(--bottom-position)] translate-y-[100vh]",
         "data-[sidebar-offset=false]:-translate-x-1/2 data-[sidebar-offset=true]:translate-x-[calc(-50%+var(--sidebar-offset,0px)/2)]",
         "transition-all duration-350",
         "data-[hidden=true]:pointer-events-none data-[hidden=true]:opacity-0",
@@ -267,3 +280,74 @@ export const MiniDrawer = React.forwardRef<
     </m.div>
   );
 });
+
+export const Debugger = () => {
+  const [dimensions, setDimensions] = useState({
+    scrollTop: window.scrollY,
+    scrollHeight: window.document.documentElement.scrollHeight,
+    innerHeight: window.innerHeight,
+    clientHeight: window.document.documentElement.clientHeight,
+    viewportHeight: window.visualViewport?.height ?? 0,
+    offsetTop: window.visualViewport?.offsetTop ?? 0,
+  });
+  const [offset, setOffset] = useState(0);
+
+  useEffect(() => {
+    const updateDimensions = () => {
+      const dimensions = {
+        scrollTop: window.scrollY,
+        scrollHeight: window.document.documentElement.scrollHeight,
+        innerHeight: window.innerHeight,
+        clientHeight: window.document.documentElement.clientHeight,
+        viewportHeight: window.visualViewport?.height ?? 0,
+        offsetTop: window.visualViewport?.offsetTop ?? 0,
+      };
+
+      setDimensions(dimensions);
+      if (target.current) {
+        if (!window.visualViewport) return;
+        const offset =
+          document.documentElement.clientHeight -
+          (window.visualViewport.height + window.visualViewport.offsetTop);
+        setOffset(offset);
+        target.current.style.bottom = offset + "px";
+      }
+    };
+
+    window.visualViewport?.addEventListener("resize", updateDimensions);
+    window.visualViewport?.addEventListener("scroll", updateDimensions);
+
+    return () => {
+      window.visualViewport?.removeEventListener("resize", updateDimensions);
+      window.visualViewport?.removeEventListener("scroll", updateDimensions);
+    };
+  }, []);
+
+  const shoudOffsetBy =
+    dimensions.innerHeight - dimensions.viewportHeight - dimensions.offsetTop;
+
+  const target = useRef<HTMLDivElement>(null);
+
+  return (
+    <>
+      <div className="fixed top-4 right-4 z-50 -translate-y-[300px] rounded bg-neutral-800 p-4 text-sm text-white opacity-75">
+        <div>scrollTop: {Math.round(dimensions.scrollTop)}</div>
+        <div>scrollHeight: {Math.round(dimensions.scrollHeight)}</div>
+        <div>innerHeight: {Math.round(dimensions.innerHeight)}</div>
+        <div>clientHeight: {Math.round(dimensions.clientHeight)}</div>
+        <div>viewport height: {Math.round(dimensions.viewportHeight)}</div>
+        <div>viewport offsetTop: {Math.round(dimensions.offsetTop)}</div>
+        <div>should offset by: {Math.round(shoudOffsetBy)}</div>
+      </div>
+      <div
+        ref={target}
+        className="fixed bottom-0 h-40 w-full translate-z-0 bg-red-500"
+      >
+        {offset}
+        {Math.round(dimensions.innerHeight)}{" "}
+        {Math.round(dimensions.viewportHeight)}{" "}
+        {Math.round(dimensions.offsetTop)}
+      </div>
+    </>
+  );
+};
