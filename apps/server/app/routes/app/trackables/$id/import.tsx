@@ -1,8 +1,7 @@
-import { createFileRoute, useParams } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 
 import { IngestKeysManager } from "~/components/Trackable/ApiKeys";
 import { ExportTrackable, Import } from "~/components/Trackable/ImportExport";
-import { aboutFormat } from "~/components/Trackable/ImportExport/aboutFormat";
 import { SettingsTitle } from "~/components/Trackable/Settings/settingsTitle";
 
 export const Route = createFileRoute("/app/trackables/$id/import")({
@@ -21,8 +20,6 @@ function RouteComponent() {
       <Import />
 
       <SettingsTitle>Format</SettingsTitle>
-
-      {aboutFormat}
 
       <SettingsTitle>Ingest API key</SettingsTitle>
 

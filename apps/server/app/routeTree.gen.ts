@@ -11,9 +11,11 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as ConvertersImport } from './routes/converters'
 import { Route as AuthImport } from './routes/auth'
 import { Route as AppImport } from './routes/app'
 import { Route as IndexImport } from './routes/index'
+import { Route as ConvertersIndexImport } from './routes/converters/index'
 import { Route as AppIndexImport } from './routes/app/index'
 import { Route as AuthPasswordresetImport } from './routes/auth/passwordreset'
 import { Route as AuthLoginImport } from './routes/auth/login'
@@ -31,6 +33,12 @@ import { Route as AppTrackablesIdImportImport } from './routes/app/trackables/$i
 
 // Create/Update Routes
 
+const ConvertersRoute = ConvertersImport.update({
+  id: '/converters',
+  path: '/converters',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AuthRoute = AuthImport.update({
   id: '/auth',
   path: '/auth',
@@ -47,6 +55,12 @@ const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRoute,
+} as any)
+
+const ConvertersIndexRoute = ConvertersIndexImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ConvertersRoute,
 } as any)
 
 const AppIndexRoute = AppIndexImport.update({
@@ -158,6 +172,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthImport
       parentRoute: typeof rootRoute
     }
+    '/converters': {
+      id: '/converters'
+      path: '/converters'
+      fullPath: '/converters'
+      preLoaderRoute: typeof ConvertersImport
+      parentRoute: typeof rootRoute
+    }
     '/app/create': {
       id: '/app/create'
       path: '/create'
@@ -206,6 +227,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexImport
       parentRoute: typeof AppImport
+    }
+    '/converters/': {
+      id: '/converters/'
+      path: '/'
+      fullPath: '/converters/'
+      preLoaderRoute: typeof ConvertersIndexImport
+      parentRoute: typeof ConvertersImport
     }
     '/app/trackables/$id': {
       id: '/app/trackables/$id'
@@ -325,10 +353,23 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
+interface ConvertersRouteChildren {
+  ConvertersIndexRoute: typeof ConvertersIndexRoute
+}
+
+const ConvertersRouteChildren: ConvertersRouteChildren = {
+  ConvertersIndexRoute: ConvertersIndexRoute,
+}
+
+const ConvertersRouteWithChildren = ConvertersRoute._addFileChildren(
+  ConvertersRouteChildren,
+)
+
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
+  '/converters': typeof ConvertersRouteWithChildren
   '/app/create': typeof AppCreateRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/testing': typeof AppTestingRoute
@@ -336,6 +377,7 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
   '/auth/passwordreset': typeof AuthPasswordresetRoute
   '/app/': typeof AppIndexRoute
+  '/converters/': typeof ConvertersIndexRoute
   '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
   '/app/settings/': typeof AppSettingsIndexRoute
   '/app/trackables': typeof AppTrackablesIndexRoute
@@ -354,6 +396,7 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginRoute
   '/auth/passwordreset': typeof AuthPasswordresetRoute
   '/app': typeof AppIndexRoute
+  '/converters': typeof ConvertersIndexRoute
   '/app/settings': typeof AppSettingsIndexRoute
   '/app/trackables': typeof AppTrackablesIndexRoute
   '/app/trackables/$id/import': typeof AppTrackablesIdImportRoute
@@ -367,6 +410,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
+  '/converters': typeof ConvertersRouteWithChildren
   '/app/create': typeof AppCreateRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/testing': typeof AppTestingRoute
@@ -374,6 +418,7 @@ export interface FileRoutesById {
   '/auth/login': typeof AuthLoginRoute
   '/auth/passwordreset': typeof AuthPasswordresetRoute
   '/app/': typeof AppIndexRoute
+  '/converters/': typeof ConvertersIndexRoute
   '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
   '/app/settings/': typeof AppSettingsIndexRoute
   '/app/trackables/': typeof AppTrackablesIndexRoute
@@ -389,6 +434,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
+    | '/converters'
     | '/app/create'
     | '/app/settings'
     | '/app/testing'
@@ -396,6 +442,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/passwordreset'
     | '/app/'
+    | '/converters/'
     | '/app/trackables/$id'
     | '/app/settings/'
     | '/app/trackables'
@@ -413,6 +460,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/passwordreset'
     | '/app'
+    | '/converters'
     | '/app/settings'
     | '/app/trackables'
     | '/app/trackables/$id/import'
@@ -424,6 +472,7 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
+    | '/converters'
     | '/app/create'
     | '/app/settings'
     | '/app/testing'
@@ -431,6 +480,7 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/passwordreset'
     | '/app/'
+    | '/converters/'
     | '/app/trackables/$id'
     | '/app/settings/'
     | '/app/trackables/'
@@ -445,12 +495,14 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
+  ConvertersRoute: typeof ConvertersRouteWithChildren
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
+  ConvertersRoute: ConvertersRouteWithChildren,
 }
 
 export const routeTree = rootRoute
@@ -465,7 +517,8 @@ export const routeTree = rootRoute
       "children": [
         "/",
         "/app",
-        "/auth"
+        "/auth",
+        "/converters"
       ]
     },
     "/": {
@@ -488,6 +541,12 @@ export const routeTree = rootRoute
         "/auth/forgotpassword",
         "/auth/login",
         "/auth/passwordreset"
+      ]
+    },
+    "/converters": {
+      "filePath": "converters.tsx",
+      "children": [
+        "/converters/"
       ]
     },
     "/app/create": {
@@ -520,6 +579,10 @@ export const routeTree = rootRoute
     "/app/": {
       "filePath": "app/index.tsx",
       "parent": "/app"
+    },
+    "/converters/": {
+      "filePath": "converters/index.tsx",
+      "parent": "/converters"
     },
     "/app/trackables/$id": {
       "filePath": "app/trackables/$id.tsx",

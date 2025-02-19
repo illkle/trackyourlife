@@ -154,19 +154,49 @@ export const EditorModalV2 = () => {
   const state = dayData ? (isCollapsed ? "collapsed" : "opened") : "closed";
 
   return (
-    <MiniDrawer ref={wrapperRef} state={state}>
+    <>
+      {/* On desktop it is cool that when modal is opened everything is still interactable, because it's easy to point mouse on empty space. Not so much on touch devices */}
       <AnimatePresence>
-        {dayData && (
-          <m.div exit={{ opacity: 0 }} className="max-h-[200px]">
-            <PopupEditor
-              date={dayData.date}
-              trackableId={dayData.trackableId}
-              key={dayData.date.toISOString() + dayData.trackableId}
-            />
-          </m.div>
+        {isMobile && state === "opened" && (
+          <m.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed top-0 left-0 h-screen w-screen bg-black/30"
+          ></m.div>
         )}
       </AnimatePresence>
-    </MiniDrawer>
+      <MiniDrawer
+        ref={wrapperRef}
+        state={state}
+        onMouseDown={(e) => {
+          //
+          if (
+            e.target instanceof HTMLElement &&
+            e.target.matches('input,textarea,[contenteditable="true"]')
+          ) {
+            return;
+          }
+          e.preventDefault();
+          setIgnoreEditorModalClose(e.nativeEvent);
+        }}
+      >
+        <AnimatePresence>
+          {dayData && (
+            <m.div
+              exit={{ opacity: 0 }}
+              className="flex max-h-[200px] flex-col"
+            >
+              <PopupEditor
+                date={dayData.date}
+                trackableId={dayData.trackableId}
+                key={dayData.date.toISOString() + dayData.trackableId}
+              />
+            </m.div>
+          )}
+        </AnimatePresence>
+      </MiniDrawer>
+    </>
   );
 };
 
@@ -241,43 +271,45 @@ export const MiniDrawer = React.forwardRef<
   }, [outerRef]);
 
   return (
-    <m.div
-      id="editorModal"
-      ref={outerRef}
-      data-sidebar-offset={isMobile ? false : sidebarState === "expanded"}
-      data-state={state}
-      className={cn(
-        "left-1/2 z-50",
-        "data-[state=closed]:translate-y-full data-[state=closed]:opacity-0",
-        "data-[state=collapsed]:translate-y-[calc(100%-24px)]",
-        "fixed bottom-[var(--bottom-position)] translate-y-[100vh]",
-        "data-[sidebar-offset=false]:-translate-x-1/2 data-[sidebar-offset=true]:translate-x-[calc(-50%+var(--sidebar-offset,0px)/2)]",
-        "transition-all duration-350",
-        "data-[hidden=true]:pointer-events-none data-[hidden=true]:opacity-0",
-        isMobile && state === "opened" && "hideCaretAnimation",
-        props.className,
-      )}
-      onClick={() => {
-        if (state === "collapsed") {
-          expandDayEditor();
-        }
-      }}
-      {...props}
-    >
+    <>
       <m.div
-        ref={ref}
-        style={{
-          transformOrigin: "bottom",
-        }}
+        id="editorModal"
+        ref={outerRef}
+        data-sidebar-offset={isMobile ? false : sidebarState === "expanded"}
+        data-state={state}
         className={cn(
-          "h-fit w-[500px] max-w-[100vw] rounded-t-md border border-b-0 shadow-2xl",
-          "border-neutral-200 dark:border-neutral-800 dark:bg-neutral-950 dark:shadow-neutral-950",
-          "pb-[100vh]",
+          "left-1/2 z-50",
+          "data-[state=closed]:translate-y-full data-[state=closed]:opacity-0",
+          "data-[state=collapsed]:translate-y-[calc(100%-24px)]",
+          "fixed bottom-[var(--bottom-position)] translate-y-[100vh]",
+          "data-[sidebar-offset=false]:-translate-x-1/2 data-[sidebar-offset=true]:translate-x-[calc(-50%+var(--sidebar-offset,0px)/2)]",
+          "transition-all duration-350",
+          "data-[hidden=true]:pointer-events-none data-[hidden=true]:opacity-0",
+          isMobile && state === "opened" && "hideCaretAnimation",
+          props.className,
         )}
+        onClick={() => {
+          if (state === "collapsed") {
+            expandDayEditor();
+          }
+        }}
+        {...props}
       >
-        {children}
+        <m.div
+          ref={ref}
+          style={{
+            transformOrigin: "bottom",
+          }}
+          className={cn(
+            "h-fit w-[500px] max-w-[100vw] rounded-t-md border border-b-0 shadow-2xl",
+            "border-neutral-200 dark:border-neutral-800 dark:bg-neutral-950 dark:shadow-neutral-950",
+            "pb-[100vh]",
+          )}
+        >
+          {children}
+        </m.div>
       </m.div>
-    </m.div>
+    </>
   );
 });
 

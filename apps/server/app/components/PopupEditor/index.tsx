@@ -9,8 +9,7 @@ import { Button } from "~/@shad/components/button";
 import {
   editorModalNextDay,
   editorModalPreviousDay,
-  setIgnoreEditorModalClose,
-} from "~/components/EditorModalV2";
+} from "~/components/Modal/EditorModalV2";
 import { LogsPopupEditor } from "~/components/PopupEditor/LogsPopup";
 import { NumberPopupEditor } from "~/components/PopupEditor/NumberPopup";
 import { TagsPopupEditor } from "~/components/PopupEditor/TagsPopup";

@@ -6,7 +6,10 @@ import {
   LabelInside,
   useDayCellContext,
 } from "~/components/DayCell";
-import { openDayEditor, useAmIOpenInStore } from "~/components/EditorModalV2";
+import {
+  openDayEditor,
+  useAmIOpenInStore,
+} from "~/components/Modal/EditorModalV2";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
 export const DayCellTextPopup = () => {
@@ -15,12 +18,6 @@ export const DayCellTextPopup = () => {
   const { value } = values[0] ?? {};
 
   const isOpen = useAmIOpenInStore({ date, trackableId: id });
-
-  const pretty = useMemo(() => {
-    if (!value) return "";
-
-    return value.split("\n")[0];
-  }, [value]);
 
   return (
     <button
@@ -37,7 +34,7 @@ export const DayCellTextPopup = () => {
     >
       {labelType === "auto" && <LabelInside />}
       <div className="flex h-full max-w-full items-center overflow-hidden text-xs font-normal text-ellipsis whitespace-nowrap sm:text-sm">
-        {pretty}
+        {value}
       </div>
     </button>
   );

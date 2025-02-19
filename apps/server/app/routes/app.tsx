@@ -5,9 +5,9 @@ import { cn } from "@shad/utils";
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 
 import { SidebarProvider } from "~/@shad/components/sidebar";
-import { EditorModalV2 } from "~/components/EditorModalV2";
 import Header, { HeaderLogo } from "~/components/Layout/Header";
 import { AppSidebar, SidebarToggle } from "~/components/Layout/Sidebar";
+import { EditorModalV2 } from "~/components/Modal/EditorModalV2";
 import { schema } from "~/schema";
 import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { usePreloadCore } from "~/utils/useZ";

@@ -4,18 +4,19 @@ import {
   NumberInput,
   NumberInputWrapper,
 } from "~/components/DayCell/DayCellNumber";
-import { closeDayEditor } from "~/components/EditorModalV2";
+import { closeDayEditor } from "~/components/Modal/EditorModalV2";
 
 export const NumberPopupEditor = ({ data, onChange }: PopupEditorProps) => {
-  const { value, recordId } = data.values[0] ?? {};
+  const { value, recordId, createdAt } = data.values[0] ?? {};
 
   return (
     <div className="flex items-stretch gap-2">
       <NumberInputWrapper
         className="w-full"
         value={value}
-        onChange={async (v) => {
-          await onChange(v, recordId);
+        updateTimestamp={createdAt ?? undefined}
+        onChange={async (v, ts) => {
+          await onChange(v, recordId, ts);
         }}
       >
         <NumberInput

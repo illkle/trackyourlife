@@ -240,7 +240,7 @@ export const updateValueRaw = async (
     trackableId,
     value: val,
     user_id: z.userID,
-    createdAt: timestamp,
+    createdAt: timestamp ?? Date.now(),
   });
   return rid;
 };

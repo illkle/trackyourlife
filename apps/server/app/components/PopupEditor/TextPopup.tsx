@@ -1,43 +1,49 @@
-import { useRef, useState } from "react";
-import { CornerRightUp } from "lucide-react";
+import { useCallback } from "react";
 
-import { Button } from "~/@shad/components/button";
-import { Textarea } from "~/@shad/components/textarea";
 import type { PopupEditorProps } from "~/components/PopupEditor";
+import { Textarea } from "~/@shad/components/textarea";
+import { closeDayEditor } from "~/components/Modal/EditorModalV2";
+import { useLinkedValue } from "~/utils/useDbLinkedValue";
 
 export const TextPopupEditor = ({ data, onChange }: PopupEditorProps) => {
-  const { value, recordId } = data.values[0] ?? {};
+  const { value, recordId, createdAt } = data.values[0] ?? {};
 
-  const [isEdited, setIsEdited] = useState(false);
+  console.log("textPopup", value);
+  const changeHandler = useCallback(
+    (v: string, ts: number) => {
+      console.log("changeHandler", v, ts);
+      void onChange(v, recordId, ts);
+    },
+    [onChange, recordId],
+  );
 
-  const valueRef = useRef(value ?? "");
+  const { internalValue, updateHandler } = useLinkedValue({
+    value: value ?? "",
+    timestamp: createdAt ?? undefined,
+    onChange: changeHandler,
+  });
 
   return (
-    <div className="flex items-stretch gap-2">
+    <div className="flex items-stretch gap-1">
       <div className="flex grow">
         <Textarea
           autoFocus
-          defaultValue={value ?? ""}
-          onChange={(e) => {
-            if (!isEdited) {
-              setIsEdited(true);
+          value={internalValue}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && e.shiftKey) {
+              e.preventDefault();
+              closeDayEditor();
             }
-            valueRef.current = e.target.value;
+          }}
+          onChange={async (e) => {
+            await updateHandler(e.target.value);
+          }}
+          onBlur={() => {
+            closeDayEditor();
           }}
           className="m-1"
         />
       </div>
-      <Button
-        className="h-[unset]"
-        disabled={!isEdited}
-        variant={"outline"}
-        onClick={async () => {
-          await onChange(valueRef.current, recordId, Date.now());
-          setIsEdited(false);
-        }}
-      >
-        <CornerRightUp size={16} />
-      </Button>
     </div>
   );
 };

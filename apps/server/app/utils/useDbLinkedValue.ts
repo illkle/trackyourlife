@@ -16,18 +16,20 @@ export const useLinkedValue = <T>({
   value,
   onChange,
   timestamp,
+  validate,
   alwaysUpdate = false,
   throttleTime = 300,
 }: {
   value: T;
-  onChange: (v: T, timestamp: number) => void;
+  onChange: (v: T, timestamp: number) => void | Promise<void>;
+  validate?: (v: T) => boolean;
   timestamp?: number;
   alwaysUpdate?: boolean;
   throttleTime?: number;
-  outputTransform?: (v: T) => T;
-  inputTransform?: (v: T) => T;
 }) => {
   const [internalValue, setInternalValue] = useState<T>(value);
+  const [internalValueValidated, setInternalValueValidated] =
+    useState<T>(value);
 
   const ourTimestamp = useRef(timestamp);
 
@@ -36,14 +38,14 @@ export const useLinkedValue = <T>({
   useEffect(() => {
     if (alwaysUpdate) {
       setInternalValue(value);
+      setInternalValueValidated(value);
     } else if (
       !ourTimestamp.current ||
       (timestamp && timestamp > ourTimestamp.current)
     ) {
       setInternalValue(value);
+      setInternalValueValidated(value);
       ourTimestamp.current = timestamp;
-    } else {
-      console.log("skip updates");
     }
   }, [value, timestamp, alwaysUpdate]);
 
@@ -52,13 +54,27 @@ export const useLinkedValue = <T>({
   });
 
   const updateHandler = useCallback(
-    (v: T) => {
+    async (v: T) => {
       setInternalValue(v);
-      ourTimestamp.current = new Date().getTime();
-      debouncedOnChange(v, ourTimestamp.current);
+      if (!validate || validate(v)) {
+        ourTimestamp.current = Date.now();
+        await debouncedOnChange(v, ourTimestamp.current);
+        setInternalValueValidated(v);
+      }
     },
-    [debouncedOnChange],
+    [debouncedOnChange, validate],
   );
 
-  return { internalValue, updateHandler };
+  const reset = useCallback(() => {
+    setInternalValue(value);
+    ourTimestamp.current = timestamp;
+  }, [value, timestamp]);
+
+  return {
+    internalValue,
+    updateHandler,
+    reset,
+    internalValueValidated,
+    flush: debouncedOnChange.flush,
+  };
 };

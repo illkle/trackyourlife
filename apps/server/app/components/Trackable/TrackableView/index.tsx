@@ -103,6 +103,8 @@ export const MonthFetcher = ({
     lastDay: lastDayDate,
   });
 
+  console.log("data", data);
+
   const mappedData = mapDataToRange(firstDayDate, lastDayDate, data);
 
   if (viewType === "list") {

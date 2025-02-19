@@ -116,7 +116,7 @@ export const LogsPopupEditor = ({
               const recordId = await onChange(
                 newVal.value,
                 undefined,
-                new Date().getTime(),
+                Date.now(),
               );
 
               void onAttributesChange(recordId, newVal.attributes);
