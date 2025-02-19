@@ -31,7 +31,7 @@ export const NumberFormatter = new Intl.NumberFormat("en-US", {
 export const DayCellNumber = () => {
   const { id } = useTrackableMeta();
 
-  const { onChange, labelType, values } = useDayCellContext();
+  const { onChange, labelType, values, date } = useDayCellContext();
   const { value, recordId, createdAt } = values[0] ?? {};
 
   const isMobile = useIsMobile();
@@ -46,7 +46,7 @@ export const DayCellNumber = () => {
         if (isMobile) {
           openDayEditor({
             trackableId: id,
-            date: new Date(),
+            date: date,
           });
         }
       }}
