@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from "react";
 import { Zero } from "@rocicorp/zero";
 import { ZeroProvider } from "@rocicorp/zero/react";
 import { cn } from "@shad/utils";

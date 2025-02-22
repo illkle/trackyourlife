@@ -23,4 +23,4 @@ Current goals:
 - `pnpm i` `pnpm run dev`
 - Migrations are applied automatically on startup. To generate migrations after updating schema use `pnpm run db:generate`
 - Run Drizzle Studio to inspect database with `db:studio`
-- To add something from `shadcn/ui` first do `cd app/server` and then run the command.
+- To add something from `shadcn/ui` first do `cd apps/server` and then run the command.
