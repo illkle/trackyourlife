@@ -6,6 +6,8 @@ import { CornerRightUp, XIcon } from "lucide-react";
 import type { RecordAttribute, RecordValue } from "@tyl/helpers/trackables";
 
 import type { PopupEditorProps } from "~/components/PopupEditor";
+import type { ITextSettings } from "~/components/Trackable/Settings/logsDisplayEditor";
+import type { ITrackableFlagValue } from "~/components/Trackable/TrackableProviders/trackableFlags";
 import { Button } from "~/@shad/components/button";
 import { Input } from "~/@shad/components/input";
 import { Label } from "~/@shad/components/label";
@@ -14,18 +16,120 @@ import { cn } from "~/@shad/utils";
 import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
+export const LogsTextRenderer = ({
+  textSettings,
+  children,
+}: {
+  textSettings: ITextSettings | null;
+  children: React.ReactNode;
+}) => {
+  return (
+    <span
+      className={cn(
+        "text-xs",
+        textSettings?.size === "s" && "text-xs",
+        textSettings?.size === "m" && "text-sm",
+        textSettings?.size === "l" && "text-base",
+        textSettings?.font === "mono" && "font-mono",
+        textSettings?.font === "italic" && "italic",
+      )}
+      style={{
+        opacity: textSettings?.opacity,
+      }}
+    >
+      {children}
+    </span>
+  );
+};
+
+export const LogsItemRenderer = ({
+  value,
+  cell,
+}: {
+  value: RecordValue;
+  cell: ITrackableFlagValue<"LogsDisplay">["items"][0];
+}) => {
+  switch (cell.type) {
+    case "time":
+      return (
+        <LogsTextRenderer textSettings={cell.textSettings}>
+          {format(value.timestamp, "HH:mm:ss")}
+        </LogsTextRenderer>
+      );
+    case "value":
+      return (
+        <LogsTextRenderer textSettings={cell.textSettings}>
+          {value.value}
+        </LogsTextRenderer>
+      );
+    case "attribute":
+      return cell.name ? (
+        <LogsTextRenderer textSettings={cell.textSettings}>
+          {value.attributes[cell.name]?.value}
+        </LogsTextRenderer>
+      ) : null;
+    case "text":
+      return (
+        <LogsTextRenderer textSettings={cell.textSettings}>
+          {cell.text}
+        </LogsTextRenderer>
+      );
+    case "spacer":
+      return <div style={{ width: `${cell.width}px` }}></div>;
+    case "group":
+      return (
+        <div>
+          {cell.items.map((item) => (
+            <LogsItemRenderer key={item.id} value={value} cell={item} />
+          ))}
+        </div>
+      );
+    default:
+      return null;
+  }
+};
+
+const alignMap: Record<
+  NonNullable<ITrackableFlagValue<"LogsDisplay">["align"]>,
+  string
+> = {
+  start: "justify-start",
+  end: "justify-end",
+  between: "justify-between",
+};
+
+export const LogsItemsRendered = ({
+  items,
+  value,
+}: {
+  items: ITrackableFlagValue<"LogsDisplay">;
+  value: RecordValue;
+}) => {
+  return (
+    <div
+      className={cn("flex items-baseline", alignMap[items.align ?? "start"])}
+    >
+      {items.items.map((item) => (
+        <LogsItemRenderer key={item.id} value={value} cell={item} />
+      ))}
+    </div>
+  );
+};
+
 const LogsEntry = ({
   value,
   onEdit,
   onDelete,
   isBeingEdited,
   isEditing,
+  displaySettings,
 }: {
   value: RecordValue;
   isBeingEdited: boolean;
   isEditing: boolean;
   onEdit: () => void;
   onDelete: () => void;
+  displaySettings: ITrackableFlagValue<"LogsDisplay">;
 }) => {
   return (
     <div className="flex w-full items-center justify-between gap-2">
@@ -37,10 +141,7 @@ const LogsEntry = ({
         )}
         onClick={onEdit}
       >
-        <span className="text-xs text-neutral-400 dark:text-neutral-600">
-          {format(value.timestamp, "HH:mm:ss")}
-        </span>
-        {value.value}
+        <LogsItemsRendered items={displaySettings} value={value} />
       </button>
       <Button
         variant="ghost"
@@ -60,6 +161,9 @@ export const LogsPopupEditor = ({
   onDelete,
   onAttributesChange,
 }: PopupEditorProps) => {
+  const { id } = useTrackableMeta();
+  const displaySettings = useTrackableFlag(id, "LogsDisplay");
+
   const [editTargetIndex, setEditTargetIndex] = useState<number | null>(null);
 
   const values = data.values;
@@ -69,7 +173,10 @@ export const LogsPopupEditor = ({
 
   return (
     <>
-      <ScrollArea className="mb-3 flex h-full max-h-[400px] flex-col px-4 md:mr-11 md:mb-0.5">
+      <ScrollArea
+        className="mb-3 flex h-full max-h-[400px] flex-col px-4 md:mb-0.5"
+        overscroll={false}
+      >
         <ScrollBar orientation="vertical" />
         <div className="flex flex-col py-1.5">
           {values.map((v, i) => (
@@ -78,6 +185,7 @@ export const LogsPopupEditor = ({
               value={v}
               isBeingEdited={editTargetIndex === i}
               isEditing={editTargetIndex !== null}
+              displaySettings={displaySettings}
               onEdit={() => {
                 if (editTargetIndex === i) {
                   setEditTargetIndex(null);

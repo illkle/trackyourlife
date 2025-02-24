@@ -15,6 +15,7 @@ import {
 } from "@tyl/helpers/trackables";
 
 import type { ITrackableFlagsZero } from "~/schema";
+import { zLogsDisplay } from "~/components/Trackable/Settings/logsDisplayEditor";
 
 /**
  * Flags that are stored in db and are accessed by trackable components.
@@ -59,6 +60,7 @@ export const FlagsValidators = {
   TagsValues: z.array(z.string()).transform((v) => new TagsValuesMapper(v)),
 
   LogsSavedAttributes: z.array(LogsSavedAttributesValidator),
+  LogsDisplay: zLogsDisplay,
 
   AnyTestFlag: z.string(),
 };
@@ -85,6 +87,7 @@ export const FlagDefaultInputs: ITrackableFlagsInputKV = {
   TagsValues: [],
   LogsSavedAttributes: [],
   AnyTestFlag: "test",
+  LogsDisplay: { items: [{ id: "1", type: "value", textSettings: {} }] },
 };
 
 const fullObject = z.object(FlagsValidators);

@@ -7,6 +7,11 @@ import ColorInput from "~/components/Inputs/Colors/colorInput";
 import NumberColorSelector from "~/components/Inputs/Colors/numberColorSelector";
 import DatePicker from "~/components/Inputs/DatePicker";
 import { LogsAttributeList } from "~/components/Trackable/Settings/logsAttributeCreator";
+import {
+  AwailableAttributesContext,
+  LogsDisplayEditor,
+  LogsDisplayPreview,
+} from "~/components/Trackable/Settings/logsDisplayEditor";
 import { SettingsTitle } from "~/components/Trackable/Settings/settingsTitle";
 import {
   useSetTrackableFlag,
@@ -45,17 +50,33 @@ export const SettingsCommon = () => {
 
 export const SettingsLogs = () => {
   const { id } = useTrackableMeta();
-  const v = useTrackableFlag(id, "LogsSavedAttributes");
+  const savedAttrbitutes = useTrackableFlag(id, "LogsSavedAttributes");
+  const logsDisplay = useTrackableFlag(id, "LogsDisplay");
+
   const setFlag = useSetTrackableFlag();
+
   return (
     <>
       <SettingsTitle>Attributes Settings</SettingsTitle>
       <LogsAttributeList
-        items={v}
+        items={savedAttrbitutes}
         onChange={(v) => {
           void setFlag(id, "LogsSavedAttributes", v);
         }}
       />
+
+      <SettingsTitle>Display Settings</SettingsTitle>
+      <LogsDisplayPreview displayValue={logsDisplay} />
+      <AwailableAttributesContext.Provider
+        value={{ attributes: savedAttrbitutes }}
+      >
+        <LogsDisplayEditor
+          value={logsDisplay}
+          onChange={(v) => {
+            void setFlag(id, "LogsDisplay", v);
+          }}
+        />
+      </AwailableAttributesContext.Provider>
     </>
   );
 };

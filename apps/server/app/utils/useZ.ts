@@ -331,6 +331,7 @@ export const useTrackableDay = ({
           ),
         )
         .orderBy("date", "asc")
+        .orderBy("value", "asc")
         .orderBy("createdAt", "asc")
         .related("trackableRecordAttributes"),
     );

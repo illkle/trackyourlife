@@ -63,7 +63,7 @@ export const importData = async (
     );
   }
 
-  const complexTrackable = tr.type !== "logs";
+  const complexTrackable = tr.type === "logs";
 
   /** For logs we need existing values to determine if we should update or insert */
   const mapOfExistingRecords =
@@ -79,17 +79,24 @@ export const importData = async (
 
     const existingRecord = mapOfExistingRecords?.get(key);
 
-    // If there is an existing record with such key and the new record is newer, we should update
-    if (
-      existingRecord &&
-      (existingRecord.createdAt ?? 0) < (item.createdAt ?? 0)
-    ) {
-      toUpdate.push({ id: existingRecord.recordId, value: item });
-    } else {
+    if (!existingRecord) {
       toInsert.push(item);
+      continue;
+    }
+
+    if (!item.createdAt) {
+      // If there is no createdAt, we should never update
+      continue;
+    }
+
+    if (
+      !existingRecord.createdAt ||
+      existingRecord.createdAt < item.createdAt
+    ) {
+      // Update in value from import data is newer than db
+      toUpdate.push({ id: existingRecord.recordId, value: item });
     }
   }
-
   await db.transaction(async (tx) => {
     try {
       if (toInsert.length > 0) {
@@ -176,6 +183,11 @@ export const importData = async (
       throw e;
     }
   });
+
+  return {
+    updated: toUpdate.length,
+    inserted: toInsert.length,
+  };
 };
 
 const getValidCreatedAt = (createdAt: number | null | undefined) => {

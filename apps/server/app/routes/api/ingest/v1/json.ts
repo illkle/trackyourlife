@@ -65,12 +65,17 @@ export const APIRoute = createAPIFileRoute("/api/ingest/v1/json")({
       );
     }
     try {
-      await importData(validatedUserId, validated.data, validatedTrackableId);
+      const res = await importData(
+        validatedUserId,
+        validated.data,
+        validatedTrackableId,
+      );
+      
+
+      return json({ ...res, success: true }, { status: 200 });
     } catch (e) {
       console.error(e);
       return json({ error: "Error importing data" }, { status: 500 });
     }
-
-    return json({ success: true }, { status: 200 });
   },
 });

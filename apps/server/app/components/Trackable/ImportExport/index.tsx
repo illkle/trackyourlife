@@ -2,6 +2,7 @@ import { useCallback, useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
+import { Check } from "lucide-react";
 
 import type {
   ITrackableRecordAttributeZero,
@@ -203,19 +204,28 @@ const ExportLoader = ({ selected }: { selected: DateRange }) => {
 export const Import = () => {
   const { id } = useTrackableMeta();
 
-  const { mutateAsync } = useMutation({
+  const { mutateAsync, isPending, isSuccess, data } = useMutation({
     mutationFn: async (file: File) => {
       const t = await file.text();
 
-      await fetch("/api/ingest/v1/json", {
+      const res = await fetch("/api/ingest/v1/json", {
         method: "PUT",
         body: t,
         headers: {
           "Content-Type": "text/plain",
+          // Flags to check auth against cookies instead of API key
           "x-authed-user": "true",
           "x-authed-trackable": id,
         },
       });
+
+      const json = (await res.json()) as unknown as {
+        inserted: number;
+        updated: number;
+        success: boolean;
+      };
+
+      return json;
     },
   });
 
@@ -231,7 +241,7 @@ export const Import = () => {
   return (
     <div>
       <div className="flex gap-2">
-        <div className="relative">
+        <div className="relative flex items-center gap-2">
           <input
             type="file"
             accept=".json"
@@ -239,6 +249,16 @@ export const Import = () => {
             className="absolute inset-0 cursor-pointer opacity-0"
           />
           <Button variant="outline">JSON</Button>
+
+          {isPending ? (
+            <span className="ml-2 flex items-center gap-1">
+              <Spinner /> importing...
+            </span>
+          ) : isSuccess ? (
+            <span className="ml-2 flex items-center gap-1">
+              <Check /> Done: {data.inserted} inserted, {data.updated} updated
+            </span>
+          ) : null}
         </div>
       </div>
     </div>

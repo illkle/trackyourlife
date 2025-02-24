@@ -145,6 +145,26 @@ export const mapDataToRange = (
   return result;
 };
 
+export const mapUnorderedData = (
+  data: readonly DataRecord[],
+): RecordValue[] => {
+  return data.map((v) => {
+    return {
+      value: v.value,
+      timestamp: convertDateFromDbToLocal(v.date).getTime(),
+      createdAt: v.createdAt,
+      recordId: v.recordId,
+      attributes: v.trackableRecordAttributes.reduce(
+        (acc, a) => {
+          acc[a.key] = a;
+          return acc;
+        },
+        {} as Record<string, RecordAttribute>,
+      ),
+    };
+  });
+};
+
 export const convertDateFromDbToLocal = (date: number | Date) => {
   const d = typeof date === "number" ? new Date(date) : date;
   return new Date(

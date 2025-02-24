@@ -2,6 +2,9 @@ import { useState } from "react";
 import { format, parse } from "date-fns";
 import { FileIcon } from "lucide-react";
 
+import { generateSimpleHash } from "@tyl/helpers";
+
+import type { IImportJson } from "~/components/Trackable/ImportExport/importLogic";
 import {
   Card,
   CardContent,
@@ -9,7 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "~/@shad/components/card";
-import type { IImportJson } from "~/components/Trackable/ImportExport/importLogic";
 
 const cleanup = (str: string) => {
   return str.replace(/"/g, "");
@@ -83,6 +85,14 @@ const strongProcessor = async (file: File) => {
     result.push({
       date,
       value: cleanup(row[headersObject["Exercise Name"]] ?? ""),
+      externalKey: generateSimpleHash(
+        [
+          row[headersObject.Date],
+          row[headersObject["Workout Name"]],
+          row[headersObject["Exercise Name"]],
+          row[headersObject["Set Order"]],
+        ].join(""),
+      ),
       trackableRecordAttributes: [
         {
           key: "weight",
@@ -147,8 +157,12 @@ export const StrongConverter = () => {
   return (
     <Card className="mx-auto w-full max-w-2xl">
       <CardHeader>
-        <CardTitle>CSV Converter</CardTitle>
-        <CardDescription>Upload and process your CSV file</CardDescription>
+        <CardTitle>Strong App CSV</CardTitle>
+        <CardDescription>
+          <a href="https://www.strong.app/" target="_blank">
+            https://www.strong.app/
+          </a>
+        </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="flex flex-col items-center gap-4">
