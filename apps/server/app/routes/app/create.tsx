@@ -3,9 +3,9 @@ import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { v4 as uuidv4 } from "uuid";
 
 import type { DbTrackableInsert } from "@tyl/db/schema";
+import type { ITrackableZeroInsert } from "@tyl/db/zero-schema";
 import { cloneDeep } from "@tyl/helpers";
 
-import type { ITrackableZeroInsert } from "~/schema";
 import { Button } from "~/@shad/components/button";
 import { Input } from "~/@shad/components/input";
 import { TrackableTypeSelector } from "~/components/Trackable/Settings/trackableTypeSelector";

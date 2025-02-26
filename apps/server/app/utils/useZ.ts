@@ -12,10 +12,9 @@ import {
 } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 
+import type { Schema } from "@tyl/db/zero-schema";
 import type { RecordAttribute } from "@tyl/helpers/trackables";
 import { convertDateFromLocalToDb } from "@tyl/helpers/trackables";
-
-import type { Schema } from "~/schema";
 
 export const useZ = () => {
   return useZero<Schema>();

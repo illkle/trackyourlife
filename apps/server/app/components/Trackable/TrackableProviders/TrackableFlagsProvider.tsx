@@ -2,12 +2,13 @@ import type { ReactNode } from "react";
 import { createContext, memo, useCallback, useEffect, useId } from "react";
 import { Store, useStore } from "@tanstack/react-store";
 
+import type { ITrackableFlagsZero } from "@tyl/db/zero-schema";
+
 import type {
   ITrackableFlagKey,
   ITrackableFlagValue,
   ITrackableFlagValueInput,
 } from "~/components/Trackable/TrackableProviders/trackableFlags";
-import type { ITrackableFlagsZero } from "~/schema";
 import {
   FlagDefaults,
   FlagsValidators,

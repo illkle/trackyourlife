@@ -1,6 +1,7 @@
 import { parse } from "date-fns";
 import { z } from "zod";
 
+import type { ITrackableFlagsZero } from "@tyl/db/zero-schema";
 import {
   ZColorValue,
   ZNumberColorCoding,
@@ -14,7 +15,6 @@ import {
   TagsValuesMapper,
 } from "@tyl/helpers/trackables";
 
-import type { ITrackableFlagsZero } from "~/schema";
 import { zLogsDisplay } from "~/components/Trackable/Settings/logsDisplayEditor";
 
 /**

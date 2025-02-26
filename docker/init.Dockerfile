@@ -24,7 +24,7 @@ COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
 COPY --from=builder /app/packages/db/drizzle.config.ts /app/packages/db/drizzle.config.ts
 COPY --from=builder /app/packages/db/drizzle /app/packages/db/drizzle
-COPY --from=builder /app/apps/server/app/schema.ts /app/apps/server/app/schema.ts
+COPY --from=builder /app/packages/db/src/zero-schema.ts /app/packages/db/src/zero-schema.ts
 
 RUN npm install -g pnpm
 RUN pnpm install

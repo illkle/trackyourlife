@@ -8,7 +8,8 @@ import type {
   ITrackableRecordAttributeZero,
   ITrackableRecordZero,
   ITrackableZero,
-} from "~/schema";
+} from "@tyl/db/zero-schema";
+
 import { Button } from "~/@shad/components/button";
 import { Label } from "~/@shad/components/label";
 import { Separator } from "~/@shad/components/separator";

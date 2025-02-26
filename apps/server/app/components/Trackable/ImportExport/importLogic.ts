@@ -1,6 +1,7 @@
 import { format } from "date-fns";
 import { z } from "zod";
 
+import type { ITrackableZero } from "@tyl/db/zero-schema";
 import { and, between, db, eq, sql } from "@tyl/db";
 import {
   trackable,
@@ -8,8 +9,6 @@ import {
   trackableRecordAttributes,
 } from "@tyl/db/schema";
 import { convertDateFromDbToLocal } from "@tyl/helpers/trackables";
-
-import type { ITrackableZero } from "~/schema";
 
 export const zImportJson = z.object({
   date: z

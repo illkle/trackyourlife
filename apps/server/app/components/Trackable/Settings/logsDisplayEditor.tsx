@@ -16,9 +16,9 @@ import { Reorder } from "motion/react";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
+import type { ITrackableRecordAttributeZero } from "@tyl/db/zero-schema";
 import { mapUnorderedData } from "@tyl/helpers/trackables";
 
-import type { ITrackableRecordAttributeZero } from "~/schema";
 import { Button } from "~/@shad/components/button";
 import { Input } from "~/@shad/components/input";
 import { RadioTabItem, RadioTabs } from "~/@shad/components/radio-tabs";

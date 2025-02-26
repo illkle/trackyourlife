@@ -1,6 +1,7 @@
 import { RadioGroupItem } from "@radix-ui/react-radio-group";
 
-import type { ITrackableZero } from "~/schema";
+import type { ITrackableZero } from "@tyl/db/zero-schema";
+
 import {
   CardPressable as Card,
   CardDescription,
