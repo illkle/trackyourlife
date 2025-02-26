@@ -11,7 +11,6 @@ import { LazyMotionProvider } from "~/components/Providers/lazyFramerMotionProvi
 import { ThemeProvider } from "~/components/Providers/next-themes/themes";
 import { SingletonProvider } from "~/components/Providers/singletonProvider";
 import appCss from "~/styles/app.css?url";
-import textEditorCss from "~/styles/textEditor.css?url";
 import { seo } from "~/utils/seo.js";
 import { ensureSessionInfo, UserPreloader } from "~/utils/useSessionInfo";
 
@@ -24,7 +23,6 @@ export const Route = createRootRouteWithContext<{
   head: () => ({
     links: [
       { rel: "stylesheet", href: appCss },
-      { rel: "stylesheet", href: textEditorCss },
       {
         rel: "apple-touch-icon",
         sizes: "180x180",
