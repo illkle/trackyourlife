@@ -232,17 +232,26 @@ export const updateValueRaw = async (
 ) => {
   const d = generateDateTime(date, type === "logs");
 
-  const rid = recordId ?? uuidv4();
-
-  await z.mutate.TYL_trackableRecord.upsert({
-    recordId: rid,
-    date: d,
-    trackableId,
-    value: val,
-    user_id: z.userID,
-    createdAt: timestamp ?? Date.now(),
-  });
-  return rid;
+  if (recordId) {
+    await z.mutate.TYL_trackableRecord.update({
+      recordId,
+      value: val,
+      updatedAt: timestamp ?? Date.now(),
+    });
+    return recordId;
+  } else {
+    const rid = uuidv4();
+    await z.mutate.TYL_trackableRecord.upsert({
+      recordId: rid,
+      date: d,
+      trackableId,
+      value: val,
+      user_id: z.userID,
+      createdAt: timestamp ?? Date.now(),
+      updatedAt: timestamp ?? Date.now(),
+    });
+    return rid;
+  }
 };
 export const useRecordUpdateHandler = ({
   date,

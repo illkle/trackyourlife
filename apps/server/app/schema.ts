@@ -22,6 +22,7 @@ const TYL_trackableRecord = table("TYL_trackableRecord")
     value: string(),
     user_id: string(),
     createdAt: number().optional(),
+    updatedAt: number().optional(),
   })
   .primaryKey("recordId");
 

@@ -178,11 +178,16 @@ export const trackableRecord = pgTable(
     date: timestamp("date").notNull(),
     value: text("value").notNull(),
     /*
-      Only for trackables that allow multiple records per day, used to sort records.
-      Since this application is local first and insert to PG can differ from actual creation date, value is set by the client.
-      Stored as unix timestamp to avoid timezone issues and simplify sorting.
-    */
+     * Only for trackables that allow multiple records per day, used to sort records.
+     * Since this application is local first and insert to PG can differ from actual creation date, value is set by the client.
+     * Stored as unix timestamp to avoid timezone issues and simplify sorting.
+     */
     createdAt: bigint("createdAt", { mode: "number" }),
+    /*
+     * Used to unserstand when value was written to compare db with lazy input. Also used to choose newer record when ingesting data.
+     Stored as unix timestamp to avoid timezone issues and simplify sorting.
+     */
+    updatedAt: bigint("updatedAt", { mode: "number" }),
     /*
      * Set by external systems to identify the source of the record.
      */

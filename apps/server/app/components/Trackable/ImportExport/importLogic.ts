@@ -17,7 +17,7 @@ export const zImportJson = z.object({
     .datetime()
     .transform((val) => new Date(val)),
   value: z.string(),
-  createdAt: z.number().nullable().optional(),
+  updatedAt: z.number().nullable().optional(),
   externalKey: z.string().optional(),
   trackableRecordAttributes: z
     .array(
@@ -84,14 +84,14 @@ export const importData = async (
       continue;
     }
 
-    if (!item.createdAt) {
+    if (!item.updatedAt) {
       // If there is no createdAt, we should never update
       continue;
     }
 
     if (
-      !existingRecord.createdAt ||
-      existingRecord.createdAt < item.createdAt
+      !existingRecord.updatedAt ||
+      existingRecord.updatedAt < item.updatedAt
     ) {
       // Update in value from import data is newer than db
       toUpdate.push({ id: existingRecord.recordId, value: item });
@@ -109,7 +109,7 @@ export const importData = async (
               user_id: userId,
               date: item.date,
               value: item.value,
-              createdAt: getValidCreatedAt(item.createdAt),
+              createdAt: getValidCreatedAt(item.updatedAt),
               externalKey: item.externalKey,
             })),
           )

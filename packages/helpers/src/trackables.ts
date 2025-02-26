@@ -27,6 +27,7 @@ export interface DataRecord {
   readonly value: string;
   readonly recordId: string;
   readonly createdAt: number | null;
+  readonly updatedAt: number | null;
   readonly trackableRecordAttributes: readonly RecordAttribute[];
 }
 
@@ -47,6 +48,7 @@ export interface RecordValue {
   /** Will never actually be undefined, but this makes for simpler inherited types in daycell */
   readonly value?: string;
   readonly createdAt: number | null;
+  readonly updatedAt: number | null;
   /**
    * Only relevant for logs, which can store exact timestamp
    */
@@ -123,6 +125,7 @@ export const mapDataToRange = (
         value: dataRecord.value,
         timestamp: convertDateFromDbToLocal(dataRecord.date).getTime(),
         createdAt: dataRecord.createdAt,
+        updatedAt: dataRecord.updatedAt,
         recordId: dataRecord.recordId,
         attributes: dataRecord.trackableRecordAttributes.reduce(
           (acc, a) => {
@@ -153,6 +156,7 @@ export const mapUnorderedData = (
       value: v.value,
       timestamp: convertDateFromDbToLocal(v.date).getTime(),
       createdAt: v.createdAt,
+      updatedAt: v.updatedAt,
       recordId: v.recordId,
       attributes: v.trackableRecordAttributes.reduce(
         (acc, a) => {

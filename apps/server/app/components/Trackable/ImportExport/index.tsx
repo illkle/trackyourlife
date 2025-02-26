@@ -130,6 +130,7 @@ const dataToExportFormat = (
     value: record.value,
     date: new Date(record.date).toISOString(),
     createdAt: record.createdAt,
+    updatedAt: record.updatedAt,
     trackableRecordAttributes: hasAttrbibutes
       ? record.trackableRecordAttributes
       : undefined,
