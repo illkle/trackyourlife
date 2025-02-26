@@ -27,7 +27,7 @@
     "generate": "pnpm with-env drizzle-kit generate",
     "up": "pnpm with-env drizzle-kit up",
     "migrate": "pnpm with-env drizzle-kit migrate",
-    "migrate:deploy": "drizzle-kit migrate",
+    "migrate:deploy": "pnpm drizzle-kit migrate",
     "push": "pnpm with-env drizzle-kit push",
     "studio": "pnpm with-env drizzle-kit studio",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",
