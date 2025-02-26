@@ -27,7 +27,7 @@
     "@radix-ui/react-switch": "^1.1.2",
     "@radix-ui/react-tabs": "^1.1.2",
     "@radix-ui/react-tooltip": "^1.1.6",
-    "@rocicorp/zero": "0.16.2025022501",
+    "@rocicorp/zero": "catalog:",
     "@tailwindcss/postcss": "^4.0.0",
     "@tailwindcss/vite": "^4.0.0",
     "@tanstack/react-form": "^0.41.0",

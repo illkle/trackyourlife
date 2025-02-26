@@ -34,6 +34,7 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
+    "@rocicorp/zero": "catalog:",
     "drizzle-orm": "0.39.3",
     "zod": "catalog:"
   },
