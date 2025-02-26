@@ -2,8 +2,8 @@
 set -e
 
 cd packages/db
-npm run migrate:deploy 
+pnpm run migrate:deploy 
 cd ../..
-npm run zero:deploy
+pnpm run zero:deploy
 
 exit 0
