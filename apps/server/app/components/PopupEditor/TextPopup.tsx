@@ -11,8 +11,7 @@ export const TextPopupEditor = ({ data, onChange }: PopupEditorProps) => {
   console.log("textPopup", value);
   const changeHandler = useCallback(
     (v: string, ts: number) => {
-      console.log("changeHandler", v, ts);
-      void onChange(v, recordId, ts);
+      void onChange({ value: v, recordId, updatedAt: ts });
     },
     [onChange, recordId],
   );

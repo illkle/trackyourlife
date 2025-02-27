@@ -51,7 +51,7 @@ export const TagsPopupEditor = ({
     if (!v) return;
 
     if (!valuesSet.has(v)) {
-      await onChange(v, undefined, Date.now());
+      await onChange({ value: v });
       await setFlag(id, "TagsValues", tagsValues.addAndReturnArray(v));
     }
   };

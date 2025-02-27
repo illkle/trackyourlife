@@ -227,7 +227,7 @@ export const updateValueRaw = async ({
   type,
   value,
   recordId,
-  timestamp,
+  updatedAt = Date.now(),
   attributes = {},
 }: {
   z: ReturnType<typeof useZ>;
@@ -236,7 +236,7 @@ export const updateValueRaw = async ({
   type: string;
   value: string;
   recordId?: string;
-  timestamp?: number;
+  updatedAt?: number;
   attributes?: Record<string, string>;
 }) => {
   const d = generateDateTime(date, type === "logs");
@@ -245,7 +245,7 @@ export const updateValueRaw = async ({
     await z.mutate.TYL_trackableRecord.update({
       recordId,
       value,
-      updatedAt: timestamp ?? Date.now(),
+      updatedAt: updatedAt,
       attributes,
     });
     return recordId;
@@ -257,8 +257,8 @@ export const updateValueRaw = async ({
       trackableId,
       value,
       user_id: z.userID,
-      createdAt: timestamp ?? Date.now(),
-      updatedAt: timestamp ?? Date.now(),
+      createdAt: updatedAt,
+      updatedAt: updatedAt,
       attributes,
     });
     return rid;
@@ -279,12 +279,12 @@ export const useRecordUpdateHandler = ({
     async ({
       value,
       recordId,
-      timestamp,
+      updatedAt,
       attributes,
     }: {
       value: string;
       recordId?: string;
-      timestamp?: number;
+      updatedAt?: number;
       attributes?: Record<string, string>;
     }) => {
       return await updateValueRaw({
@@ -294,7 +294,7 @@ export const useRecordUpdateHandler = ({
         type,
         value,
         recordId,
-        timestamp,
+        updatedAt,
         attributes,
       });
     },

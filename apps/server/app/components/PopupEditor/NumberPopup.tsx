@@ -16,7 +16,7 @@ export const NumberPopupEditor = ({ data, onChange }: PopupEditorProps) => {
         value={value}
         updateTimestamp={updatedAt ?? undefined}
         onChange={async (v, ts) => {
-          await onChange(v, recordId, ts);
+          await onChange({ value: v, recordId, updatedAt: ts });
         }}
       >
         <NumberInput

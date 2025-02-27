@@ -209,7 +209,7 @@ export const LogsPopupEditor = ({
             await onChange({
               value: newVal.value,
               attributes: newVal.attributes,
-              timestamp: editTarget?.updatedAt ?? undefined,
+              recordId: editTarget?.recordId ?? undefined,
             });
 
             if (editTargetIndex !== null) {
@@ -276,25 +276,26 @@ const InputEditor = ({
           <CornerRightUp size={16} />
         </Button>
       </div>
-
-      {attrs.map((attribute) => {
-        return (
-          <form.Field
-            key={attribute.key}
-            name={`attributes.${attribute.key}`}
-            children={(field) => {
-              return (
-                <AttrbuteEditor
-                  visibleName={attribute.visibleName || attribute.key}
-                  type={attribute.type}
-                  value={field.state.value}
-                  onChange={(v) => field.handleChange(v)}
-                />
-              );
-            }}
-          ></form.Field>
-        );
-      })}
+      <div className="flex gap-2">
+        {attrs.map((attribute) => {
+          return (
+            <form.Field
+              key={attribute.key}
+              name={`attributes.${attribute.key}`}
+              children={(field) => {
+                return (
+                  <AttrbuteEditor
+                    visibleName={attribute.visibleName || attribute.key}
+                    type={attribute.type}
+                    value={field.state.value}
+                    onChange={(v) => field.handleChange(v)}
+                  />
+                );
+              }}
+            ></form.Field>
+          );
+        })}
+      </div>
     </div>
   );
 };
