@@ -1,6 +1,5 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
-import { zodValidator } from "@tanstack/zod-form-adapter";
 import { z } from "zod";
 
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
@@ -39,7 +38,6 @@ export const PasswordChangeForm = ({ className }: { className?: string }) => {
     onSubmit: async ({ value }) => {
       await changeMutation.mutateAsync(value);
     },
-    validatorAdapter: zodValidator(),
     validators: {
       onChange: z.object({
         password: z.string(),
@@ -111,7 +109,7 @@ export const PasswordChangeForm = ({ className }: { className?: string }) => {
             </Alert>
           ) : (
             <Button
-              onClick={form.handleSubmit}
+              onClick={() => form.handleSubmit()}
               isLoading={form.state.isSubmitting}
               variant={"outline"}
               className="mt-4 w-full"

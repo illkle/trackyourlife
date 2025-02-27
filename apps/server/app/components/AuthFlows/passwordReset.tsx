@@ -1,7 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
-import { zodValidator } from "@tanstack/zod-form-adapter";
 import { z } from "zod";
 
 import { Button } from "~/@shad/components/button";
@@ -40,7 +39,6 @@ export const PasswordResetForm = () => {
     onSubmit: async ({ value }) => {
       await resetMutation.mutateAsync(value);
     },
-    validatorAdapter: zodValidator(),
     validators: {
       onChange: z.object({
         password: PasswordValidator,
@@ -81,7 +79,7 @@ export const PasswordResetForm = () => {
 
           <Button
             isLoading={form.state.isSubmitting}
-            onClick={form.handleSubmit}
+            onClick={() => form.handleSubmit()}
             className="mt-4 w-full"
             type="submit"
           >

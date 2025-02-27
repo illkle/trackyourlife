@@ -1,6 +1,5 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { zodValidator } from "@tanstack/zod-form-adapter";
 import { z } from "zod";
 
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
@@ -40,7 +39,6 @@ export const UsernameChangeForm = ({ className }: { className?: string }) => {
     onSubmit: async ({ value }) => {
       await changeMutation.mutateAsync(value);
     },
-    validatorAdapter: zodValidator(),
     validators: {
       onChange: z.object({
         newUsername: z
@@ -94,7 +92,7 @@ export const UsernameChangeForm = ({ className }: { className?: string }) => {
             </Alert>
           ) : (
             <Button
-              onClick={form.handleSubmit}
+              onClick={() => form.handleSubmit()}
               isLoading={form.state.isSubmitting}
               variant={"outline"}
               className="mt-4 w-full"

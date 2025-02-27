@@ -28,11 +28,11 @@ interface DateRange {
  * Wrapper Export component
  */
 export const ExportTrackable = () => {
-  const form = useForm<DateRange>({
+  const form = useForm({
     defaultValues: {
       from: undefined,
       to: undefined,
-    },
+    } as DateRange,
     onSubmit: (data) => {
       setSelected(data.value);
     },

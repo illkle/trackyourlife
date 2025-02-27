@@ -78,3 +78,60 @@ export const useLinkedValue = <T>({
     flush: debouncedOnChange.flush,
   };
 };
+
+export const useLinkedBinding = <T>({
+  dbState,
+  dbOnChange,
+  dbTimestamp,
+  alwaysUpdate = false,
+  setInternalValue,
+  throttleTime = 300,
+}: {
+  dbState: T;
+  dbTimestamp?: number;
+  setInternalValue: (v: T) => void;
+  dbOnChange: (v: T, timestamp: number) => void | Promise<void>;
+
+  alwaysUpdate?: boolean;
+  throttleTime?: number;
+}) => {
+  const ourTimestamp = useRef(dbTimestamp);
+
+  const debouncedOnChange = useDebounceCallback(dbOnChange, throttleTime);
+
+  useEffect(() => {
+    if (alwaysUpdate) {
+      setInternalValue(dbState);
+    } else if (
+      !ourTimestamp.current ||
+      (dbTimestamp && dbTimestamp > ourTimestamp.current)
+    ) {
+      setInternalValue(dbState);
+      ourTimestamp.current = dbTimestamp;
+    }
+  }, [dbState, dbTimestamp, alwaysUpdate, setInternalValue]);
+
+  useUnmount(() => {
+    debouncedOnChange.flush();
+  });
+
+  const updateHandler = useCallback(
+    async (v: T) => {
+      setInternalValue(v);
+      ourTimestamp.current = Date.now();
+      await debouncedOnChange(v, ourTimestamp.current);
+    },
+    [debouncedOnChange, setInternalValue],
+  );
+
+  const reset = useCallback(() => {
+    setInternalValue(dbState);
+    ourTimestamp.current = dbTimestamp;
+  }, [dbState, dbTimestamp, setInternalValue]);
+
+  return {
+    updateHandler,
+    reset,
+    flush: debouncedOnChange.flush,
+  };
+};

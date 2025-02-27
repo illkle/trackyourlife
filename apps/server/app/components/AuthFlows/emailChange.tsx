@@ -1,6 +1,5 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { zodValidator } from "@tanstack/zod-form-adapter";
 import { z } from "zod";
 
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
@@ -47,7 +46,6 @@ export const EmailChangeForm = ({ className }: { className?: string }) => {
       await changeMutation.mutateAsync(value);
     },
 
-    validatorAdapter: zodValidator(),
     validators: {
       onChange: z.object({
         newEmail: EmailValidator,
@@ -114,7 +112,7 @@ export const EmailChangeForm = ({ className }: { className?: string }) => {
             </Alert>
           ) : (
             <Button
-              onClick={form.handleSubmit}
+              onClick={() => form.handleSubmit()}
               isLoading={form.state.isSubmitting}
               variant={"outline"}
               className="mt-4 w-full"

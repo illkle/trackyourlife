@@ -37,8 +37,8 @@ catalogs:
       specifier: 11.0.5
       version: 11.0.5
     zod:
-      specifier: 3.24.1
-      version: 3.24.1
+      specifier: 3.24.2
+      version: 3.24.2
   react18:
     '@types/react':
       specifier: ^18.2.0
@@ -194,7 +194,7 @@ importers:
         version: 1.13.2(@types/react@18.3.3)(react@18.2.0)
       zod:
         specifier: 'catalog:'
-        version: 3.24.1
+        version: 3.24.2
     devDependencies:
       '@babel/core':
         specifier: ^7.25.2
@@ -293,8 +293,8 @@ importers:
         specifier: ^4.0.0
         version: 4.0.0(vite@6.0.7(@types/node@22.10.5)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.31.6)(tsx@4.19.2)(yaml@2.4.5))
       '@tanstack/react-form':
-        specifier: ^0.41.0
-        version: 0.41.0(@tanstack/start@1.105.0(@types/node@22.10.5)(db0@0.2.1(drizzle-orm@0.39.3(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.26.0)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5)))(drizzle-orm@0.39.3(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.26.0)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5))(ioredis@5.4.1)(jiti@2.4.2)(lightningcss@1.29.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(terser@5.31.6)(tsx@4.19.2)(typescript@5.7.3)(vite@6.0.7(@types/node@22.10.5)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.31.6)(tsx@4.19.2)(yaml@2.4.5))(yaml@2.4.5))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.7.3)
+        specifier: 0.45.1
+        version: 0.45.1(utu2xmxvqgtgxef46sxdztr4de)
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.65.1(react@18.2.0)
@@ -316,9 +316,6 @@ importers:
       '@tanstack/start':
         specifier: 1.105.0
         version: 1.105.0(@types/node@22.10.5)(db0@0.2.1(drizzle-orm@0.39.3(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.26.0)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5)))(drizzle-orm@0.39.3(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.26.0)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5))(ioredis@5.4.1)(jiti@2.4.2)(lightningcss@1.29.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(terser@5.31.6)(tsx@4.19.2)(typescript@5.7.3)(vite@6.0.7(@types/node@22.10.5)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.31.6)(tsx@4.19.2)(yaml@2.4.5))(yaml@2.4.5)
-      '@tanstack/zod-form-adapter':
-        specifier: ^0.41.0
-        version: 0.41.0(zod@3.24.1)
       '@tyl/db':
         specifier: workspace:*
         version: link:../../packages/db
@@ -381,7 +378,7 @@ importers:
         version: 8.18.0
       zod:
         specifier: 'catalog:'
-        version: 3.24.1
+        version: 3.24.2
     devDependencies:
       '@playwright/test':
         specifier: ^1.49.1
@@ -457,7 +454,7 @@ importers:
         version: 0.39.3(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(expo-sqlite@14.0.6(expo@51.0.30))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5)
       zod:
         specifier: 'catalog:'
-        version: 3.24.1
+        version: 3.24.2
     devDependencies:
       '@tyl/eslint-config':
         specifier: workspace:*
@@ -543,7 +540,7 @@ importers:
         version: 5.7.3
       zod:
         specifier: 'catalog:'
-        version: 3.24.1
+        version: 3.24.2
 
   tooling/eslint:
     dependencies:
@@ -4040,8 +4037,8 @@ packages:
       typescript:
         optional: true
 
-  '@remix-run/node@2.15.0':
-    resolution: {integrity: sha512-tWbR7pQ6gwj+MkGf6WVIYnjgfGfpdU8EOIa6xsCIRlrm0p3BtMz4jA3GvBWEpOuEnN5MV7CarVzhduaRzkZ0SQ==}
+  '@remix-run/node@2.15.3':
+    resolution: {integrity: sha512-TYfS6BPhbABBpSRZ6WBA4qIWSwWvJhRVQGXCHUtgOwkuW863rcFmjh9g2Xj/IHyTmbOYPdcjHsIgZ9el4CHOKQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       typescript: ^5.1.0
@@ -4053,8 +4050,8 @@ packages:
     resolution: {integrity: sha512-S45oynt/WH19bHbIXjtli6QmwNYvaz+vtnubvNpNDvUOoA/OWh6j1OikIP3G+v5GHdxyC6EXoChG3HgYGEUfcg==}
     engines: {node: '>=14.0.0'}
 
-  '@remix-run/router@1.21.0':
-    resolution: {integrity: sha512-xfSkCAchbdG5PnbrKqFWwia4Bi61nH+wm8wLEqfHDyp7Y3dZzgqS2itV8i4gAq9pC2HsTpwyBC6Ds8VHZ96JlA==}
+  '@remix-run/router@1.22.0':
+    resolution: {integrity: sha512-MBOl8MeOzpK0HQQQshKB7pABXbmyHizdTpqnrIseTbsv0nAepwC2ENZa1aaBExNQcpLoXmWthhak8SABLzvGPw==}
     engines: {node: '>=14.0.0'}
 
   '@remix-run/server-runtime@2.11.2':
@@ -4066,8 +4063,8 @@ packages:
       typescript:
         optional: true
 
-  '@remix-run/server-runtime@2.15.0':
-    resolution: {integrity: sha512-FuM8vAg1sPskf4wn0ivbuj/7s9Qdh2wnKu+sVXqYz0a95gH5b73TuMzk6n3NMSkFVKKc6+UmlG1WLYre7L2LTg==}
+  '@remix-run/server-runtime@2.15.3':
+    resolution: {integrity: sha512-taHBe1DEqxZNjjj6OfkSYbup+sZPjbTgUhykaI+nHqrC2NDQuTiisBXhLwtx60GctONR/x0lWhF7R9ZGC5WsHw==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       typescript: ^5.1.0
@@ -4417,8 +4414,8 @@ packages:
     resolution: {integrity: sha512-VMdyl3cwXjYnh8kTA6+363SeuYOypd9xx0WN6+n1Jr76OAUV1XY8XnliA8z56p9xCleCGcaGuSG2cvAXtjASeQ==}
     engines: {node: '>=12'}
 
-  '@tanstack/form-core@0.41.0':
-    resolution: {integrity: sha512-626Xfi0C2xB9StzykIOXR/ugx/dUiwY/nY5opCovgXwBNqPEPrN3vMepC//rnGt1/jZmm3/7MW+02Ntc64UAmw==}
+  '@tanstack/form-core@0.45.1':
+    resolution: {integrity: sha512-9JKWBgj4JbOUab7iWWDcFPmqAPaPnrryapQyiIfnd038J/g9wngM291yx4MrdvEP0txUp+aDr1i52L/mUZVjBQ==}
 
   '@tanstack/history@1.99.13':
     resolution: {integrity: sha512-JMd7USmnp8zV8BRGIjALqzPxazvKtQ7PGXQC7n39HpbqdsmfV2ePCzieO84IvN+mwsTrXErpbjI4BfKCa+ZNCg==}
@@ -4436,13 +4433,16 @@ packages:
       react: '>=18.0.0 || >=19.0.0'
       react-dom: '>=18.0.0 || >=19.0.0'
 
-  '@tanstack/react-form@0.41.0':
-    resolution: {integrity: sha512-ijz/GFljdy+dz8JzfHpUO91Q2LBVKnMa7Q2clH1EiuTL5uvOq68MKeoYb9UhzYvFTXPqJZ4GMHhJEqy7cix9LQ==}
+  '@tanstack/react-form@0.45.1':
+    resolution: {integrity: sha512-PI+hYM1Fqh8n6MCIoJlIVt5TkgPRFx+5Ya7q0B6I1t0jc1mUL+WYgahsiXroc3tLeEPS5h6GH1FTeRODCNltig==}
     peerDependencies:
-      '@tanstack/start': ^1.43.13
+      '@tanstack/start': ^1.81.6
       react: ^17.0.0 || ^18.0.0 || ^19.0.0
+      vinxi: ^0.5.0
     peerDependenciesMeta:
       '@tanstack/start':
+        optional: true
+      vinxi:
         optional: true
 
   '@tanstack/react-query-devtools@5.63.0':
@@ -4618,11 +4618,6 @@ packages:
   '@tanstack/virtual-file-routes@1.99.0':
     resolution: {integrity: sha512-XvX8bfdo4CYiCW+ItVdBfCorh3PwQFqYqd7ll+XKWiWOJpqUGIG7VlziVavARZpUySiY2VBlHadiUYS7jhgjRg==}
     engines: {node: '>=12'}
-
-  '@tanstack/zod-form-adapter@0.41.0':
-    resolution: {integrity: sha512-+bXiVNAug/4iu2ImKt+owD5PremYhqQgZ8auXTV51z7SuQxZ8drNbXnTOyMAjGIYJzT8YdKsvLF4D4TUW7We0g==}
-    peerDependencies:
-      zod: ^3.x
 
   '@tootallnate/quickjs-emscripten@0.23.0':
     resolution: {integrity: sha512-C5Mc6rdnsaJDjO3UpGW/CQTHtCKaYlScZTly4JIu97Jxo/odCiH0ITnDXSJPTOrEKk/ycSZ0AOgTmkDtkOsvIA==}
@@ -10823,8 +10818,8 @@ packages:
     peerDependencies:
       zod: ^3.18.0
 
-  zod@3.24.1:
-    resolution: {integrity: sha512-muH7gBL9sI1nciMZV67X5fTKKBLtwpZ5VBp1vsOQzj1MhrBZ4wlVCm3gedKZWLp0Oyel8sIGfeiz54Su+OVT+A==}
+  zod@3.24.2:
+    resolution: {integrity: sha512-lY7CDW43ECgW9u1TcT3IoXHflywfVqDYze4waEz812jR/bZ8FHDsl7pFQoSZTz5N+2NqRXs8GBwnAwo3ZNxqhQ==}
 
 snapshots:
 
@@ -15425,9 +15420,9 @@ snapshots:
     optionalDependencies:
       typescript: 5.7.3
 
-  '@remix-run/node@2.15.0(typescript@5.7.3)':
+  '@remix-run/node@2.15.3(typescript@5.7.3)':
     dependencies:
-      '@remix-run/server-runtime': 2.15.0(typescript@5.7.3)
+      '@remix-run/server-runtime': 2.15.3(typescript@5.7.3)
       '@remix-run/web-fetch': 4.4.2
       '@web3-storage/multipart-parser': 1.0.0
       cookie-signature: 1.2.1
@@ -15439,7 +15434,7 @@ snapshots:
 
   '@remix-run/router@1.19.1': {}
 
-  '@remix-run/router@1.21.0': {}
+  '@remix-run/router@1.22.0': {}
 
   '@remix-run/server-runtime@2.11.2(typescript@5.7.3)':
     dependencies:
@@ -15453,9 +15448,9 @@ snapshots:
     optionalDependencies:
       typescript: 5.7.3
 
-  '@remix-run/server-runtime@2.15.0(typescript@5.7.3)':
+  '@remix-run/server-runtime@2.15.3(typescript@5.7.3)':
     dependencies:
-      '@remix-run/router': 1.21.0
+      '@remix-run/router': 1.22.0
       '@types/cookie': 0.6.0
       '@web3-storage/multipart-parser': 1.0.0
       cookie: 0.6.0
@@ -15837,7 +15832,7 @@ snapshots:
       - babel-plugin-macros
       - supports-color
 
-  '@tanstack/form-core@0.41.0':
+  '@tanstack/form-core@0.45.1':
     dependencies:
       '@tanstack/store': 0.7.0
 
@@ -15852,15 +15847,16 @@ snapshots:
       react: 18.2.0
       react-dom: 18.2.0(react@18.2.0)
 
-  '@tanstack/react-form@0.41.0(@tanstack/start@1.105.0(@types/node@22.10.5)(db0@0.2.1(drizzle-orm@0.39.3(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.26.0)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5)))(drizzle-orm@0.39.3(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.26.0)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5))(ioredis@5.4.1)(jiti@2.4.2)(lightningcss@1.29.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(terser@5.31.6)(tsx@4.19.2)(typescript@5.7.3)(vite@6.0.7(@types/node@22.10.5)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.31.6)(tsx@4.19.2)(yaml@2.4.5))(yaml@2.4.5))(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(typescript@5.7.3)':
+  '@tanstack/react-form@0.45.1(utu2xmxvqgtgxef46sxdztr4de)':
     dependencies:
-      '@remix-run/node': 2.15.0(typescript@5.7.3)
-      '@tanstack/form-core': 0.41.0
+      '@remix-run/node': 2.15.3(typescript@5.7.3)
+      '@tanstack/form-core': 0.45.1
       '@tanstack/react-store': 0.7.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       decode-formdata: 0.8.0
       react: 18.2.0
     optionalDependencies:
       '@tanstack/start': 1.105.0(@types/node@22.10.5)(db0@0.2.1(drizzle-orm@0.39.3(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.26.0)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5)))(drizzle-orm@0.39.3(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.26.0)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5))(ioredis@5.4.1)(jiti@2.4.2)(lightningcss@1.29.1)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)(terser@5.31.6)(tsx@4.19.2)(typescript@5.7.3)(vite@6.0.7(@types/node@22.10.5)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.31.6)(tsx@4.19.2)(yaml@2.4.5))(yaml@2.4.5)
+      vinxi: 0.5.1(@types/node@22.10.5)(db0@0.2.1(drizzle-orm@0.39.3(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.26.0)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5)))(drizzle-orm@0.39.3(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.26.0)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5))(ioredis@5.4.1)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.31.6)(tsx@4.19.2)(typescript@5.7.3)(yaml@2.4.5)
     transitivePeerDependencies:
       - react-dom
       - typescript
@@ -15921,7 +15917,7 @@ snapshots:
       '@tanstack/virtual-file-routes': 1.99.0
       prettier: 3.5.1
       tsx: 4.19.2
-      zod: 3.24.1
+      zod: 3.24.2
     optionalDependencies:
       '@tanstack/react-router': 1.105.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
 
@@ -15942,7 +15938,7 @@ snapshots:
       babel-dead-code-elimination: 1.0.9
       chokidar: 3.6.0
       unplugin: 2.1.2
-      zod: 3.24.1
+      zod: 3.24.2
     optionalDependencies:
       '@tanstack/react-router': 1.105.0(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       vite: 6.0.7(@types/node@22.10.5)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.31.6)(tsx@4.19.2)(yaml@2.4.5)
@@ -16091,7 +16087,7 @@ snapshots:
       react-dom: 18.2.0(react@18.2.0)
       vinxi: 0.5.3(@types/node@22.10.5)(db0@0.2.1(drizzle-orm@0.39.3(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.26.0)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5)))(drizzle-orm@0.39.3(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.26.0)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5))(ioredis@5.4.1)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.31.6)(tsx@4.19.2)(typescript@5.7.3)(yaml@2.4.5)
       vite: 6.0.7(@types/node@22.10.5)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.31.6)(tsx@4.19.2)(yaml@2.4.5)
-      zod: 3.24.1
+      zod: 3.24.2
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -16520,11 +16516,6 @@ snapshots:
   '@tanstack/store@0.7.0': {}
 
   '@tanstack/virtual-file-routes@1.99.0': {}
-
-  '@tanstack/zod-form-adapter@0.41.0(zod@3.24.1)':
-    dependencies:
-      '@tanstack/form-core': 0.41.0
-      zod: 3.24.1
 
   '@tootallnate/quickjs-emscripten@0.23.0': {}
 
@@ -17241,8 +17232,8 @@ snapshots:
       chalk: 4.1.2
       invariant: 2.2.4
       pretty-format: 24.9.0
-      zod: 3.24.1
-      zod-validation-error: 2.1.0(zod@3.24.1)
+      zod: 3.24.2
+      zod-validation-error: 2.1.0(zod@3.24.2)
 
   babel-plugin-react-native-web@0.19.12: {}
 
@@ -17345,7 +17336,7 @@ snapshots:
       jose: 5.9.6
       kysely: 0.27.5
       uncrypto: 0.1.3
-      zod: 3.24.1
+      zod: 3.24.2
     transitivePeerDependencies:
       - encoding
 
@@ -17354,7 +17345,7 @@ snapshots:
       '@better-fetch/fetch': 1.1.12
       rou3: 0.5.1
       uncrypto: 0.1.3
-      zod: 3.24.1
+      zod: 3.24.2
 
   better-opn@3.0.2:
     dependencies:
@@ -23326,7 +23317,7 @@ snapshots:
       unenv: 1.10.0
       unstorage: 1.14.4(db0@0.2.1(drizzle-orm@0.39.3(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.26.0)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5)))(ioredis@5.4.1)
       vite: 6.0.7(@types/node@22.10.5)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.31.6)(tsx@4.19.2)(yaml@2.4.5)
-      zod: 3.24.1
+      zod: 3.24.2
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -23403,7 +23394,7 @@ snapshots:
       unenv: 1.10.0
       unstorage: 1.14.4(db0@0.2.1(drizzle-orm@0.39.3(@opentelemetry/api@1.9.0)(@types/pg@8.11.6)(expo-sqlite@14.0.6(expo@51.0.30(@babel/core@7.26.0)))(kysely@0.27.5)(pg@8.12.0)(postgres@3.4.5)))(ioredis@5.4.1)
       vite: 6.0.11(@types/node@22.10.5)(jiti@2.4.2)(lightningcss@1.29.1)(terser@5.31.6)(tsx@4.19.2)(yaml@2.4.5)
-      zod: 3.24.1
+      zod: 3.24.2
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -23698,8 +23689,8 @@ snapshots:
       compress-commons: 6.0.2
       readable-stream: 4.5.2
 
-  zod-validation-error@2.1.0(zod@3.24.1):
+  zod-validation-error@2.1.0(zod@3.24.2):
     dependencies:
-      zod: 3.24.1
+      zod: 3.24.2
 
-  zod@3.24.1: {}
+  zod@3.24.2: {}

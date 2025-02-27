@@ -1,10 +1,9 @@
-import type { FieldApi } from "@tanstack/react-form";
+import type { AnyFieldApi } from "@tanstack/react-form";
 import { useState } from "react";
 import { cn } from "@shad/utils";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
-import { zodValidator } from "@tanstack/zod-form-adapter";
 import { XIcon } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
 import { z } from "zod";
@@ -26,12 +25,7 @@ import { EmailValidator, NameValidator, PasswordValidator } from "./common";
 
 type ActionState = "login" | "register";
 
-export function FieldInfo({
-  field,
-}: {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  field: FieldApi<any, any, any, any>;
-}) {
+export function FieldInfo({ field }: { field: AnyFieldApi }) {
   return (
     <AnimatePresence>
       {field.state.meta.isTouched && field.state.meta.errors.length && (
@@ -46,7 +40,9 @@ export function FieldInfo({
           className="box-border flex w-fit items-center gap-2 px-2.5 text-sm font-light text-neutral-800 dark:text-neutral-200"
         >
           <XIcon size={16} strokeWidth={1.5} />
-          {field.state.meta.errors.join(",")}
+          {(field.state.meta.errors as { message: string }[])
+            .map((e) => e.message)
+            .join(",")}
         </m.div>
       )}
     </AnimatePresence>
@@ -93,7 +89,6 @@ const Register = () => {
       await registerMutation.mutateAsync(value);
     },
 
-    validatorAdapter: zodValidator(),
     validators: {
       onChange: z.object({
         email: EmailValidator,

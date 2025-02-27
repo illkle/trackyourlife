@@ -93,28 +93,12 @@ const strongProcessor = async (file: File) => {
           row[headersObject["Set Order"]],
         ].join(""),
       ),
-      trackableRecordAttributes: [
-        {
-          key: "weight",
-          type: "number",
-          value: cleanup(row[headersObject.Weight] ?? ""),
-        },
-        {
-          key: "reps",
-          type: "number",
-          value: cleanup(row[headersObject.Reps] ?? ""),
-        },
-        {
-          key: "rpe",
-          type: "number",
-          value: cleanup(row[headersObject.RPE] ?? ""),
-        },
-        {
-          key: "set_order",
-          type: "number",
-          value: cleanup(row[headersObject["Set Order"]] ?? ""),
-        },
-      ],
+      attrbites: {
+        weight: cleanup(row[headersObject.Weight] ?? ""),
+        reps: cleanup(row[headersObject.Reps] ?? ""),
+        rpe: cleanup(row[headersObject.RPE] ?? ""),
+        set_order: cleanup(row[headersObject["Set Order"]] ?? ""),
+      },
     });
   }
 

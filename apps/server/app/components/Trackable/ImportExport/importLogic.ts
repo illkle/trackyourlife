@@ -2,12 +2,8 @@ import { format } from "date-fns";
 import { z } from "zod";
 
 import type { ITrackableZero } from "@tyl/db/zero-schema";
-import { and, between, db, eq, sql } from "@tyl/db";
-import {
-  trackable,
-  trackableRecord,
-  trackableRecordAttributes,
-} from "@tyl/db/schema";
+import { and, between, db, eq } from "@tyl/db";
+import { trackable, trackableRecord } from "@tyl/db/schema";
 import { convertDateFromDbToLocal } from "@tyl/helpers/trackables";
 
 export const zImportJson = z.object({
@@ -18,15 +14,7 @@ export const zImportJson = z.object({
   value: z.string(),
   updatedAt: z.number().nullable().optional(),
   externalKey: z.string().optional(),
-  trackableRecordAttributes: z
-    .array(
-      z.object({
-        key: z.string(),
-        value: z.string(),
-        type: z.enum(["text", "number", "boolean"]),
-      }),
-    )
-    .optional(),
+  attrbites: z.record(z.string(), z.string()).optional(),
 });
 
 export type IImportJson = z.infer<typeof zImportJson>;
@@ -62,21 +50,17 @@ export const importData = async (
     );
   }
 
-  const complexTrackable = tr.type === "logs";
-
-  /** For logs we need existing values to determine if we should update or insert */
-  const mapOfExistingRecords =
-    complexTrackable && analysis.hasKeys
-      ? await getMapOfExistingRecords(tr, analysis)
-      : null;
+  /** We need existing values to determine if we should update or insert */
+  const mapOfExistingRecords = await getMapOfExistingRecords(tr, analysis);
 
   const toUpdate: { id: string; value: IImportJson }[] = [];
   const toInsert: IImportJson[] = [];
 
+  // Sort values in toUpdate and toInsert. Discard values that are older that what we have
   for (const item of data) {
     const key = `${format(convertDateFromDbToLocal(item.date), "yyyy-MM-dd")}-${item.externalKey}`;
 
-    const existingRecord = mapOfExistingRecords?.get(key);
+    const existingRecord = mapOfExistingRecords.get(key);
 
     if (!existingRecord) {
       toInsert.push(item);
@@ -92,15 +76,18 @@ export const importData = async (
       !existingRecord.updatedAt ||
       existingRecord.updatedAt < item.updatedAt
     ) {
-      // Update in value from import data is newer than db
+      // Update if value from import data is newer than db
       toUpdate.push({ id: existingRecord.recordId, value: item });
     }
   }
+
+  const complexTrackable = tr.type === "logs";
+
+  // Apply db transaction
   await db.transaction(async (tx) => {
     try {
       if (toInsert.length > 0) {
-        // Insert records then attributes
-        const res = await tx
+        await tx
           .insert(trackableRecord)
           .values(
             toInsert.map((item) => ({
@@ -108,76 +95,29 @@ export const importData = async (
               user_id: userId,
               date: item.date,
               value: item.value,
-              createdAt: Date.now(),
-              updatedAt: getValidCreatedAt(item.updatedAt),
+              attributes: complexTrackable ? item.attrbites : undefined,
+              createdAt: getValidDate(item.updatedAt),
+              updatedAt: getValidDate(item.updatedAt),
               externalKey: item.externalKey,
             })),
           )
           .returning();
-
-        await tx.insert(trackableRecordAttributes).values(
-          toInsert.flatMap((item, index) => {
-            if (!item.trackableRecordAttributes) return [];
-            const id = res[index]?.recordId;
-
-            if (!id)
-              throw new Error(
-                "No record id returned from insert, something went wrong",
-              );
-
-            return item.trackableRecordAttributes.map((attr) => ({
-              ...attr,
-              trackableId: tr.id,
-              user_id: userId,
-              recordId: id,
-            }));
-          }),
-        );
       }
 
       if (toUpdate.length > 0) {
-        await tx
-          .insert(trackableRecord)
-          .values(
-            toUpdate.map((item) => ({
-              ...item.value,
-              recordId: item.id,
-              trackableId: tr.id,
-              user_id: userId,
-              createdAt: Date.now(),
-              updatedAt: getValidCreatedAt(item.value.updatedAt),
-              externalKey: item.value.externalKey,
-            })),
-          )
-          .onConflictDoUpdate({
-            target: [trackableRecord.recordId],
-            set: {
-              value: sql`excluded.value`,
-              createdAt: sql`COALESCE(excluded.createdAt, 0)`,
-              externalKey: sql`excluded.externalKey`,
-              updatedAt: Date.now(),
-            },
-          });
-
-        await tx
-          .insert(trackableRecordAttributes)
-          .values(
-            toUpdate.flatMap((item) => {
-              if (!item.value.trackableRecordAttributes) return [];
-              return item.value.trackableRecordAttributes.map((attr) => ({
-                ...attr,
-                trackableId: tr.id,
-                user_id: userId,
-                recordId: item.id,
-              }));
-            }),
-          )
-          .onConflictDoUpdate({
-            target: [trackableRecordAttributes.recordId],
-            set: {
-              value: sql`excluded.value`,
-            },
-          });
+        await Promise.all(
+          toUpdate.map((item) =>
+            tx
+              .update(trackableRecord)
+              .set({
+                value: item.value.value,
+                attributes: complexTrackable ? item.value.attrbites : undefined,
+                updatedAt: getValidDate(item.value.updatedAt),
+                externalKey: item.value.externalKey,
+              })
+              .where(eq(trackableRecord.recordId, item.id)),
+          ),
+        );
       }
     } catch (e) {
       tx.rollback();
@@ -192,9 +132,9 @@ export const importData = async (
   };
 };
 
-const getValidCreatedAt = (createdAt: number | null | undefined) => {
-  if (!createdAt) return undefined;
-  return Math.min(createdAt, Date.now());
+const getValidDate = (date: number | null | undefined) => {
+  if (!date) return undefined;
+  return Math.min(date, Date.now());
 };
 
 const getMapOfExistingRecords = async (
@@ -242,27 +182,8 @@ export const analyzeData = (
 
   if (!firstOne) throw new Error("Empty file passed");
 
-  const hasAttrbibutes = firstOne.trackableRecordAttributes !== undefined;
-
   const info = data.reduce(
     (acc, item) => {
-      if (hasAttrbibutes) {
-        acc.attributesCount += item.trackableRecordAttributes?.length ?? 0;
-      }
-
-      if (acc.hasKeys === null) {
-        if (item.externalKey) {
-          acc.hasKeys = true;
-        } else {
-          acc.hasKeys = false;
-        }
-      } else if (
-        (!item.externalKey && acc.hasKeys === true) ||
-        (item.externalKey && acc.hasKeys === false)
-      ) {
-        throw new Error("Mixed external keys and no external keys");
-      }
-
       if (!acc.earliestDate || item.date < acc.earliestDate) {
         acc.earliestDate = item.date;
       }
@@ -284,8 +205,6 @@ export const analyzeData = (
       return acc;
     },
     {
-      hasKeys: null as null | true | false,
-      attributesCount: 0,
       earliestDate: undefined as Date | undefined,
       latestDate: undefined as Date | undefined,
       typeCheckMisses: 0,
@@ -299,13 +218,8 @@ export const analyzeData = (
     );
   }
 
-  if (info.hasKeys === null) {
-    throw new Error("Something went wrong with key parsing, please report bug");
-  }
-
   return {
     ...info,
-    hasAttrbibutes,
     itemsCount,
     latestDate: info.latestDate,
     earliestDate: info.earliestDate,
