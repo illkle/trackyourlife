@@ -6,7 +6,7 @@ import { closeDayEditor } from "~/components/Modal/EditorModalV2";
 import { useLinkedValue } from "~/utils/useDbLinkedValue";
 
 export const TextPopupEditor = ({ data, onChange }: PopupEditorProps) => {
-  const { value, recordId, createdAt } = data.values[0] ?? {};
+  const { value, recordId, updatedAt } = data.values[0] ?? {};
 
   console.log("textPopup", value);
   const changeHandler = useCallback(
@@ -19,7 +19,7 @@ export const TextPopupEditor = ({ data, onChange }: PopupEditorProps) => {
 
   const { internalValue, updateHandler } = useLinkedValue({
     value: value ?? "",
-    timestamp: createdAt ?? undefined,
+    timestamp: updatedAt ?? undefined,
     onChange: changeHandler,
   });
 

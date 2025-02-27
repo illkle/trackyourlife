@@ -67,7 +67,7 @@ export const DayCellRouter = ({
     isAfter(date, now) ||
     Boolean(trackingStart && isBefore(date, trackingStart));
 
-  const onChange = useRecordUpdateHandler({ date, id, type });
+  const onChange = useRecordUpdateHandler({ date, trackableId: id, type });
   const onDelete = useRecordDeleteHandler();
   const onChangeAttributes = useAttrbutesUpdateHandler({
     trackableId: id,

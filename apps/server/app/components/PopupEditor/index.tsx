@@ -19,7 +19,6 @@ import TrackableProvider, {
   useTrackableMeta,
 } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import {
-  useAttrbutesUpdateHandler,
   useRecordDeleteHandler,
   useRecordUpdateHandler,
   useTrackableDay,
@@ -36,14 +35,11 @@ export const PopupEditor = ({
 
   const onChange = useRecordUpdateHandler({
     date,
-    id: trackableId,
+    trackableId,
     type: data?.type ?? "",
   });
 
   const onDelete = useRecordDeleteHandler();
-  const onAttributesChange = useAttrbutesUpdateHandler({
-    trackableId,
-  });
 
   if (!data) return null;
 
@@ -69,7 +65,6 @@ export const PopupEditor = ({
         data={mapDay}
         onChange={onChange}
         onDelete={onDelete}
-        onAttributesChange={onAttributesChange}
       />
     </TrackableProvider>
   );
@@ -134,5 +129,4 @@ export interface PopupEditorProps {
   data: PureDataRecord;
   onDelete: ReturnType<typeof useRecordDeleteHandler>;
   onChange: ReturnType<typeof useRecordUpdateHandler>;
-  onAttributesChange: ReturnType<typeof useAttrbutesUpdateHandler>;
 }

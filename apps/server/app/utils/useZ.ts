@@ -220,22 +220,33 @@ const generateDateTime = (date: Date, storeTime?: boolean) => {
   return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 };
 
-export const updateValueRaw = async (
-  z: ReturnType<typeof useZ>,
-  trackableId: string,
-  date: Date,
-  type: string,
-  val: string,
-  recordId?: string,
-  timestamp?: number,
-) => {
+export const updateValueRaw = async ({
+  z,
+  trackableId,
+  date,
+  type,
+  value,
+  recordId,
+  timestamp,
+  attributes = {},
+}: {
+  z: ReturnType<typeof useZ>;
+  trackableId: string;
+  date: Date;
+  type: string;
+  value: string;
+  recordId?: string;
+  timestamp?: number;
+  attributes?: Record<string, string>;
+}) => {
   const d = generateDateTime(date, type === "logs");
 
   if (recordId) {
     await z.mutate.TYL_trackableRecord.update({
       recordId,
-      value: val,
+      value,
       updatedAt: timestamp ?? Date.now(),
+      attributes,
     });
     return recordId;
   } else {
@@ -244,30 +255,50 @@ export const updateValueRaw = async (
       recordId: rid,
       date: d,
       trackableId,
-      value: val,
+      value,
       user_id: z.userID,
       createdAt: timestamp ?? Date.now(),
       updatedAt: timestamp ?? Date.now(),
+      attributes,
     });
     return rid;
   }
 };
 export const useRecordUpdateHandler = ({
   date,
-  id,
+  trackableId,
   type,
 }: {
   date: Date;
-  id: string;
+  trackableId: string;
   type: string;
 }) => {
   const z = useZ();
 
   return useCallback(
-    async (val: string, recordId?: string, timestamp?: number) => {
-      return await updateValueRaw(z, id, date, type, val, recordId, timestamp);
+    async ({
+      value,
+      recordId,
+      timestamp,
+      attributes,
+    }: {
+      value: string;
+      recordId?: string;
+      timestamp?: number;
+      attributes?: Record<string, string>;
+    }) => {
+      return await updateValueRaw({
+        z,
+        trackableId,
+        date,
+        type,
+        value,
+        recordId,
+        timestamp,
+        attributes,
+      });
     },
-    [date, id, z, type],
+    [date, trackableId, z, type],
   );
 };
 

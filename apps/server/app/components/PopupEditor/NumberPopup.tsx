@@ -7,14 +7,14 @@ import {
 import { closeDayEditor } from "~/components/Modal/EditorModalV2";
 
 export const NumberPopupEditor = ({ data, onChange }: PopupEditorProps) => {
-  const { value, recordId, createdAt } = data.values[0] ?? {};
+  const { value, recordId, updatedAt } = data.values[0] ?? {};
 
   return (
     <div className="flex items-stretch gap-2">
       <NumberInputWrapper
         className="w-full"
         value={value}
-        updateTimestamp={createdAt ?? undefined}
+        updateTimestamp={updatedAt ?? undefined}
         onChange={async (v, ts) => {
           await onChange(v, recordId, ts);
         }}

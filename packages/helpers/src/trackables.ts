@@ -28,6 +28,7 @@ export interface DataRecord {
   readonly recordId: string;
   readonly createdAt: number | null;
   readonly updatedAt: number | null;
+  readonly attributes: Record<string, string>;
   readonly trackableRecordAttributes: readonly RecordAttribute[];
 }
 
@@ -53,7 +54,8 @@ export interface RecordValue {
    * Only relevant for logs, which can store exact timestamp
    */
   readonly timestamp: number;
-  readonly attributes: Record<string, RecordAttribute>;
+  readonly attributes: Record<string, string>;
+  readonly attributesOld: Record<string, RecordAttribute>;
 }
 
 /**
@@ -127,7 +129,8 @@ export const mapDataToRange = (
         createdAt: dataRecord.createdAt,
         updatedAt: dataRecord.updatedAt,
         recordId: dataRecord.recordId,
-        attributes: dataRecord.trackableRecordAttributes.reduce(
+        attributes: dataRecord.attributes,
+        attributesOld: dataRecord.trackableRecordAttributes.reduce(
           (acc, a) => {
             acc[a.key] = a;
             return acc;
@@ -158,7 +161,8 @@ export const mapUnorderedData = (
       createdAt: v.createdAt,
       updatedAt: v.updatedAt,
       recordId: v.recordId,
-      attributes: v.trackableRecordAttributes.reduce(
+      attributes: v.attributes,
+      attributesOld: v.trackableRecordAttributes.reduce(
         (acc, a) => {
           acc[a.key] = a;
           return acc;

@@ -1,0 +1,1 @@
+ALTER TABLE "TYL_trackableRecord" ADD COLUMN "attributes" jsonb DEFAULT '{}'::jsonb;

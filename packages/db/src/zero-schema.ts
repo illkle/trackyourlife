@@ -23,6 +23,7 @@ const TYL_trackableRecord = table("TYL_trackableRecord")
     user_id: string(),
     createdAt: number().optional(),
     updatedAt: number().optional(),
+    attributes: json<Record<string, string>>(),
   })
   .primaryKey("recordId");
 

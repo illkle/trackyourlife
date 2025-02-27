@@ -6,7 +6,7 @@ import { useLinkedValue } from "~/utils/useDbLinkedValue";
 
 export const DayCellText = () => {
   const { values, onChange } = useDayCellContext();
-  const { value, recordId, createdAt } = values[0] ?? {};
+  const { value, recordId, updatedAt } = values[0] ?? {};
 
   const changeHandler = useCallback(
     (v: string, ts: number) => {
@@ -17,7 +17,7 @@ export const DayCellText = () => {
 
   const { internalValue, updateHandler, flush } = useLinkedValue({
     value: value ?? "",
-    timestamp: createdAt ?? undefined,
+    timestamp: updatedAt ?? undefined,
     onChange: changeHandler,
   });
 

@@ -3,7 +3,7 @@ import { useForm } from "@tanstack/react-form";
 import { format } from "date-fns";
 import { CornerRightUp, XIcon } from "lucide-react";
 
-import type { RecordAttribute, RecordValue } from "@tyl/helpers/trackables";
+import type { RecordValue } from "@tyl/helpers/trackables";
 
 import type { PopupEditorProps } from "~/components/PopupEditor";
 import type { ITextSettings } from "~/components/Trackable/Settings/logsDisplayEditor";
@@ -65,7 +65,7 @@ export const LogsItemRenderer = ({
     case "attribute":
       return cell.name ? (
         <LogsTextRenderer textSettings={cell.textSettings}>
-          {value.attributes[cell.name]?.value}
+          {value.attributes[cell.name]}
         </LogsTextRenderer>
       ) : null;
     case "text":
@@ -159,7 +159,6 @@ export const LogsPopupEditor = ({
   data,
   onChange,
   onDelete,
-  onAttributesChange,
 }: PopupEditorProps) => {
   const { id } = useTrackableMeta();
   const displaySettings = useTrackableFlag(id, "LogsDisplay");
@@ -206,29 +205,12 @@ export const LogsPopupEditor = ({
           initialValue={editTarget}
           onSubmit={async (newVal) => {
             if (!newVal.value) return;
-            if (editTarget) {
-              void onChange(
-                newVal.value,
-                editTarget.recordId,
-                editTarget.createdAt ?? undefined,
-              );
 
-              void onAttributesChange(
-                editTarget.recordId,
-                newVal.attributes.map((a) => ({
-                  ...a,
-                  recordId: editTarget.recordId,
-                })),
-              );
-            } else {
-              const recordId = await onChange(
-                newVal.value,
-                undefined,
-                Date.now(),
-              );
-
-              void onAttributesChange(recordId, newVal.attributes);
-            }
+            await onChange({
+              value: newVal.value,
+              attributes: newVal.attributes,
+              timestamp: editTarget?.updatedAt ?? undefined,
+            });
 
             if (editTargetIndex !== null) {
               setEditTargetIndex(null);
@@ -241,29 +223,21 @@ export const LogsPopupEditor = ({
 };
 
 type FormInputType = Pick<RecordValue, "attributes" | "value">;
-interface FormType {
-  value: string;
-  attributes: RecordAttribute[];
-}
 
 const InputEditor = ({
   onSubmit,
   initialValue,
 }: {
-  onSubmit: (v: FormType) => void;
+  onSubmit: (v: FormInputType) => void;
   initialValue?: FormInputType;
 }) => {
   const { id } = useTrackableMeta();
   const attrs = useTrackableFlag(id, "LogsSavedAttributes");
 
-  const form = useForm<FormType>({
-    defaultValues: {
-      value: initialValue?.value ?? "",
-      attributes: attrs.map((a) => ({
-        key: a.key,
-        value: initialValue?.attributes[a.key]?.value ?? "",
-        type: a.type,
-      })),
+  const form = useForm<FormInputType>({
+    defaultValues: initialValue ?? {
+      value: "",
+      attributes: {},
     },
     onSubmit: (data) => {
       void onSubmit(data.value);
@@ -303,36 +277,24 @@ const InputEditor = ({
         </Button>
       </div>
 
-      <div className="flex gap-2">
-        <form.Field
-          name="attributes"
-          mode="array"
-          children={(field) => {
-            return (
-              <>
-                {field.state.value.map((a, i) => {
-                  return (
-                    <form.Field
-                      key={i}
-                      name={`attributes[${i}].value`}
-                      children={(subField) => {
-                        return (
-                          <AttrbuteEditor
-                            visibleName={attrs[i]?.visibleName ?? a.key}
-                            type={a.type}
-                            value={subField.state.value}
-                            onChange={(v) => subField.handleChange(v)}
-                          />
-                        );
-                      }}
-                    ></form.Field>
-                  );
-                })}
-              </>
-            );
-          }}
-        />
-      </div>
+      {attrs.map((attribute) => {
+        return (
+          <form.Field
+            key={attribute.key}
+            name={`attributes.${attribute.key}`}
+            children={(field) => {
+              return (
+                <AttrbuteEditor
+                  visibleName={attribute.visibleName || attribute.key}
+                  type={attribute.type}
+                  value={field.state.value}
+                  onChange={(v) => field.handleChange(v)}
+                />
+              );
+            }}
+          ></form.Field>
+        );
+      })}
     </div>
   );
 };

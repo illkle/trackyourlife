@@ -108,7 +108,8 @@ export const importData = async (
               user_id: userId,
               date: item.date,
               value: item.value,
-              createdAt: getValidCreatedAt(item.updatedAt),
+              createdAt: Date.now(),
+              updatedAt: getValidCreatedAt(item.updatedAt),
               externalKey: item.externalKey,
             })),
           )
@@ -143,7 +144,8 @@ export const importData = async (
               recordId: item.id,
               trackableId: tr.id,
               user_id: userId,
-              createdAt: getValidCreatedAt(item.value.createdAt),
+              createdAt: Date.now(),
+              updatedAt: getValidCreatedAt(item.value.updatedAt),
               externalKey: item.value.externalKey,
             })),
           )
@@ -153,6 +155,7 @@ export const importData = async (
               value: sql`excluded.value`,
               createdAt: sql`COALESCE(excluded.createdAt, 0)`,
               externalKey: sql`excluded.externalKey`,
+              updatedAt: Date.now(),
             },
           });
 

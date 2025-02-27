@@ -5,6 +5,7 @@ import {
   index,
   integer,
   json,
+  jsonb,
   pgEnum,
   pgTableCreator,
   primaryKey,
@@ -177,6 +178,11 @@ export const trackableRecord = pgTable(
       .references(() => trackable.id, { onDelete: "cascade" }),
     date: timestamp("date").notNull(),
     value: text("value").notNull(),
+    /**
+     * Attributes stored as JSONB, it's always a map of string to string.
+     */
+    attributes: jsonb("attributes").default({}).$type<Record<string, string>>(),
+
     /*
      * Only for trackables that allow multiple records per day, used to sort records.
      * Since this application is local first and insert to PG can differ from actual creation date, value is set by the client.

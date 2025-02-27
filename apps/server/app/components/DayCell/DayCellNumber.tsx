@@ -32,7 +32,7 @@ export const DayCellNumber = () => {
   const { id } = useTrackableMeta();
 
   const { onChange, labelType, values, date } = useDayCellContext();
-  const { value, recordId, createdAt } = values[0] ?? {};
+  const { value, recordId, updatedAt } = values[0] ?? {};
 
   const isMobile = useIsMobile();
 
@@ -50,7 +50,7 @@ export const DayCellNumber = () => {
           });
         }
       }}
-      updateTimestamp={createdAt ?? undefined}
+      updateTimestamp={updatedAt ?? undefined}
       className={cn(
         DayCellBaseClasses,
         DayCellBaseClassesFocus,
