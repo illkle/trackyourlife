@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+/** This is for testing purposes only ATM */
 const zTextSettings = z.object({
   font: z.enum(["regular", "italic", "mono"]).optional(),
   opacity: z.number().min(0.2).max(1).optional(),
@@ -38,38 +39,25 @@ const zSpacer = z.object({
   width: z.number(),
 });
 
-const zAlign = z.enum(["start", "end", "between"]).optional();
+const zDisplayItem = z.discriminatedUnion("type", [
+  zValue,
+  zAttribute,
+  zText,
+  zTime,
+  zSpacer,
+]);
 
-const zGroupBase = z.object({
-  id: z.string(),
-  type: z.literal("group"),
-  align: zAlign,
-});
+const zDisplayItems = z.array(zDisplayItem);
 
-// Define zGroup using a recursive approach compatible with discriminatedUnion
-interface GroupItemType {
-  id: string;
-  type: "group";
-  align?: z.infer<typeof zAlign>;
-  items: (
-    | z.infer<typeof zValue>
-    | z.infer<typeof zAttribute>
-    | z.infer<typeof zText>
-    | z.infer<typeof zTime>
-    | z.infer<typeof zSpacer>
-    | GroupItemType
-  )[];
-}
-
-// Create the schema using lazy and properly constructed discriminated union
-const zGroup: z.ZodType<GroupItemType> = zGroupBase.extend({
-  items: z.lazy(() =>
-    z.array(z.union([zValue, zAttribute, zText, zTime, zSpacer, zGroup])),
-  ),
-});
+export type IDisplayItem = z.infer<typeof zDisplayItem>;
 
 export const zLogsDisplay = z.object({
-  items: zGroup,
+  topLeft: zDisplayItems,
+  topRight: zDisplayItems,
+  middleLeft: zDisplayItems,
+  middleRight: zDisplayItems,
+  bottomLeft: zDisplayItems,
+  bottomRight: zDisplayItems,
 });
 
 export type ILogsDisplay = z.infer<typeof zLogsDisplay>;

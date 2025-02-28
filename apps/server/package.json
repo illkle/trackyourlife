@@ -11,6 +11,8 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
+    "@dnd-kit/helpers": "^0.0.9",
+    "@dnd-kit/react": "^0.0.9",
     "@node-rs/argon2": "^2.0.2",
     "@radix-ui/react-alert-dialog": "^1.1.4",
     "@radix-ui/react-dialog": "^1.1.4",

@@ -5,6 +5,8 @@ import { z } from "zod";
 
 import { Button } from "~/@shad/components/button";
 import { Input } from "~/@shad/components/input";
+import { LogsDisplayEditorV2 } from "~/components/Trackable/Settings/logsDisplay";
+import TestComponentSort from "~/components/Trackable/Settings/logsDisplay/quickRepo";
 import { useLinkedBinding } from "~/utils/useDbLinkedValue";
 
 export const Route = createFileRoute("/app/testing")({
@@ -26,20 +28,26 @@ function RouteComponent() {
 
   return (
     <div className="mx-auto max-w-md">
-      <div className="flex gap-4">
-        {JSON.stringify(storage)}
-        <Button onClick={() => setStorage({ value: "kek", secondValue: 1337 })}>
-          External Update
-        </Button>
+      <div className="hidden">
+        <div className="gap-4">
+          {JSON.stringify(storage)}
+          <Button
+            onClick={() => setStorage({ value: "kek", secondValue: 1337 })}
+          >
+            External Update
+          </Button>
+        </div>
+        <ChildComponent
+          value={storage}
+          timestamp={timestamp}
+          onChange={(v, ts) => {
+            setStorage(v);
+            setTimestamp(ts);
+          }}
+        />{" "}
       </div>
-      <ChildComponent
-        value={storage}
-        timestamp={timestamp}
-        onChange={(v, ts) => {
-          setStorage(v);
-          setTimestamp(ts);
-        }}
-      />
+
+      <TestComponentSort />
     </div>
   );
 }
