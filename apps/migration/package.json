@@ -1,0 +1,19 @@
+{
+  "name": "@tyl/migration",
+  "private": true,
+  "sideEffects": false,
+  "type": "module",
+  "scripts": {
+    "start": "node dist/index.cjs",
+    "dev": "tsup --watch --onSuccess \"node dist/index.cjs\"",
+    "build": "tsup"
+  },
+  "dependencies": {
+    "@tyl/db": "workspace:*"
+  },
+  "devDependencies": {
+    "@tyl/tsconfig": "workspace:*",
+    "tsup": "^8.3.6",
+    "typescript": "catalog:"
+  }
+}

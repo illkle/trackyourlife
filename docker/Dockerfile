@@ -31,6 +31,7 @@ COPY --from=builder /app/out/full/ .
 ARG VITE_ZERO_DOMAIN
 ENV VITE_ZERO_DOMAIN=$VITE_ZERO_DOMAIN
 RUN pnpm turbo run build --filter=@tyl/server...
+
 FROM base AS runner
 WORKDIR /app
 

@@ -1,6 +1,6 @@
-import fs from "fs";
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
 import { drizzle } from "drizzle-orm/node-postgres";
+import { migrate } from "drizzle-orm/node-postgres/migrator";
 import PG from "pg";
 
 import * as schema from "./schema";
@@ -15,5 +15,9 @@ const pool = new PG.Pool({
 });
 
 const db: NodePgDatabase<typeof schema> = drizzle(pool, { schema });
+
+export async function migrateDb(folder: string) {
+  await migrate(db, { migrationsFolder: folder });
+}
 
 export { db, pool };
