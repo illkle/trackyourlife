@@ -3,7 +3,7 @@ import fs from "fs";
 import { executeRaw, migrateDb } from "@tyl/db";
 
 const migrator = async () => {
-  if (true) {
+  if (process.env.NODE_ENV !== "production") {
     const zeroPermissions = fs.existsSync("./zero-permissions.sql");
 
     const drizzleDir = fs.existsSync("./drizzle");
