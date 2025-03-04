@@ -3,7 +3,8 @@ import fs from "fs";
 import { executeRaw, migrateDb } from "@tyl/db";
 
 const migrator = async () => {
-  if (process.env.NODE_ENV !== "production") {
+  if (!process.env.MIGRARATE) {
+    console.log("X: process.env.MIGRARATE is not set, skipping migrations");
     const zeroPermissions = fs.existsSync("./zero-permissions.sql");
 
     const drizzleDir = fs.existsSync("./drizzle");
@@ -16,9 +17,10 @@ const migrator = async () => {
     console.log(
       drizzleDir ? "+: Drizzle dir found" : "X: Drizzle dir not found",
     );
-    console.log("Not in production, skipping migrations");
     return;
   }
+
+  console.log("+: Migrating database and zero");
 
   await migrateDb("./drizzle");
   const zeroPermissions = fs.readFileSync("./zero-permissions.sql").toString();

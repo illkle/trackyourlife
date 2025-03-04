@@ -24,6 +24,7 @@ services:
       context: .
       dockerfile: ./docker/init.Dockerfile
     environment:
+      - MIGRARATE=true
       - DATABASE_URL=${DATABASE_URL}
       - ZERO_UPSTREAM_DB=${ZERO_UPSTREAM_DB}
       - ZERO_CVR_DB=${ZERO_CVR_DB}
