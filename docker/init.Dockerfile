@@ -28,21 +28,18 @@ RUN pnpm install
 # Build the project
 COPY --from=builder /app/out/full/ .
 RUN pnpm turbo run build --filter=@tyl/migration...
+RUN pnpm run zero:generate-migration
 
 FROM base AS runner
 WORKDIR /app
 
-# Don't run production as root
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 tylrunner
 USER tylrunner
 
 COPY --from=installer --chown=tylrunner:nodejs /app/apps/migration/dist ./dist
 COPY --from=installer --chown=tylrunner:nodejs /app/packages/db/drizzle ./drizzle
-COPY --from=builder /app/packages/db/src/zero-schema.ts ./zero-schema.ts
-#COPY --from=installer --chown=tylrunner:nodejs /app/docker/init.sh .
-#RUN chmod +x init.sh
+COPY --from=installer /app/zero-permissions.sql ./zero-permissions.sql
 
-#CMD ["npx", "-y", "zero-deploy-permissions", "--schema-path", "./zero-schema.ts"]
-#CMD ["node", "./dist/index.cjs"]
+CMD ["node", "./dist/index.cjs"]
  

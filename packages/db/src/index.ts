@@ -20,4 +20,8 @@ export async function migrateDb(folder: string) {
   await migrate(db, { migrationsFolder: folder });
 }
 
+export async function executeRaw(sql: string) {
+  await db.execute(sql);
+}
+
 export { db, pool };
