@@ -49,8 +49,8 @@ const ColorInput = ({
           >
             <ColorPicker
               value={internalValue}
-              onChange={(v) => {
-                updateHandler(v);
+              onChange={async (v) => {
+                await updateHandler(v);
               }}
               className="max-w-[300px] sm:max-w-md"
             />
@@ -72,8 +72,8 @@ const ColorInput = ({
           </DrawerHeader>
           <ColorPicker
             value={internalValue}
-            onChange={(v) => {
-              updateHandler(v);
+            onChange={async (v) => {
+              await updateHandler(v);
             }}
             className="sm:max-w-md"
           />

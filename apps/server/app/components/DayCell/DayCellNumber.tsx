@@ -40,7 +40,7 @@ export const DayCellNumber = () => {
     <NumberInputWrapper
       value={value}
       onChange={async (v, ts) => {
-        await onChange(v, recordId, ts);
+        await onChange({ value: v, recordId, updatedAt: ts });
       }}
       onClick={() => {
         if (isMobile) {
