@@ -63,7 +63,7 @@ export const DayCellBoolean = () => {
 
     const newVal = isActive ? "false" : "true";
 
-    await onChange(newVal, recordId);
+    await onChange({ value: newVal, recordId });
   };
 
   return (

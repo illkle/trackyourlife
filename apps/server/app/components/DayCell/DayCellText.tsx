@@ -10,7 +10,7 @@ export const DayCellText = () => {
 
   const changeHandler = useCallback(
     (v: string, ts: number) => {
-      void onChange(v, recordId, ts);
+      void onChange({ value: v, recordId, updatedAt: ts });
     },
     [onChange, recordId],
   );
