@@ -21,6 +21,7 @@ const TrackableProvider = ({
   // Todo: memo
   return (
     <TrackableContext.Provider
+      key={trackable.id}
       value={{
         id: trackable.id,
         type: trackable.type,
