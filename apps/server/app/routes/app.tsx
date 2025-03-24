@@ -1,3 +1,4 @@
+import { useLayoutEffect, useState } from "react";
 import { Zero } from "@rocicorp/zero";
 import { ZeroProvider } from "@rocicorp/zero/react";
 import { cn } from "@shad/utils";
@@ -16,20 +17,35 @@ export const Route = createFileRoute("/app")({
   component: AppComponent,
 });
 
+const makeZero = (userID: string, token: string) => {
+  console.log("ddd making zero");
+  return new Zero({
+    userID,
+    server: import.meta.env.VITE_ZERO_DOMAIN as string,
+    schema,
+    auth: token,
+  });
+};
+
 function AppComponent() {
   const { sessionInfo, token } = useSessionAuthed();
 
-  const z = new Zero({
-    userID: sessionInfo.user.id,
-    // Todo proper env
-    server: import.meta.env.VITE_ZERO_DOMAIN as string,
-    schema,
-    kvStore: "idb",
-    auth: token,
-  });
+  const [zero, setZero] = useState<ReturnType<typeof makeZero> | null>(null);
+  useLayoutEffect(() => {
+    if (zero) {
+      void zero.close();
+    }
+    setZero(makeZero(sessionInfo.user.id, token));
+    // we don't need zero as dep here
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token, sessionInfo.user.id]);
+
+  if (!zero) {
+    return <></>;
+  }
 
   return (
-    <ZeroProvider zero={z}>
+    <ZeroProvider zero={zero}>
       <MainPreloader>
         <SidebarProvider>
           <AppSidebar />
