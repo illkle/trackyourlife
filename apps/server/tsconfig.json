@@ -3,8 +3,8 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "~/*": ["./src/*"],
-      "@shad*": ["./src/@shad/*"]
+      "~/*": ["src/*"],
+      "@shad*": ["src/@shad/*"]
     },
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "jsx": "react-jsx",
