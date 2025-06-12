@@ -1,6 +1,6 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
 import { Button } from "~/@shad/components/button";

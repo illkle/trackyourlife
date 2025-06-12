@@ -1,7 +1,7 @@
 import { useLayoutEffect, useMemo, useState } from "react";
 import { useForm } from "@tanstack/react-form";
 import { X } from "lucide-react";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import type { ILogsSavedAttribute } from "~/components/Trackable/TrackableProviders/trackableFlags";
 import { Button } from "~/@shad/components/button";

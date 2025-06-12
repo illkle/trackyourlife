@@ -1,5 +1,5 @@
 import { parse } from "date-fns";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import type { ITrackableFlagsZero } from "@tyl/db/zero-schema";
 import {
@@ -37,8 +37,7 @@ export const LogsSavedAttributesValidator = z.object({
 export type ILogsSavedAttribute = z.infer<typeof LogsSavedAttributesValidator>;
 
 export const FlagsValidators = {
-  AnyTrackingStart: z
-    .string()
+  AnyTrackingStart: z.iso
     .date()
     .or(z.null())
     .transform((v) =>

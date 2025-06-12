@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { Reorder } from "motion/react";
 import { v4 as uuidv4 } from "uuid";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import type { ITrackableRecordAttributeZero } from "@tyl/db/zero-schema";
 import { mapUnorderedData } from "@tyl/helpers/trackables";

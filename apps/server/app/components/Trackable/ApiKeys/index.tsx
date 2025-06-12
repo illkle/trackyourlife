@@ -3,7 +3,7 @@ import a from "@node-rs/argon2";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/start";
 import { getWebRequest } from "@tanstack/start/server";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import { and, db, eq } from "@tyl/db";
 import { ingestApiKeys } from "@tyl/db/schema";

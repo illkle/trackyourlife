@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 
 /** This is for testing purposes only ATM */
 const zTextSettings = z.object({

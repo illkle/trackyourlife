@@ -6,7 +6,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
 import { XIcon } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
 import { Button } from "~/@shad/components/button";

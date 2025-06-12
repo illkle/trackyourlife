@@ -1,5 +1,5 @@
 import * as SecureStore from "expo-secure-store";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 const key = "user_data";
 const zUserData = z.object({

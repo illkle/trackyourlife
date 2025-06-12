@@ -1,7 +1,7 @@
 import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import { Button } from "~/@shad/components/button";
 import {

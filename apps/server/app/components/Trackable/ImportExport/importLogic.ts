@@ -1,5 +1,5 @@
 import { format } from "date-fns";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import type { ITrackableZero } from "@tyl/db/zero-schema";
 import { and, between, db, eq } from "@tyl/db";

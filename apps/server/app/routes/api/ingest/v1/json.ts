@@ -1,6 +1,6 @@
 import { json } from "@tanstack/start";
 import { createAPIFileRoute } from "@tanstack/start/api";
-import { z } from "zod";
+import { z } from "zod/v4";
 
 import { db, eq } from "@tyl/db";
 import { ingestApiKeys } from "@tyl/db/schema";
@@ -70,7 +70,6 @@ export const APIRoute = createAPIFileRoute("/api/ingest/v1/json")({
         validated.data,
         validatedTrackableId,
       );
-      
 
       return json({ ...res, success: true }, { status: 200 });
     } catch (e) {
