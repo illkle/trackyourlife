@@ -8,7 +8,7 @@ catalog:
   "date-fns": 4.1.0
   "@date-fns/tz": 1.2.0
   "class-variance-authority": 0.7.1
-  "@rocicorp/zero": 0.16.2025022501
+  "@rocicorp/zero": 0.20.2025052100
   eslint: 9.17.0
   prettier: 3.4.2
   tailwindcss: 4.0.0

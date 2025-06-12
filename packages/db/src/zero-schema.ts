@@ -108,7 +108,7 @@ const trackableRelationships = relationships(TYL_trackable, ({ many }) => ({
   }),
 }));
 
-export const schema = createSchema(2, {
+export const schema = createSchema({
   tables: [
     TYL_trackable,
     TYL_trackableRecord,

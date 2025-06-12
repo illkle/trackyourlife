@@ -1,1 +1,1 @@
-FROM registry.hub.docker.com/rocicorp/zero:0.16.2025022501
+FROM registry.hub.docker.com/rocicorp/zero:0.20.2025052100
