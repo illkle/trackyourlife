@@ -19,11 +19,11 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   assetBundlePatterns: ["**/*"],
   ios: {
-    bundleIdentifier: "zekel.trackyourlife",
+    bundleIdentifier: "illkle.trackyourlife",
     supportsTablet: false,
   },
   android: {
-    package: "zekel.trackyourlife",
+    package: "illkle.trackyourlife",
     adaptiveIcon: {
       foregroundImage: "./assets/icon.png",
       backgroundColor: "#0A0A0A",
@@ -37,6 +37,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   experiments: {
     tsconfigPaths: true,
     typedRoutes: true,
+    reactCanary: true,
   },
   plugins: ["expo-router"],
 });

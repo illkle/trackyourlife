@@ -1,8 +1,8 @@
 import crypto from "crypto";
 import a from "@node-rs/argon2";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { createServerFn } from "@tanstack/start";
-import { getWebRequest } from "@tanstack/start/server";
+import { createServerFn } from "@tanstack/react-start";
+import { getWebRequest } from "@tanstack/react-start/server";
 import { z } from "zod/v4";
 
 import { and, db, eq } from "@tyl/db";
@@ -17,7 +17,7 @@ const keyExists = createServerFn({ method: "GET" })
   .validator((v: unknown) => z.object({ trackableId: z.string() }).parse(v))
   .handler(async ({ data }) => {
     const r = getWebRequest();
-    if (!r) throw new Error("No request");
+
     const sessionInfo = await auth.api.getSession({
       headers: r.headers,
     });
@@ -38,7 +38,6 @@ const issueKey = createServerFn({ method: "POST" })
   .validator((v: unknown) => z.object({ trackableId: z.string() }).parse(v))
   .handler(async ({ data }) => {
     const r = getWebRequest();
-    if (!r) throw new Error("No request");
 
     const sessionInfo = await auth.api.getSession({
       headers: r.headers,

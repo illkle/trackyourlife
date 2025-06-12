@@ -33,15 +33,15 @@
     "@tyl/tsconfig": "workspace:*",
     "@types/chroma-js": "^2.4.4",
     "@types/lodash-es": "^4.17.12",
-    "@types/react": "catalog:react18",
+    "@types/react": "catalog:react",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "react": "catalog:react18",
+    "react": "catalog:react",
     "typescript": "catalog:",
     "zod": "catalog:"
   },
   "peerDependencies": {
-    "react": "catalog:react18",
+    "react": "catalog:react",
     "zod": "catalog:"
   },
   "prettier": "@tyl/prettier-config"

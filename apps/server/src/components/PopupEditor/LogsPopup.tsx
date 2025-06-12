@@ -234,7 +234,7 @@ const InputEditor = ({
   const { id } = useTrackableMeta();
   const attrs = useTrackableFlag(id, "LogsSavedAttributes");
 
-  const form = useForm<FormInputType>({
+  const form = useForm({
     defaultValues: initialValue ?? {
       value: "",
       attributes: {},

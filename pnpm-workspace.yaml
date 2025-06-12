@@ -4,7 +4,7 @@ packages:
   - tooling/*
 
 catalog:
-  "@tanstack/react-query": 5.65.1
+  "@tanstack/react-query": 5.80.7
   "date-fns": 4.1.0
   "@date-fns/tz": 1.2.0
   "class-variance-authority": 0.7.1
@@ -17,8 +17,8 @@ catalog:
   zod: 3.25.63
 
 catalogs:
-  react18:
-    react: 18.2.0
-    react-dom: 18.2.0
-    "@types/react": ^18.2.0
-    "@types/react-dom": ^18.2.0
+  react:
+    react: 19.1.0
+    react-dom: 19.1.0
+    "@types/react": ^19.1.8
+    "@types/react-dom": ^19.1.0

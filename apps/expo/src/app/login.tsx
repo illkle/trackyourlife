@@ -11,7 +11,7 @@ import { tws } from "~/utils/tw";
 
 const errorInfo: Record<string, string> = {
   "Network request failed":
-    ". If you are connected to the internet this usually means host is typed incorrectly. \n\nMost common mistake is not specifying protocol: tyl.zekel.io should be https://tyl.zekel.io (use http:// when connecting to a server without TLS certificate)",
+    ". If you are connected to the internet this usually means host is typed incorrectly. \n\nMost common mistake is not specifying protocol: tyl.illkle.com should be https://tyl.illkle.com (use http:// when connecting to a server without TLS certificate)",
 };
 
 const LoginForm = () => {
@@ -85,7 +85,7 @@ const LoginForm = () => {
       <Input
         defaultValue={host.current}
         autoCapitalize="none"
-        placeholder="https://tyl.zekel.io"
+        placeholder="https://tyl.illkle.com"
         style={tws("mt-2")}
         onChangeText={(v) => (host.current = v)}
       />

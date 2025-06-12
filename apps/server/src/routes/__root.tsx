@@ -75,16 +75,6 @@ function RootComponent() {
   );
 }
 
-const TanStackRouterDevtools =
-  process.env.NODE_ENV === "production"
-    ? () => null // Render nothing in production
-    : React.lazy(() =>
-        import("@tanstack/router-devtools").then((res) => ({
-          default: res.TanStackRouterDevtools,
-        })),
-      );
-
-//  import.meta.env.DEV  is a temporary HMR HACK https://github.com/TanStack/router/issues/1992
 function RootDocument({ children }: { children: React.ReactNode }) {
   return (
     <html suppressHydrationWarning={true}>

@@ -3,7 +3,7 @@ import reactConfig from "@tyl/eslint-config/react";
 
 /** @type {import('typescript-eslint').Config} */
 export default [
-  { ignores: [".vinxi/**", ".output/**"] },
+  { ignores: [".tanstack/**", ".output/**", ".turbo/**"] },
   ...baseConfig,
   ...reactConfig,
 ];
