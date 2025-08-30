@@ -1,44 +1,52 @@
-FROM node:22-alpine AS base
- 
+# ---- Create Base Image ----
+
+FROM node:22-slim AS base
+	
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
+
 FROM base AS builder
-RUN apk update
-RUN apk add --no-cache libc6-compat
-# Set working directory
 WORKDIR /app
 
 RUN npm install -g turbo@^2
+
+# ---- Create Pruned Monorepo ----
+
+COPY package.json pnpm-lock.yaml turbo.json ./
+COPY apps/migration/package.json ./apps/migration/
+
 COPY . .
- 
-# Generate a partial monorepo with a pruned lockfile for a target workspace.
 RUN turbo prune @tyl/migration --docker
+
+# ---- Install and build ----
  
-# Add lockfile and package.json's of isolated subworkspace
 FROM base AS installer
-RUN apk update
-RUN apk add --no-cache libc6-compat
 WORKDIR /app
- 
-# First install the dependencies (as they change less often)
+
+RUN npm install -g pnpm
+
 COPY --from=builder /app/out/json/ .
 COPY --from=builder /app/out/pnpm-lock.yaml ./pnpm-lock.yaml
-RUN npm install -g pnpm
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
-# Build the project
 COPY --from=builder /app/out/full/ .
 RUN pnpm turbo run build --filter=@tyl/migration...
 RUN pnpm run zero:generate-migration
 
+# ---- Create Runner and Start ----
+
 FROM base AS runner
 WORKDIR /app
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 tylrunner
-USER tylrunner
+RUN groupadd --system --gid 1001 nodejs && \
+    useradd --system --uid 1001 --gid nodejs tylrunner
 
 COPY --from=installer --chown=tylrunner:nodejs /app/apps/migration/dist ./dist
 COPY --from=installer --chown=tylrunner:nodejs /app/packages/db/drizzle ./drizzle
-COPY --from=installer /app/zero-permissions.sql ./zero-permissions.sql
+COPY --from=installer --chown=tylrunner:nodejs /app/zero-permissions.sql ./zero-permissions.sql
 
+USER tylrunner
 CMD ["node", "./dist/index.cjs"]
  
