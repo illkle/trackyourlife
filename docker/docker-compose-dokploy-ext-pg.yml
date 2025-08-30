@@ -21,6 +21,9 @@ services:
         condition: service_healthy
     networks:
       - dokploy-network
+    expose:
+      - 80
+      - 443
   init:
     build:
       context: ./../.
@@ -57,6 +60,9 @@ services:
       start_period: 300s
     networks:
       - dokploy-network
+    expose:
+      - 80
+      - 443
 
 volumes:
   replica:
