@@ -16,6 +16,10 @@ const confg = defineConfig({
   },
 
   vite: {
+    server: {
+      host: true,
+      port: 80,
+    },
     optimizeDeps: {
       esbuildOptions: {
         target: "es2022",
@@ -34,6 +38,7 @@ const confg = defineConfig({
         "top-level-await": true,
       },
     },
+
     plugins: [tsConfigPaths({ projects: ["./tsconfig.json"] })],
   },
 });
