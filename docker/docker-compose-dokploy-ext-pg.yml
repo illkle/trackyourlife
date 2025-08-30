@@ -4,8 +4,8 @@
 services:
   web:
     build:
-      context: .
-      dockerfile: ./Dockerfile
+      context: ./../.
+      dockerfile: ./docker/Dockerfile
       args:
         - VITE_ZERO_DOMAIN=${VITE_ZERO_DOMAIN} # Domain for zero container
     environment:
@@ -21,8 +21,8 @@ services:
         condition: service_healthy
   init:
     build:
-      context: .
-      dockerfile: ./init.Dockerfile
+      context: ./../.
+      dockerfile: ./docker/init.Dockerfile
     environment:
       - MIGRARATE=true
       - DATABASE_URL=${DATABASE_URL}
@@ -34,8 +34,8 @@ services:
     restart: "no"
   zerosync:
     build:
-      context: .
-      dockerfile: ./zero.Dockerfile
+      context: ./../.
+      dockerfile: ./docker/zero.Dockerfile
     environment:
       - ZERO_UPSTREAM_DB=${ZERO_UPSTREAM_DB}
       - ZERO_CVR_DB=${ZERO_CVR_DB}
