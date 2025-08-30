@@ -54,3 +54,7 @@ services:
 
 volumes:
   replica:
+
+# Required to connect to pg hosted separately
+networks:
+  - dokploy-network
