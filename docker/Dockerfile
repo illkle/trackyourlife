@@ -2,9 +2,14 @@
 
 FROM node:22-slim AS base
 	
+# Also add stuff required to build @rocicorp/zero-sqlite3
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    ca-certificates && \
+    ca-certificates \
+    python3 \
+    make \
+    g++ \
+    build-essential && \
     rm -rf /var/lib/apt/lists/*
 
 FROM base AS builder
