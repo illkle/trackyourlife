@@ -19,6 +19,8 @@ services:
         condition: service_completed_successfully
       zerosync:
         condition: service_healthy
+    networks:
+      - dokploy-network
   init:
     build:
       context: ./../.
@@ -32,6 +34,8 @@ services:
     depends_on:
       - zerosync
     restart: "no"
+    networks:
+      - dokploy-network
   zerosync:
     build:
       context: ./../.
@@ -51,10 +55,13 @@ services:
       timeout: 5s
       retries: 3
       start_period: 300s
+    networks:
+      - dokploy-network
 
 volumes:
   replica:
 
 # Required to connect to pg hosted separately
 networks:
-  - dokploy-network
+  dokploy-network:
+    external: true
