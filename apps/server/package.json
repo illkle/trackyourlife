@@ -4,7 +4,7 @@
   "sideEffects": false,
   "type": "module",
   "scripts": {
-    "dev": "vite dev --port 3000",
+    "dev": "pnpm with-env vite dev --port 3000",
     "build": "vite build",
     "start": "node .output/server/index.mjs",
     "lint": "eslint .",

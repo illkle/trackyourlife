@@ -18,7 +18,6 @@ export const Route = createFileRoute("/app")({
 });
 
 const makeZero = (userID: string, token: string) => {
-  console.log("ddd making zero");
   return new Zero({
     userID,
     server: import.meta.env.VITE_ZERO_DOMAIN as string,
