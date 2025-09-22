@@ -6,16 +6,9 @@ App to track stuff. It started as a self-hosted habit\mood\stats tracker and I w
 
 ### Current state
 
-updated: 1 February 2025
+updated: 30 August 2025
 
-I use it personally to track my stuff, however it's not stable or production ready. It's available at [tyl.illkle.com](https://tyl.illkle.com/) (use at your own risk: data loss may happen)
-
-Current goals:
-
-1. Data improvements: new data types with multiple entries per day and custom attributes.
-2. Data import\export, receive push push public API, make pull via cron.
-3. UI\UX improvements: rethink and unify design.
-
+No interest in developing this project currently. Though it's usable and available at [tyl.illkle.com](https://tyl.illkle.com/) (use at your own risk: data loss may happen)
 
 ### Development
 
