@@ -8,6 +8,7 @@ node_modules
 
 # js
 .tanstack
+.nitro
 .output
 /out/
 .env

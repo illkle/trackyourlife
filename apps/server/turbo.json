@@ -9,8 +9,9 @@
         "^build"
       ],
       "outputs": [
-        ".vinxi/**",
-        ".output/**"
+        ".output/**",
+        ".tanstack/**",
+        ".nitro/**"
       ]
     },
     "dev": {
