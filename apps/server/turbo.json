@@ -10,7 +10,7 @@
       ],
       "outputs": [
         ".output/**",
-        ".tanstack/**",
+        "dist/**",
         ".nitro/**"
       ]
     },

@@ -19,6 +19,6 @@ export default defineConfig({
       },
     }),
     viteReact(),
-    nitroV2Plugin({ preset: "node-server" }),
+    nitroV2Plugin({ preset: "node-server", compatibilityDate: "2025-11-13" }),
   ],
 });
