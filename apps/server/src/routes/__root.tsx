@@ -59,7 +59,7 @@ export const Route = createRootRouteWithContext<{
     ],
   }),
 
-  ssr: "data-only",
+  ssr: true,
   component: RootComponent,
   loader: async ({ context }) => {
     await ensureSessionInfo(context.queryClient);
@@ -81,7 +81,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
 
-      <body className="overscroll-none bg-background text-foreground">
+      <body className="bg-background text-foreground overscroll-none">
         <LazyMotionProvider>
           <ThemeProvider defaultTheme="dark" attribute="class">
             <UserPreloader>{children}</UserPreloader>
