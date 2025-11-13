@@ -9,7 +9,6 @@ import {
 
 import { LazyMotionProvider } from "~/components/Providers/lazyFramerMotionProvider";
 import { ThemeProvider } from "~/components/Providers/next-themes/themes";
-import { SingletonProvider } from "~/components/Providers/singletonProvider";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo.js";
 import { ensureSessionInfo, UserPreloader } from "~/utils/useSessionInfo";

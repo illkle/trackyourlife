@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
-import { useForm, useStore } from "@tanstack/react-form";
+import { useState } from "react";
+import { useForm } from "@tanstack/react-form";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod/v4";
 
 import { Button } from "~/@shad/components/button";
 import { Input } from "~/@shad/components/input";
 import TestComponentSort from "~/components/Trackable/Settings/logsDisplay/quickRepo";
-import { useLinkedBinding } from "~/utils/useDbLinkedValue";
 
 export const Route = createFileRoute("/app/testing")({
   component: RouteComponent,
@@ -53,7 +52,6 @@ function RouteComponent() {
 
 const ChildComponent = ({
   value,
-  timestamp,
   onChange,
 }: {
   value: ComplexValue;

@@ -16,7 +16,7 @@
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
     "format": "prettier --check . --ignore-path ../../.gitignore",
-    "lint": "eslint .",
+    "lint": "oxlint .",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
@@ -28,13 +28,11 @@
   },
   "devDependencies": {
     "@tyl/db": "workspace:*",
-    "@tyl/eslint-config": "workspace:*",
     "@tyl/prettier-config": "workspace:*",
     "@tyl/tsconfig": "workspace:*",
     "@types/chroma-js": "^2.4.4",
     "@types/lodash-es": "^4.17.12",
     "@types/react": "catalog:react",
-    "eslint": "catalog:",
     "prettier": "catalog:",
     "react": "catalog:react",
     "typescript": "catalog:",

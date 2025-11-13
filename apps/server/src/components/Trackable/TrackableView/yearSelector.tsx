@@ -169,7 +169,7 @@ export const YearSelectorOld = ({
           onClick={() => {
             if (value) onChange(value + 1);
           }}
-          className="absolute top-1/2 right-[1rem] flex w-12 -translate-y-1/2 translate-x-full items-center justify-end bg-neutral-50 pr-2 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-neutral-950"
+          className="absolute top-1/2 right-4 flex w-12 -translate-y-1/2 translate-x-full items-center justify-end bg-neutral-50 pr-2 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-neutral-950"
         >
           <ChevronRightIcon size={16} />
         </Button>
@@ -179,7 +179,7 @@ export const YearSelectorOld = ({
           onClick={() => {
             if (value) onChange(value - 1);
           }}
-          className="absolute top-1/2 left-[1rem] flex w-12 -translate-x-full -translate-y-1/2 items-center justify-start bg-neutral-50 pl-2 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-neutral-950"
+          className="absolute top-1/2 left-4 flex w-12 -translate-x-full -translate-y-1/2 items-center justify-start bg-neutral-50 pl-2 opacity-0 transition-opacity group-hover:opacity-100 dark:bg-neutral-950"
         >
           <ChevronLeftIcon size={16} />
         </Button>

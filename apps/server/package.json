@@ -7,7 +7,7 @@
     "dev": "pnpm with-env vite dev --port 3000",
     "build": "vite build",
     "start": "node .output/server/index.mjs",
-    "lint": "eslint .",
+    "lint": "oxlint .",
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
@@ -63,7 +63,6 @@
     "@playwright/test": "^1.49.1",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tanstack/react-query-devtools": "^5.63.0",
-    "@tyl/eslint-config": "workspace:*",
     "@tyl/prettier-config": "workspace:*",
     "@tyl/tsconfig": "workspace:*",
     "@types/node": "^22.10.5",
@@ -74,7 +73,7 @@
     "dotenv": "^16.4.7",
     "dotenv-cli": "^8.0.0",
     "prettier": "catalog:",
-    "tailwindcss": "4.1.17",
+    "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "^6.0.7",
     "vite-tsconfig-paths": "^5.1.4"

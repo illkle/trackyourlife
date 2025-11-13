@@ -27,7 +27,7 @@
     "dev": "tsc --watch",
     "clean": "rm -rf .turbo node_modules",
     "format": "prettier --check . --ignore-path ../../.gitignore",
-    "lint": "eslint .",
+    "lint": "oxlint .",
     "generate": "pnpm with-env drizzle-kit generate",
     "up": "pnpm with-env drizzle-kit up",
     "migrate": "pnpm with-env drizzle-kit migrate",
@@ -43,13 +43,11 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@tyl/eslint-config": "workspace:*",
     "@tyl/prettier-config": "workspace:*",
     "@tyl/tsconfig": "workspace:*",
     "@types/pg": "^8.11.6",
     "dotenv-cli": "^8.0.0",
     "drizzle-kit": "^0.30.4",
-    "eslint": "catalog:",
     "pg": "^8.12.0",
     "prettier": "catalog:",
     "typescript": "catalog:"

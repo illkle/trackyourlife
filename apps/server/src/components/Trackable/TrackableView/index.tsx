@@ -190,7 +190,7 @@ const TrackableView = ({
         />
       )}
 
-      <hr className="bg-muted-foreground my-4 h-[1px] border-none opacity-10 outline-hidden" />
+      <hr className="bg-muted-foreground my-4 h-px border-none opacity-10 outline-hidden" />
 
       <TrackableNoteEditable />
     </>

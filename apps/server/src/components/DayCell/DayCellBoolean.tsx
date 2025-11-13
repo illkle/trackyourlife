@@ -36,7 +36,7 @@ export const DayCellBoolean = () => {
 
   const mainRef = useRef<HTMLButtonElement>(null);
   // Point where click happened in % relative to button box. Used for animation
-  const [clickPoint, setClickPoint] = useState([50, 50]);
+  const [_, setClickPoint] = useState([50, 50]);
   // Ration between width and height of the box.
   const [_whRatio, setWhRatio] = useState(1);
 

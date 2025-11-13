@@ -55,9 +55,9 @@ const MiniTrackable = ({
                   </span>
                 </div>
                 <DayCellRouter
+                  key={index}
                   {...day}
                   labelType="none"
-                  key={index}
                   className="max-h-16 min-h-16"
                 />
               </div>

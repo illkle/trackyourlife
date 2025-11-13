@@ -30,15 +30,6 @@
       ],
       "outputLogs": "new-only"
     },
-    "lint": {
-      "dependsOn": [
-        "^topo",
-        "^build"
-      ],
-      "outputs": [
-        "node_modules/.cache/.eslintcache"
-      ]
-    },
     "typecheck": {
       "dependsOn": [
         "^topo",
@@ -62,10 +53,6 @@
     "generate": {
       "cache": false,
       "persistent": true
-    },
-    "ui-add": {
-      "cache": false,
-      "interactive": true
     },
     "test": {
       "persistent": true,

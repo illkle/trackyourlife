@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/consistent-indexed-object-style */
+// oxlint-disable
 import * as React from "react";
 
 // this is basically the same as the next-themes but with fixes for tanstack router

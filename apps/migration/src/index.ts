@@ -4,7 +4,7 @@ import { executeRaw, migrateDb } from "@tyl/db";
 
 const migrator = async () => {
   if (!process.env.MIGRARATE) {
-    console.log("X: process.env.MIGRARATE is not set, skipping migrations");
+    console.log("X: process.env.MIGRATE is not set, skipping migrations");
     const zeroPermissions = fs.existsSync("./zero-permissions.sql");
 
     const drizzleDir = fs.existsSync("./drizzle");
