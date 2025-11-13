@@ -50,6 +50,7 @@ services:
       - ZERO_AUTH_JWKS_URL=${ZERO_AUTH_JWKS_URL} # Domain for web container + /api/auth/jwks
       - ZERO_REPLICA_FILE=/zero_data/zstart_replica.db
       - ZERO_PORT=80
+      - ZERO_ADMIN_PASSWORD=${ZERO_ADMIN_PASSWORD}
     volumes:
       - replica:/zero_data
     healthcheck:
