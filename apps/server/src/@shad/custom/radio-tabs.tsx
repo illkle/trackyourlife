@@ -2,7 +2,7 @@ import * as React from "react";
 import * as RadioGroupPrimitive from "@radix-ui/react-radio-group";
 import { LayoutGroup, m } from "motion/react";
 
-import { cn } from "../utils";
+import { cn } from "~/@shad/lib/utils";
 
 const RadioTabs = React.forwardRef<
   React.ElementRef<typeof RadioGroupPrimitive.Root>,

@@ -1,3 +1,4 @@
+import { cn } from "@shad/lib/utils";
 import { linkOptions } from "@tanstack/react-router";
 import {
   Calendar1Icon,
@@ -5,8 +6,6 @@ import {
   LogsIcon,
   SettingsIcon,
 } from "lucide-react";
-
-import { cn } from "~/@shad/utils";
 
 export const CoreLinks = [
   linkOptions({

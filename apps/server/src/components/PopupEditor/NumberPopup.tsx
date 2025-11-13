@@ -1,5 +1,6 @@
+import { cn } from "@shad/lib/utils";
+
 import type { PopupEditorProps } from "~/components/PopupEditor";
-import { cn } from "~/@shad/utils";
 import {
   NumberInput,
   NumberInputWrapper,

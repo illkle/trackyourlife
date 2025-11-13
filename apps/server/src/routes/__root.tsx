@@ -83,14 +83,12 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
 
       <body className="overscroll-none bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-50">
-        <SingletonProvider>
-          <LazyMotionProvider>
-            <ThemeProvider defaultTheme="dark" attribute="class">
-              <UserPreloader>{children}</UserPreloader>
-              <Scripts />
-            </ThemeProvider>
-          </LazyMotionProvider>
-        </SingletonProvider>
+        <LazyMotionProvider>
+          <ThemeProvider defaultTheme="dark" attribute="class">
+            <UserPreloader>{children}</UserPreloader>
+            <Scripts />
+          </ThemeProvider>
+        </LazyMotionProvider>
       </body>
     </html>
   );

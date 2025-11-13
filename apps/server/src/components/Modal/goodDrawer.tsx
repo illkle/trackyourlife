@@ -6,10 +6,10 @@
 
 import type { HTMLMotionProps } from "motion/react";
 import React from "react";
+import { cn } from "@shad/lib/utils";
 import { m } from "motion/react";
 
 import { useSidebar } from "~/@shad/components/sidebar";
-import { cn } from "~/@shad/utils";
 
 export const GoodDrawer = React.forwardRef<
   HTMLDivElement,

@@ -1,6 +1,6 @@
 import type { AnyFieldApi } from "@tanstack/react-form";
 import { useState } from "react";
-import { cn } from "@shad/utils";
+import { cn } from "@shad/lib/utils";
 import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
@@ -18,7 +18,7 @@ import {
   CardTitle,
 } from "~/@shad/components/card";
 import { Input } from "~/@shad/components/input";
-import { RadioTabItem, RadioTabs } from "~/@shad/components/radio-tabs";
+import { RadioTabItem, RadioTabs } from "~/@shad/custom/radio-tabs";
 import { authClient } from "~/auth/client";
 import { invalidateSession } from "~/utils/useSessionInfo";
 import { EmailValidator, NameValidator, PasswordValidator } from "./common";

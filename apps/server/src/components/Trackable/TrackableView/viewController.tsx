@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { cn } from "@shad/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { format } from "date-fns";
 import {
@@ -10,7 +11,6 @@ import {
 
 import type { TVDateValue } from "~/components/Trackable/TrackableView";
 import { Button } from "~/@shad/components/button";
-import { cn } from "~/@shad/utils";
 import { YearSelector } from "~/components/Trackable/TrackableView/yearSelector";
 import { Route } from "~/routes/app/trackables/$id/view";
 
@@ -102,7 +102,7 @@ export const ViewController = ({
     <>
       <div
         className={cn(
-          "border-sidebar-border group mb-4 ml-auto flex w-fit items-center rounded-md border dark:bg-neutral-950",
+          "border-sidebar-border group mb-4 ml-auto flex w-fit items-center rounded-md border",
         )}
       >
         <Button

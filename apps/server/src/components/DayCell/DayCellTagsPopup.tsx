@@ -1,7 +1,8 @@
+import { cn } from "@shad/lib/utils";
+
 import { getTagStyleHashed } from "@tyl/helpers/trackables";
 
 import { ScrollArea, ScrollBar } from "~/@shad/components/scroll-area";
-import { cn } from "~/@shad/utils";
 import { LabelInside, useDayCellContext } from "~/components/DayCell";
 import {
   openDayEditor,

@@ -1,6 +1,7 @@
 import type { ListenerValue } from "@tanstack/react-store";
 import type { HTMLMotionProps } from "motion/react";
 import React, { useEffect, useRef, useState } from "react";
+import { cn } from "@shad/lib/utils";
 import { useLocation } from "@tanstack/react-router";
 import { Store, useStore } from "@tanstack/react-store";
 import { addDays, subDays } from "date-fns";
@@ -8,7 +9,6 @@ import { AnimatePresence, m } from "motion/react";
 import { useOnClickOutside } from "usehooks-ts";
 
 import { useSidebar } from "~/@shad/components/sidebar";
-import { cn } from "~/@shad/utils";
 import { PopupEditor } from "~/components/PopupEditor";
 import { useIsMobile } from "~/utils/useIsDesktop";
 

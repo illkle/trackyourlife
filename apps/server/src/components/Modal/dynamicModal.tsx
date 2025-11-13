@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { createContext, useContext, useMemo } from "react";
+import { cn } from "@shad/lib/utils";
 
 import {
   Dialog,
@@ -19,7 +20,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "~/@shad/components/popover";
-import { cn } from "~/@shad/utils";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
 interface DynamicModalContext {

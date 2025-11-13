@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { cn } from "@shad/utils";
+import { cn } from "@shad/lib/utils";
 import { format, isAfter, isBefore, isSameDay } from "date-fns";
 
 import type { DbTrackableSelect } from "@tyl/db/schema";

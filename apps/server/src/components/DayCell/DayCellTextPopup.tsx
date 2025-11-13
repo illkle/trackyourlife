@@ -1,4 +1,4 @@
-import { cn } from "@shad/utils";
+import { cn } from "@shad/lib/utils";
 
 import {
   DayCellBaseClasses,

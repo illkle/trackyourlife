@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import { cn } from "@shad/utils";
+import { cn } from "@shad/lib/utils";
 import { MoonIcon, SunIcon } from "lucide-react";
 
 import type { IColorValue } from "@tyl/db/jsonValidators";
@@ -21,21 +21,21 @@ export const ColorDisplay = ({
   return (
     <div
       className={cn(
-        "relative flex w-full items-center overflow-hidden rounded-md border-2 border-neutral-200 bg-transparent font-mono text-sm shadow-xs transition-colors focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-neutral-950 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-800",
+        "relative flex w-full items-center overflow-hidden rounded-md border-2 border-neutral-200 bg-transparent font-mono text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-neutral-950 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-800",
         className,
       )}
       style={style}
     >
       <SunIcon
         size={16}
-        className="absolute left-2 top-1/2 z-20 -translate-y-1/2 stroke-neutral-950"
+        className="absolute top-1/2 left-2 z-20 -translate-y-1/2 stroke-neutral-950"
       />
       <MoonIcon
         size={16}
-        className="absolute right-2 top-1/2 z-20 -translate-y-1/2 stroke-neutral-50"
+        className="absolute top-1/2 right-2 z-20 -translate-y-1/2 stroke-neutral-50"
       />
       <div
-        className="absolute left-1/2 top-0 z-10 h-full w-full"
+        className="absolute top-0 left-1/2 z-10 h-full w-full"
         style={{
           background: currentDark,
           // Manual transform because order matters
@@ -44,7 +44,7 @@ export const ColorDisplay = ({
         }}
       ></div>
       <div
-        className="absolute left-0 top-0 h-full w-full"
+        className="absolute top-0 left-0 h-full w-full"
         style={{ background: currentLight }}
       ></div>
     </div>

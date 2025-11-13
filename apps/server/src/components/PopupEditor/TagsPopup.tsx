@@ -7,6 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { cn } from "@shad/lib/utils";
 import { CornerRightUp, XIcon } from "lucide-react";
 
 import { clamp } from "@tyl/helpers";
@@ -17,7 +18,6 @@ import { Badge } from "~/@shad/components/badge";
 import { Button } from "~/@shad/components/button";
 import { Input } from "~/@shad/components/input";
 import { ScrollArea, ScrollBar } from "~/@shad/components/scroll-area";
-import { cn } from "~/@shad/utils";
 import { useTheme } from "~/components/Providers/next-themes/themes";
 import {
   useSetTrackableFlag,

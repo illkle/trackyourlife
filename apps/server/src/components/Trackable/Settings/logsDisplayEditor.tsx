@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import { useQuery } from "@rocicorp/zero/react";
+import { cn } from "@shad/lib/utils";
 import {
   ALargeSmallIcon,
   BracesIcon,
@@ -21,7 +22,6 @@ import { mapUnorderedData } from "@tyl/helpers/trackables";
 
 import { Button } from "~/@shad/components/button";
 import { Input } from "~/@shad/components/input";
-import { RadioTabItem, RadioTabs } from "~/@shad/components/radio-tabs";
 import {
   Select,
   SelectContent,
@@ -30,7 +30,7 @@ import {
   SelectValue,
 } from "~/@shad/components/select";
 import { Slider } from "~/@shad/components/slider";
-import { cn } from "~/@shad/utils";
+import { RadioTabItem, RadioTabs } from "~/@shad/custom/radio-tabs";
 import { LogsItemsRendered } from "~/components/PopupEditor/LogsPopup";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { useZ } from "~/utils/useZ";

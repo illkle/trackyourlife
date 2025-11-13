@@ -1,10 +1,10 @@
 import { useState } from "react";
+import { cn } from "@shad/lib/utils";
 import { useIsomorphicLayoutEffect } from "usehooks-ts";
 
 import { clamp } from "@tyl/helpers/animation";
 
-import { Input } from "~/@shad/components/input-w-details";
-import { cn } from "~/@shad/utils";
+import { Input } from "~/@shad/custom/input-w-details";
 
 export const BetterNumberInput = ({
   value,

@@ -2,7 +2,6 @@
 description: What packages and libraries to use for specific tasks inside of codebase
 globs: *.tsx, *.ts
 ---
-- Use tailwind, when choosing colors choose `neutral` ones i.e `bg-neutral-200`, support darkmode.
 - For handling dates always use "dateFns"
 - Use Zod for validation where applicable
 - If you need animations use framer-motion. You can import it like this: import { AnimatePresence, m } from "motion/react";

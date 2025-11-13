@@ -7,6 +7,7 @@ import React, {
   useRef,
   useState,
 } from "react";
+import { cn } from "@shad/lib/utils";
 import { TrashIcon } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
 import { useMediaQuery } from "usehooks-ts";
@@ -14,7 +15,6 @@ import { useMediaQuery } from "usehooks-ts";
 import { clamp } from "@tyl/helpers";
 import { range } from "@tyl/helpers/animation";
 
-import { cn } from "~/@shad/utils";
 import { useRefSize } from "~/utils/useRefSize";
 
 const ControllerContext = createContext<{

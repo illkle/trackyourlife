@@ -1,6 +1,6 @@
 /*
 Component was pretty cool, but Range selector is currently dead. Might need in the future when number will support enum.
-import { cn } from "@shad/utils";
+import { cn } from "@shad/lib/utils";
 import { AnimatePresence, m } from "motion/react";
 
 import type { IRangeSettings } from "@tyl/db/jsonValidators";

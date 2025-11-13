@@ -1,5 +1,5 @@
 import { Fragment, useMemo } from "react";
-import { cn } from "@shad/utils";
+import { cn } from "@shad/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { format, isLastDayOfMonth, subDays } from "date-fns";
 import { m } from "motion/react";

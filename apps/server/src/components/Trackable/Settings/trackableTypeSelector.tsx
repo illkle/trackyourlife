@@ -1,4 +1,5 @@
 import { RadioGroupItem } from "@radix-ui/react-radio-group";
+import { cn } from "@shad/lib/utils";
 
 import type { ITrackableZero } from "@tyl/db/zero-schema";
 
@@ -9,7 +10,6 @@ import {
   CardTitle,
 } from "~/@shad/components/card";
 import { RadioGroup } from "~/@shad/components/radio-group";
-import { cn } from "~/@shad/utils";
 import { RenderTrackableIcon } from "~/utils/trackableIcons";
 
 export const TrackableTypeSelector = ({
@@ -20,7 +20,7 @@ export const TrackableTypeSelector = ({
   setType: (type: ITrackableZero["type"]) => void;
 }) => {
   const commonClasses =
-    "border-2 transition-colors font-normal duration-200 enabled:hover:border-neutral-400 data-[state=checked]:border-neutral-800 dark:enabled:hover:border-neutral-700  dark:data-[state=checked]:bg-neutral-900";
+    "border-2 transition-colors font-normal duration-200 enabled:hover:border-muted-foreground data-[state=checked]:bg-accent";
 
   return (
     <RadioGroup
@@ -34,7 +34,7 @@ export const TrackableTypeSelector = ({
         className={cn(commonClasses, "sm:col-span-2")}
         asChild
       >
-        <Card>
+        <Card className="text-left">
           <CardHeader>
             <RenderTrackableIcon size={20} type="boolean" />
             <CardTitle>Boolean</CardTitle>
@@ -50,7 +50,7 @@ export const TrackableTypeSelector = ({
         className={cn(commonClasses, "sm:col-span-2")}
         asChild
       >
-        <Card>
+        <Card className="text-left">
           <CardHeader>
             <RenderTrackableIcon size={20} type="number" />
             <CardTitle>Number</CardTitle>
@@ -67,7 +67,7 @@ export const TrackableTypeSelector = ({
         className={cn(commonClasses, "sm:col-span-2")}
         asChild
       >
-        <Card>
+        <Card className="text-left">
           <CardHeader>
             <RenderTrackableIcon size={20} type="text" />
             <CardTitle>Text</CardTitle>
@@ -85,7 +85,7 @@ export const TrackableTypeSelector = ({
         className={cn(commonClasses, "sm:col-span-3")}
         asChild
       >
-        <Card>
+        <Card className="text-left">
           <CardHeader>
             <RenderTrackableIcon size={20} type="tags" />
             <CardTitle className="flex items-center gap-2">Tags</CardTitle>
@@ -102,7 +102,7 @@ export const TrackableTypeSelector = ({
         className={cn(commonClasses, "sm:col-span-3")}
         asChild
       >
-        <Card>
+        <Card className="text-left">
           <CardHeader>
             <RenderTrackableIcon size={20} type="logs" />
             <CardTitle className="flex items-center gap-2">Logs</CardTitle>

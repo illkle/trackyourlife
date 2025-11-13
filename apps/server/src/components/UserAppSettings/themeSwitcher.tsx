@@ -1,8 +1,8 @@
+import { cn } from "@shad/lib/utils";
 import { LaptopIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useIsClient } from "usehooks-ts";
 
-import { RadioTabItem, RadioTabs } from "~/@shad/components/radio-tabs";
-import { cn } from "~/@shad/utils";
+import { RadioTabItem, RadioTabs } from "~/@shad/custom/radio-tabs";
 import { useTheme } from "~/components/Providers/next-themes/themes";
 
 export const ThemeSwitcher = ({ className }: { className?: string }) => {

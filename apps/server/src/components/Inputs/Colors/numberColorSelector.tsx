@@ -1,6 +1,6 @@
 import type { CSSProperties } from "react";
 import { useCallback, useMemo, useState } from "react";
-import { cn } from "@shad/utils";
+import { cn } from "@shad/lib/utils";
 import { PlusCircleIcon, XIcon } from "lucide-react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -24,7 +24,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/@shad/components/drawer";
-import { Input } from "~/@shad/components/input-w-details";
+import { Input } from "~/@shad/custom/input-w-details";
 import { BetterNumberInput } from "~/components/Inputs/Colors/betterNumberInput";
 import { ColorDisplay } from "~/components/Inputs/Colors/colorDisplay";
 import ColorPicker from "~/components/Inputs/Colors/colorPicker";

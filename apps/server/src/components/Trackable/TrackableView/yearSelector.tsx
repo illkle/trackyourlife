@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { cn } from "@shad/utils";
+import { cn } from "@shad/lib/utils";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import { useIsomorphicLayoutEffect } from "usehooks-ts";
 

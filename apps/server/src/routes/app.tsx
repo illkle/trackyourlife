@@ -1,7 +1,7 @@
 import { useLayoutEffect, useState } from "react";
 import { Zero } from "@rocicorp/zero";
 import { ZeroProvider } from "@rocicorp/zero/react";
-import { cn } from "@shad/utils";
+import { cn } from "@shad/lib/utils";
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 
 import { schema } from "@tyl/db/zero-schema";
@@ -48,7 +48,7 @@ function AppComponent() {
       <MainPreloader>
         <SidebarProvider>
           <AppSidebar />
-          <div className={cn("rel h-full max-h-full min-h-screen w-full")}>
+          <div className={cn("relative h-full max-h-full min-h-screen w-full")}>
             <Header>
               <SidebarToggle />
               <Link to={"/app"}>

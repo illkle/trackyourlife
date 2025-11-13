@@ -1,6 +1,6 @@
 import type { ChangeEvent, FocusEvent, KeyboardEvent, MouseEvent } from "react";
 import { useEffect, useRef, useState } from "react";
-import { cn } from "@shad/utils";
+import { cn } from "@shad/lib/utils";
 
 import { Input } from "~/@shad/components/input";
 

@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { cn } from "@shad/utils";
+import { cn } from "@shad/lib/utils";
 
 import type { INumberProgressBounds } from "@tyl/db/jsonValidators";
 
-import { Input } from "~/@shad/components/input-w-details";
+import { Input } from "~/@shad/custom/input-w-details";
 
 export interface IRangeLabelSelector {
   value: INumberProgressBounds;

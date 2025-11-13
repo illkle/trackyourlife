@@ -1,7 +1,7 @@
 import type React from "react";
 import type { CSSProperties } from "react";
 import { createContext, forwardRef, useContext, useMemo, useRef } from "react";
-import { cn } from "@shad/utils";
+import { cn } from "@shad/lib/utils";
 
 import { makeColorString } from "@tyl/helpers/colorTools";
 

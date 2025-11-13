@@ -1,6 +1,5 @@
 import * as React from "react";
-
-import { cn } from "../utils";
+import { cn } from "@shad/lib/utils";
 
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -9,7 +8,7 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-xl border border-neutral-200 bg-white text-neutral-950 shadow-sm dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50",
+      "bg-card text-card-foreground rounded-xl border shadow",
       className,
     )}
     {...props}
@@ -24,13 +23,13 @@ const CardPressable = React.forwardRef<
   <button
     ref={ref}
     className={cn(
-      "flex flex-col rounded-xl border border-neutral-200 bg-white text-left text-neutral-950 shadow-sm disabled:cursor-not-allowed disabled:opacity-30 dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50",
+      "bg-card text-card-foreground cursor-pointer rounded-xl border shadow disabled:cursor-not-allowed disabled:opacity-30",
       className,
     )}
     {...props}
   />
 ));
-Card.displayName = "Card";
+CardPressable.displayName = "CardPressable";
 
 const CardHeader = React.forwardRef<
   HTMLDivElement,
@@ -45,24 +44,24 @@ const CardHeader = React.forwardRef<
 CardHeader.displayName = "CardHeader";
 
 const CardTitle = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLHeadingElement>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <h3
+  <div
     ref={ref}
-    className={cn("font-semibold leading-none tracking-tight", className)}
+    className={cn("leading-none font-semibold tracking-tight", className)}
     {...props}
   />
 ));
 CardTitle.displayName = "CardTitle";
 
 const CardDescription = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <p
+  <div
     ref={ref}
-    className={cn("text-sm text-neutral-500 dark:text-neutral-400", className)}
+    className={cn("text-muted-foreground text-sm", className)}
     {...props}
   />
 ));
@@ -90,10 +89,10 @@ CardFooter.displayName = "CardFooter";
 
 export {
   Card,
+  CardPressable,
   CardHeader,
   CardFooter,
   CardTitle,
   CardDescription,
   CardContent,
-  CardPressable,
 };

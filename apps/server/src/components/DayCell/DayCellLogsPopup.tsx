@@ -1,5 +1,6 @@
+import { cn } from "@shad/lib/utils";
+
 import { ScrollArea, ScrollBar } from "~/@shad/components/scroll-area";
-import { cn } from "~/@shad/utils";
 import { LabelInside, useDayCellContext } from "~/components/DayCell";
 import { openDayEditor } from "~/components/Modal/EditorModalV2";
 import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";

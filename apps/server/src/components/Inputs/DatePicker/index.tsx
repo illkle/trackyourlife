@@ -1,5 +1,5 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { cn } from "@shad/utils";
+import { cn } from "@shad/lib/utils";
 import {
   addMonths,
   clamp,

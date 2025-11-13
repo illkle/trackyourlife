@@ -1,5 +1,5 @@
 import { Fragment } from "react/jsx-runtime";
-import { cn } from "@shad/utils";
+import { cn } from "@shad/lib/utils";
 import {
   eachMonthOfInterval,
   endOfMonth,
@@ -190,7 +190,7 @@ const TrackableView = ({
         />
       )}
 
-      <hr className="my-4 h-[1px] border-none bg-neutral-900 opacity-10 outline-hidden dark:bg-neutral-50" />
+      <hr className="bg-muted-foreground my-4 h-[1px] border-none opacity-10 outline-hidden" />
 
       <TrackableNoteEditable />
     </>

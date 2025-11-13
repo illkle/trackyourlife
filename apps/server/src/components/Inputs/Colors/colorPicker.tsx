@@ -1,4 +1,5 @@
 import { Fragment, useMemo, useState } from "react";
+import { cn } from "@shad/lib/utils";
 import { AnimatePresence, m } from "motion/react";
 
 import type { IColorHSL, IColorRGB, IColorValue } from "@tyl/db/jsonValidators";
@@ -11,9 +12,8 @@ import {
 } from "@tyl/helpers/colorTools";
 
 import { Label } from "~/@shad/components/label";
-import { RadioTabItem, RadioTabs } from "~/@shad/components/radio-tabs";
 import { Switch } from "~/@shad/components/switch";
-import { cn } from "~/@shad/utils";
+import { RadioTabItem, RadioTabs } from "~/@shad/custom/radio-tabs";
 import {
   ControllerPoint,
   ControllerRoot,
