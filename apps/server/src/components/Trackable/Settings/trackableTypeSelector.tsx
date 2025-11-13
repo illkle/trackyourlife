@@ -4,12 +4,12 @@ import { cn } from "@shad/lib/utils";
 import type { ITrackableZero } from "@tyl/db/zero-schema";
 
 import {
-  CardPressable as Card,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "~/@shad/components/card";
 import { RadioGroup } from "~/@shad/components/radio-group";
+import { CardPressable as Card } from "~/@shad/custom/card-pressable";
 import { RenderTrackableIcon } from "~/utils/trackableIcons";
 
 export const TrackableTypeSelector = ({

@@ -2,19 +2,21 @@ import * as React from "react";
 
 import { cn } from "~/@shad/lib/utils";
 
-const CardPressable = React.forwardRef<
-  HTMLButtonElement,
-  React.HTMLAttributes<HTMLButtonElement>
->(({ className, ...props }, ref) => (
-  <button
-    ref={ref}
-    className={cn(
-      "bg-card text-card-foreground cursor-pointer rounded-xl border shadow disabled:cursor-not-allowed disabled:opacity-30",
-      className,
-    )}
-    {...props}
-  />
-));
-CardPressable.displayName = "CardPressable";
+function CardPressable({
+  className,
+  ...props
+}: React.ComponentProps<"button">) {
+  return (
+    <button
+      data-slot="card-pressable"
+      className={cn(
+        "bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm",
+        "cursor-pointer disabled:cursor-not-allowed disabled:opacity-30",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
 
 export { CardPressable };

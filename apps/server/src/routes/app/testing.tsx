@@ -11,115 +11,22 @@ export const Route = createFileRoute("/app/testing")({
   component: RouteComponent,
 });
 
-interface ComplexValue {
-  value: string;
-  secondValue: number;
-}
-
 function RouteComponent() {
-  const [storage, setStorage] = useState<ComplexValue>({
-    value: "",
-    secondValue: 0,
-  });
-
-  const [timestamp, setTimestamp] = useState(Date.now());
-
   return (
     <div className="mx-auto max-w-md">
-      <div className="hidden">
-        <div className="gap-4">
-          {JSON.stringify(storage)}
-          <Button
-            onClick={() => setStorage({ value: "kek", secondValue: 1337 })}
-          >
-            External Update
-          </Button>
-        </div>
-        <ChildComponent
-          value={storage}
-          timestamp={timestamp}
-          onChange={(v, ts) => {
-            setStorage(v);
-            setTimestamp(ts);
-          }}
-        />{" "}
-      </div>
-
-      <TestComponentSort />
+      <Button isLoading={true}>Hello</Button>
+      <Button isLoading={true} variant={"secondary"}>
+        Open Sidebar
+      </Button>
+      <Button isLoading={true} variant={"ghost"}>
+        Open Sidebar
+      </Button>
+      <Button isLoading={true} variant={"outline"}>
+        Open Sidebar
+      </Button>
+      <Button isLoading={true} variant={"destructive"}>
+        Open Sidebar
+      </Button>
     </div>
   );
 }
-
-const ChildComponent = ({
-  value,
-  onChange,
-}: {
-  value: ComplexValue;
-  timestamp: number;
-  onChange: (v: ComplexValue, ts: number) => void;
-}) => {
-  const form = useForm({
-    defaultValues: value,
-    onSubmit: ({ value }) => {
-      onChange(value, Date.now());
-    },
-  });
-
-  return (
-    <>
-      <button
-        onClick={() => {
-          form.store.state.values = { value: "kek", secondValue: 1337 };
-          console.log("form", form.store.state.values);
-        }}
-      >
-        test
-      </button>
-      <form.Field
-        name="value"
-        children={(field) => (
-          <TestInput
-            value={field.state.value}
-            onChange={(e) => field.handleChange(e)}
-          />
-        )}
-      />
-      <form.Field
-        name="secondValue"
-        validators={{
-          onChange: z.number().min(100),
-          onBlur: z.number().min(100),
-        }}
-        children={(field) => {
-          console.log("field", field.state);
-          return (
-            <TestInput
-              value={field.state.value}
-              onChange={(e) => field.handleChange(Number(e))}
-              className={field.state.meta.errors.length > 0 ? "bg-red-500" : ""}
-            />
-          );
-        }}
-      />
-    </>
-  );
-};
-
-const TestInput = ({
-  value,
-  onChange,
-  className,
-}: {
-  value: string | number;
-  onChange: (v: string) => void;
-  className?: string;
-}) => {
-  console.log("testinput render", value);
-  return (
-    <Input
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className={className}
-    />
-  );
-};
