@@ -39,16 +39,16 @@
   },
   "dependencies": {
     "@rocicorp/zero": "catalog:",
-    "drizzle-orm": "0.39.3",
+    "drizzle-orm": "0.44.7",
     "zod": "catalog:"
   },
   "devDependencies": {
     "@tyl/prettier-config": "workspace:*",
     "@tyl/tsconfig": "workspace:*",
-    "@types/pg": "^8.11.6",
-    "dotenv-cli": "^8.0.0",
-    "drizzle-kit": "^0.30.4",
-    "pg": "^8.12.0",
+    "@types/pg": "^8.15.6",
+    "dotenv-cli": "catalog:",
+    "drizzle-kit": "^0.31.6",
+    "pg": "^8.16.3",
     "prettier": "catalog:",
     "typescript": "catalog:"
   },
