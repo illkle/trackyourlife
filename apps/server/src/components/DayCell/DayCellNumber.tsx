@@ -57,10 +57,10 @@ export const DayCellNumber = () => {
         "group items-center justify-center overflow-visible",
         "transition-all ease-in-out",
         "cursor-pointer",
-        "border-neutral-200 dark:border-neutral-900",
-        "data-[empty=false]:border-[var(--themeLight)] dark:data-[empty=false]:border-[var(--themeDark)]",
+        "border-border/40",
+        "data-[empty=false]:border-(--themeLight) dark:data-[empty=false]:border-(--themeDark)",
         "relative",
-        "focus-within:border-neutral-300 dark:focus-within:border-neutral-600 dark:data-[empty=false]:focus-within:border-neutral-600",
+        "focus-within:border-ring dark:data-[empty=false]:focus-within:border-ring",
       )}
     >
       {labelType === "auto" && <LabelInside />}
@@ -88,9 +88,9 @@ export const DayCellNumber = () => {
 const classes = [
   "text-center text-xs font-semibold @[4rem]:text-xl",
   "absolute top-0 left-1/2 z-10 flex h-full w-full -translate-x-1/2 items-center justify-center bg-inherit outline-hidden select-none",
-  "text-neutral-200 dark:text-neutral-800",
-  "data-[empty=false]:text-neutral-800 dark:data-[empty=false]:text-neutral-300",
-  "selection:bg-neutral-300 dark:selection:bg-neutral-600",
+  "text-muted opacity-50",
+  "data-[empty=false]:text-foreground",
+  "selection:bg-ring/50",
 ];
 
 const ProgressBar = () => {
@@ -106,7 +106,7 @@ const ProgressBar = () => {
   return (
     <div
       className={cn(
-        "absolute bottom-0 left-0 w-full bg-[var(--themeLight)] dark:bg-[var(--themeDark)]",
+        "absolute bottom-0 left-0 w-full bg-(--themeLight) dark:bg-(--themeDark)",
       )}
       style={{ height: `${progress}%` }}
     ></div>

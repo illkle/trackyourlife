@@ -67,8 +67,8 @@ const MonthVisualList = ({ data }: { data: PureDataRecord[] }) => {
               className={cn(
                 "-translate-y-0.5 font-mono text-3xl leading-[100%] font-extralight select-none",
                 isToday(el.date)
-                  ? "text-neutral-950 dark:text-neutral-100"
-                  : "text-neutral-700 dark:text-neutral-600",
+                  ? "text-foreground"
+                  : "text-muted-foreground/40",
               )}
             >
               {format(el.date, "dd")}

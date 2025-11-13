@@ -192,112 +192,11 @@ export const ViewController = ({
           onClick={() =>
             navigate({ search: (prev) => ({ ...prev, ...toToday }) })
           }
-          className="rounded-l-none border-l border-neutral-800"
+          className="border-border rounded-l-none border-l"
         >
           Today
         </Button>
       </div>
     </>
-  );
-};
-
-export const ViewControllerOld = ({
-  year,
-  month,
-}: {
-  year: TVDateValue;
-  month: TVDateValue;
-}) => {
-  const now = new Date();
-  const navigate = Route.useNavigate();
-
-  const toPrev = getIncrementedDate(-1, year, month);
-  const toNext = getIncrementedDate(1, year, month);
-
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.shiftKey && e.metaKey) {
-        if (e.key === "ArrowLeft") {
-          void navigate({ search: (prev) => ({ ...prev, ...toPrev }) });
-        } else if (e.key === "ArrowRight") {
-          void navigate({ search: (prev) => ({ ...prev, ...toNext }) });
-        }
-      }
-    };
-
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [navigate, toPrev, toNext]);
-
-  return (
-    <div className="mb-4 flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-      <div className="flex items-baseline gap-2 self-center">
-        <YearSelector
-          value={typeof year === "number" ? year : undefined}
-          onChange={(v) =>
-            navigate({ search: (prev) => ({ ...prev, year: v }) })
-          }
-        />
-
-        {typeof year === "number" && typeof month === "number" && (
-          <>
-            <div className="pl-4 text-xl font-light text-neutral-200 dark:text-neutral-800">
-              /
-            </div>
-            <Link
-              from={Route.fullPath}
-              search={(prev) => ({
-                ...prev,
-                month: "list",
-              })}
-            >
-              <Button name="months" variant="ghost">
-                {format(new Date(year, month, 1), "MMMM")}
-              </Button>
-            </Link>
-          </>
-        )}
-      </div>
-      <div className="flex w-fit gap-2 self-end">
-        <Button
-          aria-label="Previous month"
-          variant="outline"
-          size="icon"
-          asChild
-        >
-          <Link
-            from={Route.fullPath}
-            search={(prev) => ({ ...prev, ...toPrev })}
-          >
-            <ChevronLeftIcon className="h-4 w-4" />
-          </Link>
-        </Button>
-
-        <Button aria-label="Next month" variant="outline" size="icon" asChild>
-          <Link
-            from={Route.fullPath}
-            search={(prev) => ({ ...prev, ...toNext })}
-          >
-            <ChevronRightIcon className="h-4 w-4" />{" "}
-          </Link>
-        </Button>
-
-        <Button aria-label="Current month" variant="outline" asChild>
-          <Link
-            from={Route.fullPath}
-            search={(prev) => ({
-              ...prev,
-              month: now.getMonth(),
-              year: now.getFullYear(),
-            })}
-            activeProps={{
-              className: "pointer-events-none opacity-50",
-            }}
-          >
-            Today
-          </Link>
-        </Button>
-      </div>
-    </div>
   );
 };

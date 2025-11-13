@@ -45,7 +45,7 @@ const ColorInput = ({
 
           <PopoverContent
             side="right"
-            className="box-border overflow-hidden rounded-md border border-neutral-200 bg-white p-3 text-neutral-950 shadow-sm dark:border-neutral-800 dark:bg-neutral-950 dark:text-neutral-50"
+            className="border-border bg-popover text-popover-foreground box-border overflow-hidden rounded-md border p-3 shadow-sm"
           >
             <ColorPicker
               value={internalValue}

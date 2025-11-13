@@ -81,7 +81,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
 
-      <body className="overscroll-none bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-50">
+      <body className="overscroll-none bg-background text-foreground">
         <LazyMotionProvider>
           <ThemeProvider defaultTheme="dark" attribute="class">
             <UserPreloader>{children}</UserPreloader>

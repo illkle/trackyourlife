@@ -3,7 +3,7 @@ import { cn } from "@shad/lib/utils";
 
 import type { INumberProgressBounds } from "@tyl/db/jsonValidators";
 
-import { Input } from "~/@shad/custom/input-w-details";
+import { Input } from "~/@shad/components/input";
 
 export interface IRangeLabelSelector {
   value: INumberProgressBounds;
@@ -43,8 +43,8 @@ const NumberLimitsSelector = ({
         className,
       )}
     >
-      <div className="w-52 text-neutral-400 dark:text-neutral-500">0%</div>
-      <div className="w-52 text-neutral-400 max-sm:row-start-3 max-sm:row-end-3 dark:text-neutral-500">
+      <div className="w-52 text-muted-foreground">0%</div>
+      <div className="w-52 text-muted-foreground max-sm:row-start-3 max-sm:row-end-3">
         100%
       </div>
       <Input
@@ -59,7 +59,7 @@ const NumberLimitsSelector = ({
             checkValidityAndPush(e.target.valueAsNumber, Number(innerMax));
           }
         }}
-        error={isError}
+        aria-invalid={isError}
         type="number"
       />
       <Input
@@ -74,7 +74,7 @@ const NumberLimitsSelector = ({
             checkValidityAndPush(Number(innerMin), e.target.valueAsNumber);
           }
         }}
-        error={isError}
+        aria-invalid={isError}
         type="number"
       />
     </div>

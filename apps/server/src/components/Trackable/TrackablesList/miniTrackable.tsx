@@ -25,7 +25,7 @@ const MiniTrackable = ({
           to={"/app/trackables/$id/view"}
           params={{ id: trackable.id }}
           className={cn(
-            "mb-1 block w-full text-xl font-light text-neutral-950 dark:text-neutral-50",
+            "mb-1 block w-full text-xl font-light text-foreground",
           )}
         >
           <TrackableNameText trackable={trackable} />
@@ -47,10 +47,10 @@ const MiniTrackable = ({
                 )}
               >
                 <div className="flex justify-end gap-1 text-xs">
-                  <span className="text-neutral-300 dark:text-neutral-800">
+                  <span className="text-muted-foreground opacity-50">
                     {format(day.date, "EEE")}
                   </span>
-                  <span className="text-neutral-500 dark:text-neutral-600">
+                  <span className="text-muted-foreground">
                     {format(day.date, "d")}
                   </span>
                 </div>

@@ -262,7 +262,8 @@ export const ControllerRoot = ({
   return (
     <div
       className={cn(
-        "relative box-border rounded-md border-2 border-neutral-200 dark:border-neutral-800",
+        /* Using outline instead of border, because "border" color token is semi transparent and Controller is used in color selection where style={background: gradient} is passed */
+        "outline-border relative box-border rounded-md outline-2",
         disableX ? "" : "px-2 max-sm:px-3",
         disableY ? "" : "py-2 max-sm:py-3",
         getPanClass(disableX, disableY),
@@ -429,7 +430,7 @@ export const ControllerPoint = ({
         "absolute box-border",
         "w-4 data-[disabled-x=true]:w-[110%] max-sm:w-6",
         "h-4 data-[disabled-y=true]:h-[110%] max-sm:h-6",
-        "border-2 border-neutral-800 ring-2 ring-neutral-200 dark:border-neutral-200 dark:ring-neutral-800",
+        "border-foreground ring-ring border-2 ring-2",
         "data-[active=false]:border data-[active=false]:ring-1",
         "opacity-50 data-[selected=true]:opacity-100",
         "rounded-md",
@@ -469,7 +470,7 @@ export const ControllerPoint = ({
             transition={{ duration: 0.15 }}
             className={cn(
               "absolute -top-2 left-1/2 h-5 w-5 -translate-x-1/2 -translate-y-[100%] rounded-md",
-              "border border-neutral-800 ring-1 ring-neutral-200 dark:border-neutral-200 dark:ring-neutral-800",
+              "border-foreground ring-ring border ring-1",
               className,
             )}
             style={{ ...style }}
@@ -482,10 +483,10 @@ export const ControllerPoint = ({
           opacity: dragAwayPercent / 100,
         }}
         transition={{ duration: 0 }}
-        className="absolute bottom-0 left-0 h-full w-full rounded-sm bg-neutral-100 dark:bg-neutral-800"
+        className="bg-muted absolute bottom-0 left-0 h-full w-full rounded-sm"
       >
         <TrashIcon
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-neutral-800 dark:text-neutral-100"
+          className="text-foreground absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
           size={11}
           style={{
             opacity: range(50, 100, 0, 1, dragAwayPercent),

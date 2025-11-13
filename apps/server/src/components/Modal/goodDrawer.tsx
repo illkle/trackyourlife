@@ -39,7 +39,7 @@ export const GoodDrawer = React.forwardRef<
         }}
         className={cn(
           "h-fit max-h-[200px] w-[500px] max-w-[100vw] rounded-t-md border border-b-0 shadow-2xl",
-          "border-neutral-200 dark:border-neutral-800 dark:bg-neutral-950 dark:shadow-neutral-950",
+          "border-border bg-background",
         )}
       >
         {children}

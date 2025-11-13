@@ -28,7 +28,7 @@ export const NumberPopupEditor = ({ data, onChange }: PopupEditorProps) => {
           className={cn(
             "relative z-10 flex h-full w-full items-center justify-center rounded-sm bg-inherit text-center font-semibold outline-hidden transition-all select-none",
             "text-2xl",
-            "h-20 focus:outline-neutral-300 dark:focus:outline-neutral-600",
+            "h-20 focus:outline-ring",
           )}
         />
       </NumberInputWrapper>

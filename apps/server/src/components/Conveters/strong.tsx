@@ -152,11 +152,11 @@ export const StrongConverter = () => {
         <div className="flex flex-col items-center gap-4">
           <label
             htmlFor="csvFile"
-            className="flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-neutral-200 hover:bg-neutral-50 dark:border-neutral-700 dark:hover:bg-neutral-800"
+            className="border-border hover:bg-muted flex h-32 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed"
           >
             <div className="flex flex-col items-center justify-center pt-5 pb-6">
-              <FileIcon className="mb-2 h-8 w-8 text-neutral-500" />
-              <p className="text-sm text-neutral-500">
+              <FileIcon className="text-muted-foreground mb-2 h-8 w-8" />
+              <p className="text-muted-foreground text-sm">
                 {file ? file.name : "Click to upload CSV file"}
               </p>
             </div>

@@ -72,9 +72,7 @@ export const TagsPopupEditor = ({
               ),
             }}
           >
-            <span className="text-neutral-950 dark:text-neutral-100">
-              {v.value}
-            </span>
+            <span className="text-foreground">{v.value}</span>
             <Button
               variant="ghost"
               className="h-4 rounded-sm px-1"
@@ -159,7 +157,7 @@ const InputWithSuggestions = ({
   }, [suggestions, selectedSuggestion]);
 
   return (
-    <div className="sticky bottom-0 bg-neutral-100 pt-2 dark:bg-neutral-950">
+    <div className="bg-background sticky bottom-0 pt-2">
       <div className="mx-2 flex items-center gap-2 px-0.5">
         <Input
           value={inputValue}

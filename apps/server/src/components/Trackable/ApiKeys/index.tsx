@@ -100,7 +100,7 @@ export const IngestKeysManager = () => {
       </div>
 
       {newKey && (
-        <div className="mt-2 rounded-md border p-2 text-xs dark:border-neutral-700 dark:bg-neutral-800">
+        <div className="border-border bg-muted mt-2 rounded-md border p-2 text-xs">
           {newKey}
         </div>
       )}

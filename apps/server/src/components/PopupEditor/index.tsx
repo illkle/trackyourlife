@@ -74,7 +74,7 @@ const EditorTitle = ({ date }: { date: Date }) => {
   const { name, id } = useTrackableMeta();
   const trackingStart = useTrackableFlag(id, "AnyTrackingStart");
   return (
-    <div className="flex items-center justify-between gap-2 border-b border-neutral-800 pr-2 sm:text-sm">
+    <div className="border-border flex items-center justify-between gap-2 border-b pr-2 sm:text-sm">
       <div className="flex items-center gap-2">
         <Button
           variant="ghost"

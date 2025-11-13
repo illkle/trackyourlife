@@ -135,7 +135,7 @@ const LogsEntry = ({
     <div className="flex w-full items-center justify-between gap-2">
       <button
         className={cn(
-          "flex items-baseline gap-2 text-neutral-950 dark:text-neutral-100",
+          "text-foreground flex items-baseline gap-2",
           isBeingEdited && "text-blue-500",
           isEditing && !isBeingEdited && "opacity-30",
         )}

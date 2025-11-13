@@ -302,7 +302,7 @@ export const MiniDrawer = React.forwardRef<
           }}
           className={cn(
             "h-fit w-[500px] max-w-[100vw] rounded-t-md border border-b-0 shadow-2xl",
-            "border-neutral-200 dark:border-neutral-800 dark:bg-neutral-950 dark:shadow-neutral-950",
+            "border-border bg-background shadow-2xl",
             "pb-[100vh]",
           )}
         >
@@ -362,7 +362,7 @@ export const Debugger = () => {
 
   return (
     <>
-      <div className="fixed top-4 right-4 z-50 -translate-y-[300px] rounded bg-neutral-800 p-4 text-sm text-white opacity-75">
+      <div className="bg-secondary text-secondary-foreground fixed top-4 right-4 z-50 -translate-y-[300px] rounded p-4 text-sm opacity-75">
         <div>scrollTop: {Math.round(dimensions.scrollTop)}</div>
         <div>scrollHeight: {Math.round(dimensions.scrollHeight)}</div>
         <div>innerHeight: {Math.round(dimensions.innerHeight)}</div>

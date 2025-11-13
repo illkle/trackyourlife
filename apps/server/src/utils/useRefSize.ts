@@ -10,7 +10,7 @@ interface IUseRefSizeReturn {
 
 // Note that when we access properties on render we can use regular data to rerender on change
 // But when we access stuff in handlers(i.e mousemove\touchmove) we should use ref to guarantee up to date values
-export const useRefSize = (ref: RefObject<HTMLDivElement>) => {
+export const useRefSize = (ref: RefObject<HTMLDivElement | null>) => {
   const dataRef = useRef({ width: 0, height: 0, left: 0, top: 0 });
   const [data, setData] = useState<IUseRefSizeReturn>({
     width: 0,

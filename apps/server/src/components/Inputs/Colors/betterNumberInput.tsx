@@ -4,7 +4,7 @@ import { useIsomorphicLayoutEffect } from "usehooks-ts";
 
 import { clamp } from "@tyl/helpers/animation";
 
-import { Input } from "~/@shad/custom/input-w-details";
+import { Input } from "~/@shad/components/input";
 
 export const BetterNumberInput = ({
   value,
@@ -31,7 +31,7 @@ export const BetterNumberInput = ({
     <Input
       className={cn("w-full text-center max-sm:p-0", className)}
       type="number"
-      error={isError}
+      aria-invalid={isError}
       value={internalValue}
       onChange={(e) => {
         // This code allows input to be empty when editing

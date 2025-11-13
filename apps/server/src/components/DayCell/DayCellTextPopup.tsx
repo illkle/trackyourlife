@@ -22,13 +22,13 @@ export const DayCellTextPopup = () => {
     <button
       onClick={() => openDayEditor({ date, trackableId: id })}
       className={cn(
-        "flex-col border-2 p-1 text-left text-ellipsis text-neutral-700 sm:p-2 dark:text-neutral-500",
+        "flex-col border-2 p-1 text-left text-ellipsis text-foreground sm:p-2",
         DayCellBaseClasses,
         isOpen
-          ? "border-neutral-500 dark:border-neutral-700"
+          ? "border-ring"
           : value?.length
-            ? "border-neutral-300 dark:border-neutral-900"
-            : "border-neutral-100 dark:border-neutral-900",
+            ? "border-border"
+            : "border-border opacity-50",
       )}
     >
       {labelType === "auto" && <LabelInside />}

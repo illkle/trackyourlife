@@ -37,7 +37,7 @@ export function FieldInfo({ field }: { field: AnyFieldApi }) {
           }}
           exit={{ opacity: 0, height: 0 }}
           layout
-          className="box-border flex w-fit items-center gap-2 px-2.5 text-sm font-light text-neutral-800 dark:text-neutral-200"
+          className="text-foreground box-border flex w-fit items-center gap-2 px-2.5 text-sm font-light"
         >
           <XIcon size={16} strokeWidth={1.5} />
           {(field.state.meta.errors as { message: string }[])
@@ -240,7 +240,7 @@ const Login = () => {
       <div className="flex items-baseline justify-between">
         <h4 className="mt-4 mb-2">Password</h4>
         <Link
-          className="text-sm text-neutral-500 dark:text-neutral-400"
+          className="text-muted-foreground text-sm"
           to="/auth/forgotpassword"
         >
           Forgot?

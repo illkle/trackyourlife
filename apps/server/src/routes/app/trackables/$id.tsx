@@ -123,7 +123,7 @@ function RouteComponent() {
               <TrackableDropdown isArchived={isArchived} />
             </div>
           </div>
-          <hr className="my-4 h-px border-none bg-neutral-900 opacity-10 outline-hidden dark:bg-neutral-50" />
+          <hr className="bg-foreground my-4 h-px border-none opacity-10 outline-hidden" />
           <Outlet />
         </div>
       </TrackableProvider>

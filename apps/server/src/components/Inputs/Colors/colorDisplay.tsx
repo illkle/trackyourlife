@@ -21,18 +21,19 @@ export const ColorDisplay = ({
   return (
     <div
       className={cn(
-        "relative flex w-full items-center overflow-hidden rounded-md border-2 border-neutral-200 bg-transparent font-mono text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-neutral-950 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-800",
+        "border-border focus-visible:ring-ring relative flex w-full items-center overflow-hidden rounded-md border-2 bg-transparent font-mono text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
       style={style}
     >
+      {/* Has to be black\white because we need same colors in both dark and light mode */}
       <SunIcon
         size={16}
-        className="absolute top-1/2 left-2 z-20 -translate-y-1/2 stroke-neutral-950"
+        className="absolute top-1/2 left-2 z-20 -translate-y-1/2 stroke-black"
       />
       <MoonIcon
         size={16}
-        className="absolute top-1/2 right-2 z-20 -translate-y-1/2 stroke-neutral-50"
+        className="absolute top-1/2 right-2 z-20 -translate-y-1/2 stroke-white"
       />
       <div
         className="absolute top-0 left-1/2 z-10 h-full w-full"

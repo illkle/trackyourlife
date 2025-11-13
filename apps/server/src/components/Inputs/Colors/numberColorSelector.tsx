@@ -24,7 +24,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/@shad/components/drawer";
-import { Input } from "~/@shad/custom/input-w-details";
+import { Input } from "~/@shad/components/input";
 import { BetterNumberInput } from "~/components/Inputs/Colors/betterNumberInput";
 import { ColorDisplay } from "~/components/Inputs/Colors/colorDisplay";
 import ColorPicker from "~/components/Inputs/Colors/colorPicker";
@@ -162,8 +162,10 @@ const ControllerGradient = ({
         }
       >
         <Input
-          warning={firstItem ? minValue > firstItem.point : false}
-          error={minInput !== String(minValue)}
+          aria-invalid={
+            minInput !== String(minValue) ||
+            (firstItem && minValue > firstItem.point)
+          }
           value={minInput}
           type="number"
           onBlur={minMaxInputBlur}
@@ -208,8 +210,10 @@ const ControllerGradient = ({
         </ControllerRoot>
         <div className="justify-self-end">
           <Input
-            warning={lastItem ? lastItem.point > maxValue : false}
-            error={maxInput !== String(maxValue)}
+            aria-invalid={
+              maxInput !== String(maxValue) ||
+              (lastItem && lastItem.point < maxValue)
+            }
             value={maxInput}
             type="number"
             onBlur={minMaxInputBlur}
@@ -233,14 +237,14 @@ const ControllerGradient = ({
           )}
         </div>
         <div className={cn("w-full", !isMobile && "sm:max-w-xs")}>
-          <div className="flex h-fit flex-col gap-2 rounded-lg bg-neutral-100 p-1 dark:bg-neutral-800">
+          <div className="bg-muted flex h-fit flex-col gap-2 rounded-lg p-1">
             {value.map((v) => (
               <div
                 key={v.id}
                 className={cn(
                   "flex items-stretch gap-2 p-2 transition-all",
                   v.id === selectedColor
-                    ? "rounded-md bg-neutral-50 shadow-sm dark:bg-neutral-950 dark:shadow-none"
+                    ? "bg-background rounded-md shadow-sm"
                     : "cursor-pointer",
                 )}
                 onClick={() => {

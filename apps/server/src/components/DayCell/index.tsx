@@ -21,8 +21,7 @@ import { DayCellNumber } from "./DayCellNumber";
 export const DayCellBaseClasses =
   "@container w-full h-full relative select-none overflow-hidden border-transparent border-2 rounded-xs";
 
-export const DayCellBaseClassesFocus =
-  "outline-hidden focus:outline-neutral-300 dark:focus:outline-neutral-600";
+export const DayCellBaseClassesFocus = "outline-hidden focus:outline-ring";
 
 interface DayCellRouterProps extends PureDataRecord {
   className?: string;
@@ -134,10 +133,7 @@ export const OutOfRangeSimple = () => {
 
   return (
     <div
-      className={cn(
-        DayCellBaseClasses,
-        "cursor-default bg-neutral-100 dark:bg-neutral-900",
-      )}
+      className={cn(DayCellBaseClasses, "bg-muted cursor-default opacity-30")}
     >
       {labelType === "auto" && <LabelInside />}
     </div>
@@ -150,7 +146,7 @@ const LabelOutside = () => {
   return (
     <div
       className={cn(
-        "mr-1 text-right text-xs text-neutral-800",
+        "text-muted-foreground mr-1 text-right text-xs",
         isToday ? "font-normal underline" : "font-light",
       )}
     >
@@ -164,7 +160,7 @@ export const LabelInside = () => {
   return (
     <div
       className={cn(
-        "absolute top-0 left-1 z-10 text-base text-neutral-800 select-none",
+        "text-muted-foreground absolute top-0 left-1 z-10 text-base select-none",
         isToday ? "font-normal underline" : "font-light",
         "text-xs sm:text-base",
       )}

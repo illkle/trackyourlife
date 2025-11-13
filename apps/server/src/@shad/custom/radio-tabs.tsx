@@ -4,37 +4,37 @@ import { LayoutGroup, m } from "motion/react";
 
 import { cn } from "~/@shad/lib/utils";
 
-const RadioTabs = React.forwardRef<
-  React.ElementRef<typeof RadioGroupPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>
->(({ className, ...props }, ref) => {
+function RadioTabs({
+  className,
+  ...props
+}: React.ComponentProps<typeof RadioGroupPrimitive.Root>) {
   const id = React.useId();
-
   return (
     <LayoutGroup id={id}>
       <RadioGroupPrimitive.Root
         className={cn(
-          "flex h-11 items-stretch justify-center rounded-lg bg-neutral-100 p-1 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400",
+          "bg-muted text-muted-foreground flex h-11 items-stretch justify-center rounded-lg p-1",
           className,
         )}
         {...props}
-        ref={ref}
       />
     </LayoutGroup>
   );
-});
-RadioTabs.displayName = RadioGroupPrimitive.Root.displayName;
+}
 
-const RadioTabItem = React.forwardRef<
-  React.ElementRef<typeof RadioGroupPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
->(({ className, children, ...props }, ref) => {
+function RadioTabItem({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<typeof RadioGroupPrimitive.Item>) {
   return (
     <>
       <RadioGroupPrimitive.Item
-        ref={ref}
         className={cn(
-          "relative inline-flex items-center justify-center rounded-md px-3 text-sm font-medium whitespace-nowrap ring-offset-white transition-all focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50 data-[state=checked]:text-neutral-950 data-[state=checked]:shadow-sm dark:ring-offset-neutral-950 dark:focus-visible:ring-neutral-300 dark:data-[state=checked]:text-neutral-50",
+          "relative inline-flex items-center justify-center rounded-md px-3 text-sm",
+          "font-medium whitespace-nowrap transition-all",
+          "focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50",
+          "data-[state=checked]:text-foreground data-[state=checked]:shadow-sm",
           className,
         )}
         {...props}
@@ -47,13 +47,12 @@ const RadioTabItem = React.forwardRef<
             initial={false}
             transition={{ duration: 0.2, ease: "easeInOut" }}
             layoutId={`indicator-tabs`}
-            className="absolute z-1 h-4 h-full w-full rounded-md bg-white dark:bg-neutral-950"
+            className="bg-background absolute z-1 size-full rounded-md"
           />
         </RadioGroupPrimitive.Indicator>
       </RadioGroupPrimitive.Item>
     </>
   );
-});
-RadioTabItem.displayName = RadioGroupPrimitive.Item.displayName;
+}
 
 export { RadioTabs, RadioTabItem };

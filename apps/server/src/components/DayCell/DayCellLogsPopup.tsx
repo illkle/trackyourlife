@@ -18,7 +18,7 @@ export const DayCellLogsPopup = () => {
     <button
       onClick={() => openDayEditor({ date, trackableId: id })}
       className={cn(
-        "box-border h-full w-full rounded-xs border-2 border-neutral-200 dark:border-neutral-900",
+        "border-border box-border h-full w-full rounded-xs border-2",
       )}
     >
       <ScrollArea className="relative h-full">
@@ -48,9 +48,7 @@ export const DayCellLogsPopup = () => {
                     (longDate ? "first:ml-5.5" : "first:ml-3.5"),
                 )}
               >
-                <span className="text-neutral-950 dark:text-neutral-100">
-                  {v.value}
-                </span>
+                <span className="text-foreground">{v.value}</span>
               </div>
             ))}
           </div>

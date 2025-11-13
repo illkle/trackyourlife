@@ -116,7 +116,7 @@ export const PopupSelector = ({
     <m.div
       className={cn(
         style.miniScrollbar,
-        "relative flex cursor-pointer flex-col overflow-hidden rounded-full border border-neutral-200 bg-neutral-50 dark:border-transparent dark:bg-neutral-800",
+        "relative flex cursor-pointer flex-col overflow-hidden rounded-full border border-border bg-muted",
       )}
       initial={{ height: 0 }}
       animate={{ height: `${panelH}px` }}

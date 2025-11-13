@@ -76,7 +76,7 @@ const TrackablesList = ({
               layout
               layoutId={trackable.id}
               key={trackable.id}
-              className="border-b border-neutral-200 pb-4 last:border-0 dark:border-neutral-800"
+              className="border-border border-b pb-4 last:border-0"
             >
               <TrackableProvider trackable={trackable}>
                 <MiniTrackable data={data} trackable={trackable} />
@@ -162,7 +162,7 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
                             to={"/app/trackables/$id/view"}
                             params={{ id: tr.trackable.id }}
                             className={cn(
-                              "mb-1 block w-full truncate text-xl text-neutral-950 opacity-20 dark:text-neutral-50",
+                              "text-foreground mb-1 block w-full truncate text-xl opacity-20",
                             )}
                           >
                             <TrackableNameText trackable={tr.trackable} />
@@ -180,7 +180,7 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
                 </div>
               </div>
               {dateIndex !== days.length - 1 && (
-                <hr className="h-0 border-b border-neutral-200 dark:border-neutral-800" />
+                <hr className="border-border h-0 border-b" />
               )}
             </Fragment>
           );

@@ -37,7 +37,7 @@ export const TrackableNoteEditable = () => {
   const isDesktop = useIsDesktop();
 
   const display = hasNote ? (
-    <p className="cursor-pointer rounded-md bg-inherit px-2 py-1 text-left text-sm whitespace-pre-wrap md:text-base dark:text-neutral-300">
+    <p className="text-muted-foreground cursor-pointer rounded-md bg-inherit px-2 py-1 text-left text-sm whitespace-pre-wrap md:text-base">
       {note}
     </p>
   ) : (

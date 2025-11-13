@@ -241,9 +241,9 @@ export const PickerRGBHSL = ({
     controlKey === "saturation" ||
     controlKey === "lightness";
 
-  const bniClasses = "h-7 rounded-b-none border border-b-0 transition-opacity";
+  const bniClasses = "h-7 rounded-none border border-r-0  transition-opacity";
 
-  const inactiveClasses = "opacity-70";
+  const inactiveClasses = "text-muted-foreground/50";
 
   return (
     <div className="grid gap-x-4">
@@ -256,9 +256,9 @@ export const PickerRGBHSL = ({
           controlKey={controlKey}
         />
       </div>
-      <div className="mt-2 grid grid-cols-6 gap-1">
+      <div className="mt-2 grid grid-cols-6">
         <BetterNumberInput
-          className={cn(bniClasses, inHSL && inactiveClasses)}
+          className={cn(bniClasses, inHSL && inactiveClasses, "rounded-tl-md")}
           value={rgb.r}
           onChange={(v) => setRGB({ r: clamp(v, 0, 255) })}
           hardLimits
@@ -290,7 +290,11 @@ export const PickerRGBHSL = ({
           hardLimits
         />
         <BetterNumberInput
-          className={cn(bniClasses, !inHSL && inactiveClasses)}
+          className={cn(
+            bniClasses,
+            !inHSL && inactiveClasses,
+            "rounded-tr-md border-r",
+          )}
           value={hsl.l}
           limits={{ min: 0, max: 100 }}
           onChange={(v) => setHSL({ l: v })}
@@ -298,7 +302,7 @@ export const PickerRGBHSL = ({
         />
       </div>
       <RadioTabs
-        className="grid h-8 grid-cols-6 gap-1 rounded-t-none py-1"
+        className="border-border grid h-8 grid-cols-6 gap-1 rounded-t-none border border-t-0 py-1"
         value={controlKey}
         onValueChange={(v) => setControlKey(v as IKey)}
       >
@@ -359,7 +363,7 @@ export const ColorPicker = ({
     <div className={className}>
       <m.div
         className={cn(
-          "mb-2 flex min-h-8 w-fit items-center gap-2 overflow-hidden rounded-lg bg-neutral-100 px-2 text-xs dark:bg-neutral-900",
+          "bg-muted mb-2 flex min-h-8 w-fit items-center gap-2 overflow-hidden rounded-lg px-2 text-xs",
         )}
       >
         <Switch

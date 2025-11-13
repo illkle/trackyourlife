@@ -187,7 +187,7 @@ export const LogsDisplayPreview = ({
   return (
     <div className="flex min-h-10 flex-col justify-center">
       {mapped.length === 0 && (
-        <div className="w-full text-center text-xs text-neutral-500">
+        <div className="text-muted-foreground w-full text-center text-xs">
           Add some logs to this trackable to preview settings with your data
         </div>
       )}
@@ -250,7 +250,7 @@ export const LogsDisplayEditor = ({
         focusedItemId={focusedItemId}
         setFocusedItemId={setFocusedItemId}
         onDeleted={deleteItem}
-        className="h-14 rounded-md border border-neutral-300 p-2 dark:border-neutral-700"
+        className="border-border h-14 rounded-md border p-2"
       />
 
       {focusedItemIsGroup ? (
@@ -368,7 +368,7 @@ const ItemEditor = ({
   onChange: (value: LogsDisplayItem) => void;
 }) => {
   return (
-    <div className="mt-2 flex flex-col gap-2 rounded-sm border border-neutral-300 p-2 px-2 dark:border-neutral-700">
+    <div className="border-border mt-2 flex flex-col gap-2 rounded-sm border p-2 px-2">
       <div className="capitalize">{value.type}</div>
       <div>
         {value.type === "value" && (
@@ -458,7 +458,7 @@ const ReorderEditor = ({
               focusedItemId && focusedItemId !== v.id && "opacity-50",
               v.type === "group"
                 ? "min-w-10 border-dashed"
-                : "border border-neutral-200 px-2 py-1 dark:border-neutral-800",
+                : "border-border border px-2 py-1",
             )}
           >
             <div
@@ -468,7 +468,7 @@ const ReorderEditor = ({
               {onDeleted && (
                 <Button
                   variant={"ghost"}
-                  className="absolute top-0 right-0 h-4 w-4 -translate-y-1/2 translate-x-1/2 rounded-full p-0.5"
+                  className="absolute top-0 right-0 h-4 w-4 translate-x-1/2 -translate-y-1/2 rounded-full p-0.5"
                   onClick={(e) => {
                     e.stopPropagation();
                     onDeleted(v.id);
@@ -505,7 +505,7 @@ const ReorderEditor = ({
               )}
 
               {v.type === "group" && (
-                <div className="flex items-center gap-1 rounded-sm border border-dashed border-neutral-400 dark:border-neutral-600">
+                <div className="border-border flex items-center gap-1 rounded-sm border border-dashed">
                   <GroupIcon className="ml-2 shrink-0" size={16} />
                   <ReorderEditor
                     value={v}

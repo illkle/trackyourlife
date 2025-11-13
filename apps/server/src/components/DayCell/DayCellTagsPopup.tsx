@@ -28,9 +28,7 @@ export const DayCellTagsPopup = () => {
     <button
       className={cn(
         "box-border h-full w-full rounded-xs border-2",
-        isOpen
-          ? "border-neutral-500 dark:border-neutral-700"
-          : "border-neutral-300 dark:border-neutral-900",
+        isOpen ? "border-ring" : "border-border",
       )}
       onClick={() => openDayEditor({ date, trackableId: id })}
     >
@@ -71,9 +69,7 @@ export const DayCellTagsPopup = () => {
                   ),
                 }}
               >
-                <span className="text-neutral-950 dark:text-neutral-100">
-                  {v.value}
-                </span>
+                <span className="text-foreground">{v.value}</span>
               </div>
             ))}
           </div>
