@@ -1,8 +1,8 @@
 import crypto from "crypto";
-import a from "@node-rs/argon2";
+//import a from "@node-rs/argon2";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
-import { getWebRequest } from "@tanstack/react-start/server";
+import { getRequest } from "@tanstack/react-start/server";
 import { z } from "zod/v4";
 
 import { and, db, eq } from "@tyl/db";
@@ -14,9 +14,11 @@ import { auth } from "~/auth/server";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
 const keyExists = createServerFn({ method: "GET" })
-  .validator((v: unknown) => z.object({ trackableId: z.string() }).parse(v))
+  .inputValidator((v: unknown) =>
+    z.object({ trackableId: z.string() }).parse(v),
+  )
   .handler(async ({ data }) => {
-    const r = getWebRequest();
+    const r = getRequest();
 
     const sessionInfo = await auth.api.getSession({
       headers: r.headers,
@@ -35,9 +37,11 @@ const keyExists = createServerFn({ method: "GET" })
   });
 
 const issueKey = createServerFn({ method: "POST" })
-  .validator((v: unknown) => z.object({ trackableId: z.string() }).parse(v))
+  .inputValidator((v: unknown) =>
+    z.object({ trackableId: z.string() }).parse(v),
+  )
   .handler(async ({ data }) => {
-    const r = getWebRequest();
+    const r = getRequest();
 
     const sessionInfo = await auth.api.getSession({
       headers: r.headers,
@@ -59,7 +63,9 @@ const issueKey = createServerFn({ method: "POST" })
     await db.insert(ingestApiKeys).values({
       userId: sessionInfo.user.id,
       trackableId: data.trackableId,
-      key: await a.hash(k),
+      // TODO: fix import
+      //key: await a.hash(k),
+      key: "",
       createdAt: new Date(),
       daysLimit: 0,
     });

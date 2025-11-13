@@ -8,7 +8,7 @@ export const Route = createFileRoute("/app/settings/")({
 
 function RouteComponent() {
   return (
-    <div>
+    <div className="pb-4">
       <h3 className="mb-4 w-full bg-inherit text-2xl font-semibold lg:text-3xl">
         Settings
       </h3>

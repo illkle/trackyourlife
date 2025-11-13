@@ -1,15 +1,14 @@
-/* eslint-disable @typescript-eslint/prefer-optional-chain */
 import type { QueryClient } from "@tanstack/react-query";
 import { useQuery } from "@tanstack/react-query";
 import { createServerFn } from "@tanstack/react-start";
-import { getWebRequest } from "@tanstack/react-start/server";
+import { getRequest } from "@tanstack/react-start/server";
 
 import { Spinner } from "~/@shad/components/spinner";
 import { auth } from "~/auth/server";
 
 const getSession = createServerFn({ method: "GET" }).handler(async () => {
   try {
-    const r = getWebRequest();
+    const r = getRequest();
 
     const [sessionInfo, { token }] = await Promise.all([
       auth.api.getSession({

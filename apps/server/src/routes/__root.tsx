@@ -59,7 +59,7 @@ export const Route = createRootRouteWithContext<{
     ],
   }),
 
-  ssr: true,
+  ssr: "data-only",
   component: RootComponent,
   loader: async ({ context }) => {
     await ensureSessionInfo(context.queryClient);

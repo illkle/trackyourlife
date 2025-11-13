@@ -8,8 +8,6 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { createServerRootRoute } from '@tanstack/react-start/server'
-
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as ConvertersRouteImport } from './routes/converters'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -26,14 +24,12 @@ import { Route as AppCreateRouteImport } from './routes/app/create'
 import { Route as AppTrackablesIndexRouteImport } from './routes/app/trackables/index'
 import { Route as AppSettingsIndexRouteImport } from './routes/app/settings/index'
 import { Route as AppTrackablesIdRouteImport } from './routes/app/trackables/$id'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppTrackablesIdIndexRouteImport } from './routes/app/trackables/$id/index'
 import { Route as AppTrackablesIdViewRouteImport } from './routes/app/trackables/$id/view'
 import { Route as AppTrackablesIdSettingsRouteImport } from './routes/app/trackables/$id/settings'
 import { Route as AppTrackablesIdImportRouteImport } from './routes/app/trackables/$id/import'
-import { ServerRoute as ApiAuthSplatServerRouteImport } from './routes/api/auth/$'
-import { ServerRoute as ApiIngestV1JsonServerRouteImport } from './routes/api/ingest/v1/json'
-
-const rootServerRouteImport = createServerRootRoute()
+import { Route as ApiIngestV1JsonRouteImport } from './routes/api/ingest/v1/json'
 
 const ConvertersRoute = ConvertersRouteImport.update({
   id: '/converters',
@@ -110,6 +106,11 @@ const AppTrackablesIdRoute = AppTrackablesIdRouteImport.update({
   path: '/trackables/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
+  id: '/api/auth/$',
+  path: '/api/auth/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppTrackablesIdIndexRoute = AppTrackablesIdIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -130,15 +131,10 @@ const AppTrackablesIdImportRoute = AppTrackablesIdImportRouteImport.update({
   path: '/import',
   getParentRoute: () => AppTrackablesIdRoute,
 } as any)
-const ApiAuthSplatServerRoute = ApiAuthSplatServerRouteImport.update({
-  id: '/api/auth/$',
-  path: '/api/auth/$',
-  getParentRoute: () => rootServerRouteImport,
-} as any)
-const ApiIngestV1JsonServerRoute = ApiIngestV1JsonServerRouteImport.update({
+const ApiIngestV1JsonRoute = ApiIngestV1JsonRouteImport.update({
   id: '/api/ingest/v1/json',
   path: '/api/ingest/v1/json',
-  getParentRoute: () => rootServerRouteImport,
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -154,9 +150,11 @@ export interface FileRoutesByFullPath {
   '/auth/passwordreset': typeof AuthPasswordresetRoute
   '/app/': typeof AppIndexRoute
   '/converters/': typeof ConvertersIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
   '/app/settings/': typeof AppSettingsIndexRoute
   '/app/trackables': typeof AppTrackablesIndexRoute
+  '/api/ingest/v1/json': typeof ApiIngestV1JsonRoute
   '/app/trackables/$id/import': typeof AppTrackablesIdImportRoute
   '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
   '/app/trackables/$id/view': typeof AppTrackablesIdViewRoute
@@ -172,8 +170,10 @@ export interface FileRoutesByTo {
   '/auth/passwordreset': typeof AuthPasswordresetRoute
   '/app': typeof AppIndexRoute
   '/converters': typeof ConvertersIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/app/settings': typeof AppSettingsIndexRoute
   '/app/trackables': typeof AppTrackablesIndexRoute
+  '/api/ingest/v1/json': typeof ApiIngestV1JsonRoute
   '/app/trackables/$id/import': typeof AppTrackablesIdImportRoute
   '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
   '/app/trackables/$id/view': typeof AppTrackablesIdViewRoute
@@ -193,9 +193,11 @@ export interface FileRoutesById {
   '/auth/passwordreset': typeof AuthPasswordresetRoute
   '/app/': typeof AppIndexRoute
   '/converters/': typeof ConvertersIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
   '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
   '/app/settings/': typeof AppSettingsIndexRoute
   '/app/trackables/': typeof AppTrackablesIndexRoute
+  '/api/ingest/v1/json': typeof ApiIngestV1JsonRoute
   '/app/trackables/$id/import': typeof AppTrackablesIdImportRoute
   '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
   '/app/trackables/$id/view': typeof AppTrackablesIdViewRoute
@@ -216,9 +218,11 @@ export interface FileRouteTypes {
     | '/auth/passwordreset'
     | '/app/'
     | '/converters/'
+    | '/api/auth/$'
     | '/app/trackables/$id'
     | '/app/settings/'
     | '/app/trackables'
+    | '/api/ingest/v1/json'
     | '/app/trackables/$id/import'
     | '/app/trackables/$id/settings'
     | '/app/trackables/$id/view'
@@ -234,8 +238,10 @@ export interface FileRouteTypes {
     | '/auth/passwordreset'
     | '/app'
     | '/converters'
+    | '/api/auth/$'
     | '/app/settings'
     | '/app/trackables'
+    | '/api/ingest/v1/json'
     | '/app/trackables/$id/import'
     | '/app/trackables/$id/settings'
     | '/app/trackables/$id/view'
@@ -254,9 +260,11 @@ export interface FileRouteTypes {
     | '/auth/passwordreset'
     | '/app/'
     | '/converters/'
+    | '/api/auth/$'
     | '/app/trackables/$id'
     | '/app/settings/'
     | '/app/trackables/'
+    | '/api/ingest/v1/json'
     | '/app/trackables/$id/import'
     | '/app/trackables/$id/settings'
     | '/app/trackables/$id/view'
@@ -268,31 +276,8 @@ export interface RootRouteChildren {
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
   ConvertersRoute: typeof ConvertersRouteWithChildren
-}
-export interface FileServerRoutesByFullPath {
-  '/api/auth/$': typeof ApiAuthSplatServerRoute
-  '/api/ingest/v1/json': typeof ApiIngestV1JsonServerRoute
-}
-export interface FileServerRoutesByTo {
-  '/api/auth/$': typeof ApiAuthSplatServerRoute
-  '/api/ingest/v1/json': typeof ApiIngestV1JsonServerRoute
-}
-export interface FileServerRoutesById {
-  __root__: typeof rootServerRouteImport
-  '/api/auth/$': typeof ApiAuthSplatServerRoute
-  '/api/ingest/v1/json': typeof ApiIngestV1JsonServerRoute
-}
-export interface FileServerRouteTypes {
-  fileServerRoutesByFullPath: FileServerRoutesByFullPath
-  fullPaths: '/api/auth/$' | '/api/ingest/v1/json'
-  fileServerRoutesByTo: FileServerRoutesByTo
-  to: '/api/auth/$' | '/api/ingest/v1/json'
-  id: '__root__' | '/api/auth/$' | '/api/ingest/v1/json'
-  fileServerRoutesById: FileServerRoutesById
-}
-export interface RootServerRouteChildren {
-  ApiAuthSplatServerRoute: typeof ApiAuthSplatServerRoute
-  ApiIngestV1JsonServerRoute: typeof ApiIngestV1JsonServerRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiIngestV1JsonRoute: typeof ApiIngestV1JsonRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -402,6 +387,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTrackablesIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/trackables/$id/': {
       id: '/app/trackables/$id/'
       path: '/'
@@ -430,23 +422,12 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTrackablesIdImportRouteImport
       parentRoute: typeof AppTrackablesIdRoute
     }
-  }
-}
-declare module '@tanstack/react-start/server' {
-  interface ServerFileRoutesByPath {
-    '/api/auth/$': {
-      id: '/api/auth/$'
-      path: '/api/auth/$'
-      fullPath: '/api/auth/$'
-      preLoaderRoute: typeof ApiAuthSplatServerRouteImport
-      parentRoute: typeof rootServerRouteImport
-    }
     '/api/ingest/v1/json': {
       id: '/api/ingest/v1/json'
       path: '/api/ingest/v1/json'
       fullPath: '/api/ingest/v1/json'
-      preLoaderRoute: typeof ApiIngestV1JsonServerRouteImport
-      parentRoute: typeof rootServerRouteImport
+      preLoaderRoute: typeof ApiIngestV1JsonRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -532,14 +513,18 @@ const rootRouteChildren: RootRouteChildren = {
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
   ConvertersRoute: ConvertersRouteWithChildren,
+  ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiIngestV1JsonRoute: ApiIngestV1JsonRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-const rootServerRouteChildren: RootServerRouteChildren = {
-  ApiAuthSplatServerRoute: ApiAuthSplatServerRoute,
-  ApiIngestV1JsonServerRoute: ApiIngestV1JsonServerRoute,
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
 }
-export const serverRouteTree = rootServerRouteImport
-  ._addFileChildren(rootServerRouteChildren)
-  ._addFileTypes<FileServerRouteTypes>()
