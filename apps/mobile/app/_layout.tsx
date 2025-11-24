@@ -10,6 +10,7 @@ import "react-native-reanimated";
 import "@/style/global.css";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
+import { PortalHost } from "@rn-primitives/portal";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -28,6 +29,7 @@ export default function RootLayout() {
         />
       </Stack>
       <StatusBar style="auto" />
+      <PortalHost />
     </ThemeProvider>
   );
 }

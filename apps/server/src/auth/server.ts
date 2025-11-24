@@ -1,3 +1,4 @@
+import { expo } from "@better-auth/expo";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { jwt } from "better-auth/plugins";
@@ -44,5 +45,5 @@ export const auth = betterAuth({
   },
 
   secret: process.env.BETTER_AUTH_SECRET,
-  plugins: [jwt({})],
+  plugins: [jwt({}), expo()],
 });

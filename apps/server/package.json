@@ -11,6 +11,7 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
+    "@better-auth/expo": "^1.4.1",
     "@dnd-kit/helpers": "^0.1.21",
     "@dnd-kit/react": "^0.1.21",
     "@node-rs/argon2": "^2.0.2",
