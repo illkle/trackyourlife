@@ -1,5 +1,8 @@
 {
-  "tailwindCSS.classAttributes": ["style", "className", "class"],
+  "tailwindCSS.classAttributes": ["class", "className", "headerClassName"],
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
   "tailwindCSS.experimental.classRegex": [
     "tw`([^`]*)",
     ["tw.style\\(([^)]*)\\)", "'([^']*)'"]
