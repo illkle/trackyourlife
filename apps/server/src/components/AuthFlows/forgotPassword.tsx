@@ -19,7 +19,7 @@ import { FieldInfo, MutationErrorInfo } from ".";
 const ForgotPasswordForm = () => {
   const sendMutation = useMutation({
     mutationFn: async (v: typeof form.state.values) => {
-      const { error } = await authClient.forgetPassword({
+      const { error } = await authClient.sendResetPassword({
         email: v.email,
         redirectTo: "/auth/passwordreset",
       });
@@ -75,7 +75,7 @@ const ForgotPasswordForm = () => {
                   type="email"
                   name="email"
                   id="email"
-                  className="relative z-2"
+                  className="z-2 relative"
                   placeholder="person@somemail.com"
                 />
                 <FieldInfo field={field} />

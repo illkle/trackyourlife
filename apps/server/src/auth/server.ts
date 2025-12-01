@@ -17,11 +17,10 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
-    sendResetPassword: process.env.RESEND_API_KEY
-      ? async ({ user, url }) => {
-          await sendResetPasswordEmail(user.email, url);
-        }
-      : undefined,
+    sendResetPassword: async ({ user, url }) => {
+      if (!process.env.RESEND_API_KEY) return;
+      void sendResetPasswordEmail(user.email, url);
+    },
   },
   emailVerification: {
     sendVerificationEmail: process.env.RESEND_API_KEY
