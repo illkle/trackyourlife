@@ -33,7 +33,7 @@
     "@rocicorp/zero": "catalog:",
     "@tailwindcss/vite": "catalog:",
     "@tanstack/nitro-v2-vite-plugin": "^1.133.19",
-    "@tanstack/react-form": "1.23.9",
+    "@tanstack/react-form": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@tanstack/react-router": "1.135.2",
     "@tanstack/react-router-devtools": "1.135.2",
