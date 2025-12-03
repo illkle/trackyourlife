@@ -3,6 +3,8 @@ import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 import { z } from "zod/v4";
 
+import { PasswordValidator } from "@tyl/helpers/validators";
+
 import { Button } from "~/@shad/components/button";
 import {
   Card,
@@ -13,7 +15,6 @@ import {
 import { Input } from "~/@shad/components/input";
 import { authClient } from "~/auth/client";
 import { FieldInfo, MutationErrorInfo } from ".";
-import { PasswordValidator } from "./common";
 
 export const PasswordResetForm = () => {
   const router = useRouter();

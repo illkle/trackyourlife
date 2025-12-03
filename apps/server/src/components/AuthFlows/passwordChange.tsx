@@ -2,6 +2,8 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod/v4";
 
+import { PasswordValidator } from "@tyl/helpers/validators";
+
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
 import { Button } from "~/@shad/components/button";
 import {
@@ -14,7 +16,6 @@ import {
 import { Input } from "~/@shad/components/input";
 import { authClient } from "~/auth/client";
 import { FieldInfo, MutationErrorInfo } from ".";
-import { PasswordValidator } from "./common";
 
 export const PasswordChangeForm = ({ className }: { className?: string }) => {
   const changeMutation = useMutation({
@@ -79,7 +80,7 @@ export const PasswordChangeForm = ({ className }: { className?: string }) => {
             )}
           />
 
-          <h4 className="mt-4 mb-2">New password</h4>
+          <h4 className="mb-2 mt-4">New password</h4>
           <form.Field
             name="newPassword"
             children={(field) => (
