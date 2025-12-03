@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 
 export const EmailValidator = z.email("Must be a valid email");
 

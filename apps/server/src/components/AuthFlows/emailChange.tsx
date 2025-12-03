@@ -2,6 +2,8 @@ import { useForm } from "@tanstack/react-form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { z } from "zod/v4";
 
+import { EmailValidator } from "@tyl/helpers/validators";
+
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
 import { Button } from "~/@shad/components/button";
 import {
@@ -15,7 +17,6 @@ import { Input } from "~/@shad/components/input";
 import { authClient } from "~/auth/client";
 import { invalidateSession, useSessionAuthed } from "~/utils/useSessionInfo";
 import { FieldInfo, MutationErrorInfo } from ".";
-import { EmailValidator } from "./common";
 
 export const EmailChangeForm = ({ className }: { className?: string }) => {
   const { sessionInfo } = useSessionAuthed();
@@ -83,7 +84,7 @@ export const EmailChangeForm = ({ className }: { className?: string }) => {
                   type="email"
                   name="newEmail"
                   id="newEmail"
-                  className="relative z-2"
+                  className="z-2 relative"
                   placeholder="person@somemail.com"
                 />
                 <FieldInfo field={field} />

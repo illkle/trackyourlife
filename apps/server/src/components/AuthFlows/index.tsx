@@ -8,6 +8,12 @@ import { XIcon } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
 import { z } from "zod/v4";
 
+import {
+  EmailValidator,
+  NameValidator,
+  PasswordValidator,
+} from "@tyl/helpers/validators";
+
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
 import { Button } from "~/@shad/components/button";
 import {
@@ -21,7 +27,6 @@ import { Input } from "~/@shad/components/input";
 import { RadioTabItem, RadioTabs } from "~/@shad/custom/radio-tabs";
 import { authClient } from "~/auth/client";
 import { invalidateSession } from "~/utils/useSessionInfo";
-import { EmailValidator, NameValidator, PasswordValidator } from "./common";
 
 type ActionState = "login" | "register";
 
@@ -118,7 +123,7 @@ const Register = () => {
               type="email"
               name="email"
               id="email"
-              className="relative z-2"
+              className="z-2 relative"
               placeholder="person@somemail.com"
             />
             <FieldInfo field={field} />
@@ -126,7 +131,7 @@ const Register = () => {
         )}
       />
 
-      <h4 className="mt-4 mb-2">Name</h4>
+      <h4 className="mb-2 mt-4">Name</h4>
       <form.Field
         name="name"
         children={(field) => (
@@ -145,7 +150,7 @@ const Register = () => {
           </>
         )}
       />
-      <h4 className="mt-4 mb-2">Password</h4>
+      <h4 className="mb-2 mt-4">Password</h4>
       <form.Field
         name="password"
         children={(field) => (
@@ -230,7 +235,7 @@ const Login = () => {
               type="email"
               name="email"
               id="email"
-              className="relative z-2"
+              className="z-2 relative"
               placeholder="person@somemail.com"
             />
             <FieldInfo field={field} />
@@ -238,7 +243,7 @@ const Login = () => {
         )}
       />
       <div className="flex items-baseline justify-between">
-        <h4 className="mt-4 mb-2">Password</h4>
+        <h4 className="mb-2 mt-4">Password</h4>
         <Link
           className="text-muted-foreground text-sm"
           to="/auth/forgotpassword"

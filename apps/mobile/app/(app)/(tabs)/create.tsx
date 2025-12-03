@@ -2,7 +2,7 @@ import { Text, View } from "react-native";
 
 export default function TabTwoScreen() {
   return (
-    <View className="pt-safe">
+    <View className="pt-safe bg-background">
       <View>
         <Text className="text-test">Access as a theme value</Text>
         <Text className="text-[--color-rgb]">Or the variable directly</Text>

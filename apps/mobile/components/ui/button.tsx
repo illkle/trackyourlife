@@ -37,7 +37,7 @@ const buttonVariants = cva(
   },
 );
 
-const buttonTextVariants = cva(cn("text-foreground text-sm font-medium"), {
+const buttonTextVariants = cva("text-foreground text-sm font-medium", {
   variants: {
     variant: {
       default: "text-primary-foreground",
@@ -50,7 +50,7 @@ const buttonTextVariants = cva(cn("text-foreground text-sm font-medium"), {
     size: {
       default: "",
       sm: "",
-      lg: "",
+      lg: "text-lg font-semibold",
       icon: "",
     },
   },
@@ -77,7 +77,7 @@ function Button({ className, variant, size, ...props }: ButtonProps) {
       role="button"
       {...props}
     >
-      <Text className={buttonTextVariants({ variant, size })}>
+      <Text className={cn(buttonTextVariants({ variant, size }))}>
         {props.text}
       </Text>
     </Pressable>

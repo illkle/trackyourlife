@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "@rocicorp/zero": "catalog:",
-    "drizzle-orm": "0.44.7",
+    "drizzle-orm": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
@@ -47,7 +47,7 @@
     "@tyl/tsconfig": "workspace:*",
     "@types/pg": "^8.15.6",
     "dotenv-cli": "catalog:",
-    "drizzle-kit": "^0.31.6",
+    "drizzle-kit": "catalog:",
     "pg": "^8.16.3",
     "prettier": "catalog:",
     "typescript": "catalog:"

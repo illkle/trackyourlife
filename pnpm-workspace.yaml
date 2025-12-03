@@ -15,6 +15,8 @@ catalog:
   class-variance-authority: 0.7.1
   date-fns: 4.1.0
   dotenv-cli: 11.0.0
+  drizzle-kit: 0.31.7
+  drizzle-orm: 0.44.7
   prettier: 3.6.2
   tailwindcss: 4.1.17
   typescript: 5.9.3

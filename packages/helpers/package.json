@@ -10,7 +10,8 @@
     "./colorTools": "./src/colorTools.ts",
     "./timezone": "./src/timezone.ts",
     "./trackables": "./src/trackables.ts",
-    "./types": "./src/types.ts"
+    "./types": "./src/types.ts",
+    "./validators": "./src/validators.ts"
   },
   "license": "MIT",
   "scripts": {

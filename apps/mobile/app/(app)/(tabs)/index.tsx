@@ -1,6 +1,5 @@
 import { Text } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import { LoginForm } from "@/components/auth";
 import { authClient } from "@/lib/authClient";
 import { styled } from "nativewind";
 
@@ -11,14 +10,9 @@ export default function HomeScreen() {
 
   return (
     <KASV className="bg-background px-4">
-      <Text className="text-foreground">
+      <Text className="text-primary mt-4">
         Session: {JSON.stringify(session.data, null, 2)}
       </Text>
-
-      <Text className={"font-black"} style={{ fontWeight: "600" }}>
-        asdasd
-      </Text>
-      <LoginForm />
     </KASV>
   );
 }
