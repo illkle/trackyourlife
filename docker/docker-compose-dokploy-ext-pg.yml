@@ -39,6 +39,18 @@ services:
     restart: "no"
     networks:
       - dokploy-network
+  powersync:
+    build:
+      context: ./../.
+      dockerfile: ./docker/powersync.Dockerfile
+    environment:
+      - PS_DATA_SOURCE_URI=${DATABASE_URL}
+      - PS_JWKS=${ZERO_AUTH_JWKS_URL}
+    networks:
+      - dokploy-network
+    expose:
+      - 80
+      - 443
   zerosync:
     build:
       context: ./../.

@@ -1,3 +1,4 @@
+# !!!!! Not actively maintained right now
 # This compose file is for https://coolify.io/ Context is set to "." becuase coolify effectively copies the compose file to root and runs it from there
 # It expects you to run pg database separately with replication set to logical https://zero.rocicorp.dev/docs/connecting-to-postgres
 # You will need to set domains for both containers. Then you will need to pass those domains to ENV variables and set VITE_ZERO_DOMAIN env as Build Variable.

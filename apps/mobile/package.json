@@ -10,8 +10,12 @@
     "lint": "expo lint"
   },
   "dependencies": {
+    "@azure/core-asynciterator-polyfill": "^1.0.2",
     "@better-auth/expo": "catalog:",
     "@expo/vector-icons": "^15.0.3",
+    "@op-engineering/op-sqlite": "^15.1.6",
+    "@powersync/op-sqlite": "^0.7.16",
+    "@powersync/react-native": "^1.27.1",
     "@react-navigation/bottom-tabs": "^7.4.0",
     "@react-navigation/elements": "^2.6.3",
     "@react-navigation/native": "^7.1.8",
@@ -31,6 +35,7 @@
     "drizzle-orm": "catalog:",
     "expo": "~54.0.25",
     "expo-constants": "~18.0.10",
+    "expo-dev-client": "~6.0.20",
     "expo-font": "~14.0.9",
     "expo-haptics": "~15.0.7",
     "expo-image": "~3.0.10",
@@ -63,6 +68,7 @@
   },
   "prettier": "@tyl/prettier-config",
   "devDependencies": {
+    "@babel/plugin-transform-async-generator-functions": "^7.28.0",
     "@tailwindcss/postcss": "catalog:",
     "@tyl/prettier-config": "workspace:*",
     "@tyl/tsconfig": "workspace:*",

@@ -11,7 +11,7 @@ export const MutationError = ({
 } & ViewProps) => {
   return (
     <>
-      {mutation.error?.message && (
+      {mutation.status === "error" && (
         <View
           {...props}
           className={cn(
@@ -25,7 +25,7 @@ export const MutationError = ({
               Something went wrong:
             </Text>
             <Text className="text-destructive-foreground text-sm">
-              {mutation.error?.message}
+              {mutation.error.message || "Unknown error"}
             </Text>
           </View>
         </View>

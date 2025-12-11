@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View } from "react-native";
+import { Text, View } from "react-native";
 import { MutationError } from "@/components/form/mutationError";
 import { FormTextField } from "@/components/form/textField";
 import { Button } from "@/components/ui/button";
