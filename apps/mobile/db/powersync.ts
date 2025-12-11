@@ -1,6 +1,10 @@
 import { Connector } from "@/db/conncector";
 import { OPSqliteOpenFactory } from "@powersync/op-sqlite"; // Add this import
-import { PowerSyncDatabase } from "@powersync/react-native";
+import {
+  createBaseLogger,
+  LogLevel,
+  PowerSyncDatabase,
+} from "@powersync/react-native";
 
 import { AppSchema } from "./schema";
 
@@ -21,3 +25,8 @@ export const setupPowerSync = async () => {
   const connector = new Connector();
   powersync.connect(connector);
 };
+
+const logger = createBaseLogger();
+
+logger.useDefaults();
+logger.setLevel(LogLevel.DEBUG);

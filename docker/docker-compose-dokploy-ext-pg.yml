@@ -45,7 +45,8 @@ services:
       dockerfile: ./docker/powersync.Dockerfile
     environment:
       - PS_DATA_SOURCE_URI=${DATABASE_URL}
-      - PS_JWKS=${ZERO_AUTH_JWKS_URL}
+      - PS_JWKS=${PS_JWKS}
+      - PS_ROOT_URL=${PS_ROOT_URL}
     networks:
       - dokploy-network
     expose:

@@ -37,5 +37,7 @@ sync_rules:
 
 client_auth:
   jwks_uri: !env PS_JWKS
+  audience:
+    - !env PS_ROOT_URL
   telemetry:
     disable_telemetry_sharing: false
