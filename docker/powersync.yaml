@@ -27,13 +27,13 @@ sync_rules:
         priority: 1
         parameters: SELECT request.user_id() as user_id
         data:
-          - SELECT * FROM TYL_user WHERE id = bucket.user_id
-          - SELECT * FROM TYL_userFlags WHERE userId = bucket.user_id
-          - SELECT * FROM TYL_trackable WHERE user_id = bucket.user_id
-          - SELECT * FROM TYL_trackableFlags WHERE user_id = bucket.user_id
-          - SELECT * FROM TYL_trackableRecord WHERE user_id = bucket.user_id
-          - SELECT * FROM TYL_trackableRecordAttributes WHERE user_id = bucket.user_id
-          - SELECT * FROM TYL_trackableGroup WHERE user_id = bucket.user_id
+          - SELECT * FROM "TYL_user" WHERE id = bucket.user_id
+          - SELECT * FROM "TYL_userFlags" WHERE userId = bucket.user_id
+          - SELECT * FROM "TYL_trackable" WHERE user_id = bucket.user_id
+          - SELECT * FROM "TYL_trackableFlags" WHERE user_id = bucket.user_id
+          - SELECT * FROM "TYL_trackableRecord" WHERE user_id = bucket.user_id
+          - SELECT * FROM "TYL_trackableRecordAttributes" WHERE user_id = bucket.user_id
+          - SELECT * FROM "TYL_trackableGroup" WHERE user_id = bucket.user_id
 
 client_auth:
   jwks_uri: !env PS_JWKS

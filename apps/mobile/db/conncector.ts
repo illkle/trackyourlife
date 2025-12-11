@@ -21,8 +21,6 @@ export class Connector implements PowerSyncBackendConnector {
     const jwtToken = data.token;
     // Use this token for authenticated requests to external services
 
-    console.log("token", jwtToken);
-
     return {
       // The PowerSync instance URL or self-hosted endpoint
       endpoint: "https://tyl-dev.illkle.com/powersync",
