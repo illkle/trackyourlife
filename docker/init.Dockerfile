@@ -1,6 +1,6 @@
 # ---- Create Base Image ----
 
-FROM node:22-slim AS base
+FROM node:24-slim AS base
 	
 # Also add stuff required to build @rocicorp/zero-sqlite3
 # This is temporary until we split zero and drizzle into separate packages

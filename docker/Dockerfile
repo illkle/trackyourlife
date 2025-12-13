@@ -1,6 +1,7 @@
 # ---- Create Base Image ----
 
-FROM node:22-slim AS base
+# not using slim to do healtcheck with curl, coolify docker compose requires it
+FROM node:24 AS base
 	
 # Also add stuff required to build @rocicorp/zero-sqlite3
 RUN apt-get update && \
