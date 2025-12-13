@@ -18,14 +18,15 @@ services:
       test: ["CMD", "curl", "-f", "http://localhost:80/"]
       interval: 5s
       timeout: 5s
-      retries: 10
-      start_period: 300s
+      retries: 3
+      start_period: 30s
     depends_on:
       init:
         condition: service_completed_successfully
       zerosync:
         condition: service_healthy
   init:
+    exclude_from_hc: true
     build:
       context: .
       dockerfile: ./docker/init.Dockerfile
@@ -57,7 +58,7 @@ services:
       interval: 5s
       timeout: 5s
       retries: 3
-      start_period: 300s
+      start_period: 30s
 
 volumes:
   replica:
