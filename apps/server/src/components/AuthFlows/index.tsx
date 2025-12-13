@@ -303,6 +303,18 @@ const LoginForm = () => {
           New user
         </RadioTabItem>
       </RadioTabs>
+
+      {import.meta.env.VITE_PREVIEW_WARNING && (
+        <Alert variant={"destructive"} className="mt-4">
+          <AlertTitle className="flex items-center gap-2">
+            This deployment is a preview and not production ready
+          </AlertTitle>
+          <AlertDescription>
+            Instability and data loss may occur
+          </AlertDescription>
+        </Alert>
+      )}
+
       <Card className="m-auto mt-4">
         <CardHeader>
           <CardTitle>
