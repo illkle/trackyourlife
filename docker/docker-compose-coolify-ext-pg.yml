@@ -8,6 +8,7 @@ services:
       dockerfile: ./docker/Dockerfile
       args:
         - VITE_ZERO_DOMAIN=${VITE_ZERO_DOMAIN} # Domain for zero container
+        - VITE_PREVIEW_WARNING=${VITE_PREVIEW_WARNING}
     environment:
       - NITRO_PORT=80
       - NODE_ENV=production
