@@ -39,7 +39,6 @@ RUN pnpm install --frozen-lockfile
 
 COPY --from=builder /app/out/full/ .
 RUN pnpm turbo run build --filter=@tyl/migration...
-RUN pnpm run zero:generate-migration
 
 # ---- Create Runner and Start ----
 
@@ -51,7 +50,6 @@ RUN groupadd --system --gid 1001 nodejs && \
 
 COPY --from=installer --chown=tylrunner:nodejs /app/apps/migration/dist ./dist
 COPY --from=installer --chown=tylrunner:nodejs /app/packages/db/drizzle ./drizzle
-COPY --from=installer --chown=tylrunner:nodejs /app/zero-permissions.sql ./zero-permissions.sql
 
 USER tylrunner
 CMD ["node", "./dist/index.cjs"]

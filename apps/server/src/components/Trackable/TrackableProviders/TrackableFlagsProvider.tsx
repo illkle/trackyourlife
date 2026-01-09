@@ -3,6 +3,7 @@ import { createContext, memo, useCallback, useEffect, useId } from "react";
 import { Store, useStore } from "@tanstack/react-store";
 
 import type { ITrackableFlagsZero } from "@tyl/db/zero-schema";
+import { mutators } from "@tyl/db/mutators";
 
 import type {
   ITrackableFlagKey,
@@ -149,8 +150,7 @@ export const useSetTrackableFlag = () => {
         throw new Error("Invalid flag value");
       }
 
-      await z.mutate.TYL_trackableFlags.upsert({
-        user_id: z.userID,
+      await mutators.trackableFlags.upsert({
         trackableId: trackableId,
         key: key,
         value: value,

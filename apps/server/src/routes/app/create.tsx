@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 import type { DbTrackableInsert } from "@tyl/db/schema";
 import type { ITrackableZeroInsert } from "@tyl/db/zero-schema";
+import { mutators } from "@tyl/db/mutators";
 import { cloneDeep } from "@tyl/helpers";
 
 import { Button } from "~/@shad/components/button";
@@ -40,11 +41,10 @@ function RouteComponent() {
 
   const createTrackable = async () => {
     const id = uuidv4();
-    await z.mutate.TYL_trackable.insert({
+    await mutators.trackable.insert({
       id,
       ...newOne,
       name: nameRef.current || "",
-      user_id: sessionInfo.user.id,
     });
 
     await router.navigate({

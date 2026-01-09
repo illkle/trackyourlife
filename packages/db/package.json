@@ -19,6 +19,14 @@
     "./zero-schema": {
       "types": "./dist/zero-schema.d.ts",
       "default": "./src/zero-schema.ts"
+    },
+    "./mutators": {
+      "types": "./dist/mutators.d.ts",
+      "default": "./src/mutators.ts"
+    },
+    "./queries": {
+      "types": "./dist/queries.d.ts",
+      "default": "./src/queries.ts"
     }
   },
   "license": "MIT",

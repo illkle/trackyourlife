@@ -19,11 +19,14 @@ import { Route as AuthPasswordresetRouteImport } from './routes/auth/passwordres
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotpasswordRouteImport } from './routes/auth/forgotpassword'
 import { Route as AppTestingRouteImport } from './routes/app/testing'
+import { Route as AppTestRouteImport } from './routes/app/test'
 import { Route as AppSettingsRouteImport } from './routes/app/settings'
 import { Route as AppCreateRouteImport } from './routes/app/create'
 import { Route as AppTrackablesIndexRouteImport } from './routes/app/trackables/index'
 import { Route as AppSettingsIndexRouteImport } from './routes/app/settings/index'
 import { Route as AppTrackablesIdRouteImport } from './routes/app/trackables/$id'
+import { Route as ApiZeroQueryRouteImport } from './routes/api/zero/query'
+import { Route as ApiZeroMutateRouteImport } from './routes/api/zero/mutate'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppTrackablesIdIndexRouteImport } from './routes/app/trackables/$id/index'
 import { Route as AppTrackablesIdViewRouteImport } from './routes/app/trackables/$id/view'
@@ -81,6 +84,11 @@ const AppTestingRoute = AppTestingRouteImport.update({
   path: '/testing',
   getParentRoute: () => AppRoute,
 } as any)
+const AppTestRoute = AppTestRouteImport.update({
+  id: '/test',
+  path: '/test',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -105,6 +113,16 @@ const AppTrackablesIdRoute = AppTrackablesIdRouteImport.update({
   id: '/trackables/$id',
   path: '/trackables/$id',
   getParentRoute: () => AppRoute,
+} as any)
+const ApiZeroQueryRoute = ApiZeroQueryRouteImport.update({
+  id: '/api/zero/query',
+  path: '/api/zero/query',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiZeroMutateRoute = ApiZeroMutateRouteImport.update({
+  id: '/api/zero/mutate',
+  path: '/api/zero/mutate',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
@@ -144,6 +162,7 @@ export interface FileRoutesByFullPath {
   '/converters': typeof ConvertersRouteWithChildren
   '/app/create': typeof AppCreateRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
+  '/app/test': typeof AppTestRoute
   '/app/testing': typeof AppTestingRoute
   '/auth/forgotpassword': typeof AuthForgotpasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -151,6 +170,8 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/converters/': typeof ConvertersIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/zero/mutate': typeof ApiZeroMutateRoute
+  '/api/zero/query': typeof ApiZeroQueryRoute
   '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
   '/app/settings/': typeof AppSettingsIndexRoute
   '/app/trackables': typeof AppTrackablesIndexRoute
@@ -164,6 +185,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
   '/app/create': typeof AppCreateRoute
+  '/app/test': typeof AppTestRoute
   '/app/testing': typeof AppTestingRoute
   '/auth/forgotpassword': typeof AuthForgotpasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -171,6 +193,8 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/converters': typeof ConvertersIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/zero/mutate': typeof ApiZeroMutateRoute
+  '/api/zero/query': typeof ApiZeroQueryRoute
   '/app/settings': typeof AppSettingsIndexRoute
   '/app/trackables': typeof AppTrackablesIndexRoute
   '/api/ingest/v1/json': typeof ApiIngestV1JsonRoute
@@ -187,6 +211,7 @@ export interface FileRoutesById {
   '/converters': typeof ConvertersRouteWithChildren
   '/app/create': typeof AppCreateRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
+  '/app/test': typeof AppTestRoute
   '/app/testing': typeof AppTestingRoute
   '/auth/forgotpassword': typeof AuthForgotpasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -194,6 +219,8 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/converters/': typeof ConvertersIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/zero/mutate': typeof ApiZeroMutateRoute
+  '/api/zero/query': typeof ApiZeroQueryRoute
   '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
   '/app/settings/': typeof AppSettingsIndexRoute
   '/app/trackables/': typeof AppTrackablesIndexRoute
@@ -212,6 +239,7 @@ export interface FileRouteTypes {
     | '/converters'
     | '/app/create'
     | '/app/settings'
+    | '/app/test'
     | '/app/testing'
     | '/auth/forgotpassword'
     | '/auth/login'
@@ -219,6 +247,8 @@ export interface FileRouteTypes {
     | '/app/'
     | '/converters/'
     | '/api/auth/$'
+    | '/api/zero/mutate'
+    | '/api/zero/query'
     | '/app/trackables/$id'
     | '/app/settings/'
     | '/app/trackables'
@@ -232,6 +262,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/app/create'
+    | '/app/test'
     | '/app/testing'
     | '/auth/forgotpassword'
     | '/auth/login'
@@ -239,6 +270,8 @@ export interface FileRouteTypes {
     | '/app'
     | '/converters'
     | '/api/auth/$'
+    | '/api/zero/mutate'
+    | '/api/zero/query'
     | '/app/settings'
     | '/app/trackables'
     | '/api/ingest/v1/json'
@@ -254,6 +287,7 @@ export interface FileRouteTypes {
     | '/converters'
     | '/app/create'
     | '/app/settings'
+    | '/app/test'
     | '/app/testing'
     | '/auth/forgotpassword'
     | '/auth/login'
@@ -261,6 +295,8 @@ export interface FileRouteTypes {
     | '/app/'
     | '/converters/'
     | '/api/auth/$'
+    | '/api/zero/mutate'
+    | '/api/zero/query'
     | '/app/trackables/$id'
     | '/app/settings/'
     | '/app/trackables/'
@@ -277,6 +313,8 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   ConvertersRoute: typeof ConvertersRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiZeroMutateRoute: typeof ApiZeroMutateRoute
+  ApiZeroQueryRoute: typeof ApiZeroQueryRoute
   ApiIngestV1JsonRoute: typeof ApiIngestV1JsonRoute
 }
 
@@ -352,6 +390,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTestingRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/test': {
+      id: '/app/test'
+      path: '/test'
+      fullPath: '/app/test'
+      preLoaderRoute: typeof AppTestRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/settings': {
       id: '/app/settings'
       path: '/settings'
@@ -386,6 +431,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/trackables/$id'
       preLoaderRoute: typeof AppTrackablesIdRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/api/zero/query': {
+      id: '/api/zero/query'
+      path: '/api/zero/query'
+      fullPath: '/api/zero/query'
+      preLoaderRoute: typeof ApiZeroQueryRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/zero/mutate': {
+      id: '/api/zero/mutate'
+      path: '/api/zero/mutate'
+      fullPath: '/api/zero/mutate'
+      preLoaderRoute: typeof ApiZeroMutateRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
       id: '/api/auth/$'
@@ -465,6 +524,7 @@ const AppTrackablesIdRouteWithChildren = AppTrackablesIdRoute._addFileChildren(
 interface AppRouteChildren {
   AppCreateRoute: typeof AppCreateRoute
   AppSettingsRoute: typeof AppSettingsRouteWithChildren
+  AppTestRoute: typeof AppTestRoute
   AppTestingRoute: typeof AppTestingRoute
   AppIndexRoute: typeof AppIndexRoute
   AppTrackablesIdRoute: typeof AppTrackablesIdRouteWithChildren
@@ -474,6 +534,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppCreateRoute: AppCreateRoute,
   AppSettingsRoute: AppSettingsRouteWithChildren,
+  AppTestRoute: AppTestRoute,
   AppTestingRoute: AppTestingRoute,
   AppIndexRoute: AppIndexRoute,
   AppTrackablesIdRoute: AppTrackablesIdRouteWithChildren,
@@ -514,6 +575,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   ConvertersRoute: ConvertersRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiZeroMutateRoute: ApiZeroMutateRoute,
+  ApiZeroQueryRoute: ApiZeroQueryRoute,
   ApiIngestV1JsonRoute: ApiIngestV1JsonRoute,
 }
 export const routeTree = rootRouteImport

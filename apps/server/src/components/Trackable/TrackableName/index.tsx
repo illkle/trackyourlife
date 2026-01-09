@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { mutators } from "@tyl/db/mutators";
+
 import type { TrackableListItem } from "~/utils/useZ";
 import {
   Dialog,
@@ -26,7 +28,7 @@ export const TrackableNameEditable = () => {
 
   const [trackable] = useZeroTrackable({ id });
   const updateName = (name: string) => {
-    void z.mutate.TYL_trackable.update({
+    void mutators.trackable.update({
       id,
       name,
     });

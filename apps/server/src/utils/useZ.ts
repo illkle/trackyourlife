@@ -14,7 +14,11 @@ import { v4 as uuidv4 } from "uuid";
 
 import type { Schema } from "@tyl/db/zero-schema";
 import type { RecordAttribute } from "@tyl/helpers/trackables";
+import { mutators } from "@tyl/db/mutators";
+import { queries } from "@tyl/db/queries";
 import { convertDateFromLocalToDb } from "@tyl/helpers/trackables";
+
+import { useSessionAuthed } from "~/utils/useSessionInfo";
 
 export const useZ = () => {
   return useZero<Schema>();
@@ -26,18 +30,9 @@ interface TrackableRangeParams {
 }
 
 export const useZeroTrackablesList = () => {
-  const zero = useZ();
-  const q = zero.query.TYL_trackable.orderBy("name", "asc").related(
-    "trackableGroup",
-  );
-  /*
-  This query is bugged, waiting for fix from Rocicorp
-    .where(({ not, exists }) =>
-      not(exists("trackableGroup", (q) => q.where("group", "=", "archived"))),
-    )
-  */
+  const s = useSessionAuthed();
 
-  return useQuery(q);
+  return useQuery(queries.trackablesList({}));
 };
 
 export type TrackableListItem = Row<Schema["tables"]["TYL_trackable"]> & {
@@ -45,72 +40,32 @@ export type TrackableListItem = Row<Schema["tables"]["TYL_trackable"]> & {
 };
 
 export const useZeroTrackableListWithData = (params: TrackableRangeParams) => {
-  const zero = useZ();
-
-  // WAITING TODO: add `not exists` for archived when zero fixes it
-  const q = zero.query.TYL_trackable.orderBy("name", "asc")
-    .related("trackableRecord", (q) =>
-      q
-        .where(({ cmp, and }) =>
-          and(
-            cmp(
-              "date",
-              ">=",
-              convertDateFromLocalToDb(startOfDay(params.firstDay)),
-            ),
-            cmp(
-              "date",
-              "<=",
-              convertDateFromLocalToDb(endOfDay(params.lastDay)),
-            ),
-          ),
-        )
-        .orderBy("date", "asc")
-        .orderBy("createdAt", "asc")
-        .related("trackableRecordAttributes"),
-    )
-    .related("trackableGroup");
-
-  return useQuery(q);
+  const firstDay = convertDateFromLocalToDb(startOfDay(params.firstDay));
+  const lastDay = convertDateFromLocalToDb(endOfDay(params.lastDay));
+  return useQuery(queries.trackablesListWithData({ firstDay, lastDay }));
 };
 
 export const useZeroTrackable = ({ id }: { id: string }) => {
-  const zero = useZ();
-  const q = zero.query.TYL_trackable.one()
-    .where("id", id)
-    .related("trackableGroup");
-
-  return useQuery(q);
+  return useQuery(queries.trackableById({ id }));
 };
 
 interface ByIdParams extends TrackableRangeParams {
   id: string;
 }
 const useTrackableQuery = (params: ByIdParams) => {
-  const zero = useZ();
+  const firstDay = convertDateFromLocalToDb(startOfDay(params.firstDay));
+  const lastDay = convertDateFromLocalToDb(endOfDay(params.lastDay));
 
-  return zero.query.TYL_trackableRecord.where(({ cmp, and }) =>
-    and(
-      cmp("trackableId", params.id),
-      cmp("date", ">=", convertDateFromLocalToDb(startOfDay(params.firstDay))),
-      cmp("date", "<=", convertDateFromLocalToDb(endOfDay(params.lastDay))),
-    ),
-  )
-    .orderBy("date", "asc")
-    .orderBy("createdAt", "asc")
-    .related("trackableRecordAttributes");
+  return queries.trackableData({ id: params.id, firstDay, lastDay });
 };
 
 export const useZeroTrackableData = ({ id, firstDay, lastDay }: ByIdParams) => {
   return useQuery(useTrackableQuery({ id, firstDay, lastDay }));
 };
 
-export const usePreloadZeroTrackableData = ({
-  id,
-  firstDay,
-  lastDay,
-}: ByIdParams) => {
-  useTrackableQuery({ id, firstDay, lastDay }).preload();
+export const usePreloadZeroTrackableData = (p: ByIdParams) => {
+  const z = useZero();
+  z.preload(useTrackableQuery(p));
 };
 
 export const usePreloadTrackableMonthView = ({
@@ -120,15 +75,15 @@ export const usePreloadTrackableMonthView = ({
   id: string;
   year: number;
 }) => {
-  const zero = useZ();
-
+  const z = useZero();
   const now = Date.UTC(year, 0, 1);
-
-  zero.query.TYL_trackableRecord.where("trackableId", id)
-    .where("date", ">=", addMonths(now, -3).getTime())
-    .where("date", "<=", addMonths(now, 15).getTime())
-    .related("trackableRecordAttributes")
-    .preload();
+  return z.preload(
+    queries.trackableMonthViewData({
+      id,
+      startDate: addMonths(now, -3).getTime(),
+      endDate: addMonths(now, 15).getTime(),
+    }),
+  );
 };
 
 export const usePreloadTrackableYearView = ({
@@ -138,38 +93,28 @@ export const usePreloadTrackableYearView = ({
   id: string;
   year: number;
 }) => {
-  const zero = useZ();
-
+  const z = useZero();
   const now = Date.UTC(year, 0, 1);
-
-  zero.query.TYL_trackableRecord.where("trackableId", id)
-    .where("date", ">=", addYears(now, -2).getTime())
-    .where("date", "<=", addYears(now, 2).getTime())
-    .related("trackableRecordAttributes")
-    .preload();
+  return z.preload(
+    queries.trackableMonthViewData({
+      id,
+      startDate: addYears(now, -2).getTime(),
+      endDate: addYears(now, 2).getTime(),
+    }),
+  );
 };
 
 export const usePreloadCore = () => {
-  const zero = useZ();
-
+  const z = useZero();
   const now = new Date();
 
-  zero.query.TYL_trackable.related("trackableRecord", (q) =>
-    q
-      .where("date", ">=", subMonths(now, 3).getTime())
-      .related("trackableRecordAttributes"),
-  )
-    .related("trackableGroup")
-    .related("trackableFlag")
-    .preload();
+  z.preload(queries.corePreload({ sinceDate: subMonths(now, 3).getTime() }));
 
-  zero.query.TYL_userFlags.where("userId", zero.userID).preload();
+  z.preload(queries.userFlags({}));
 };
 
 export const useZeroGroupList = (group: string) => {
-  const zero = useZ();
-  const q = zero.query.TYL_trackableGroup.where("group", "=", group);
-  return useQuery(q);
+  return useQuery(queries.groupList({ group }));
 };
 
 export const useZeroGroupSet = (group: string) => {
@@ -181,15 +126,23 @@ export const useZeroGroupSet = (group: string) => {
 };
 
 export const useZeroInGroup = (trackableId: string, group: string) => {
-  const z = useZ();
-  const q = z.query.TYL_trackableGroup.where(({ cmp, and }) =>
-    and(
-      cmp("trackableId", "=", trackableId),
-      cmp("group", "=", group),
-      cmp("user_id", "=", z.userID),
-    ),
-  ).limit(1);
-  return useQuery(q);
+  return useQuery(queries.trackableInGroup({ trackableId, group }));
+};
+
+export const useTrackableDay = ({
+  date,
+  trackableId,
+}: {
+  date: Date;
+  trackableId: string;
+}) => {
+  return useQuery(
+    queries.trackableDay({
+      trackableId,
+      dayStart: convertDateFromLocalToDb(startOfDay(date)),
+      dayEnd: convertDateFromLocalToDb(endOfDay(date)),
+    }),
+  );
 };
 
 const generateDateTime = (date: Date, storeTime?: boolean) => {
@@ -242,21 +195,21 @@ export const updateValueRaw = async ({
   const d = generateDateTime(date, type === "logs");
 
   if (recordId) {
-    await z.mutate.TYL_trackableRecord.update({
+    await mutators.trackableRecord.update({
       recordId,
       value,
       updatedAt: updatedAt,
       attributes,
     });
+
     return recordId;
   } else {
     const rid = uuidv4();
-    await z.mutate.TYL_trackableRecord.upsert({
+    await mutators.trackableRecord.upsert({
       recordId: rid,
       date: d,
       trackableId,
       value,
-      user_id: z.userID,
       createdAt: updatedAt,
       updatedAt: updatedAt,
       attributes,
@@ -303,19 +256,17 @@ export const useRecordUpdateHandler = ({
 };
 
 export const updateAttributesRaw = async (
-  z: ReturnType<typeof useZ>,
   trackableId: string,
   recordId: string,
   attributes: readonly RecordAttribute[],
 ) => {
   const promises = attributes.map((a) =>
-    z.mutate.TYL_trackableRecordAttributes.upsert({
+    mutators.recordAttributes.upsert({
       recordId: recordId,
       trackableId: trackableId,
       key: a.key,
       value: a.value,
       type: a.type,
-      user_id: z.userID,
     }),
   );
 
@@ -327,53 +278,21 @@ export const useAttrbutesUpdateHandler = ({
 }: {
   trackableId: string;
 }) => {
-  const z = useZ();
-
   return useCallback(
     async (recordId: string, attributes: readonly RecordAttribute[]) => {
-      return await updateAttributesRaw(z, trackableId, recordId, attributes);
+      return await updateAttributesRaw(trackableId, recordId, attributes);
     },
-    [trackableId, z],
+    [trackableId],
   );
 };
 
 export const useRecordDeleteHandler = () => {
-  const z = useZ();
-
   return useCallback(
     async (recordId: string) => {
-      await z.mutate.TYL_trackableRecord.delete({
-        recordId: recordId,
+      await mutators.trackableRecord.delete({
+        recordId,
       });
     },
-    [z],
+    [mutators],
   );
-};
-
-export const useTrackableDay = ({
-  date,
-  trackableId,
-}: {
-  date: Date;
-  trackableId: string;
-}) => {
-  const zero = useZ();
-
-  const q = zero.query.TYL_trackable.where("id", "=", trackableId)
-    .one()
-    .related("trackableRecord", (q) =>
-      q
-        .where(({ cmp, and }) =>
-          and(
-            cmp("date", ">=", convertDateFromLocalToDb(startOfDay(date))),
-            cmp("date", "<=", convertDateFromLocalToDb(endOfDay(date))),
-          ),
-        )
-        .orderBy("date", "asc")
-        .orderBy("value", "asc")
-        .orderBy("createdAt", "asc")
-        .related("trackableRecordAttributes"),
-    );
-
-  return useQuery(q);
 };

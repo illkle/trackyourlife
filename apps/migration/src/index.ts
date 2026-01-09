@@ -43,13 +43,14 @@ const migrator = async () => {
   console.log("+: Migrating database and zero");
 
   await migrateDb("./drizzle");
-  const zeroPermissions = fs.readFileSync("./zero-permissions.sql").toString();
+  /*const zeroPermissions = fs.readFileSync("./zero-permissions.sql").toString();
 
   if (!zeroPermissions.length) {
     throw new Error("No zero-permissions.sql found");
   }
 
   await executeRaw(zeroPermissions);
+  */
 };
 
 migrator().then(() => {

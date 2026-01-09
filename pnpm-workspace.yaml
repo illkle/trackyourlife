@@ -4,13 +4,13 @@ packages:
   - tooling/*
 
 catalog:
-  '@better-auth/expo': 1.4.4
-  '@date-fns/tz': 1.4.1
-  '@rocicorp/zero': 0.24.3000000000
-  '@tailwindcss/postcss': 4.1.17
-  '@tailwindcss/vite': 4.1.17
-  '@tanstack/react-form': 1.26.0
-  '@tanstack/react-query': 5.90.8
+  "@better-auth/expo": 1.4.4
+  "@date-fns/tz": 1.4.1
+  "@rocicorp/zero": 0.25.8
+  "@tailwindcss/postcss": 4.1.17
+  "@tailwindcss/vite": 4.1.17
+  "@tanstack/react-form": 1.26.0
+  "@tanstack/react-query": 5.90.8
   better-auth: 1.4.1
   class-variance-authority: 0.7.1
   date-fns: 4.1.0
@@ -25,12 +25,12 @@ catalog:
 
 catalogs:
   react:
-    '@types/react': ~19.1.10
-    '@types/react-dom': 19.1.7
+    "@types/react": ~19.1.10
+    "@types/react-dom": 19.1.7
     react: 19.1.0
     react-dom: 19.1.0
 
 onlyBuiltDependencies:
-  - '@parcel/watcher'
-  - '@tailwindcss/oxide'
+  - "@parcel/watcher"
+  - "@tailwindcss/oxide"
   - esbuild

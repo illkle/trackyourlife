@@ -4,6 +4,7 @@ import { ZeroProvider } from "@rocicorp/zero/react";
 import { cn } from "@shad/lib/utils";
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 
+import { mutators } from "@tyl/db/mutators";
 import { schema } from "@tyl/db/zero-schema";
 
 import { SidebarProvider } from "~/@shad/components/sidebar";
@@ -21,8 +22,9 @@ const makeZero = (userID: string, token: string) => {
   return new Zero({
     userID,
     server: import.meta.env.VITE_ZERO_DOMAIN as string,
-    schema,
+    schema: schema,
     auth: token,
+    mutators: mutators,
   });
 };
 

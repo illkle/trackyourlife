@@ -1,9 +1,11 @@
 import type { NodePgDatabase } from "drizzle-orm/node-postgres";
+import { zeroDrizzle } from "@rocicorp/zero/server/adapters/drizzle";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import PG from "pg";
 
-import * as schema from "./schema";
+import * as schemaDrizzle from "./schema";
+import { schema as schemaZero } from "./zero-schema";
 
 export * from "drizzle-orm/sql";
 export { alias } from "drizzle-orm/pg-core";
@@ -14,7 +16,17 @@ const pool = new PG.Pool({
   connectionString: connectionString,
 });
 
-const db: NodePgDatabase<typeof schema> = drizzle(pool, { schema });
+const db: NodePgDatabase<typeof schemaDrizzle> = drizzle(pool, {
+  schema: schemaDrizzle,
+});
+
+export const dbProvider = zeroDrizzle(schemaZero, db);
+
+declare module "@rocicorp/zero" {
+  interface DefaultTypes {
+    dbProvider: typeof dbProvider;
+  }
+}
 
 export async function migrateDb(folder: string) {
   await migrate(db, { migrationsFolder: folder });

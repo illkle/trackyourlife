@@ -16,6 +16,8 @@ import {
 } from "lucide-react";
 import { z } from "zod/v4";
 
+import { mutators } from "@tyl/db/mutators";
+
 import type { ITrackableFlagType } from "~/components/Trackable/TrackableProviders/trackableFlags";
 import { AlertDialogTrigger } from "~/@shad/components/alert-dialog";
 import { Button } from "~/@shad/components/button";
@@ -123,7 +125,7 @@ function RouteComponent() {
               <TrackableDropdown isArchived={isArchived} />
             </div>
           </div>
-          <hr className="bg-foreground my-4 h-px border-none opacity-10 outline-hidden" />
+          <hr className="bg-foreground outline-hidden my-4 h-px border-none opacity-10" />
           <Outlet />
         </div>
       </TrackableProvider>
@@ -191,15 +193,14 @@ const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
             className="cursor-pointer"
             onClick={() => {
               if (isArchived) {
-                void z.mutate.TYL_trackableGroup.delete({
+                void mutators.trackableGroup.delete({
                   trackableId: id,
                   group: "archived",
                 });
               } else {
-                void z.mutate.TYL_trackableGroup.upsert({
+                void mutators.trackableGroup.upsert({
                   trackableId: id,
                   group: "archived",
-                  user_id: z.userID,
                 });
               }
             }}

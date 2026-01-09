@@ -1,6 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 
+import { mutators } from "@tyl/db/mutators";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,10 +25,8 @@ const DeleteButton = ({
 }) => {
   const router = useRouter();
 
-  const z = useZ();
-
   const mutation = useMutation({
-    mutationFn: (id: string) => z.mutate.TYL_trackable.delete({ id }),
+    mutationFn: async (id: string) => await mutators.trackable.delete({ id }),
     onSuccess: async () => {
       await router.navigate({ to: "/app/trackables" });
     },

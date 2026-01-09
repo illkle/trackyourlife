@@ -1,6 +1,8 @@
 import { HeartIcon } from "lucide-react";
 import { m } from "motion/react";
 
+import { mutators } from "@tyl/db/mutators";
+
 import type { ButtonProps } from "~/@shad/components/button";
 import type { TrackableListItem } from "~/utils/useZ";
 import { Button } from "~/@shad/components/button";
@@ -19,19 +21,16 @@ export const FavoriteButton = ({
     (tg) => tg.group === "favorites",
   );
 
-  const z = useZ();
-
   const favHandler = async () => {
     if (inFavs) {
-      await z.mutate.TYL_trackableGroup.delete({
+      await mutators.trackableGroup.delete({
         trackableId: trackable.id,
         group: "favorites",
       });
     } else {
-      await z.mutate.TYL_trackableGroup.insert({
+      await mutators.trackableGroup.insert({
         trackableId: trackable.id,
         group: "favorites",
-        user_id: z.userID,
       });
     }
   };
