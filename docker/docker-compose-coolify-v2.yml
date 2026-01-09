@@ -104,7 +104,7 @@ services:
     restart: unless-stopped
     build:
       context: .
-      dockerfile: ./docker/Dockerfile
+      dockerfile: ./docker/web.Dockerfile
       args:
         VITE_ZERO_DOMAIN: ${VITE_DEPLOY_DOMAIN}/zero # Domain for zero container
         VITE_PREVIEW_WARNING: ${VITE_PREVIEW_WARNING}
