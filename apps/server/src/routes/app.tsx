@@ -36,7 +36,7 @@ function AppComponent() {
     if (zero) {
       void zero.close();
     }
-    setZero(makeZero(sessionInfo.user.id, token));
+    setZero(makeZero(sessionInfo.user.id ?? "anon", token));
     // we don't need zero as dep here
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token, sessionInfo.user.id]);
