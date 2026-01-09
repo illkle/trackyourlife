@@ -3,7 +3,7 @@ import fs from "fs";
 import { executeRaw, migrateDb } from "@tyl/db";
 
 const migrator = async () => {
-  if (!process.env.MIGRARATE) {
+  if (!process.env.MIGRATE) {
     console.log("X: process.env.MIGRATE is not set, skipping migrations");
     const zeroPermissions = fs.existsSync("./zero-permissions.sql");
 

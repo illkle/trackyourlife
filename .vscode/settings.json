@@ -11,5 +11,5 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "javascript.updateImportsOnFileMove.enabled": "always",
   "markdown.updateLinksOnFileMove.enabled": "always",
-  "cSpell.words": ["Pressable"]
+  "cSpell.words": ["Coolify", "powersync", "Pressable", "VITE"]
 }
