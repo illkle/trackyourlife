@@ -15,7 +15,6 @@ export const authClient = createAuthClient({
   ],
   trustedOrigins: [
     "tyl://",
-
     // Development mode - Expo's exp:// scheme with local IP ranges
     ...(process.env.NODE_ENV === "development"
       ? [
@@ -24,6 +23,7 @@ export const authClient = createAuthClient({
           "exp://192.168.*.*:*/*", // Trust 192.168.x.x IP range
           "exp://172.*.*.*:*/*", // Trust 172.x.x.x IP range
           "exp://localhost:*/*", // Trust localhost
+          "http://localhost:*/*", // Trust localhost
         ]
       : []),
   ],

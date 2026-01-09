@@ -1,7 +1,7 @@
 {
   "extends": "@tyl/tsconfig/base.json",
   "compilerOptions": {
-    "lib": ["ES2015"],
+    "lib": ["ES2021"],
     "outDir": "./dist"
   },
   "exclude": ["node_modules"],

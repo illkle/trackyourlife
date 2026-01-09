@@ -1,17 +1,17 @@
 # ---- Create Base Image ----
 
-FROM node:24-slim AS base
+FROM node:24 AS base
 	
 # Also add stuff required to build @rocicorp/zero-sqlite3
 # This is temporary until we split zero and drizzle into separate packages
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    ca-certificates \
-    python3 \
-    make \
-    g++ \
-    build-essential && \
-    rm -rf /var/lib/apt/lists/*
+#RUN apt-get update && \
+#    apt-get install -y --no-install-recommends \
+#    ca-certificates \
+#    python3 \
+#    make \
+#    g++ \
+#    build-essential && \
+#    rm -rf /var/lib/apt/lists/*
 
 FROM base AS builder
 WORKDIR /app

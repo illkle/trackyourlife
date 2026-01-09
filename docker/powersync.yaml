@@ -6,14 +6,13 @@ replication:
   connections:
     - type: postgresql
       uri: !env PS_DATA_SOURCE_URI
-
       sslmode: disable # 'verify-full' (default) or 'verify-ca' or 'disable'
       # Note: 'disable' is only suitable for local/private networks, not for public networks
 
 # Connection settings for sync bucket storage (MongoDB and Postgres are supported)
 storage:
   type: postgresql
-  uri: !env PS_DATA_SOURCE_URI
+  uri: !env PS_STORAGE_URI
   sslmode: disable
 
 # The port which the PowerSync API server will listen on

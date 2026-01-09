@@ -29,6 +29,7 @@
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "oxlint .",
     "generate": "pnpm with-env drizzle-kit generate",
+    "generate:manual-migration": "pnpm with-env drizzle-kit generate --custom",
     "up": "pnpm with-env drizzle-kit up",
     "migrate": "pnpm with-env drizzle-kit migrate",
     "migrate:deploy": "pnpm drizzle-kit migrate",

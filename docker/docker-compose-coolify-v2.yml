@@ -1,4 +1,4 @@
-# This compose file is for https://coolify.io/ 
+# This compose file is for https://coolify.io/
 
 # Context is set to "." because Coolify copies the compose file to root and runs it from there
 
@@ -11,11 +11,12 @@
 # VITE_DEPLOY_DOMAIN = your "web" domain. Must NOT end with "/". Correct example: "https://tyl.illkle.com".
 # BETTER_AUTH_SECRET = secret for auth. https://jwtsecrets.com/#generator
 # ZERO_ADMIN_PASSWORD = decently secure password
-# POSTGRES_PASSWORD = password for postgres database
+# POSTGRES_PASSWORD = main password for postgres database
+# POWERSYNC_PASSWORD = powersync password for postgres database
 
 # Optional ENV
-# RESEND_API_KEY = 
-# RESEND_FROM_EMAIL = 
+# RESEND_API_KEY =
+# RESEND_FROM_EMAIL =
 
 # PS: Don't forget to setup backup for Postgres
 
@@ -36,35 +37,9 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-      
-  web:
-    restart: unless-stopped
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
-      args:
-        - VITE_ZERO_DOMAIN=${VITE_DEPLOY_DOMAIN}/zero # Domain for zero container
-        - VITE_PREVIEW_WARNING=${VITE_PREVIEW_WARNING}
-    environment:
-      - NITRO_PORT=80
-      - NODE_ENV=production
-      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
-      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
-      - BETTER_AUTH_URL=${VITE_DEPLOY_DOMAIN}
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/"]
-      interval: 5s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
-    depends_on:
-      init:
-        condition: service_completed_successfully
-      zerosync:
-        condition: service_healthy
 
   init:
-    exclude_from_hc: true
+    x-exclude-from-hc: true
     build:
       context: .
       dockerfile: ./docker/init.Dockerfile
@@ -74,6 +49,7 @@ services:
       - ZERO_UPSTREAM_DB=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
       - ZERO_CVR_DB=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
       - ZERO_CHANGE_DB=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
+      - POWERSYNC_PASSWORD=${POWERSYNC_PASSWORD}
     depends_on:
       postgres:
         condition: service_healthy
@@ -81,18 +57,21 @@ services:
         condition: service_started
     restart: "no"
 
-  powersync:
-    restart: unless-stopped
-    build:
-      context: .
-      dockerfile: ./docker/powersync.Dockerfile
-    environment:
-      - PS_DATA_SOURCE_URI=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
-      - PS_JWKS=${VITE_DEPLOY_DOMAIN}/api/auth/jwks
-      - PS_ROOT_URL=${VITE_DEPLOY_DOMAIN}
-    depends_on:
-      init:
-        condition: service_completed_successfully
+ # powersync:
+ #   restart: unless-stopped
+ #   build:
+ #     context: .
+ #     dockerfile: ./docker/powersync.Dockerfile
+ #   environment:
+ #     - PS_DATA_SOURCE_URI=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
+ #     - PS_STORAGE_URI=postgresql://powersync_storage_user:${POWERSYNC_PASSWORD}@postgres:5432/postgres
+ #     - PS_JWKS=${VITE_DEPLOY_DOMAIN}/api/auth/jwks
+ #     - PS_ROOT_URL=${VITE_DEPLOY_DOMAIN}
+ #   depends_on:
+ #     postgres:
+ #       condition: service_healthy
+ #     init:
+ #       condition: service_completed_successfully
 
   zerosync:
     restart: unless-stopped
@@ -117,6 +96,32 @@ services:
       start_period: 30s
     depends_on:
       postgres:
+        condition: service_healthy
+
+  web:
+    restart: unless-stopped
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        - VITE_ZERO_DOMAIN=${VITE_DEPLOY_DOMAIN}/zero # Domain for zero container
+        - VITE_PREVIEW_WARNING=${VITE_PREVIEW_WARNING}
+    environment:
+      - NITRO_PORT=80
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
+      - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
+      - BETTER_AUTH_URL=${VITE_DEPLOY_DOMAIN}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      interval: 5s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      zerosync:
         condition: service_healthy
 
 volumes:

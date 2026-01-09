@@ -253,6 +253,13 @@
       "when": 1740602263454,
       "tag": "0036_breezy_vermin",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1767974978128,
+      "tag": "0037_powersync",
+      "breakpoints": true
     }
   ]
 }
