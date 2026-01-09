@@ -1,4 +1,5 @@
-UPDATE zero."schemaVersions"
-SET
-    "minSupportedVersion" = 2,
-    "maxSupportedVersion" = 2;
+-- The concept of schema version was deprecated in https://zero.rocicorp.dev/docs/release-notes/0.17
+--UPDATE zero."schemaVersions"
+--SET
+--    "minSupportedVersion" = 2,
+--    "maxSupportedVersion" = 2;
