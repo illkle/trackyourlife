@@ -13,6 +13,8 @@ export const Route = createFileRoute("/api/zero/mutate")({
       POST: async ({ request }) => {
         const u = await auth.api.getSession({ headers: request.headers });
 
+        console.log("POST TO MUTATE", u);
+
         const result = await handleMutateRequest(
           dbProvider,
           (transact) =>
@@ -26,6 +28,8 @@ export const Route = createFileRoute("/api/zero/mutate")({
             }),
           request,
         );
+
+        console.log("MUTATION HANDLED");
 
         return Response.json(result);
       },

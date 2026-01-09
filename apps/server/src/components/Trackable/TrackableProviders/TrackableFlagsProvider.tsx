@@ -1,9 +1,11 @@
 import type { ReactNode } from "react";
 import { createContext, memo, useCallback, useEffect, useId } from "react";
+import { useZero } from "@rocicorp/zero/react";
 import { Store, useStore } from "@tanstack/react-store";
 
 import type { ITrackableFlagsZero } from "@tyl/db/zero-schema";
 import { mutators } from "@tyl/db/mutators";
+import { queries } from "@tyl/db/queries";
 
 import type {
   ITrackableFlagKey,
@@ -88,7 +90,7 @@ const TrackableFlagsProviderNonMemo = ({
   children: ReactNode;
   trackableIds?: string[];
 }) => {
-  const z = useZ();
+  const zero = useZero();
 
   const id = useId();
 
@@ -99,11 +101,9 @@ const TrackableFlagsProviderNonMemo = ({
       throw new Error("TrackableFlagsProvider can only be used once");
     }
 
-    const q = trackableIds
-      ? z.query.TYL_trackableFlags.where("trackableId", "IN", trackableIds)
-      : z.query.TYL_trackableFlags;
+    const q = queries.flags({ ids: trackableIds ?? [] });
 
-    const m = q.materialize();
+    const m = zero.materialize(q);
 
     m.addListener((flagsUpdate) => {
       // Casting to unknown to avoid type instanstiation is too deep error
@@ -120,7 +120,7 @@ const TrackableFlagsProviderNonMemo = ({
       }
       m.destroy();
     };
-  }, [trackableIds, z, id]);
+  }, [trackableIds, zero, id]);
 
   return children;
 };
@@ -140,7 +140,7 @@ export const useTrackableFlag: GetFlagFunction = (trackableId, key) => {
 };
 
 export const useSetTrackableFlag = () => {
-  const z = useZ();
+  const zero = useZero();
 
   const setFlag: SetFlagFunction = useCallback(
     async (trackableId, key, value) => {
@@ -150,13 +150,15 @@ export const useSetTrackableFlag = () => {
         throw new Error("Invalid flag value");
       }
 
-      await mutators.trackableFlags.upsert({
-        trackableId: trackableId,
-        key: key,
-        value: value,
-      });
+      await zero.mutate(
+        mutators.trackableFlags.upsert({
+          trackableId: trackableId,
+          key: key,
+          value: value,
+        }),
+      );
     },
-    [z],
+    [zero],
   );
 
   return setFlag;

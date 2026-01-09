@@ -25,6 +25,9 @@ const makeZero = (userID: string, token: string) => {
     schema: schema,
     auth: token,
     mutators: mutators,
+    context: {
+      userID: userID,
+    },
   });
 };
 
@@ -69,7 +72,7 @@ function AppComponent() {
 }
 
 const MainPreloader = ({ children }: { children: React.ReactNode }) => {
-  usePreloadCore();
+  //usePreloadCore();
 
   return children;
 };

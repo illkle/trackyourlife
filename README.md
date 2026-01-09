@@ -12,8 +12,18 @@ No interest in developing this project currently. Though it's usable and availab
 
 ### Development
 
-- Run Postgres somewhere. Create `.env` similar to `.env.example`
-- `pnpm i` `pnpm run dev`
-- Migrations are applied automatically on startup. To generate migrations after updating schema use `pnpm run db:generate`
-- Run Drizzle Studio to inspect database with `db:studio`
-- To add something from `shadcn/ui` first do `cd apps/server` and then run the command.
+1. Start postgres
+
+```
+docker run -d --name zero-postgres \
+  -e POSTGRES_PASSWORD="password" \
+  -p 5432:5432 \
+  postgres:16-alpine \
+  postgres -c wal_level=logical
+```
+
+2. Copy `.env.example` to `.env`
+3. Create 'zeroTemp' folder(right here)
+4. Start zero `pnpm run dev:zero-cache`
+   (if you are getting `Error: Could not locate the bindings file` run `pnpm approve-builds` and approve all)
+5. Start dev `pnpm run dev`

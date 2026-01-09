@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import { useZero } from "@rocicorp/zero/react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { v4 as uuidv4 } from "uuid";
 
@@ -19,9 +20,7 @@ export const Route = createFileRoute("/app/create")({
 
 function RouteComponent() {
   const router = useRouter();
-  const z = useZ();
-
-  const { sessionInfo } = useSessionAuthed();
+  const zero = useZero();
 
   const [newOne, setNewOne] = useState<
     Omit<ITrackableZeroInsert, "id" | "user_id">
@@ -41,11 +40,13 @@ function RouteComponent() {
 
   const createTrackable = async () => {
     const id = uuidv4();
-    await mutators.trackable.insert({
-      id,
-      ...newOne,
-      name: nameRef.current || "",
-    });
+    await zero.mutate(
+      mutators.trackable.insert({
+        id,
+        ...newOne,
+        name: nameRef.current || "",
+      }),
+    );
 
     await router.navigate({
       to: `/app/trackables/${id}/settings`,

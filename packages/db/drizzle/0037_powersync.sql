@@ -1,7 +1,7 @@
 -- Create a role/user with replication privileges for PowerSync
 CREATE ROLE powersync_role
 WITH
-    REPLICATION BYPASSRLS LOGIN PASSWORD '$POWERSYNC_PASSWORD_TO_BE_REPLACED_WITH_ENV_BEFORE_APPLYING';
+    REPLICATION BYPASSRLS LOGIN PASSWORD 'LOL';
 
 -- Set up permissions for powersync role(it's created in docker)
 -- Read-only (SELECT) access is required
@@ -31,7 +31,7 @@ CREATE PUBLICATION powersync FOR TABLE "TYL_user",
 
 CREATE USER powersync_storage_user
 WITH
-    PASSWORD '$POWERSYNC_PASSWORD_TO_BE_REPLACED_WITH_ENV_BEFORE_APPLYING';
+    PASSWORD 'LOL';
 
 -- The user should only have access to the schema it created
 GRANT CREATE ON DATABASE postgres TO powersync_storage_user;

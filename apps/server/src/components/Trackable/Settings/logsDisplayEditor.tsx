@@ -18,6 +18,7 @@ import { v4 as uuidv4 } from "uuid";
 import { z } from "zod/v4";
 
 import type { ITrackableRecordAttributeZero } from "@tyl/db/zero-schema";
+import { queries } from "@tyl/db/queries";
 import { mapUnorderedData } from "@tyl/helpers/trackables";
 
 import { Button } from "~/@shad/components/button";
@@ -174,13 +175,8 @@ export const LogsDisplayPreview = ({
   displayValue: ILogsDisplay;
 }) => {
   const { id } = useTrackableMeta();
-  const z = useZ();
 
-  const [logs] = useQuery(
-    z.query.TYL_trackableRecord.where("trackableId", "=", id)
-      .limit(5)
-      .related("trackableRecordAttributes"),
-  );
+  const [logs] = useQuery(queries.logsDisplayPreview({ id }));
 
   const mapped = mapUnorderedData(logs);
 
@@ -468,7 +464,7 @@ const ReorderEditor = ({
               {onDeleted && (
                 <Button
                   variant={"ghost"}
-                  className="absolute top-0 right-0 h-4 w-4 translate-x-1/2 -translate-y-1/2 rounded-full p-0.5"
+                  className="absolute right-0 top-0 h-4 w-4 -translate-y-1/2 translate-x-1/2 rounded-full p-0.5"
                   onClick={(e) => {
                     e.stopPropagation();
                     onDeleted(v.id);

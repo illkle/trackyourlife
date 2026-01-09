@@ -150,4 +150,27 @@ export const queries = defineQueries({
             .related("trackableRecordAttributes"),
         ),
   ),
+  flags: defineQuery(
+    z.object({ ids: z.array(z.string()) }),
+    ({ args, ctx }) => {
+      if (args.ids.length > 0) {
+        return zql.TYL_trackableFlags.where("user_id", "=", ctx.userID).where(
+          "trackableId",
+          "IN",
+          args.ids,
+        );
+      }
+
+      return zql.TYL_trackableFlags.where("user_id", "=", ctx.userID);
+    },
+  ),
+  logsDisplayPreview: defineQuery(
+    z.object({ id: z.string() }),
+    ({ args, ctx }) => {
+      return zql.TYL_trackableRecord.where("user_id", "=", ctx.userID)
+        .where("trackableId", "=", args.id)
+        .limit(5)
+        .related("trackableRecordAttributes");
+    },
+  ),
 });

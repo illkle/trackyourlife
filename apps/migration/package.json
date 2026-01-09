@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "start": "node dist/index.cjs",
-    "dev": "tsup --watch --onSuccess \"node dist/index.cjs\"",
-    "build": "tsup"
+    "dev": "pnpm with-env tsup --watch --onSuccess \"node dist/index.cjs\"",
+    "build": "tsup",
+    "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
     "@tyl/db": "workspace:*"

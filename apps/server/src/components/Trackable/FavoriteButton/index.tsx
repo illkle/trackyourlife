@@ -1,3 +1,4 @@
+import { useZero } from "@rocicorp/zero/react";
 import { HeartIcon } from "lucide-react";
 import { m } from "motion/react";
 
@@ -21,17 +22,23 @@ export const FavoriteButton = ({
     (tg) => tg.group === "favorites",
   );
 
+  const zero = useZero();
+
   const favHandler = async () => {
     if (inFavs) {
-      await mutators.trackableGroup.delete({
-        trackableId: trackable.id,
-        group: "favorites",
-      });
+      await zero.mutate(
+        mutators.trackableGroup.delete({
+          trackableId: trackable.id,
+          group: "favorites",
+        }),
+      );
     } else {
-      await mutators.trackableGroup.insert({
-        trackableId: trackable.id,
-        group: "favorites",
-      });
+      await zero.mutate(
+        mutators.trackableGroup.insert({
+          trackableId: trackable.id,
+          group: "favorites",
+        }),
+      );
     }
   };
 

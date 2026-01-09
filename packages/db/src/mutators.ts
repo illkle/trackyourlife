@@ -14,7 +14,9 @@ export const mutators = defineMutators({
         type: trackableType,
       }),
       async ({ tx, ctx, args }) => {
+        console.log("THIS IS MUTATOR");
         await tx.mutate.TYL_trackable.insert({ ...args, user_id: ctx.userID });
+        console.log("MUTATOR DONE");
       },
     ),
     update: defineMutator(

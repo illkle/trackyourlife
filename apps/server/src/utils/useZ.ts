@@ -173,50 +173,6 @@ const generateDateTime = (date: Date, storeTime?: boolean) => {
   return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 };
 
-export const updateValueRaw = async ({
-  z,
-  trackableId,
-  date,
-  type,
-  value,
-  recordId,
-  updatedAt = Date.now(),
-  attributes = {},
-}: {
-  z: ReturnType<typeof useZ>;
-  trackableId: string;
-  date: Date;
-  type: string;
-  value: string;
-  recordId?: string;
-  updatedAt?: number;
-  attributes?: Record<string, string>;
-}) => {
-  const d = generateDateTime(date, type === "logs");
-
-  if (recordId) {
-    await mutators.trackableRecord.update({
-      recordId,
-      value,
-      updatedAt: updatedAt,
-      attributes,
-    });
-
-    return recordId;
-  } else {
-    const rid = uuidv4();
-    await mutators.trackableRecord.upsert({
-      recordId: rid,
-      date: d,
-      trackableId,
-      value,
-      createdAt: updatedAt,
-      updatedAt: updatedAt,
-      attributes,
-    });
-    return rid;
-  }
-};
 export const useRecordUpdateHandler = ({
   date,
   trackableId,
@@ -226,7 +182,7 @@ export const useRecordUpdateHandler = ({
   trackableId: string;
   type: string;
 }) => {
-  const z = useZ();
+  const zero = useZero();
 
   return useCallback(
     async ({
@@ -240,18 +196,36 @@ export const useRecordUpdateHandler = ({
       updatedAt?: number;
       attributes?: Record<string, string>;
     }) => {
-      return await updateValueRaw({
-        z,
-        trackableId,
-        date,
-        type,
-        value,
-        recordId,
-        updatedAt,
-        attributes,
-      });
+      const d = generateDateTime(date, type === "logs");
+
+      if (recordId) {
+        await zero.mutate(
+          mutators.trackableRecord.update({
+            recordId,
+            value,
+            updatedAt: updatedAt,
+            attributes,
+          }),
+        );
+
+        return recordId;
+      } else {
+        const rid = uuidv4();
+        await zero.mutate(
+          mutators.trackableRecord.upsert({
+            recordId: rid,
+            date: d,
+            trackableId,
+            value,
+            createdAt: updatedAt,
+            updatedAt: updatedAt,
+            attributes,
+          }),
+        );
+        return rid;
+      }
     },
-    [date, trackableId, z, type],
+    [date, trackableId, zero, type],
   );
 };
 

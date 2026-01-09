@@ -1,3 +1,4 @@
+import { useZero } from "@rocicorp/zero/react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 
@@ -24,9 +25,11 @@ const DeleteButton = ({
   children?: React.ReactNode;
 }) => {
   const router = useRouter();
+  const zero = useZero();
 
   const mutation = useMutation({
-    mutationFn: async (id: string) => await mutators.trackable.delete({ id }),
+    mutationFn: async (id: string) =>
+      await zero.mutate(mutators.trackable.delete({ id })),
     onSuccess: async () => {
       await router.navigate({ to: "/app/trackables" });
     },

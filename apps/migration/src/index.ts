@@ -1,37 +1,33 @@
 import fs from "fs";
+import path from "path";
 
-import { executeRaw, migrateDb } from "@tyl/db";
+import { migrateDb } from "@tyl/db";
+
+const dir =
+  process.env.MIGRATE === "DEV" ? "../../packages/db/drizzle" : "./drizzle";
 
 const replaceName =
   "$POWERSYNC_PASSWORD_TO_BE_REPLACED_WITH_ENV_BEFORE_APPLYING";
 
 const applyPsyncPassFromEnv = () => {
-  if (!process.env.POWERSYNC_PASSWORD) {
-    throw new Error("POWERSYNC_PASSWORD is not set");
-  }
-
-  const powersyncPassword = process.env.POWERSYNC_PASSWORD;
+  const powersyncPassword = process.env.POWERSYNC_PASSWORD ?? "LOL";
 
   const sqlContent = fs
-    .readFileSync("./drizzle/0037_powersync.sql")
+    .readFileSync(path.join(dir, "/0037_powersync.sql"))
     .toString()
     .replaceAll(replaceName, powersyncPassword);
 
-  fs.writeFileSync("./drizzle/0037_powersync.sql", sqlContent);
+  fs.writeFileSync(path.join(dir, "/0037_powersync.sql"), sqlContent);
 };
 
 const migrator = async () => {
+  console.log("---", process.env.MIGRATE, dir);
   if (!process.env.MIGRATE) {
+    console.log(process.env);
     console.log("X: process.env.MIGRATE is not set, skipping migrations");
-    const zeroPermissions = fs.existsSync("./zero-permissions.sql");
 
-    const drizzleDir = fs.existsSync("./drizzle");
+    const drizzleDir = fs.existsSync(dir);
 
-    console.log(
-      zeroPermissions
-        ? "+: Zero Permissions found"
-        : "X: Zero Permissions not found",
-    );
     console.log(
       drizzleDir ? "+: Drizzle dir found" : "X: Drizzle dir not found",
     );
@@ -40,9 +36,9 @@ const migrator = async () => {
 
   applyPsyncPassFromEnv();
 
-  console.log("+: Migrating database and zero");
+  console.log("+: Migrating database");
 
-  await migrateDb("./drizzle");
+  await migrateDb(dir);
   /*const zeroPermissions = fs.readFileSync("./zero-permissions.sql").toString();
 
   if (!zeroPermissions.length) {
