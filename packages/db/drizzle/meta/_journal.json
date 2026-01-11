@@ -260,6 +260,27 @@
       "when": 1767974978128,
       "tag": "0037_powersync",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1768167798428,
+      "tag": "0038_cheerful_callisto",
+      "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "7",
+      "when": 1768167933983,
+      "tag": "0039_silent_maestro",
+      "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1768168083145,
+      "tag": "0040_gorgeous_paladin",
+      "breakpoints": true
     }
   ]
 }

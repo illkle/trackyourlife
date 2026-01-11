@@ -15,71 +15,11 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 
+import { session, user } from "./auth";
+
+export * from "./auth";
+
 const pgTable = pgTableCreator((name) => `TYL_${name}`);
-
-/**
- * AUTH https://www.better-auth.com/docs/installation
- * npx @better-auth/cli generate --config ./apps/server/app/utils/auth.ts
- * Copy output here manually and remove prefixes, they are set by pgtable
- */
-
-export const user = pgTable("user", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull().unique(),
-  emailVerified: boolean("emailVerified").notNull().default(false),
-  image: text("image"),
-  createdAt: timestamp("createdAt").notNull().defaultNow(),
-  updatedAt: timestamp("updatedAt").notNull().defaultNow(),
-});
-
-export const session = pgTable("session", {
-  id: text("id").primaryKey(),
-  expiresAt: timestamp("expiresAt").notNull(),
-  token: text("token").notNull().unique(),
-  createdAt: timestamp("createdAt").notNull(),
-  updatedAt: timestamp("updatedAt").notNull(),
-  ipAddress: text("ipAddress"),
-  userAgent: text("userAgent"),
-  userId: text("userId")
-    .notNull()
-    .references(() => user.id),
-});
-
-// Account is credentials\oauth data. All user settings and data should reference user table, not this one.
-export const account = pgTable("account", {
-  id: text("id").primaryKey(),
-  accountId: text("accountId").notNull(),
-  providerId: text("providerId").notNull(),
-  userId: text("userId")
-    .notNull()
-    .references(() => user.id),
-  accessToken: text("accessToken"),
-  refreshToken: text("refreshToken"),
-  idToken: text("idToken"),
-  accessTokenExpiresAt: timestamp("accessTokenExpiresAt"),
-  refreshTokenExpiresAt: timestamp("refreshTokenExpiresAt"),
-  scope: text("scope"),
-  password: text("password"),
-  createdAt: timestamp("createdAt").notNull(),
-  updatedAt: timestamp("updatedAt").notNull(),
-});
-
-export const verification = pgTable("verification", {
-  id: text("id").primaryKey(),
-  identifier: text("identifier").notNull(),
-  value: text("value").notNull(),
-  expiresAt: timestamp("expiresAt").notNull(),
-  createdAt: timestamp("createdAt"),
-  updatedAt: timestamp("updatedAt"),
-});
-
-export const jwks = pgTable("jwks", {
-  id: text("id").primaryKey(),
-  publicKey: text("publicKey").notNull(),
-  privateKey: text("privateKey").notNull(),
-  createdAt: timestamp("createdAt").notNull(),
-});
 
 /*
  * Tables related to user.
@@ -87,7 +27,7 @@ export const jwks = pgTable("jwks", {
 export const userFlags = pgTable(
   "userFlags",
   {
-    userId: text("userId")
+    userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     key: text("key").notNull(),
@@ -123,7 +63,7 @@ export const trackableTypeEnum = pgEnum("type", [
 export const trackable = pgTable(
   "trackable",
   {
-    user_id: text("user_id")
+    userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     id: uuid("id").defaultRandom().primaryKey(),
@@ -131,8 +71,8 @@ export const trackable = pgTable(
     type: trackableTypeEnum("type").notNull(),
   },
   (t) => [
-    uniqueIndex("user_id_idx").on(t.user_id, t.id),
-    index("user_id_name_idx").on(t.user_id, t.name),
+    uniqueIndex("user_id_idx").on(t.userId, t.id),
+    index("user_id_name_idx").on(t.userId, t.name),
   ],
 );
 
@@ -142,16 +82,16 @@ export const trackable = pgTable(
 export const trackableFlags = pgTable(
   "trackableFlags",
   {
-    user_id: text("user_id")
+    userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    trackableId: uuid("trackableId")
+    trackableId: uuid("trackable_id")
       .notNull()
       .references(() => trackable.id, { onDelete: "cascade" }),
     key: text("key").notNull(),
     value: json("value").default({}),
   },
-  (t) => [primaryKey({ columns: [t.user_id, t.trackableId, t.key] })],
+  (t) => [primaryKey({ columns: [t.userId, t.trackableId, t.key] })],
 );
 
 export const trackableFlagsRelations = relations(trackableFlags, ({ one }) => ({
@@ -169,11 +109,11 @@ export const trackableRelations = relations(trackable, ({ many }) => ({
 export const trackableRecord = pgTable(
   "trackableRecord",
   {
-    recordId: uuid("recordId").defaultRandom().primaryKey(),
-    user_id: text("user_id")
+    recordId: uuid("record_id").defaultRandom().primaryKey(),
+    userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    trackableId: uuid("trackableId")
+    trackableId: uuid("trackable_id")
       .notNull()
       .references(() => trackable.id, { onDelete: "cascade" }),
     date: timestamp("date").notNull(),
@@ -188,16 +128,16 @@ export const trackableRecord = pgTable(
      * Since this application is local first and insert to PG can differ from actual creation date, value is set by the client.
      * Stored as unix timestamp to avoid timezone issues and simplify sorting.
      */
-    createdAt: bigint("createdAt", { mode: "number" }),
+    createdAt: bigint("created_at", { mode: "number" }),
     /*
      * Used to unserstand when value was written to compare db with lazy input. Also used to choose newer record when ingesting data.
      Stored as unix timestamp to avoid timezone issues and simplify sorting.
      */
-    updatedAt: bigint("updatedAt", { mode: "number" }),
+    updatedAt: bigint("updated_at", { mode: "number" }),
     /*
      * Set by external systems to identify the source of the record.
      */
-    externalKey: text("externalKey"),
+    externalKey: text("external_key"),
   },
   (t) => [
     /*
@@ -208,7 +148,7 @@ export const trackableRecord = pgTable(
      - Tags must be unique. If on insert there is an existing tag with the same value, the insert is cancelled.
     */
     index("trackable_date_idx").on(t.trackableId, t.date),
-    index("user_date_idx").on(t.user_id, t.date),
+    index("user_date_idx").on(t.userId, t.date),
   ],
 );
 
@@ -221,13 +161,13 @@ export const trackableRecordAttributesTypeEnum = pgEnum("attributeType", [
 export const trackableRecordAttributes = pgTable(
   "trackableRecordAttributes",
   {
-    user_id: text("user_id")
+    userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    trackableId: uuid("trackableId")
+    trackableId: uuid("trackable_id")
       .notNull()
       .references(() => trackable.id, { onDelete: "cascade" }),
-    recordId: uuid("recordId")
+    recordId: uuid("record_id")
       .notNull()
       .references(() => trackableRecord.recordId, { onDelete: "cascade" }),
     key: text("key").notNull(),
@@ -235,7 +175,7 @@ export const trackableRecordAttributes = pgTable(
     type: trackableRecordAttributesTypeEnum("type").notNull(),
   },
   (t) => [
-    primaryKey({ columns: [t.user_id, t.trackableId, t.recordId, t.key] }),
+    primaryKey({ columns: [t.userId, t.trackableId, t.recordId, t.key] }),
   ],
 );
 
@@ -245,7 +185,7 @@ export const recordRelations = relations(trackableRecord, ({ one }) => ({
     references: [trackable.id],
   }),
   userId: one(user, {
-    fields: [trackableRecord.user_id],
+    fields: [trackableRecord.userId],
     references: [user.id],
   }),
 }));
@@ -253,11 +193,11 @@ export const recordRelations = relations(trackableRecord, ({ one }) => ({
 export const trackableGroup = pgTable(
   "trackableGroup",
   {
-    trackableId: uuid("trackableId")
+    trackableId: uuid("trackable_id")
       .notNull()
       .references(() => trackable.id, { onDelete: "cascade" }),
     group: text("group").notNull(),
-    user_id: text("user_id")
+    userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
   },
@@ -270,7 +210,7 @@ export const trackableGroupRelations = relations(trackableGroup, ({ one }) => ({
     references: [trackable.id],
   }),
   user: one(user, {
-    fields: [trackableGroup.user_id],
+    fields: [trackableGroup.userId],
     references: [user.id],
   }),
 }));
@@ -282,15 +222,15 @@ export const trackableGroupRelations = relations(trackableGroup, ({ one }) => ({
 export const ingestApiKeys = pgTable(
   "ingestApiKeys",
   {
-    userId: text("userId")
+    userId: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    trackableId: uuid("trackableId")
+    trackableId: uuid("trackable_id")
       .notNull()
       .references(() => trackable.id, { onDelete: "cascade" }),
     key: text("key").notNull(),
-    createdAt: timestamp("createdAt").notNull(),
-    daysLimit: integer("daysLimit").notNull(),
+    createdAt: timestamp("created_at").notNull(),
+    daysLimit: integer("days_limit").notNull(),
   },
   (t) => [primaryKey({ columns: [t.userId, t.trackableId, t.key] })],
 );

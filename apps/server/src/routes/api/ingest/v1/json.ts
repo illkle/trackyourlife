@@ -35,7 +35,7 @@ export const Route = createFileRoute("/api/ingest/v1/json")({
             return json({ error: "Invalid API key" }, { status: 401 });
           }
 
-          if (keyValue.user.id !== keyValue.trackable.user_id) {
+          if (keyValue.user.id !== keyValue.trackable.userId) {
             return json({ error: "Invalid API key" }, { status: 401 });
           }
 

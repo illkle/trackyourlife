@@ -92,7 +92,7 @@ export const importData = async (
           .values(
             toInsert.map((item) => ({
               trackableId: tr.id,
-              user_id: userId,
+              userId: userId,
               date: item.date,
               value: item.value,
               attributes: complexTrackable ? item.attrbites : undefined,

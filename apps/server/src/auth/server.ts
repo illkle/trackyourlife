@@ -1,7 +1,7 @@
 import { expo } from "@better-auth/expo";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
-import { jwt } from "better-auth/plugins";
+import { apiKey, jwt } from "better-auth/plugins";
 
 import { db } from "@tyl/db";
 
@@ -9,7 +9,7 @@ import {
   sendChangeVerificationEmail,
   sendResetPasswordEmail,
   sendVerificationEmail,
-} from "~/auth/email";
+} from "./email";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -44,5 +44,5 @@ export const auth = betterAuth({
   },
 
   secret: process.env.BETTER_AUTH_SECRET,
-  plugins: [jwt({}), expo()],
+  plugins: [jwt({}), expo(), apiKey()],
 });
