@@ -24,11 +24,9 @@ import { useZ, useZeroTrackable } from "~/utils/useZ";
 export const TrackableNameEditable = () => {
   const { id } = useTrackableMeta();
 
-  const z = useZ();
-
   const [trackable] = useZeroTrackable({ id });
-  const updateName = (name: string) => {
-    void mutators.trackable.update({
+  const updateName = async (name: string) => {
+    await mutators.trackable.update({
       id,
       name,
     });
@@ -72,7 +70,7 @@ export const TrackableNameEditable = () => {
           onChange={(e) => setInternalValue(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              saveHandler();
+              void saveHandler();
             }
           }}
         />

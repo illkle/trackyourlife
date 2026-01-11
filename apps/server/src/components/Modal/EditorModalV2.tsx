@@ -1,6 +1,6 @@
 import type { ListenerValue } from "@tanstack/react-store";
 import type { HTMLMotionProps } from "motion/react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { RefObject, useEffect, useRef, useState } from "react";
 import { cn } from "@shad/lib/utils";
 import { useLocation } from "@tanstack/react-router";
 import { Store, useStore } from "@tanstack/react-store";
@@ -137,7 +137,7 @@ export const EditorModalV2 = () => {
   }, [pathname]);
 
   useOnClickOutside(
-    wrapperRef,
+    wrapperRef as RefObject<HTMLElement>,
     (e) => {
       if (e.ignoreEditorModalClose) {
         return;
@@ -162,7 +162,7 @@ export const EditorModalV2 = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed top-0 left-0 h-screen w-screen bg-black/30"
+            className="fixed left-0 top-0 h-screen w-screen bg-black/30"
           ></m.div>
         )}
       </AnimatePresence>
@@ -283,7 +283,7 @@ export const MiniDrawer = React.forwardRef<
           "data-[state=collapsed]:translate-y-[calc(100%-24px)]",
           "fixed bottom-[var(--bottom-position)] translate-y-[100vh]",
           "data-[sidebar-offset=false]:-translate-x-1/2 data-[sidebar-offset=true]:translate-x-[calc(-50%+var(--sidebar-offset,0px)/2)]",
-          "transition-all duration-350",
+          "duration-350 transition-all",
           "data-[hidden=true]:pointer-events-none data-[hidden=true]:opacity-0",
           isMobile && state === "opened" && "hideCaretAnimation",
           props.className,
@@ -362,7 +362,7 @@ export const Debugger = () => {
 
   return (
     <>
-      <div className="bg-secondary text-secondary-foreground fixed top-4 right-4 z-50 -translate-y-[300px] rounded p-4 text-sm opacity-75">
+      <div className="bg-secondary text-secondary-foreground fixed right-4 top-4 z-50 -translate-y-[300px] rounded p-4 text-sm opacity-75">
         <div>scrollTop: {Math.round(dimensions.scrollTop)}</div>
         <div>scrollHeight: {Math.round(dimensions.scrollHeight)}</div>
         <div>innerHeight: {Math.round(dimensions.innerHeight)}</div>
@@ -373,7 +373,7 @@ export const Debugger = () => {
       </div>
       <div
         ref={target}
-        className="fixed bottom-0 h-40 w-full translate-z-0 bg-red-500"
+        className="translate-z-0 fixed bottom-0 h-40 w-full bg-red-500"
       >
         {offset}
         {Math.round(dimensions.innerHeight)}{" "}

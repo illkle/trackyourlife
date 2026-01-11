@@ -10,6 +10,7 @@ node_modules
 .tanstack
 .nitro
 .output
+.cache
 /out/
 .env
 analyze

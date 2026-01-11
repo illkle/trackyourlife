@@ -1,5 +1,13 @@
 import type { ReactNode } from "react";
-import { createContext, memo, useCallback, useEffect, useId } from "react";
+import {
+  createContext,
+  memo,
+  useCallback,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useState,
+} from "react";
 import { useZero } from "@rocicorp/zero/react";
 import { Store, useStore } from "@tanstack/react-store";
 
@@ -9,14 +17,15 @@ import { queries } from "@tyl/db/queries";
 
 import type {
   ITrackableFlagKey,
+  ITrackableFlagsKV,
   ITrackableFlagValue,
   ITrackableFlagValueInput,
 } from "~/components/Trackable/TrackableProviders/trackableFlags";
+import { Spinner } from "~/@shad/components/spinner";
 import {
   FlagDefaults,
   FlagsValidators,
 } from "~/components/Trackable/TrackableProviders/trackableFlags";
-import { useZ } from "~/utils/useZ";
 
 /*
  * This provides a kv store that is used for trackable settings.
@@ -31,7 +40,7 @@ import { useZ } from "~/utils/useZ";
   There is a TrackableProvider(nearby file) that wraps getFlag and setFlag and closes over id.
 */
 
-// TS 5.8 talks about improving some stuff with paraameter retunr inference, maybe something can be refactored when it's released
+// TS 5.8 talks about improving some stuff with parameter return inference, maybe something can be refactored when it's released
 //https://devblogs.microsoft.com/typescript/announcing-typescript-5-8-beta/#a-note-on-limitations
 
 type GetFlagFunction = <K extends ITrackableFlagKey>(
@@ -53,26 +62,25 @@ interface ITrackableFlagsContext {
 export const TrackableFlagsContext =
   createContext<ITrackableFlagsContext | null>(null);
 
-type TrackableId = string;
-type MapKey = `${TrackableId}-${ITrackableFlagKey}`;
-
-type KeyStorage = Record<MapKey, ITrackableFlagValue<ITrackableFlagKey>>;
+type KeyStorage = Record<string, Partial<ITrackableFlagsKV>>;
 
 /*
  * Takes a list of flags(from zero query) and returns an object of flags
  */
 export const createFlagsObject = (flags: readonly ITrackableFlagsZero[]) => {
-  const flagMap = {} as KeyStorage;
+  const flagMap: KeyStorage = {};
 
   flags.forEach((flag) => {
     if (!(flag.key in FlagsValidators)) {
       return;
     }
-    const validator = FlagsValidators[flag.key as ITrackableFlagKey];
+    const key = flag.key as ITrackableFlagKey;
+    const validator = FlagsValidators[key];
     const parsed = validator.safeParse(flag.value);
     if (parsed.success) {
-      flagMap[`${flag.trackableId}--${flag.key as ITrackableFlagKey}`] =
-        parsed.data;
+      flagMap[flag.trackableId] ??= {};
+      // @ts-expect-error - parsed.data is correctly typed for key, but TS can't verify
+      flagMap[flag.trackableId][key] = parsed.data;
     }
   });
 
@@ -94,6 +102,8 @@ const TrackableFlagsProviderNonMemo = ({
 
   const id = useId();
 
+  const [ready, setReady] = useState(false);
+
   useEffect(() => {
     if (flagStorageLock === null) {
       flagStorageLock = id;
@@ -102,8 +112,10 @@ const TrackableFlagsProviderNonMemo = ({
     }
 
     const q = queries.flags({ ids: trackableIds ?? [] });
-
     const m = zero.materialize(q);
+
+    FlagStorage.setState(() => createFlagsObject(m.data));
+    setReady(true);
 
     m.addListener((flagsUpdate) => {
       // Casting to unknown to avoid type instanstiation is too deep error
@@ -122,6 +134,10 @@ const TrackableFlagsProviderNonMemo = ({
     };
   }, [trackableIds, zero, id]);
 
+  if (!ready) {
+    return <></>;
+  }
+
   return children;
 };
 
@@ -134,8 +150,11 @@ export const TrackableFlagsProvider = memo(TrackableFlagsProviderNonMemo);
  * Flag value is reactive and will rerender only on this specific trackableId+flag combination update.
  * Keep in mind that for flags to be available you need to have TrackableFlagsFetcher with trackableId above.
  */
-export const useTrackableFlag: GetFlagFunction = (trackableId, key) => {
-  const v = useStore(FlagStorage, (state) => state[`${trackableId}--${key}`]);
+export const useTrackableFlag = <K extends ITrackableFlagKey>(
+  trackableId: string,
+  key: K,
+) => {
+  const v = useStore(FlagStorage, (state) => state[trackableId]?.[key]);
   return v ?? FlagDefaults[key];
 };
 

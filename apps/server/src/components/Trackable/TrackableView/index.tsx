@@ -65,7 +65,7 @@ const MonthVisualList = ({ data }: { data: PureDataRecord[] }) => {
           <Fragment key={i}>
             <h5
               className={cn(
-                "-translate-y-0.5 font-mono text-3xl leading-[100%] font-extralight select-none",
+                "-translate-y-0.5 select-none font-mono text-3xl font-extralight leading-[100%]",
                 isToday(el.date)
                   ? "text-foreground"
                   : "text-muted-foreground/40",
@@ -102,8 +102,6 @@ export const MonthFetcher = ({
     firstDay: firstDayDate,
     lastDay: lastDayDate,
   });
-
-  console.log("data", data);
 
   const mappedData = mapDataToRange(firstDayDate, lastDayDate, data);
 
@@ -190,7 +188,7 @@ const TrackableView = ({
         />
       )}
 
-      <hr className="bg-muted-foreground my-4 h-px border-none opacity-10 outline-hidden" />
+      <hr className="bg-muted-foreground outline-hidden my-4 h-px border-none opacity-10" />
 
       <TrackableNoteEditable />
     </>

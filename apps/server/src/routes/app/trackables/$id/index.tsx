@@ -7,7 +7,10 @@ export const Route = createFileRoute("/app/trackables/$id/")({
       search: (prev) => ({
         ...prev,
       }),
-      to: `/app/trackables/${params.id}/view`,
+      to: `/app/trackables/$id/view`,
+      params: {
+        id: params.id,
+      },
     });
   },
 });

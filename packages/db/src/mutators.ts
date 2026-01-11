@@ -14,25 +14,22 @@ export const mutators = defineMutators({
         type: trackableType,
       }),
       async ({ tx, ctx, args }) => {
-        console.log("THIS IS MUTATOR");
         await tx.mutate.TYL_trackable.insert({ ...args, user_id: ctx.userID });
-        console.log("MUTATOR DONE");
       },
     ),
     update: defineMutator(
       z.object({
         id: z.string(),
-        name: z.string().optional(),
-        type: trackableType.optional(),
+        name: z.string(),
       }),
-      async ({ tx, args }) => {
-        await tx.mutate.TYL_trackable.update(args);
+      async ({ tx, ctx, args }) => {
+        await tx.mutate.TYL_trackable.update({ ...args, user_id: ctx.userID });
       },
     ),
     delete: defineMutator(
       z.object({ id: z.string() }),
-      async ({ tx, args }) => {
-        await tx.mutate.TYL_trackable.delete(args);
+      async ({ tx, ctx, args }) => {
+        await tx.mutate.TYL_trackable.delete({ ...args });
       },
     ),
   },
@@ -64,8 +61,11 @@ export const mutators = defineMutators({
         updatedAt: z.number().optional(),
         attributes: z.record(z.string(), z.string()).optional(),
       }),
-      async ({ tx, args }) => {
-        await tx.mutate.TYL_trackableRecord.update(args);
+      async ({ tx, ctx, args }) => {
+        await tx.mutate.TYL_trackableRecord.update({
+          ...args,
+          user_id: ctx.userID,
+        });
       },
     ),
     upsert: defineMutator(
@@ -88,8 +88,10 @@ export const mutators = defineMutators({
     ),
     delete: defineMutator(
       z.object({ recordId: z.string() }),
-      async ({ tx, args }) => {
-        await tx.mutate.TYL_trackableRecord.delete(args);
+      async ({ tx, ctx, args }) => {
+        await tx.mutate.TYL_trackableRecord.delete({
+          ...args,
+        });
       },
     ),
   },
@@ -125,8 +127,10 @@ export const mutators = defineMutators({
         trackableId: z.string(),
         group: z.string(),
       }),
-      async ({ tx, args }) => {
-        await tx.mutate.TYL_trackableGroup!.delete(args);
+      async ({ tx, ctx, args }) => {
+        await tx.mutate.TYL_trackableGroup.delete({
+          ...args,
+        });
       },
     ),
   },

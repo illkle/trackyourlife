@@ -4,7 +4,7 @@ import { m } from "motion/react";
 
 import { mutators } from "@tyl/db/mutators";
 
-import type { ButtonProps } from "~/@shad/components/button";
+import type { ButtonVariants } from "~/@shad/components/button";
 import type { TrackableListItem } from "~/utils/useZ";
 import { Button } from "~/@shad/components/button";
 import { useZ } from "~/utils/useZ";
@@ -14,7 +14,7 @@ export const FavoriteButton = ({
   onlyIcon = false,
   trackable,
 }: {
-  variant?: ButtonProps["variant"];
+  variant?: ButtonVariants["variant"];
   onlyIcon?: boolean;
   trackable: TrackableListItem;
 }) => {

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useRef, useState } from "react";
+import { RefObject, useContext, useEffect, useRef, useState } from "react";
 import { cn } from "@shad/lib/utils";
 import {
   addMonths,
@@ -69,9 +69,11 @@ const DatePicker = ({
     startOfMonth(innerDate ?? dateNow),
   );
 
-  const wrapRef = useRef(null);
+  const wrapRef = useRef<HTMLDivElement>(null);
 
-  const { height } = useResizeObserver({ ref: wrapRef });
+  const { height } = useResizeObserver({
+    ref: wrapRef as RefObject<HTMLDivElement>,
+  });
 
   const toRender = getDaysInMonth(cursor);
   const dates = Array(toRender)
@@ -189,7 +191,7 @@ const DatePicker = ({
                       variants={variants}
                       custom={moveDirection * 0.1}
                       key={cursor.toString()}
-                      className="pointer-events-none whitespace-nowrap select-none"
+                      className="pointer-events-none select-none whitespace-nowrap"
                     >
                       {format(cursor, "MMMM yyyy")}
                     </m.div>
