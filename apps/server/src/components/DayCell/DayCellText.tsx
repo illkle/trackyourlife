@@ -22,7 +22,7 @@ export const DayCellText = () => {
   });
 
   return (
-    <div className="border-border h-full w-full flex-col overflow-y-scroll rounded-xs border-2 text-sm">
+    <div data-text-cell className="border-border h-full w-full flex-col overflow-y-scroll rounded-xs border-2 text-sm">
       <Textarea
         autoFocus
         value={internalValue}

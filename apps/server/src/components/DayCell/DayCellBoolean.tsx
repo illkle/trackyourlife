@@ -69,6 +69,7 @@ export const DayCellBoolean = () => {
   return (
     <>
       <button
+        data-boolean-cell
         data-value={isActive}
         ref={mainRef}
         tabIndex={0}

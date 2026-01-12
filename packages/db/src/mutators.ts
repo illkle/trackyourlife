@@ -75,7 +75,7 @@ export const mutators = defineMutators({
         trackable_id: z.string(),
         value: z.string(),
         created_at: z.number().optional(),
-        updated_фе: z.number().optional(),
+        updated_at: z.number().optional(),
         attributes: z.record(z.string(), z.string()).optional(),
       }),
       async ({ tx, ctx, args }) => {

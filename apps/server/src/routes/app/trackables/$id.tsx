@@ -1,3 +1,4 @@
+import { useZero } from "@rocicorp/zero/react";
 import {
   createFileRoute,
   Link,
@@ -134,7 +135,7 @@ function RouteComponent() {
 }
 
 const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
-  const z = useZ();
+  const zero = useZero();
 
   const { id } = useTrackableMeta();
   const setFlag = useSetTrackableFlag();
@@ -193,15 +194,19 @@ const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
             className="cursor-pointer"
             onClick={() => {
               if (isArchived) {
-                void mutators.trackableGroup.delete({
-                  trackable_id: id,
-                  group: "archived",
-                });
+                void zero.mutate(
+                  mutators.trackableGroup.delete({
+                    trackable_id: id,
+                    group: "archived",
+                  }),
+                );
               } else {
-                void mutators.trackableGroup.upsert({
-                  trackable_id: id,
-                  group: "archived",
-                });
+                void zero.mutate(
+                  mutators.trackableGroup.upsert({
+                    trackable_id: id,
+                    group: "archived",
+                  }),
+                );
               }
             }}
           >

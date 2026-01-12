@@ -68,13 +68,13 @@ export const DayCellNumber = () => {
         <NumberInput
           className={cn(
             ...classes,
-            "peer opacity-0 group-hover:opacity-100 focus:opacity-100",
+            "peer opacity-0 focus:opacity-100 group-hover:opacity-100",
           )}
         />
       )}
       <FormatterFader
         className={cn(
-          "absolute top-0 left-0 z-100 h-full w-full",
+          "z-100 absolute left-0 top-0 h-full w-full",
           ...classes,
           "pointer-events-none",
           !isMobile && "opacity-100 group-hover:opacity-0 peer-focus:opacity-0",
@@ -106,7 +106,7 @@ const ProgressBar = () => {
   return (
     <div
       className={cn(
-        "absolute bottom-0 left-0 w-full bg-(--themeLight) dark:bg-(--themeDark)",
+        "bg-(--themeLight) dark:bg-(--themeDark) absolute bottom-0 left-0 w-full",
       )}
       style={{ height: `${progress}%` }}
     ></div>
@@ -223,6 +223,7 @@ export const NumberInputWrapper = forwardRef<
         >
           <div
             ref={ref}
+            data-number-cell
             data-empty={internalNumber === 0}
             style={
               {

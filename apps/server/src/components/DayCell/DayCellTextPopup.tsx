@@ -20,9 +20,10 @@ export const DayCellTextPopup = () => {
 
   return (
     <button
+      data-text-cell
       onClick={() => openDayEditor({ date, trackableId: id })}
       className={cn(
-        "flex-col border-2 p-1 text-left text-ellipsis text-foreground sm:p-2",
+        "text-foreground flex-col text-ellipsis border-2 p-1 text-left sm:p-2",
         DayCellBaseClasses,
         isOpen
           ? "border-ring"
@@ -32,7 +33,7 @@ export const DayCellTextPopup = () => {
       )}
     >
       {labelType === "auto" && <LabelInside />}
-      <div className="flex h-full max-w-full items-center overflow-hidden text-xs font-normal text-ellipsis whitespace-nowrap sm:text-sm">
+      <div className="flex h-full max-w-full items-center overflow-hidden text-ellipsis whitespace-nowrap text-xs font-normal sm:text-sm">
         {value}
       </div>
     </button>

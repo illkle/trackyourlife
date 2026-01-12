@@ -9,7 +9,12 @@
     "start": "pnpm with-env node .output/server/index.mjs",
     "lint": "oxlint .",
     "with-env": "dotenv -e ../../.env --",
-    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false",
+    "test": "playwright test",
+    "test:ui": "playwright test --ui",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report"
   },
   "dependencies": {
     "@better-auth/expo": "catalog:",

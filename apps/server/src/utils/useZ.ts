@@ -218,7 +218,7 @@ export const useRecordUpdateHandler = ({
             trackable_id: trackableId,
             value,
             created_at: updatedAt,
-            updated_фе: updatedAt,
+            updated_at: updatedAt,
             attributes,
           }),
         );
