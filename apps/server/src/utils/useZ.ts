@@ -121,7 +121,7 @@ export const useZeroGroupSet = (group: string) => {
   const [data] = useZeroGroupList(group);
 
   return useMemo(() => {
-    return new Set<string>(data.map((f) => f.trackableId));
+    return new Set<string>(data.map((f) => f.trackable_id));
   }, [data]);
 };
 
@@ -201,9 +201,9 @@ export const useRecordUpdateHandler = ({
       if (recordId) {
         await zero.mutate(
           mutators.trackableRecord.update({
-            recordId,
+            record_id: recordId,
             value,
-            updatedAt: updatedAt,
+            updated_at: updatedAt,
             attributes,
           }),
         );
@@ -213,12 +213,12 @@ export const useRecordUpdateHandler = ({
         const rid = uuidv4();
         await zero.mutate(
           mutators.trackableRecord.upsert({
-            recordId: rid,
+            record_id: rid,
             date: d,
-            trackableId,
+            trackable_id: trackableId,
             value,
-            createdAt: updatedAt,
-            updatedAt: updatedAt,
+            created_at: updatedAt,
+            updated_фе: updatedAt,
             attributes,
           }),
         );
@@ -236,8 +236,8 @@ export const updateAttributesRaw = async (
 ) => {
   const promises = attributes.map((a) =>
     mutators.recordAttributes.upsert({
-      recordId: recordId,
-      trackableId: trackableId,
+      record_id: recordId,
+      trackable_id: trackableId,
       key: a.key,
       value: a.value,
       type: a.type,
@@ -264,7 +264,7 @@ export const useRecordDeleteHandler = () => {
   return useCallback(
     async (recordId: string) => {
       await mutators.trackableRecord.delete({
-        recordId,
+        record_id: recordId,
       });
     },
     [mutators],

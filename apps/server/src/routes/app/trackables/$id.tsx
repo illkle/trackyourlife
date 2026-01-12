@@ -194,12 +194,12 @@ const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
             onClick={() => {
               if (isArchived) {
                 void mutators.trackableGroup.delete({
-                  trackableId: id,
+                  trackable_id: id,
                   group: "archived",
                 });
               } else {
                 void mutators.trackableGroup.upsert({
-                  trackableId: id,
+                  trackable_id: id,
                   group: "archived",
                 });
               }

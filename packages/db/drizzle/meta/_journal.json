@@ -281,6 +281,13 @@
       "when": 1768168083145,
       "tag": "0040_gorgeous_paladin",
       "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1768201928287,
+      "tag": "0041_trigger_v4",
+      "breakpoints": true
     }
   ]
 }

@@ -25,9 +25,9 @@ import {
 export interface DataRecord {
   readonly date: number;
   readonly value: string;
-  readonly recordId: string;
-  readonly createdAt: number | null;
-  readonly updatedAt: number | null;
+  readonly record_id: string;
+  readonly created_at: number | null;
+  readonly updated_at: number | null;
   readonly attributes: Record<string, string>;
   readonly trackableRecordAttributes: readonly RecordAttribute[];
 }
@@ -126,9 +126,9 @@ export const mapDataToRange = (
       dayRecord.values.push({
         value: dataRecord.value,
         timestamp: convertDateFromDbToLocal(dataRecord.date).getTime(),
-        createdAt: dataRecord.createdAt,
-        updatedAt: dataRecord.updatedAt,
-        recordId: dataRecord.recordId,
+        createdAt: dataRecord.created_at,
+        updatedAt: dataRecord.updated_at,
+        recordId: dataRecord.record_id,
         attributes: dataRecord.attributes,
         attributesOld: dataRecord.trackableRecordAttributes.reduce(
           (acc, a) => {
@@ -158,9 +158,9 @@ export const mapUnorderedData = (
     return {
       value: v.value,
       timestamp: convertDateFromDbToLocal(v.date).getTime(),
-      createdAt: v.createdAt,
-      updatedAt: v.updatedAt,
-      recordId: v.recordId,
+      createdAt: v.created_at,
+      updatedAt: v.updated_at,
+      recordId: v.record_id,
       attributes: v.attributes,
       attributesOld: v.trackableRecordAttributes.reduce(
         (acc, a) => {

@@ -16,41 +16,41 @@ import {
 
 const TYL_trackableRecord = table("TYL_trackableRecord")
   .columns({
-    recordId: string(),
+    record_id: string(),
     date: number(),
-    trackableId: string(),
+    trackable_id: string(),
     value: string(),
     user_id: string(),
-    createdAt: number().optional(),
-    updatedAt: number().optional(),
+    created_at: number().optional(),
+    updated_at: number().optional(),
     attributes: json<Record<string, string>>(),
   })
-  .primaryKey("recordId");
+  .primaryKey("record_id");
 
 const TYL_trackableGroup = table("TYL_trackableGroup")
   .columns({
-    trackableId: string(),
+    trackable_id: string(),
     group: string(),
     user_id: string(),
   })
-  .primaryKey("trackableId", "group");
+  .primaryKey("trackable_id", "group");
 
 const TYL_trackableFlags = table("TYL_trackableFlags")
   .columns({
     user_id: string(),
-    trackableId: string(),
+    trackable_id: string(),
     key: string(),
     value: json().optional(),
   })
-  .primaryKey("user_id", "trackableId", "key");
+  .primaryKey("user_id", "trackable_id", "key");
 
 const TYL_userFlags = table("TYL_userFlags")
   .columns({
-    userId: string(),
+    user_id: string(),
     key: string(),
     value: json().optional(),
   })
-  .primaryKey("userId", "key");
+  .primaryKey("user_id", "key");
 
 const TYL_trackable = table("TYL_trackable")
   .columns({
@@ -64,22 +64,22 @@ const TYL_trackable = table("TYL_trackable")
 const TYL_trackableRecordAttributes = table("TYL_trackableRecordAttributes")
   .columns({
     user_id: string(),
-    trackableId: string(),
-    recordId: string(),
+    trackable_id: string(),
+    record_id: string(),
     key: string(),
     value: string(),
     type: string<"boolean" | "number" | "text">(),
   })
-  .primaryKey("user_id", "trackableId", "recordId", "key");
+  .primaryKey("user_id", "trackable_id", "record_id", "key");
 
 const trackableRecordRelationships = relationships(
   TYL_trackableRecord,
   ({ many }) => {
     return {
       trackableRecordAttributes: many({
-        sourceField: ["recordId"],
+        sourceField: ["record_id"],
         destSchema: TYL_trackableRecordAttributes,
-        destField: ["recordId"],
+        destField: ["record_id"],
       }),
     };
   },
@@ -89,22 +89,22 @@ const trackableRelationships = relationships(TYL_trackable, ({ many }) => ({
   trackableGroup: many({
     sourceField: ["id"],
     destSchema: TYL_trackableGroup,
-    destField: ["trackableId"],
+    destField: ["trackable_id"],
   }),
   trackableRecord: many({
     sourceField: ["id"],
     destSchema: TYL_trackableRecord,
-    destField: ["trackableId"],
+    destField: ["trackable_id"],
   }),
   trackableFlag: many({
     sourceField: ["id"],
     destSchema: TYL_trackableFlags,
-    destField: ["trackableId"],
+    destField: ["trackable_id"],
   }),
   trackableRecordAttributes: many({
     sourceField: ["id"],
     destSchema: TYL_trackableRecordAttributes,
-    destField: ["trackableId"],
+    destField: ["trackable_id"],
   }),
 }));
 

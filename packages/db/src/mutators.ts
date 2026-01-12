@@ -38,12 +38,12 @@ export const mutators = defineMutators({
   trackableRecord: {
     insert: defineMutator(
       z.object({
-        recordId: z.string(),
+        record_id: z.string(),
         date: z.number(),
-        trackableId: z.string(),
+        trackable_id: z.string(),
         value: z.string(),
-        createdAt: z.number().optional(),
-        updatedAt: z.number().optional(),
+        created_at: z.number().optional(),
+        updated_at: z.number().optional(),
         attributes: z.record(z.string(), z.string()).optional(),
       }),
       async ({ tx, ctx, args }) => {
@@ -56,9 +56,9 @@ export const mutators = defineMutators({
     ),
     update: defineMutator(
       z.object({
-        recordId: z.string(),
+        record_id: z.string(),
         value: z.string().optional(),
-        updatedAt: z.number().optional(),
+        updated_at: z.number().optional(),
         attributes: z.record(z.string(), z.string()).optional(),
       }),
       async ({ tx, ctx, args }) => {
@@ -70,12 +70,12 @@ export const mutators = defineMutators({
     ),
     upsert: defineMutator(
       z.object({
-        recordId: z.string(),
+        record_id: z.string(),
         date: z.number(),
-        trackableId: z.string(),
+        trackable_id: z.string(),
         value: z.string(),
-        createdAt: z.number().optional(),
-        updatedAt: z.number().optional(),
+        created_at: z.number().optional(),
+        updated_фе: z.number().optional(),
         attributes: z.record(z.string(), z.string()).optional(),
       }),
       async ({ tx, ctx, args }) => {
@@ -87,7 +87,7 @@ export const mutators = defineMutators({
       },
     ),
     delete: defineMutator(
-      z.object({ recordId: z.string() }),
+      z.object({ record_id: z.string() }),
       async ({ tx, ctx, args }) => {
         await tx.mutate.TYL_trackableRecord.delete({
           ...args,
@@ -100,7 +100,7 @@ export const mutators = defineMutators({
   trackableGroup: {
     insert: defineMutator(
       z.object({
-        trackableId: z.string(),
+        trackable_id: z.string(),
         group: z.string(),
       }),
       async ({ tx, ctx, args }) => {
@@ -112,7 +112,7 @@ export const mutators = defineMutators({
     ),
     upsert: defineMutator(
       z.object({
-        trackableId: z.string(),
+        trackable_id: z.string(),
         group: z.string(),
       }),
       async ({ tx, ctx, args }) => {
@@ -124,7 +124,7 @@ export const mutators = defineMutators({
     ),
     delete: defineMutator(
       z.object({
-        trackableId: z.string(),
+        trackable_id: z.string(),
         group: z.string(),
       }),
       async ({ tx, ctx, args }) => {
@@ -139,7 +139,7 @@ export const mutators = defineMutators({
   trackableFlags: {
     upsert: defineMutator(
       z.object({
-        trackableId: z.string(),
+        trackable_id: z.string(),
         key: z.string(),
         value: z.any().optional(),
       }),
@@ -152,7 +152,7 @@ export const mutators = defineMutators({
     ),
     delete: defineMutator(
       z.object({
-        trackableId: z.string(),
+        trackable_id: z.string(),
         key: z.string(),
       }),
       async ({ tx, ctx, args }) => {
@@ -172,7 +172,7 @@ export const mutators = defineMutators({
         value: z.any().optional(),
       }),
       async ({ tx, ctx, args }) => {
-        await tx.mutate.TYL_userFlags.upsert({ ...args, userId: ctx.userID });
+        await tx.mutate.TYL_userFlags.upsert({ ...args, user_id: ctx.userID });
       },
     ),
     delete: defineMutator(
@@ -181,7 +181,7 @@ export const mutators = defineMutators({
         key: z.string(),
       }),
       async ({ tx, ctx, args }) => {
-        await tx.mutate.TYL_userFlags.delete({ ...args, userId: ctx.userID });
+        await tx.mutate.TYL_userFlags.delete({ ...args, user_id: ctx.userID });
       },
     ),
   },
@@ -190,8 +190,8 @@ export const mutators = defineMutators({
   recordAttributes: {
     upsert: defineMutator(
       z.object({
-        trackableId: z.string(),
-        recordId: z.string(),
+        trackable_id: z.string(),
+        record_id: z.string(),
         key: z.string(),
         value: z.string(),
         type: recordAttributeType,
@@ -205,8 +205,8 @@ export const mutators = defineMutators({
     ),
     delete: defineMutator(
       z.object({
-        trackableId: z.string(),
-        recordId: z.string(),
+        trackable_id: z.string(),
+        record_id: z.string(),
         key: z.string(),
       }),
       async ({ tx, ctx, args }) => {

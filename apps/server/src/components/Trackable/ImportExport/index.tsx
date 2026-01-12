@@ -130,8 +130,8 @@ const dataToExportFormat = (
   return data.map((record) => ({
     value: record.value,
     date: new Date(record.date).toISOString(),
-    createdAt: record.createdAt,
-    updatedAt: record.updatedAt,
+    createdAt: record.created_at,
+    updatedAt: record.updated_at,
     trackableRecordAttributes: hasAttrbibutes
       ? record.trackableRecordAttributes
       : undefined,

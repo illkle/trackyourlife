@@ -78,9 +78,9 @@ export const createFlagsObject = (flags: readonly ITrackableFlagsZero[]) => {
     const validator = FlagsValidators[key];
     const parsed = validator.safeParse(flag.value);
     if (parsed.success) {
-      flagMap[flag.trackableId] ??= {};
+      flagMap[flag.trackable_id] ??= {};
       // @ts-expect-error - parsed.data is correctly typed for key, but TS can't verify
-      flagMap[flag.trackableId][key] = parsed.data;
+      flagMap[flag.trackable_id][key] = parsed.data;
     }
   });
 
@@ -171,7 +171,7 @@ export const useSetTrackableFlag = () => {
 
       await zero.mutate(
         mutators.trackableFlags.upsert({
-          trackableId: trackableId,
+          trackable_id: trackableId,
           key: key,
           value: value,
         }),

@@ -28,14 +28,14 @@ export const FavoriteButton = ({
     if (inFavs) {
       await zero.mutate(
         mutators.trackableGroup.delete({
-          trackableId: trackable.id,
+          trackable_id: trackable.id,
           group: "favorites",
         }),
       );
     } else {
       await zero.mutate(
         mutators.trackableGroup.insert({
-          trackableId: trackable.id,
+          trackable_id: trackable.id,
           group: "favorites",
         }),
       );

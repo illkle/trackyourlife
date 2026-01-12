@@ -24,7 +24,7 @@ export const queries = defineQueries({
               and(cmp("date", ">=", firstDay), cmp("date", "<=", lastDay)),
             )
             .orderBy("date", "asc")
-            .orderBy("createdAt", "asc")
+            .orderBy("created_at", "asc")
             .related("trackableRecordAttributes"),
         )
         .related("trackableGroup"),
@@ -48,14 +48,14 @@ export const queries = defineQueries({
     ({ args: { id, firstDay, lastDay }, ctx }) =>
       zql.TYL_trackableRecord.where(({ cmp, and }) =>
         and(
-          cmp("trackableId", "=", id),
+          cmp("trackable_id", "=", id),
           cmp("user_id", "=", ctx.userID),
           cmp("date", ">=", firstDay),
           cmp("date", "<=", lastDay),
         ),
       )
         .orderBy("date", "asc")
-        .orderBy("createdAt", "asc")
+        .orderBy("created_at", "asc")
         .related("trackableRecordAttributes"),
   ),
 
@@ -66,7 +66,7 @@ export const queries = defineQueries({
       endDate: z.number(),
     }),
     ({ args: { id, startDate, endDate }, ctx }) =>
-      zql.TYL_trackableRecord.where("trackableId", "=", id)
+      zql.TYL_trackableRecord.where("trackable_id", "=", id)
         .where("date", ">=", startDate)
         .where("date", "<=", endDate)
         .where("user_id", "=", ctx.userID)
@@ -80,7 +80,7 @@ export const queries = defineQueries({
       endDate: z.number(),
     }),
     ({ args: { id, startDate, endDate }, ctx }) =>
-      zql.TYL_trackableRecord.where("trackableId", "=", id)
+      zql.TYL_trackableRecord.where("trackable_id", "=", id)
         .where("date", ">=", startDate)
         .where("date", "<=", endDate)
         .where("user_id", "=", ctx.userID)
@@ -101,7 +101,7 @@ export const queries = defineQueries({
   ),
 
   userFlags: defineQuery(z.object({}), ({ ctx }) =>
-    zql.TYL_userFlags.where("userId", "=", ctx.userID),
+    zql.TYL_userFlags.where("user_id", "=", ctx.userID),
   ),
 
   groupList: defineQuery(
@@ -123,7 +123,7 @@ export const queries = defineQueries({
       zql.TYL_trackableGroup.where(({ cmp, and }) =>
         and(
           cmp("user_id", "=", ctx.userID),
-          cmp("trackableId", "=", trackableId),
+          cmp("trackable_id", "=", trackableId),
           cmp("group", "=", group),
         ),
       ).limit(1),
@@ -146,7 +146,7 @@ export const queries = defineQueries({
             )
             .orderBy("date", "asc")
             .orderBy("value", "asc")
-            .orderBy("createdAt", "asc")
+            .orderBy("created_at", "asc")
             .related("trackableRecordAttributes"),
         ),
   ),
@@ -155,7 +155,7 @@ export const queries = defineQueries({
     ({ args, ctx }) => {
       if (args.ids.length > 0) {
         return zql.TYL_trackableFlags.where("user_id", "=", ctx.userID).where(
-          "trackableId",
+          "trackable_id",
           "IN",
           args.ids,
         );
@@ -168,7 +168,7 @@ export const queries = defineQueries({
     z.object({ id: z.string() }),
     ({ args, ctx }) => {
       return zql.TYL_trackableRecord.where("user_id", "=", ctx.userID)
-        .where("trackableId", "=", args.id)
+        .where("trackable_id", "=", args.id)
         .limit(5)
         .related("trackableRecordAttributes");
     },
