@@ -2,14 +2,6 @@
 import { DrizzleAppSchema } from "@powersync/drizzle-driver";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-const ps_user = sqliteTable("TYL_user", {
-  id: text("id").primaryKey(),
-  name: text("name").notNull(),
-  email: text("email").notNull(),
-  email_verified: integer("email_verified").notNull(),
-  image: text("image"),
-});
-
 const ps_userFlags = sqliteTable("TYL_userFlags", {
   id: text("id").primaryKey(),
   user_id: text("user_id").notNull(),
@@ -56,7 +48,6 @@ export const PowersyncDrizzleSchema = {
   trackableFlags: ps_trackableFlags,
   trackableRecord: ps_trackableRecord,
   trackableGroup: ps_trackableGroup,
-  user: ps_user,
   userFlags: ps_userFlags,
 };
 

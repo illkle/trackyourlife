@@ -12,6 +12,7 @@ import {
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
+import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 
 import { session, user } from "./auth";
 
@@ -227,3 +228,20 @@ export type DbTrackableFlagsInsert = typeof trackableFlags.$inferInsert;
 
 export type DbUserFlagsSelect = typeof userFlags.$inferSelect;
 export type DbUserFlagsInsert = typeof userFlags.$inferInsert;
+
+export const trackableInsertSchema = createInsertSchema(trackable);
+export const trackableUpdateSchema = createUpdateSchema(trackable);
+
+export const trackableRecordInsertSchema = createInsertSchema(trackableRecord);
+export const trackableRecordUpdateSchema = createUpdateSchema(trackableRecord);
+
+export const trackableFlagsInsertSchema = createInsertSchema(trackableFlags);
+export const trackableFlagsUpdateSchema = createUpdateSchema(trackableFlags);
+
+export const userFlagsInsertSchema = createInsertSchema(userFlags);
+export const userFlagsUpdateSchema = createUpdateSchema(userFlags);
+
+export const trackableGroupInsertSchema = createInsertSchema(trackableGroup);
+export const trackableGroupUpdateSchema = createUpdateSchema(trackableGroup);
+
+

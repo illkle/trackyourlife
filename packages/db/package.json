@@ -31,6 +31,10 @@
     "./schema-powersync": {
       "types": "./dist/schema-powersync.d.ts",
       "default": "./src/schema-powersync.ts"
+    },
+    "./powersync-apply": {
+      "types": "./dist/powersync-apply.d.ts",
+      "default": "./src/powersync-apply.ts"
     }
   },
   "license": "MIT",
@@ -51,8 +55,10 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
+    "@powersync/common": "^1.45.0",
     "@rocicorp/zero": "catalog:",
     "drizzle-orm": "catalog:",
+    "drizzle-zod": "^0.8.3",
     "zod": "catalog:"
   },
   "devDependencies": {

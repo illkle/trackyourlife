@@ -27,6 +27,7 @@ import { Route as AppSettingsIndexRouteImport } from './routes/app/settings/inde
 import { Route as AppTrackablesIdRouteImport } from './routes/app/trackables/$id'
 import { Route as ApiZeroQueryRouteImport } from './routes/api/zero/query'
 import { Route as ApiZeroMutateRouteImport } from './routes/api/zero/mutate'
+import { Route as ApiPowersyncSyncbatchRouteImport } from './routes/api/powersync/syncbatch'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppTrackablesIdIndexRouteImport } from './routes/app/trackables/$id/index'
 import { Route as AppTrackablesIdViewRouteImport } from './routes/app/trackables/$id/view'
@@ -123,6 +124,11 @@ const ApiZeroMutateRoute = ApiZeroMutateRouteImport.update({
   path: '/api/zero/mutate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPowersyncSyncbatchRoute = ApiPowersyncSyncbatchRouteImport.update({
+  id: '/api/powersync/syncbatch',
+  path: '/api/powersync/syncbatch',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/converters/': typeof ConvertersIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/powersync/syncbatch': typeof ApiPowersyncSyncbatchRoute
   '/api/zero/mutate': typeof ApiZeroMutateRoute
   '/api/zero/query': typeof ApiZeroQueryRoute
   '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
@@ -186,6 +193,7 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/converters': typeof ConvertersIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/powersync/syncbatch': typeof ApiPowersyncSyncbatchRoute
   '/api/zero/mutate': typeof ApiZeroMutateRoute
   '/api/zero/query': typeof ApiZeroQueryRoute
   '/app/settings': typeof AppSettingsIndexRoute
@@ -211,6 +219,7 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/converters/': typeof ConvertersIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/powersync/syncbatch': typeof ApiPowersyncSyncbatchRoute
   '/api/zero/mutate': typeof ApiZeroMutateRoute
   '/api/zero/query': typeof ApiZeroQueryRoute
   '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
@@ -238,6 +247,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/converters/'
     | '/api/auth/$'
+    | '/api/powersync/syncbatch'
     | '/api/zero/mutate'
     | '/api/zero/query'
     | '/app/trackables/$id'
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/converters'
     | '/api/auth/$'
+    | '/api/powersync/syncbatch'
     | '/api/zero/mutate'
     | '/api/zero/query'
     | '/app/settings'
@@ -284,6 +295,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/converters/'
     | '/api/auth/$'
+    | '/api/powersync/syncbatch'
     | '/api/zero/mutate'
     | '/api/zero/query'
     | '/app/trackables/$id'
@@ -301,6 +313,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRouteWithChildren
   ConvertersRoute: typeof ConvertersRouteWithChildren
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiPowersyncSyncbatchRoute: typeof ApiPowersyncSyncbatchRoute
   ApiZeroMutateRoute: typeof ApiZeroMutateRoute
   ApiZeroQueryRoute: typeof ApiZeroQueryRoute
 }
@@ -433,6 +446,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiZeroMutateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/powersync/syncbatch': {
+      id: '/api/powersync/syncbatch'
+      path: '/api/powersync/syncbatch'
+      fullPath: '/api/powersync/syncbatch'
+      preLoaderRoute: typeof ApiPowersyncSyncbatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -555,6 +575,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRouteWithChildren,
   ConvertersRoute: ConvertersRouteWithChildren,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiPowersyncSyncbatchRoute: ApiPowersyncSyncbatchRoute,
   ApiZeroMutateRoute: ApiZeroMutateRoute,
   ApiZeroQueryRoute: ApiZeroQueryRoute,
 }

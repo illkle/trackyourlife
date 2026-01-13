@@ -1,8 +1,12 @@
-import { UpdateType } from "@powersync/web";
+import {
+  AbstractPowerSyncDatabase,
+  PowerSyncBackendConnector,
+  UpdateType,
+} from "@powersync/web";
 
 import { authClient } from "~/auth/client";
 
-export class Connector {
+export class Connector implements PowerSyncBackendConnector {
   async fetchCredentials() {
     const { data, error } = await authClient.token();
     if (error) {
@@ -18,7 +22,7 @@ export class Connector {
     };
   }
 
-  async uploadData() {
+  async uploadData(database: AbstractPowerSyncDatabase) {
     // Implement uploadData to send local changes to your backend service.
     // You can omit this method if you only want to sync data from the database to the client
     // See example implementation here: https://docs.powersync.com/client-sdk-references/javascript-web#3-integrate-with-your-backend
