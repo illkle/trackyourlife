@@ -55,7 +55,7 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@powersync/common": "^1.45.0",
+    "@powersync/common": "catalog:",
     "@rocicorp/zero": "catalog:",
     "drizzle-orm": "catalog:",
     "drizzle-zod": "^0.8.3",
