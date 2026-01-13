@@ -215,37 +215,6 @@ export const trackableGroupRelations = relations(trackableGroup, ({ one }) => ({
   }),
 }));
 
-/**
- * Api management
- */
-
-export const ingestApiKeys = pgTable(
-  "ingestApiKeys",
-  {
-    userId: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    trackableId: uuid("trackable_id")
-      .notNull()
-      .references(() => trackable.id, { onDelete: "cascade" }),
-    key: text("key").notNull(),
-    createdAt: timestamp("created_at").notNull(),
-    daysLimit: integer("days_limit").notNull(),
-  },
-  (t) => [primaryKey({ columns: [t.userId, t.trackableId, t.key] })],
-);
-
-export const ingestApiKeysRelations = relations(ingestApiKeys, ({ one }) => ({
-  user: one(user, {
-    fields: [ingestApiKeys.userId],
-    references: [user.id],
-  }),
-  trackable: one(trackable, {
-    fields: [ingestApiKeys.trackableId],
-    references: [trackable.id],
-  }),
-}));
-
 export type DbUserSelect = typeof user.$inferSelect;
 export type DbSessionSelect = typeof session.$inferSelect;
 

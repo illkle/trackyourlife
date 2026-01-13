@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 
-import { IngestKeysManager } from "~/components/Trackable/ApiKeys";
 import { ExportTrackable, Import } from "~/components/Trackable/ImportExport";
 import { SettingsTitle } from "~/components/Trackable/Settings/settingsTitle";
 
@@ -18,12 +17,6 @@ function RouteComponent() {
       <SettingsTitle>Import</SettingsTitle>
 
       <Import />
-
-      <SettingsTitle>Format</SettingsTitle>
-
-      <SettingsTitle>Ingest API key</SettingsTitle>
-
-      <IngestKeysManager />
     </div>
   );
 }

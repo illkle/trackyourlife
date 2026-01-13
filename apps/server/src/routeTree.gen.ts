@@ -32,7 +32,6 @@ import { Route as AppTrackablesIdIndexRouteImport } from './routes/app/trackable
 import { Route as AppTrackablesIdViewRouteImport } from './routes/app/trackables/$id/view'
 import { Route as AppTrackablesIdSettingsRouteImport } from './routes/app/trackables/$id/settings'
 import { Route as AppTrackablesIdImportRouteImport } from './routes/app/trackables/$id/import'
-import { Route as ApiIngestV1JsonRouteImport } from './routes/api/ingest/v1/json'
 
 const ConvertersRoute = ConvertersRouteImport.update({
   id: '/converters',
@@ -149,11 +148,6 @@ const AppTrackablesIdImportRoute = AppTrackablesIdImportRouteImport.update({
   path: '/import',
   getParentRoute: () => AppTrackablesIdRoute,
 } as any)
-const ApiIngestV1JsonRoute = ApiIngestV1JsonRouteImport.update({
-  id: '/api/ingest/v1/json',
-  path: '/api/ingest/v1/json',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -175,7 +169,6 @@ export interface FileRoutesByFullPath {
   '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
   '/app/settings/': typeof AppSettingsIndexRoute
   '/app/trackables': typeof AppTrackablesIndexRoute
-  '/api/ingest/v1/json': typeof ApiIngestV1JsonRoute
   '/app/trackables/$id/import': typeof AppTrackablesIdImportRoute
   '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
   '/app/trackables/$id/view': typeof AppTrackablesIdViewRoute
@@ -197,7 +190,6 @@ export interface FileRoutesByTo {
   '/api/zero/query': typeof ApiZeroQueryRoute
   '/app/settings': typeof AppSettingsIndexRoute
   '/app/trackables': typeof AppTrackablesIndexRoute
-  '/api/ingest/v1/json': typeof ApiIngestV1JsonRoute
   '/app/trackables/$id/import': typeof AppTrackablesIdImportRoute
   '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
   '/app/trackables/$id/view': typeof AppTrackablesIdViewRoute
@@ -224,7 +216,6 @@ export interface FileRoutesById {
   '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
   '/app/settings/': typeof AppSettingsIndexRoute
   '/app/trackables/': typeof AppTrackablesIndexRoute
-  '/api/ingest/v1/json': typeof ApiIngestV1JsonRoute
   '/app/trackables/$id/import': typeof AppTrackablesIdImportRoute
   '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
   '/app/trackables/$id/view': typeof AppTrackablesIdViewRoute
@@ -252,7 +243,6 @@ export interface FileRouteTypes {
     | '/app/trackables/$id'
     | '/app/settings/'
     | '/app/trackables'
-    | '/api/ingest/v1/json'
     | '/app/trackables/$id/import'
     | '/app/trackables/$id/settings'
     | '/app/trackables/$id/view'
@@ -274,7 +264,6 @@ export interface FileRouteTypes {
     | '/api/zero/query'
     | '/app/settings'
     | '/app/trackables'
-    | '/api/ingest/v1/json'
     | '/app/trackables/$id/import'
     | '/app/trackables/$id/settings'
     | '/app/trackables/$id/view'
@@ -300,7 +289,6 @@ export interface FileRouteTypes {
     | '/app/trackables/$id'
     | '/app/settings/'
     | '/app/trackables/'
-    | '/api/ingest/v1/json'
     | '/app/trackables/$id/import'
     | '/app/trackables/$id/settings'
     | '/app/trackables/$id/view'
@@ -315,7 +303,6 @@ export interface RootRouteChildren {
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiZeroMutateRoute: typeof ApiZeroMutateRoute
   ApiZeroQueryRoute: typeof ApiZeroQueryRoute
-  ApiIngestV1JsonRoute: typeof ApiIngestV1JsonRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -481,13 +468,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTrackablesIdImportRouteImport
       parentRoute: typeof AppTrackablesIdRoute
     }
-    '/api/ingest/v1/json': {
-      id: '/api/ingest/v1/json'
-      path: '/api/ingest/v1/json'
-      fullPath: '/api/ingest/v1/json'
-      preLoaderRoute: typeof ApiIngestV1JsonRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -577,7 +557,6 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiZeroMutateRoute: ApiZeroMutateRoute,
   ApiZeroQueryRoute: ApiZeroQueryRoute,
-  ApiIngestV1JsonRoute: ApiIngestV1JsonRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

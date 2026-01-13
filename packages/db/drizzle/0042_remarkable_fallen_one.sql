@@ -1,0 +1,1 @@
+DROP TABLE "TYL_ingestApiKeys" CASCADE;
