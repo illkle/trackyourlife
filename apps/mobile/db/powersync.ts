@@ -7,7 +7,10 @@ import {
   PowerSyncDatabase,
 } from "@powersync/react-native";
 
-import { AppSchema, drizzleSchema } from "./schema";
+import {
+  PowersyncDrizzleSchema,
+  PowersyncSchema,
+} from "@tyl/db/schema-powersync";
 
 // Create the factory
 const opSqlite = new OPSqliteOpenFactory({
@@ -16,13 +19,13 @@ const opSqlite = new OPSqliteOpenFactory({
 
 export const powersyncDB = new PowerSyncDatabase({
   // For other options see,
-  schema: AppSchema,
+  schema: PowersyncSchema,
   // Override the default database
   database: opSqlite,
 });
 
 export const db = wrapPowerSyncWithDrizzle(powersyncDB, {
-  schema: drizzleSchema,
+  schema: PowersyncDrizzleSchema,
 });
 
 export const setupPowerSync = async () => {

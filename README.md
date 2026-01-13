@@ -22,6 +22,16 @@ docker run -d --name zero-postgres \
   postgres -c wal_level=logical
 ```
 
+```
+	docker build -f docker/powersync.Dockerfile -t powersync . \
+  && docker run \
+    --env-file .env \
+    -p 8080:80 \
+    -p 3000:3000 \
+    -p 5432:5432 \
+    powersync
+```
+
 2. Copy `.env.example` to `.env`
 3. Create 'zeroTemp' folder(right here)
 4. Start zero `pnpm run dev:zero-cache`

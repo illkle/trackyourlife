@@ -27,6 +27,10 @@
     "./queries": {
       "types": "./dist/queries.d.ts",
       "default": "./src/queries.ts"
+    },
+    "./schema-powersync": {
+      "types": "./dist/schema-powersync.d.ts",
+      "default": "./src/schema-powersync.ts"
     }
   },
   "license": "MIT",

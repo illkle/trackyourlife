@@ -5,14 +5,14 @@ replication:
   # Multiple connection support is on the roadmap
   connections:
     - type: postgresql
-      uri: !env PS_DATA_SOURCE_URI
+      uri: !env PS_DATABASE_URL
       sslmode: disable # 'verify-full' (default) or 'verify-ca' or 'disable'
       # Note: 'disable' is only suitable for local/private networks, not for public networks
 
 # Connection settings for sync bucket storage (MongoDB and Postgres are supported)
 storage:
   type: postgresql
-  uri: !env PS_STORAGE_URI
+  uri: !env PS_DATABASE_URL
   sslmode: disable
 
 # The port which the PowerSync API server will listen on
@@ -35,8 +35,12 @@ sync_rules:
           - SELECT *, "trackableId" as id FROM "TYL_trackableGroup" WHERE user_id = bucket.user_id
 
 client_auth:
-  jwks_uri: !env PS_JWKS
+  jwks_uri: !env PS_AUTH_DOMAIN
   audience:
-    - !env PS_ROOT_URL
+    - !env PS_VITE_DEPLOY_DOMAIN
   telemetry:
     disable_telemetry_sharing: false
+
+api:
+  tokens:
+    - HELLO1234
