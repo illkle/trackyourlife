@@ -13,7 +13,6 @@ import { Route as ConvertersRouteImport } from './routes/converters'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as ConvertersIndexRouteImport } from './routes/converters/index'
 import { Route as AppIndexRouteImport } from './routes/app/index'
 import { Route as AuthPasswordresetRouteImport } from './routes/auth/passwordreset'
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
@@ -53,11 +52,6 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
-} as any)
-const ConvertersIndexRoute = ConvertersIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ConvertersRoute,
 } as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
@@ -159,7 +153,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
-  '/converters': typeof ConvertersRouteWithChildren
+  '/converters': typeof ConvertersRoute
   '/app/create': typeof AppCreateRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/test': typeof AppTestRoute
@@ -168,7 +162,6 @@ export interface FileRoutesByFullPath {
   '/auth/login': typeof AuthLoginRoute
   '/auth/passwordreset': typeof AuthPasswordresetRoute
   '/app/': typeof AppIndexRoute
-  '/converters/': typeof ConvertersIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/powersync/syncbatch': typeof ApiPowersyncSyncbatchRoute
   '/api/zero/mutate': typeof ApiZeroMutateRoute
@@ -184,6 +177,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
+  '/converters': typeof ConvertersRoute
   '/app/create': typeof AppCreateRoute
   '/app/test': typeof AppTestRoute
   '/app/testing': typeof AppTestingRoute
@@ -191,7 +185,6 @@ export interface FileRoutesByTo {
   '/auth/login': typeof AuthLoginRoute
   '/auth/passwordreset': typeof AuthPasswordresetRoute
   '/app': typeof AppIndexRoute
-  '/converters': typeof ConvertersIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/powersync/syncbatch': typeof ApiPowersyncSyncbatchRoute
   '/api/zero/mutate': typeof ApiZeroMutateRoute
@@ -208,7 +201,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
-  '/converters': typeof ConvertersRouteWithChildren
+  '/converters': typeof ConvertersRoute
   '/app/create': typeof AppCreateRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
   '/app/test': typeof AppTestRoute
@@ -217,7 +210,6 @@ export interface FileRoutesById {
   '/auth/login': typeof AuthLoginRoute
   '/auth/passwordreset': typeof AuthPasswordresetRoute
   '/app/': typeof AppIndexRoute
-  '/converters/': typeof ConvertersIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/powersync/syncbatch': typeof ApiPowersyncSyncbatchRoute
   '/api/zero/mutate': typeof ApiZeroMutateRoute
@@ -245,7 +237,6 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/passwordreset'
     | '/app/'
-    | '/converters/'
     | '/api/auth/$'
     | '/api/powersync/syncbatch'
     | '/api/zero/mutate'
@@ -261,6 +252,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/converters'
     | '/app/create'
     | '/app/test'
     | '/app/testing'
@@ -268,7 +260,6 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/passwordreset'
     | '/app'
-    | '/converters'
     | '/api/auth/$'
     | '/api/powersync/syncbatch'
     | '/api/zero/mutate'
@@ -293,7 +284,6 @@ export interface FileRouteTypes {
     | '/auth/login'
     | '/auth/passwordreset'
     | '/app/'
-    | '/converters/'
     | '/api/auth/$'
     | '/api/powersync/syncbatch'
     | '/api/zero/mutate'
@@ -311,7 +301,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
-  ConvertersRoute: typeof ConvertersRouteWithChildren
+  ConvertersRoute: typeof ConvertersRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiPowersyncSyncbatchRoute: typeof ApiPowersyncSyncbatchRoute
   ApiZeroMutateRoute: typeof ApiZeroMutateRoute
@@ -347,13 +337,6 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
-    }
-    '/converters/': {
-      id: '/converters/'
-      path: '/'
-      fullPath: '/converters/'
-      preLoaderRoute: typeof ConvertersIndexRouteImport
-      parentRoute: typeof ConvertersRoute
     }
     '/app/': {
       id: '/app/'
@@ -557,23 +540,11 @@ const AuthRouteChildren: AuthRouteChildren = {
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
-interface ConvertersRouteChildren {
-  ConvertersIndexRoute: typeof ConvertersIndexRoute
-}
-
-const ConvertersRouteChildren: ConvertersRouteChildren = {
-  ConvertersIndexRoute: ConvertersIndexRoute,
-}
-
-const ConvertersRouteWithChildren = ConvertersRoute._addFileChildren(
-  ConvertersRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
-  ConvertersRoute: ConvertersRouteWithChildren,
+  ConvertersRoute: ConvertersRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiPowersyncSyncbatchRoute: ApiPowersyncSyncbatchRoute,
   ApiZeroMutateRoute: ApiZeroMutateRoute,

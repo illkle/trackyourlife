@@ -1,8 +1,9 @@
 import {
   AbstractPowerSyncDatabase,
   PowerSyncBackendConnector,
-  UpdateType,
 } from "@powersync/web";
+
+import { SyncEntry } from "@tyl/db/powersync-apply";
 
 import { authClient } from "~/auth/client";
 
@@ -23,8 +24,32 @@ export class Connector implements PowerSyncBackendConnector {
   }
 
   async uploadData(database: AbstractPowerSyncDatabase) {
-    // Implement uploadData to send local changes to your backend service.
-    // You can omit this method if you only want to sync data from the database to the client
-    // See example implementation here: https://docs.powersync.com/client-sdk-references/javascript-web#3-integrate-with-your-backend
+    const transaction = await database.getCrudBatch(25);
+
+    if (!transaction) {
+      return;
+    }
+
+    const mapped = transaction.crud.map(
+      (op) =>
+        ({
+          op: op.op,
+          opData: op.opData,
+          table: op.table,
+          id: op.id,
+        }) satisfies SyncEntry,
+    );
+
+    console.log("UPLOAD DATA", mapped);
+
+    await fetch("/api/powersync/syncbatch", {
+      method: "POST",
+      body: JSON.stringify(mapped),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    await transaction.complete();
   }
 }

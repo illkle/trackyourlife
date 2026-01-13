@@ -3,7 +3,7 @@ import { z } from "zod/v4";
 
 import type { ITrackableZero } from "@tyl/db/zero-schema";
 import { and, between, db, eq } from "@tyl/db";
-import { trackable, trackableRecord } from "@tyl/db/schema";
+import { trackable, trackable_record } from "@tyl/db/schema";
 import { convertDateFromDbToLocal } from "@tyl/helpers/trackables";
 
 export const zImportJson = z.object({
@@ -73,11 +73,11 @@ export const importData = async (
     }
 
     if (
-      !existingRecord.updatedAt ||
-      existingRecord.updatedAt < item.updatedAt
+      !existingRecord.updated_at ||
+      existingRecord.updated_at < item.updatedAt
     ) {
       // Update if value from import data is newer than db
-      toUpdate.push({ id: existingRecord.recordId, value: item });
+      toUpdate.push({ id: existingRecord.record_id, value: item });
     }
   }
 
@@ -88,17 +88,17 @@ export const importData = async (
     try {
       if (toInsert.length > 0) {
         await tx
-          .insert(trackableRecord)
+          .insert(trackable_record)
           .values(
             toInsert.map((item) => ({
-              trackableId: tr.id,
-              userId: userId,
+              trackable_id: tr.id,
+              user_id: userId,
               date: item.date,
               value: item.value,
               attributes: complexTrackable ? item.attrbites : undefined,
-              createdAt: getValidDate(item.updatedAt),
-              updatedAt: getValidDate(item.updatedAt),
-              externalKey: item.externalKey,
+              created_at: getValidDate(item.updatedAt),
+              updated_at: getValidDate(item.updatedAt),
+              external_key: item.externalKey,
             })),
           )
           .returning();
@@ -108,14 +108,14 @@ export const importData = async (
         await Promise.all(
           toUpdate.map((item) =>
             tx
-              .update(trackableRecord)
+              .update(trackable_record)
               .set({
                 value: item.value.value,
                 attributes: complexTrackable ? item.value.attrbites : undefined,
-                updatedAt: getValidDate(item.value.updatedAt),
-                externalKey: item.value.externalKey,
+                updated_at: getValidDate(item.value.updatedAt),
+                external_key: item.value.externalKey,
               })
-              .where(eq(trackableRecord.recordId, item.id)),
+              .where(eq(trackable_record.record_id, item.id)),
           ),
         );
       }
@@ -141,18 +141,18 @@ const getMapOfExistingRecords = async (
   trackable: { id: string },
   analysis: { earliestDate: Date; latestDate: Date },
 ) => {
-  const existingRecords = await db.query.trackableRecord.findMany({
+  const existingRecords = await db.query.trackable_record.findMany({
     where: and(
-      eq(trackableRecord.trackableId, trackable.id),
-      between(trackableRecord.date, analysis.earliestDate, analysis.latestDate),
+      eq(trackable_record.trackable_id, trackable.id),
+      between(trackable_record.date, analysis.earliestDate, analysis.latestDate),
     ),
   });
 
   const mapOfExistingRecords = new Map(
     existingRecords
-      .filter((record) => record.externalKey)
+      .filter((record) => record.external_key)
       .map((record) => [
-        `${format(convertDateFromDbToLocal(record.date), "yyyy-MM-dd")}-${record.externalKey}`,
+        `${format(convertDateFromDbToLocal(record.date), "yyyy-MM-dd")}-${record.external_key}`,
         record,
       ]),
   );

@@ -1,128 +1,117 @@
 import { CrudBatch, UpdateType } from "@powersync/common";
 import { and, eq } from "drizzle-orm";
-import { z } from "zod";
 
 import { db } from ".";
 import {
   trackable,
-  trackableFlags,
-  trackableFlagsInsertSchema,
-  trackableFlagsUpdateSchema,
-  trackableGroup,
-  trackableGroupInsertSchema,
-  trackableGroupUpdateSchema,
-  trackableInsertSchema,
-  trackableRecord,
-  trackableRecordInsertSchema,
-  trackableRecordUpdateSchema,
-  trackableUpdateSchema,
-  userFlags,
-  userFlagsInsertSchema,
-  userFlagsUpdateSchema,
+  trackable_flags,
+  trackable_flags_insert_schema,
+  trackable_flags_update_schema,
+  trackable_group,
+  trackable_group_insert_schema,
+  trackable_group_update_schema,
+  trackable_insert_schema,
+  trackable_record,
+  trackable_record_insert_schema,
+  trackable_record_update_schema,
+  trackable_update_schema,
+  user_flags,
+  user_flags_insert_schema,
+  user_flags_update_schema,
 } from "./schema";
 
-const onlyIdRequiredSchema = z.object({
-  id: z.string(),
-});
+export type SyncEntry = {
+  id: string;
+  op: UpdateType;
+  opData: CrudBatch["crud"][number]["opData"];
+  table: string;
+};
 
 // ============================================================================
 // TRACKABLE
 // ============================================================================
 
-export const applyCrudTrackable = async (
-  entry: CrudBatch["crud"][number],
-  userId: string,
-) => {
+export const applyCrudTrackable = async (entry: SyncEntry, userId: string) => {
   switch (entry.op) {
     case UpdateType.PUT: {
-      const verified = trackableInsertSchema.parse(entry.opData);
+      const verified = trackable_insert_schema.parse(entry.opData);
 
       await db.insert(trackable).values({
         ...verified,
-        userId,
+        user_id: userId,
       });
       break;
     }
     case UpdateType.PATCH: {
-      const verified = trackableUpdateSchema.parse(entry.opData);
-
-      if (!verified.id) {
-        throw new Error("Trackable ID is required");
-      }
+      const verified = trackable_update_schema.parse(entry.opData);
 
       await db
         .update(trackable)
         .set(verified)
-        .where(
-          and(eq(trackable.id, verified.id), eq(trackable.userId, userId)),
-        );
+        .where(and(eq(trackable.id, entry.id), eq(trackable.user_id, userId)));
       break;
     }
     case UpdateType.DELETE: {
-      const verified = onlyIdRequiredSchema.parse(entry.opData);
-
       await db
         .delete(trackable)
-        .where(
-          and(eq(trackable.id, verified.id), eq(trackable.userId, userId)),
-        );
+        .where(and(eq(trackable.id, entry.id), eq(trackable.user_id, userId)));
       break;
     }
   }
 };
 
 // ============================================================================
-// TRACKABLE FLAGS (composite PK: userId, trackableId, key)
+// TRACKABLE FLAGS (composite PK: user_id, trackable_id, key)
 // ============================================================================
 
 export const applyCrudTrackableFlags = async (
-  entry: CrudBatch["crud"][number],
+  entry: SyncEntry,
   userId: string,
 ) => {
   const opData = entry.opData as Record<string, unknown>;
 
   switch (entry.op) {
     case UpdateType.PUT: {
-      const verified = trackableFlagsInsertSchema.parse({
-        trackableId: opData.trackable_id,
+      const verified = trackable_flags_insert_schema.parse({
+        trackable_id: opData.trackable_id,
         key: opData.key,
         value: opData.value ? JSON.parse(opData.value as string) : undefined,
-        userId,
+        user_id: userId,
       });
 
       await db
-        .insert(trackableFlags)
+        .insert(trackable_flags)
         .values(verified)
         .onConflictDoUpdate({
           target: [
-            trackableFlags.userId,
-            trackableFlags.trackableId,
-            trackableFlags.key,
+            trackable_flags.user_id,
+            trackable_flags.trackable_id,
+            trackable_flags.key,
           ],
           set: { value: verified.value },
         });
       break;
     }
     case UpdateType.PATCH: {
-      const verified = trackableFlagsUpdateSchema.parse({
-        trackableId: opData.trackable_id,
+      const verified = trackable_flags_update_schema.parse({
+        trackable_id: opData.trackable_id,
         key: opData.key,
         value: opData.value ? JSON.parse(opData.value as string) : undefined,
-        userId,
+        user_id: userId,
       });
 
-      if (!verified.trackableId || !verified.key) {
+      if (!verified.trackable_id || !verified.key) {
         throw new Error("TrackableId and key are required for update");
       }
 
       await db
-        .update(trackableFlags)
+        .update(trackable_flags)
         .set({ value: verified.value })
         .where(
           and(
-            eq(trackableFlags.userId, userId),
-            eq(trackableFlags.trackableId, verified.trackableId),
-            eq(trackableFlags.key, verified.key),
+            eq(trackable_flags.user_id, userId),
+            eq(trackable_flags.trackable_id, verified.trackable_id),
+            eq(trackable_flags.key, verified.key),
           ),
         );
       break;
@@ -136,12 +125,12 @@ export const applyCrudTrackableFlags = async (
       }
 
       await db
-        .delete(trackableFlags)
+        .delete(trackable_flags)
         .where(
           and(
-            eq(trackableFlags.userId, userId),
-            eq(trackableFlags.trackableId, trackableId),
-            eq(trackableFlags.key, key),
+            eq(trackable_flags.user_id, userId),
+            eq(trackable_flags.trackable_id, trackableId),
+            eq(trackable_flags.key, key),
           ),
         );
       break;
@@ -150,77 +139,71 @@ export const applyCrudTrackableFlags = async (
 };
 
 // ============================================================================
-// TRACKABLE RECORD (PK: recordId)
+// TRACKABLE RECORD (PK: record_id)
 // ============================================================================
 
 export const applyCrudTrackableRecord = async (
-  entry: CrudBatch["crud"][number],
+  entry: SyncEntry,
   userId: string,
 ) => {
   const opData = entry.opData as Record<string, unknown>;
 
   switch (entry.op) {
     case UpdateType.PUT: {
-      const verified = trackableRecordInsertSchema.parse({
-        recordId: opData.id,
-        trackableId: opData.trackable_id,
+      const verified = trackable_record_insert_schema.parse({
+        record_id: opData.id,
+        trackable_id: opData.trackable_id,
         date: opData.date ? new Date(opData.date as string) : undefined,
         value: opData.value,
         attributes: opData.attributes
           ? JSON.parse(opData.attributes as string)
           : undefined,
-        createdAt: opData.created_at ? Number(opData.created_at) : undefined,
-        updatedAt: opData.updated_at ? Number(opData.updated_at) : undefined,
-        externalKey: opData.external_key,
-        userId,
+        created_at: opData.created_at ? Number(opData.created_at) : undefined,
+        updated_at: opData.updated_at ? Number(opData.updated_at) : undefined,
+        external_key: opData.external_key,
+        user_id: userId,
       });
 
-      await db.insert(trackableRecord).values(verified);
+      await db.insert(trackable_record).values(verified);
       break;
     }
     case UpdateType.PATCH: {
-      const verified = trackableRecordUpdateSchema.parse({
-        recordId: opData.id,
-        trackableId: opData.trackable_id,
+      const verified = trackable_record_update_schema.parse({
+        record_id: opData.id,
+        trackable_id: opData.trackable_id,
         date: opData.date ? new Date(opData.date as string) : undefined,
         value: opData.value,
         attributes: opData.attributes
           ? JSON.parse(opData.attributes as string)
           : undefined,
-        createdAt: opData.created_at ? Number(opData.created_at) : undefined,
-        updatedAt: opData.updated_at ? Number(opData.updated_at) : undefined,
-        externalKey: opData.external_key,
-        userId,
+        created_at: opData.created_at ? Number(opData.created_at) : undefined,
+        updated_at: opData.updated_at ? Number(opData.updated_at) : undefined,
+        external_key: opData.external_key,
+        user_id: userId,
       });
 
-      if (!verified.recordId) {
+      if (!verified.record_id) {
         throw new Error("RecordId is required for update");
       }
 
       await db
-        .update(trackableRecord)
+        .update(trackable_record)
         .set(verified)
         .where(
           and(
-            eq(trackableRecord.recordId, verified.recordId),
-            eq(trackableRecord.userId, userId),
+            eq(trackable_record.record_id, verified.record_id),
+            eq(trackable_record.user_id, userId),
           ),
         );
       break;
     }
     case UpdateType.DELETE: {
-      const recordId = opData.id as string;
-
-      if (!recordId) {
-        throw new Error("RecordId is required for delete");
-      }
-
       await db
-        .delete(trackableRecord)
+        .delete(trackable_record)
         .where(
           and(
-            eq(trackableRecord.recordId, recordId),
-            eq(trackableRecord.userId, userId),
+            eq(trackable_record.record_id, entry.id),
+            eq(trackable_record.user_id, userId),
           ),
         );
       break;
@@ -229,28 +212,28 @@ export const applyCrudTrackableRecord = async (
 };
 
 // ============================================================================
-// TRACKABLE GROUP (composite PK: trackableId, group)
+// TRACKABLE GROUP (composite PK: trackable_id, group)
 // ============================================================================
 
 export const applyCrudTrackableGroup = async (
-  entry: CrudBatch["crud"][number],
+  entry: SyncEntry,
   userId: string,
 ) => {
   const opData = entry.opData as Record<string, unknown>;
 
   switch (entry.op) {
     case UpdateType.PUT: {
-      const verified = trackableGroupInsertSchema.parse({
-        trackableId: opData.trackable_id,
+      const verified = trackable_group_insert_schema.parse({
+        trackable_id: opData.trackable_id,
         group: opData.group,
-        userId,
+        user_id: userId,
       });
 
-      await db.insert(trackableGroup).values(verified).onConflictDoNothing();
+      await db.insert(trackable_group).values(verified).onConflictDoNothing();
       break;
     }
     case UpdateType.PATCH: {
-      // TrackableGroup only has trackableId, group, and userId
+      // TrackableGroup only has trackable_id, group, and user_id
       // No fields to update - the composite key IS the data
       // This is essentially a no-op or could be treated as a re-insert
       break;
@@ -264,12 +247,12 @@ export const applyCrudTrackableGroup = async (
       }
 
       await db
-        .delete(trackableGroup)
+        .delete(trackable_group)
         .where(
           and(
-            eq(trackableGroup.userId, userId),
-            eq(trackableGroup.trackableId, trackableId),
-            eq(trackableGroup.group, group),
+            eq(trackable_group.user_id, userId),
+            eq(trackable_group.trackable_id, trackableId),
+            eq(trackable_group.group, group),
           ),
         );
       break;
@@ -278,37 +261,34 @@ export const applyCrudTrackableGroup = async (
 };
 
 // ============================================================================
-// USER FLAGS (composite PK: userId, key)
+// USER FLAGS (composite PK: user_id, key)
 // ============================================================================
 
-export const applyCrudUserFlags = async (
-  entry: CrudBatch["crud"][number],
-  userId: string,
-) => {
+export const applyCrudUserFlags = async (entry: SyncEntry, userId: string) => {
   const opData = entry.opData as Record<string, unknown>;
 
   switch (entry.op) {
     case UpdateType.PUT: {
-      const verified = userFlagsInsertSchema.parse({
+      const verified = user_flags_insert_schema.parse({
         key: opData.key,
         value: opData.value ? JSON.parse(opData.value as string) : undefined,
-        userId,
+        user_id: userId,
       });
 
       await db
-        .insert(userFlags)
+        .insert(user_flags)
         .values(verified)
         .onConflictDoUpdate({
-          target: [userFlags.userId, userFlags.key],
+          target: [user_flags.user_id, user_flags.key],
           set: { value: verified.value },
         });
       break;
     }
     case UpdateType.PATCH: {
-      const verified = userFlagsUpdateSchema.parse({
+      const verified = user_flags_update_schema.parse({
         key: opData.key,
         value: opData.value ? JSON.parse(opData.value as string) : undefined,
-        userId,
+        user_id: userId,
       });
 
       if (!verified.key) {
@@ -316,10 +296,10 @@ export const applyCrudUserFlags = async (
       }
 
       await db
-        .update(userFlags)
+        .update(user_flags)
         .set({ value: verified.value })
         .where(
-          and(eq(userFlags.userId, userId), eq(userFlags.key, verified.key)),
+          and(eq(user_flags.user_id, userId), eq(user_flags.key, verified.key)),
         );
       break;
     }
@@ -331,8 +311,8 @@ export const applyCrudUserFlags = async (
       }
 
       await db
-        .delete(userFlags)
-        .where(and(eq(userFlags.userId, userId), eq(userFlags.key, key)));
+        .delete(user_flags)
+        .where(and(eq(user_flags.user_id, userId), eq(user_flags.key, key)));
       break;
     }
   }

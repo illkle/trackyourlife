@@ -23,35 +23,35 @@ const pgTable = pgTableCreator((name) => `TYL_${name}`);
 /*
  * Tables related to user.
  */
-export const userFlags = pgTable(
+export const user_flags = pgTable(
   "userFlags",
   {
-    userId: text("user_id")
+    user_id: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     key: text("key").notNull(),
     value: json("value").default({}),
   },
-  (t) => [primaryKey({ columns: [t.userId, t.key] })],
+  (t) => [primaryKey({ columns: [t.user_id, t.key] })],
 );
 
-export const userFlagsRelations = relations(userFlags, ({ one }) => ({
+export const user_flags_relations = relations(user_flags, ({ one }) => ({
   user: one(user, {
-    fields: [userFlags.userId],
+    fields: [user_flags.user_id],
     references: [user.id],
   }),
 }));
 
 // Add to existing user relations or create if doesn't exist
-export const userRelations = relations(user, ({ many }) => ({
-  flags: many(userFlags),
+export const user_relations = relations(user, ({ many }) => ({
+  flags: many(user_flags),
 }));
 
 /*
  * TRACKABLES
  */
 
-export const trackableTypeEnum = pgEnum("type", [
+export const trackable_type_enum = pgEnum("type", [
   "boolean",
   "number",
   "text",
@@ -62,57 +62,60 @@ export const trackableTypeEnum = pgEnum("type", [
 export const trackable = pgTable(
   "trackable",
   {
-    userId: text("user_id")
+    user_id: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     id: uuid("id").defaultRandom().primaryKey(),
     name: text("name").notNull(),
-    type: trackableTypeEnum("type").notNull(),
+    type: trackable_type_enum("type").notNull(),
   },
   (t) => [
-    uniqueIndex("user_id_idx").on(t.userId, t.id),
-    index("user_id_name_idx").on(t.userId, t.name),
+    uniqueIndex("user_id_idx").on(t.user_id, t.id),
+    index("user_id_name_idx").on(t.user_id, t.name),
   ],
 );
 
 /*
  * Settings and additional information about trackable.
  */
-export const trackableFlags = pgTable(
+export const trackable_flags = pgTable(
   "trackableFlags",
   {
-    userId: text("user_id")
+    user_id: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    trackableId: uuid("trackable_id")
+    trackable_id: uuid("trackable_id")
       .notNull()
       .references(() => trackable.id, { onDelete: "cascade" }),
     key: text("key").notNull(),
     value: json("value").default({}),
   },
-  (t) => [primaryKey({ columns: [t.userId, t.trackableId, t.key] })],
+  (t) => [primaryKey({ columns: [t.user_id, t.trackable_id, t.key] })],
 );
 
-export const trackableFlagsRelations = relations(trackableFlags, ({ one }) => ({
-  trackable: one(trackable, {
-    fields: [trackableFlags.trackableId],
-    references: [trackable.id],
+export const trackable_flags_relations = relations(
+  trackable_flags,
+  ({ one }) => ({
+    trackable: one(trackable, {
+      fields: [trackable_flags.trackable_id],
+      references: [trackable.id],
+    }),
   }),
+);
+
+export const trackable_relations = relations(trackable, ({ many }) => ({
+  data: many(trackable_record),
+  flags: many(trackable_flags),
 }));
 
-export const trackableRelations = relations(trackable, ({ many }) => ({
-  data: many(trackableRecord),
-  flags: many(trackableFlags),
-}));
-
-export const trackableRecord = pgTable(
+export const trackable_record = pgTable(
   "trackableRecord",
   {
-    recordId: uuid("record_id").defaultRandom().primaryKey(),
-    userId: text("user_id")
+    record_id: uuid("record_id").defaultRandom().primaryKey(),
+    user_id: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    trackableId: uuid("trackable_id")
+    trackable_id: uuid("trackable_id")
       .notNull()
       .references(() => trackable.id, { onDelete: "cascade" }),
     date: timestamp("date").notNull(),
@@ -127,16 +130,16 @@ export const trackableRecord = pgTable(
      * Since this application is local first and insert to PG can differ from actual creation date, value is set by the client.
      * Stored as unix timestamp to avoid timezone issues and simplify sorting.
      */
-    createdAt: bigint("created_at", { mode: "number" }),
+    created_at: bigint("created_at", { mode: "number" }),
     /*
      * Used to unserstand when value was written to compare db with lazy input. Also used to choose newer record when ingesting data.
      Stored as unix timestamp to avoid timezone issues and simplify sorting.
      */
-    updatedAt: bigint("updated_at", { mode: "number" }),
+    updated_at: bigint("updated_at", { mode: "number" }),
     /*
      * Set by external systems to identify the source of the record.
      */
-    externalKey: text("external_key"),
+    external_key: text("external_key"),
   },
   (t) => [
     /*
@@ -146,73 +149,76 @@ export const trackableRecord = pgTable(
       - If after truncating there is an existing record for that day, it gets updated instead.
      - Tags must be unique. If on insert there is an existing tag with the same value, the insert is cancelled.
     */
-    index("trackable_date_idx").on(t.trackableId, t.date),
-    index("user_date_idx").on(t.userId, t.date),
+    index("trackable_date_idx").on(t.trackable_id, t.date),
+    index("user_date_idx").on(t.user_id, t.date),
   ],
 );
 
-export const trackableRecordAttributesTypeEnum = pgEnum("attributeType", [
+export const trackable_record_attributes_type_enum = pgEnum("attributeType", [
   "boolean",
   "number",
   "text",
 ]);
 
-export const trackableRecordAttributes = pgTable(
+export const trackable_record_attributes = pgTable(
   "trackableRecordAttributes",
   {
-    userId: text("user_id")
+    user_id: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    trackableId: uuid("trackable_id")
+    trackable_id: uuid("trackable_id")
       .notNull()
       .references(() => trackable.id, { onDelete: "cascade" }),
-    recordId: uuid("record_id")
+    record_id: uuid("record_id")
       .notNull()
-      .references(() => trackableRecord.recordId, { onDelete: "cascade" }),
+      .references(() => trackable_record.record_id, { onDelete: "cascade" }),
     key: text("key").notNull(),
     value: text("value"),
-    type: trackableRecordAttributesTypeEnum("type").notNull(),
+    type: trackable_record_attributes_type_enum("type").notNull(),
   },
   (t) => [
-    primaryKey({ columns: [t.userId, t.trackableId, t.recordId, t.key] }),
+    primaryKey({ columns: [t.user_id, t.trackable_id, t.record_id, t.key] }),
   ],
 );
 
-export const recordRelations = relations(trackableRecord, ({ one }) => ({
-  trackableId: one(trackable, {
-    fields: [trackableRecord.trackableId],
+export const record_relations = relations(trackable_record, ({ one }) => ({
+  trackable_id: one(trackable, {
+    fields: [trackable_record.trackable_id],
     references: [trackable.id],
   }),
-  userId: one(user, {
-    fields: [trackableRecord.userId],
+  user_id: one(user, {
+    fields: [trackable_record.user_id],
     references: [user.id],
   }),
 }));
 
-export const trackableGroup = pgTable(
+export const trackable_group = pgTable(
   "trackableGroup",
   {
-    trackableId: uuid("trackable_id")
+    trackable_id: uuid("trackable_id")
       .notNull()
       .references(() => trackable.id, { onDelete: "cascade" }),
     group: text("group").notNull(),
-    userId: text("user_id")
+    user_id: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
   },
-  (t) => [primaryKey({ columns: [t.trackableId, t.group] })],
+  (t) => [primaryKey({ columns: [t.trackable_id, t.group] })],
 );
 
-export const trackableGroupRelations = relations(trackableGroup, ({ one }) => ({
-  trackable: one(trackable, {
-    fields: [trackableGroup.trackableId],
-    references: [trackable.id],
+export const trackable_group_relations = relations(
+  trackable_group,
+  ({ one }) => ({
+    trackable: one(trackable, {
+      fields: [trackable_group.trackable_id],
+      references: [trackable.id],
+    }),
+    user: one(user, {
+      fields: [trackable_group.user_id],
+      references: [user.id],
+    }),
   }),
-  user: one(user, {
-    fields: [trackableGroup.userId],
-    references: [user.id],
-  }),
-}));
+);
 
 export type DbUserSelect = typeof user.$inferSelect;
 export type DbSessionSelect = typeof session.$inferSelect;
@@ -220,28 +226,32 @@ export type DbSessionSelect = typeof session.$inferSelect;
 export type DbTrackableSelect = typeof trackable.$inferSelect;
 export type DbTrackableInsert = typeof trackable.$inferInsert;
 
-export type DbTrackableRecordSelect = typeof trackableRecord.$inferSelect;
-export type DbTrackableRecordInsert = typeof trackableRecord.$inferInsert;
+export type DbTrackableRecordSelect = typeof trackable_record.$inferSelect;
+export type DbTrackableRecordInsert = typeof trackable_record.$inferInsert;
 
-export type DbTrackableFlagsSelect = typeof trackableFlags.$inferSelect;
-export type DbTrackableFlagsInsert = typeof trackableFlags.$inferInsert;
+export type DbTrackableFlagsSelect = typeof trackable_flags.$inferSelect;
+export type DbTrackableFlagsInsert = typeof trackable_flags.$inferInsert;
 
-export type DbUserFlagsSelect = typeof userFlags.$inferSelect;
-export type DbUserFlagsInsert = typeof userFlags.$inferInsert;
+export type DbUserFlagsSelect = typeof user_flags.$inferSelect;
+export type DbUserFlagsInsert = typeof user_flags.$inferInsert;
 
-export const trackableInsertSchema = createInsertSchema(trackable);
-export const trackableUpdateSchema = createUpdateSchema(trackable);
+export const trackable_insert_schema = createInsertSchema(trackable);
+export const trackable_update_schema = createUpdateSchema(trackable);
 
-export const trackableRecordInsertSchema = createInsertSchema(trackableRecord);
-export const trackableRecordUpdateSchema = createUpdateSchema(trackableRecord);
+export const trackable_record_insert_schema =
+  createInsertSchema(trackable_record);
+export const trackable_record_update_schema =
+  createUpdateSchema(trackable_record);
 
-export const trackableFlagsInsertSchema = createInsertSchema(trackableFlags);
-export const trackableFlagsUpdateSchema = createUpdateSchema(trackableFlags);
+export const trackable_flags_insert_schema =
+  createInsertSchema(trackable_flags);
+export const trackable_flags_update_schema =
+  createUpdateSchema(trackable_flags);
 
-export const userFlagsInsertSchema = createInsertSchema(userFlags);
-export const userFlagsUpdateSchema = createUpdateSchema(userFlags);
+export const user_flags_insert_schema = createInsertSchema(user_flags);
+export const user_flags_update_schema = createUpdateSchema(user_flags);
 
-export const trackableGroupInsertSchema = createInsertSchema(trackableGroup);
-export const trackableGroupUpdateSchema = createUpdateSchema(trackableGroup);
-
-
+export const trackable_group_insert_schema =
+  createInsertSchema(trackable_group);
+export const trackable_group_update_schema =
+  createUpdateSchema(trackable_group);

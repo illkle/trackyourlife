@@ -7,6 +7,7 @@ import {
   applyCrudTrackableGroup,
   applyCrudTrackableRecord,
   applyCrudUserFlags,
+  SyncEntry,
 } from "@tyl/db/powersync-apply";
 
 import { auth } from "~/auth/server";
@@ -20,23 +21,24 @@ export const Route = createFileRoute("/api/powersync/syncbatch")({
           throw new Error("Unauthorized");
         }
 
-        const data = (await request.json()) as CrudBatch["crud"];
+        const data = (await request.json()) as SyncEntry[];
 
         for (const op of data) {
+          console.log("UPDATE TO", op.table, op);
           switch (op.table) {
-            case "trackable":
+            case "TYL_trackable":
               await applyCrudTrackable(op, u.user.id);
               break;
-            case "trackableFlags":
+            case "TYL_trackableFlags":
               await applyCrudTrackableFlags(op, u.user.id);
               break;
-            case "trackableRecord":
+            case "TYL_trackableRecord":
               await applyCrudTrackableRecord(op, u.user.id);
               break;
-            case "trackableGroup":
+            case "TYL_trackableGroup":
               await applyCrudTrackableGroup(op, u.user.id);
               break;
-            case "userFlags":
+            case "TYL_userFlags":
               await applyCrudUserFlags(op, u.user.id);
               break;
             default:

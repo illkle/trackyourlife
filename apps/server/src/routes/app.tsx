@@ -1,6 +1,4 @@
 import { useLayoutEffect, useMemo, useState } from "react";
-import { PowerSyncContext } from "@powersync/react";
-import { PowerSyncDatabase } from "@powersync/web";
 import { Zero } from "@rocicorp/zero";
 import { ZeroProvider } from "@rocicorp/zero/react";
 import { cn } from "@shad/lib/utils";
@@ -13,8 +11,6 @@ import { SidebarProvider } from "~/@shad/components/sidebar";
 import Header, { HeaderLogo } from "~/components/Layout/Header";
 import { AppSidebar, SidebarToggle } from "~/components/Layout/Sidebar";
 import { EditorModalV2 } from "~/components/Modal/EditorModalV2";
-import { AppSchema } from "~/db/appSchema";
-import { Connector } from "~/db/connector";
 import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { usePreloadCore } from "~/utils/useZ";
 
