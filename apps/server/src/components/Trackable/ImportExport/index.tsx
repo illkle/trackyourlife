@@ -4,11 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Check } from "lucide-react";
 
-import type {
-  ITrackableRecordAttributeZero,
-  ITrackableRecordZero,
-  ITrackableZero,
-} from "@tyl/db/zero-schema";
+import type { ITrackableRecordZero } from "@tyl/db/zero-schema";
 
 import { Button } from "~/@shad/components/button";
 import { Label } from "~/@shad/components/label";
@@ -115,26 +111,12 @@ export const ExportTrackable = () => {
   );
 };
 
-type ExportRecords = ITrackableRecordZero & {
-  readonly trackableRecordAttributes: readonly ITrackableRecordAttributeZero[];
-};
-
-const dataToExportFormat = (
-  data: readonly ExportRecords[],
-  type: ITrackableZero["type"],
-) => {
-  const attrTypes = ["tags", "text"] as ITrackableZero["type"][];
-
-  const hasAttrbibutes = attrTypes.includes(type);
-
+const dataToExportFormat = (data: readonly ITrackableRecordZero[]) => {
   return data.map((record) => ({
     value: record.value,
     date: new Date(record.date).toISOString(),
     createdAt: record.created_at,
     updatedAt: record.updated_at,
-    trackableRecordAttributes: hasAttrbibutes
-      ? record.trackableRecordAttributes
-      : undefined,
   }));
 };
 
@@ -142,7 +124,7 @@ const dataToExportFormat = (
  * Component that loads data by date range and shows buttons to download export files
  */
 const ExportLoader = ({ selected }: { selected: DateRange }) => {
-  const { id, type } = useTrackableMeta();
+  const { id } = useTrackableMeta();
 
   const [data, status] = useZeroTrackableData({
     id,
@@ -153,7 +135,7 @@ const ExportLoader = ({ selected }: { selected: DateRange }) => {
   const [exportInternalFields, setExportInternalFields] = useState(true);
 
   const exportDataAsJson = () => {
-    const stripped = dataToExportFormat(data, type);
+    const stripped = dataToExportFormat(data);
     const jsonString = JSON.stringify(stripped, null, 2);
     const blob = new Blob([jsonString], { type: "application/json" });
     const url = URL.createObjectURL(blob);

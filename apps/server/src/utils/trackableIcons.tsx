@@ -2,8 +2,6 @@ import type { LucideProps } from "lucide-react";
 import {
   CaseSensitiveIcon,
   ChartColumnIncreasing,
-  ListIcon,
-  TagsIcon,
   ToggleRight,
 } from "lucide-react";
 
@@ -18,8 +16,6 @@ export const TrackableIconsMap: Record<
   boolean: ToggleRight,
   number: ChartColumnIncreasing,
   text: CaseSensitiveIcon,
-  tags: TagsIcon,
-  logs: ListIcon,
 };
 
 export const RenderTrackableIcon = ({

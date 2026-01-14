@@ -27,8 +27,6 @@ docker run -d --name zero-postgres \
   && docker run \
     --env-file .env \
     -p 8080:80 \
-    -p 3000:3000 \
-    -p 5432:5432 \
     powersync
 ```
 

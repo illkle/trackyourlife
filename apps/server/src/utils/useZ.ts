@@ -6,14 +6,12 @@ import {
   addMonths,
   addYears,
   endOfDay,
-  isSameDay,
   startOfDay,
   subMonths,
 } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 
 import type { Schema } from "@tyl/db/zero-schema";
-import type { RecordAttribute } from "@tyl/helpers/trackables";
 import { mutators } from "@tyl/db/mutators";
 import { queries } from "@tyl/db/queries";
 import { convertDateFromLocalToDb } from "@tyl/helpers/trackables";
@@ -145,42 +143,17 @@ export const useTrackableDay = ({
   );
 };
 
-const generateDateTime = (date: Date, storeTime?: boolean) => {
-  if (storeTime) {
-    const d = new Date();
-
-    if (isSameDay(date, d)) {
-      return Date.UTC(
-        date.getFullYear(),
-        date.getMonth(),
-        date.getDate(),
-        d.getHours(),
-        d.getMinutes(),
-        d.getSeconds(),
-      );
-    }
-
-    return Date.UTC(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      23,
-      59,
-      59,
-    );
-  }
-
+const generateDateTime = (date: Date) => {
   return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
 };
 
 export const useRecordUpdateHandler = ({
   date,
   trackableId,
-  type,
 }: {
   date: Date;
   trackableId: string;
-  type: string;
+  type?: string;
 }) => {
   const zero = useZero();
 
@@ -189,14 +162,12 @@ export const useRecordUpdateHandler = ({
       value,
       recordId,
       updatedAt,
-      attributes,
     }: {
       value: string;
       recordId?: string;
       updatedAt?: number;
-      attributes?: Record<string, string>;
     }) => {
-      const d = generateDateTime(date, type === "logs");
+      const d = generateDateTime(date);
 
       if (recordId) {
         await zero.mutate(
@@ -204,7 +175,6 @@ export const useRecordUpdateHandler = ({
             record_id: recordId,
             value,
             updated_at: updatedAt,
-            attributes,
           }),
         );
 
@@ -219,44 +189,12 @@ export const useRecordUpdateHandler = ({
             value,
             created_at: updatedAt,
             updated_at: updatedAt,
-            attributes,
           }),
         );
         return rid;
       }
     },
-    [date, trackableId, zero, type],
-  );
-};
-
-export const updateAttributesRaw = async (
-  trackableId: string,
-  recordId: string,
-  attributes: readonly RecordAttribute[],
-) => {
-  const promises = attributes.map((a) =>
-    mutators.recordAttributes.upsert({
-      record_id: recordId,
-      trackable_id: trackableId,
-      key: a.key,
-      value: a.value,
-      type: a.type,
-    }),
-  );
-
-  await Promise.allSettled(promises);
-};
-
-export const useAttrbutesUpdateHandler = ({
-  trackableId,
-}: {
-  trackableId: string;
-}) => {
-  return useCallback(
-    async (recordId: string, attributes: readonly RecordAttribute[]) => {
-      return await updateAttributesRaw(trackableId, recordId, attributes);
-    },
-    [trackableId],
+    [date, trackableId, zero],
   );
 };
 

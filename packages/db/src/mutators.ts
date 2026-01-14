@@ -1,8 +1,7 @@
 import { defineMutator, defineMutators } from "@rocicorp/zero";
 import { z } from "zod";
 
-const trackableType = z.enum(["boolean", "number", "text", "tags", "logs"]);
-const recordAttributeType = z.enum(["boolean", "number", "text"]);
+const trackableType = z.enum(["boolean", "number", "text"]);
 
 export const mutators = defineMutators({
   // TYL_trackable mutations
@@ -44,13 +43,11 @@ export const mutators = defineMutators({
         value: z.string(),
         created_at: z.number().optional(),
         updated_at: z.number().optional(),
-        attributes: z.record(z.string(), z.string()).optional(),
       }),
       async ({ tx, ctx, args }) => {
         await tx.mutate.TYL_trackableRecord.insert({
           ...args,
           user_id: ctx.userID,
-          attributes: args.attributes ?? {},
         });
       },
     ),
@@ -59,7 +56,6 @@ export const mutators = defineMutators({
         record_id: z.string(),
         value: z.string().optional(),
         updated_at: z.number().optional(),
-        attributes: z.record(z.string(), z.string()).optional(),
       }),
       async ({ tx, ctx, args }) => {
         await tx.mutate.TYL_trackableRecord.update({
@@ -76,13 +72,11 @@ export const mutators = defineMutators({
         value: z.string(),
         created_at: z.number().optional(),
         updated_at: z.number().optional(),
-        attributes: z.record(z.string(), z.string()).optional(),
       }),
       async ({ tx, ctx, args }) => {
         await tx.mutate.TYL_trackableRecord.upsert({
           ...args,
           user_id: ctx.userID,
-          attributes: args.attributes ?? {},
         });
       },
     ),
@@ -186,37 +180,6 @@ export const mutators = defineMutators({
     ),
   },
 
-  // TYL_trackableRecordAttributes mutations
-  recordAttributes: {
-    upsert: defineMutator(
-      z.object({
-        trackable_id: z.string(),
-        record_id: z.string(),
-        key: z.string(),
-        value: z.string(),
-        type: recordAttributeType,
-      }),
-      async ({ tx, ctx, args }) => {
-        await tx.mutate.TYL_trackableRecordAttributes.upsert({
-          ...args,
-          user_id: ctx.userID,
-        });
-      },
-    ),
-    delete: defineMutator(
-      z.object({
-        trackable_id: z.string(),
-        record_id: z.string(),
-        key: z.string(),
-      }),
-      async ({ tx, ctx, args }) => {
-        await tx.mutate.TYL_trackableRecordAttributes.delete({
-          ...args,
-          user_id: ctx.userID,
-        });
-      },
-    ),
-  },
 });
 
 export type Mutators = typeof mutators;

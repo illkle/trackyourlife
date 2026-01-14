@@ -10,9 +10,7 @@ import {
   editorModalNextDay,
   editorModalPreviousDay,
 } from "~/components/Modal/EditorModalV2";
-import { LogsPopupEditor } from "~/components/PopupEditor/LogsPopup";
 import { NumberPopupEditor } from "~/components/PopupEditor/NumberPopup";
-import { TagsPopupEditor } from "~/components/PopupEditor/TagsPopup";
 import { TextPopupEditor } from "~/components/PopupEditor/TextPopup";
 import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import TrackableProvider, {
@@ -106,8 +104,6 @@ const components: Record<
   React.ComponentType<PopupEditorProps> | null
 > = {
   text: TextPopupEditor,
-  tags: TagsPopupEditor,
-  logs: LogsPopupEditor,
   number: NumberPopupEditor,
   boolean: null,
 };

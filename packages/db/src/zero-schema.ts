@@ -23,7 +23,6 @@ const TYL_trackableRecord = table("TYL_trackableRecord")
     user_id: string(),
     created_at: number().optional(),
     updated_at: number().optional(),
-    attributes: json<Record<string, string>>(),
   })
   .primaryKey("record_id");
 
@@ -57,33 +56,9 @@ const TYL_trackable = table("TYL_trackable")
     user_id: string(),
     id: string(),
     name: string(),
-    type: string<"boolean" | "number" | "text" | "tags" | "logs">(),
-  })
-  .primaryKey("id");
-
-const TYL_trackableRecordAttributes = table("TYL_trackableRecordAttributes")
-  .columns({
-    user_id: string(),
-    trackable_id: string(),
-    record_id: string(),
-    key: string(),
-    value: string(),
     type: string<"boolean" | "number" | "text">(),
   })
-  .primaryKey("user_id", "trackable_id", "record_id", "key");
-
-const trackableRecordRelationships = relationships(
-  TYL_trackableRecord,
-  ({ many }) => {
-    return {
-      trackableRecordAttributes: many({
-        sourceField: ["record_id"],
-        destSchema: TYL_trackableRecordAttributes,
-        destField: ["record_id"],
-      }),
-    };
-  },
-);
+  .primaryKey("id");
 
 const trackableRelationships = relationships(TYL_trackable, ({ many }) => ({
   trackableGroup: many({
@@ -101,11 +76,6 @@ const trackableRelationships = relationships(TYL_trackable, ({ many }) => ({
     destSchema: TYL_trackableFlags,
     destField: ["trackable_id"],
   }),
-  trackableRecordAttributes: many({
-    sourceField: ["id"],
-    destSchema: TYL_trackableRecordAttributes,
-    destField: ["trackable_id"],
-  }),
 }));
 
 export const schema = createSchema({
@@ -115,10 +85,9 @@ export const schema = createSchema({
     TYL_trackableGroup,
     TYL_trackableFlags,
     TYL_userFlags,
-    TYL_trackableRecordAttributes,
   ],
 
-  relationships: [trackableRelationships, trackableRecordRelationships],
+  relationships: [trackableRelationships],
 });
 
 export type Schema = typeof schema;
@@ -128,9 +97,6 @@ export type ITrackableZero = Row<Schema["tables"]["TYL_trackable"]>;
 export type ITrackableFlagsZero = Row<Schema["tables"]["TYL_trackableFlags"]>;
 
 export type ITrackableRecordZero = Row<Schema["tables"]["TYL_trackableRecord"]>;
-export type ITrackableRecordAttributeZero = Row<
-  Schema["tables"]["TYL_trackableRecordAttributes"]
->;
 
 type Mutable<T> = {
   -readonly [P in keyof T]: T[P];

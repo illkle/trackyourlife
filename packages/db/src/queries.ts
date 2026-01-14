@@ -24,8 +24,7 @@ export const queries = defineQueries({
               and(cmp("date", ">=", firstDay), cmp("date", "<=", lastDay)),
             )
             .orderBy("date", "asc")
-            .orderBy("created_at", "asc")
-            .related("trackableRecordAttributes"),
+            .orderBy("created_at", "asc"),
         )
         .related("trackableGroup"),
   ),
@@ -55,8 +54,7 @@ export const queries = defineQueries({
         ),
       )
         .orderBy("date", "asc")
-        .orderBy("created_at", "asc")
-        .related("trackableRecordAttributes"),
+        .orderBy("created_at", "asc"),
   ),
 
   trackableMonthViewData: defineQuery(
@@ -69,8 +67,7 @@ export const queries = defineQueries({
       zql.TYL_trackableRecord.where("trackable_id", "=", id)
         .where("date", ">=", startDate)
         .where("date", "<=", endDate)
-        .where("user_id", "=", ctx.userID)
-        .related("trackableRecordAttributes"),
+        .where("user_id", "=", ctx.userID),
   ),
 
   trackableYearViewData: defineQuery(
@@ -83,8 +80,7 @@ export const queries = defineQueries({
       zql.TYL_trackableRecord.where("trackable_id", "=", id)
         .where("date", ">=", startDate)
         .where("date", "<=", endDate)
-        .where("user_id", "=", ctx.userID)
-        .related("trackableRecordAttributes"),
+        .where("user_id", "=", ctx.userID),
   ),
 
   corePreload: defineQuery(
@@ -93,9 +89,7 @@ export const queries = defineQueries({
     }),
     ({ args: { sinceDate }, ctx }) =>
       zql.TYL_trackable.where("user_id", "=", ctx.userID)
-        .related("trackableRecord", (q) =>
-          q.where("date", ">=", sinceDate).related("trackableRecordAttributes"),
-        )
+        .related("trackableRecord", (q) => q.where("date", ">=", sinceDate))
         .related("trackableGroup")
         .related("trackableFlag"),
   ),
@@ -146,8 +140,7 @@ export const queries = defineQueries({
             )
             .orderBy("date", "asc")
             .orderBy("value", "asc")
-            .orderBy("created_at", "asc")
-            .related("trackableRecordAttributes"),
+            .orderBy("created_at", "asc"),
         ),
   ),
   flags: defineQuery(
@@ -162,15 +155,6 @@ export const queries = defineQueries({
       }
 
       return zql.TYL_trackableFlags.where("user_id", "=", ctx.userID);
-    },
-  ),
-  logsDisplayPreview: defineQuery(
-    z.object({ id: z.string() }),
-    ({ args, ctx }) => {
-      return zql.TYL_trackableRecord.where("user_id", "=", ctx.userID)
-        .where("trackable_id", "=", args.id)
-        .limit(5)
-        .related("trackableRecordAttributes");
     },
   ),
 });

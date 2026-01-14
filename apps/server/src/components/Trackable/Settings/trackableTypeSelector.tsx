@@ -79,41 +79,6 @@ export const TrackableTypeSelector = ({
         </Card>
       </RadioGroupItem>
 
-      <RadioGroupItem
-        value="tags"
-        id="tags"
-        className={cn(commonClasses, "sm:col-span-3")}
-        asChild
-      >
-        <Card className="text-left">
-          <CardHeader>
-            <RenderTrackableIcon size={20} type="tags" />
-            <CardTitle className="flex items-center gap-2">Tags</CardTitle>
-            <CardDescription>
-              A collection of values where frequency is being tracked. Emotions
-              you felt, general activities you did, etc.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </RadioGroupItem>
-      <RadioGroupItem
-        value="logs"
-        id="logs"
-        className={cn(commonClasses, "sm:col-span-3")}
-        asChild
-      >
-        <Card className="text-left">
-          <CardHeader>
-            <RenderTrackableIcon size={20} type="logs" />
-            <CardTitle className="flex items-center gap-2">Logs</CardTitle>
-            <CardDescription>
-              Collection of values that are relatively unique each time and
-              where record attributes are important. Can be tasks closed today,
-              exercises done in the gym, food eaten, etc.
-            </CardDescription>
-          </CardHeader>
-        </Card>
-      </RadioGroupItem>
     </RadioGroup>
   );
 };

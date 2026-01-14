@@ -14,7 +14,6 @@ export const zImportJson = z.object({
   value: z.string(),
   updatedAt: z.number().nullable().optional(),
   externalKey: z.string().optional(),
-  attrbites: z.record(z.string(), z.string()).optional(),
 });
 
 export type IImportJson = z.infer<typeof zImportJson>;
@@ -81,8 +80,6 @@ export const importData = async (
     }
   }
 
-  const complexTrackable = tr.type === "logs";
-
   // Apply db transaction
   await db.transaction(async (tx) => {
     try {
@@ -95,7 +92,6 @@ export const importData = async (
               user_id: userId,
               date: item.date,
               value: item.value,
-              attributes: complexTrackable ? item.attrbites : undefined,
               created_at: getValidDate(item.updatedAt),
               updated_at: getValidDate(item.updatedAt),
               external_key: item.externalKey,
@@ -111,7 +107,6 @@ export const importData = async (
               .update(trackable_record)
               .set({
                 value: item.value.value,
-                attributes: complexTrackable ? item.value.attrbites : undefined,
                 updated_at: getValidDate(item.value.updatedAt),
                 external_key: item.value.externalKey,
               })

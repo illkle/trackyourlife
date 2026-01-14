@@ -12,10 +12,7 @@ import { makeColorStrings } from "@tyl/helpers/colorTools";
 import {
   NumberColorCodingMapper,
   NumberProgressMapper,
-  TagsValuesMapper,
 } from "@tyl/helpers/trackables";
-
-import { zLogsDisplay } from "~/components/Trackable/Settings/logsDisplayEditor";
 
 /**
  * Flags that are stored in db and are accessed by trackable components.
@@ -27,14 +24,6 @@ import { zLogsDisplay } from "~/components/Trackable/Settings/logsDisplayEditor"
  * - If it's a flag for specific type add it to corresponding ITrackableFlagKey(Boolean\Number\...)
  * - If it's a flag where each daycell will need result of same computation based on flag value(i.e Set lookup), add it as zod transform.
  */
-
-export const LogsSavedAttributesValidator = z.object({
-  key: z.string(),
-  visibleName: z.string(),
-  type: z.enum(["boolean", "number", "text"]),
-});
-
-export type ILogsSavedAttribute = z.infer<typeof LogsSavedAttributesValidator>;
 
 export const FlagsValidators = {
   AnyTrackingStart: z.iso
@@ -55,11 +44,6 @@ export const FlagsValidators = {
   NumberColorCoding: ZNumberColorCoding.transform(
     (v) => new NumberColorCodingMapper(v),
   ),
-
-  TagsValues: z.array(z.string()).transform((v) => new TagsValuesMapper(v)),
-
-  LogsSavedAttributes: z.array(LogsSavedAttributesValidator),
-  LogsDisplay: zLogsDisplay,
 
   AnyTestFlag: z.string(),
 };
@@ -83,10 +67,7 @@ export const FlagDefaultInputs: ITrackableFlagsInputKV = {
     enabled: false,
     colors: [],
   },
-  TagsValues: [],
-  LogsSavedAttributes: [],
   AnyTestFlag: "test",
-  LogsDisplay: { items: [{ id: "1", type: "value", textSettings: {} }] },
 };
 
 const fullObject = z.object(FlagsValidators);

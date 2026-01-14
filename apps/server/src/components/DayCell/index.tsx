@@ -5,13 +5,10 @@ import { format, isAfter, isBefore, isSameDay } from "date-fns";
 import type { DbTrackableSelect } from "@tyl/db/schema";
 import type { PureDataRecord } from "@tyl/helpers/trackables";
 
-import { DayCellLogsPopup } from "~/components/DayCell/DayCellLogsPopup";
-import { DayCellTagsPopup } from "~/components/DayCell/DayCellTagsPopup";
 import { DayCellTextPopup } from "~/components/DayCell/DayCellTextPopup";
 import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import {
-  useAttrbutesUpdateHandler,
   useRecordDeleteHandler,
   useRecordUpdateHandler,
 } from "~/utils/useZ";
@@ -36,7 +33,6 @@ export interface IDayCellContext extends Omit<PureDataRecord, "disabled"> {
   onChange: ReturnType<typeof useRecordUpdateHandler>;
   onDelete: ReturnType<typeof useRecordDeleteHandler>;
   labelType?: IDayCellLabelType;
-  onChangeAttributes: ReturnType<typeof useAttrbutesUpdateHandler>;
 }
 
 export const DayCellContext = createContext<IDayCellContext | null>(null);
@@ -68,9 +64,6 @@ export const DayCellRouter = ({
 
   const onChange = useRecordUpdateHandler({ date, trackableId: id, type });
   const onDelete = useRecordDeleteHandler();
-  const onChangeAttributes = useAttrbutesUpdateHandler({
-    trackableId: id,
-  });
 
   return (
     <DayCellContext.Provider
@@ -82,7 +75,6 @@ export const DayCellRouter = ({
         onChange,
         onDelete,
         labelType,
-        onChangeAttributes,
       }}
     >
       <div className={cn("relative flex flex-1 flex-col", className)}>
@@ -114,15 +106,6 @@ export const DayCellTypeRouter = ({
 
   if (type === "text") {
     return <DayCellTextPopup />;
-  }
-
-  if (type === "tags") {
-    return <DayCellTagsPopup />;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (type === "logs") {
-    return <DayCellLogsPopup />;
   }
 
   throw new Error("Unsupported trackable type");

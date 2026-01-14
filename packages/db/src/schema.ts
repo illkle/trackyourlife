@@ -3,7 +3,6 @@ import {
   bigint,
   index,
   json,
-  jsonb,
   pgEnum,
   pgTableCreator,
   primaryKey,
@@ -55,8 +54,6 @@ export const trackable_type_enum = pgEnum("type", [
   "boolean",
   "number",
   "text",
-  "tags",
-  "logs",
 ]);
 
 export const trackable = pgTable(
@@ -120,10 +117,6 @@ export const trackable_record = pgTable(
       .references(() => trackable.id, { onDelete: "cascade" }),
     date: timestamp("date").notNull(),
     value: text("value").notNull(),
-    /**
-     * Attributes stored as JSONB, it's always a map of string to string.
-     */
-    attributes: jsonb("attributes").default({}).$type<Record<string, string>>(),
 
     /*
      * Only for trackables that allow multiple records per day, used to sort records.
@@ -147,37 +140,9 @@ export const trackable_record = pgTable(
      - Simple trackables (boolean, number, text) can only have one record per day.
       - On insert date is truncated to hour 0 minute 0 second 0.
       - If after truncating there is an existing record for that day, it gets updated instead.
-     - Tags must be unique. If on insert there is an existing tag with the same value, the insert is cancelled.
     */
     index("trackable_date_idx").on(t.trackable_id, t.date),
     index("user_date_idx").on(t.user_id, t.date),
-  ],
-);
-
-export const trackable_record_attributes_type_enum = pgEnum("attributeType", [
-  "boolean",
-  "number",
-  "text",
-]);
-
-export const trackable_record_attributes = pgTable(
-  "trackableRecordAttributes",
-  {
-    user_id: text("user_id")
-      .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
-    trackable_id: uuid("trackable_id")
-      .notNull()
-      .references(() => trackable.id, { onDelete: "cascade" }),
-    record_id: uuid("record_id")
-      .notNull()
-      .references(() => trackable_record.record_id, { onDelete: "cascade" }),
-    key: text("key").notNull(),
-    value: text("value"),
-    type: trackable_record_attributes_type_enum("type").notNull(),
-  },
-  (t) => [
-    primaryKey({ columns: [t.user_id, t.trackable_id, t.record_id, t.key] }),
   ],
 );
 

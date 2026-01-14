@@ -4,7 +4,6 @@ import {
   isSameDay,
   startOfTomorrow,
 } from "date-fns";
-import fuzzysort from "fuzzysort";
 
 import type {
   INumberColorCoding,
@@ -14,12 +13,7 @@ import type { DbTrackableSelect } from "@tyl/db/schema";
 
 import { range } from "./animation";
 import { presetsMap } from "./colorPresets";
-import {
-  findClosestDarkmode,
-  findClosestLightmode,
-  getColorAtPosition,
-  stringToColorHSL,
-} from "./colorTools";
+import { getColorAtPosition } from "./colorTools";
 
 // Comes from db
 export interface DataRecord {
@@ -28,14 +22,6 @@ export interface DataRecord {
   readonly record_id: string;
   readonly created_at: number | null;
   readonly updated_at: number | null;
-  readonly attributes: Record<string, string>;
-  readonly trackableRecordAttributes: readonly RecordAttribute[];
-}
-
-export interface RecordAttribute {
-  readonly key: string;
-  readonly value: string;
-  readonly type: "text" | "number" | "boolean";
 }
 
 export interface PureDataRecord {
@@ -50,12 +36,7 @@ export interface RecordValue {
   readonly value?: string;
   readonly createdAt: number | null;
   readonly updatedAt: number | null;
-  /**
-   * Only relevant for logs, which can store exact timestamp
-   */
   readonly timestamp: number;
-  readonly attributes: Record<string, string>;
-  readonly attributesOld: Record<string, RecordAttribute>;
 }
 
 /**
@@ -129,14 +110,6 @@ export const mapDataToRange = (
         createdAt: dataRecord.created_at,
         updatedAt: dataRecord.updated_at,
         recordId: dataRecord.record_id,
-        attributes: dataRecord.attributes,
-        attributesOld: dataRecord.trackableRecordAttributes.reduce(
-          (acc, a) => {
-            acc[a.key] = a;
-            return acc;
-          },
-          {} as Record<string, RecordAttribute>,
-        ),
       });
       dataPointer++;
     }
@@ -149,28 +122,6 @@ export const mapDataToRange = (
   }
 
   return result;
-};
-
-export const mapUnorderedData = (
-  data: readonly DataRecord[],
-): RecordValue[] => {
-  return data.map((v) => {
-    return {
-      value: v.value,
-      timestamp: convertDateFromDbToLocal(v.date).getTime(),
-      createdAt: v.created_at,
-      updatedAt: v.updated_at,
-      recordId: v.record_id,
-      attributes: v.attributes,
-      attributesOld: v.trackableRecordAttributes.reduce(
-        (acc, a) => {
-          acc[a.key] = a;
-          return acc;
-        },
-        {} as Record<string, RecordAttribute>,
-      ),
-    };
-  });
 };
 
 export const convertDateFromDbToLocal = (date: number | Date) => {
@@ -238,30 +189,6 @@ export class NumberProgressMapper {
   }
 }
 
-export class TagsValuesMapper {
-  values: Set<string>;
-  prepared: Fuzzysort.Prepared[];
-
-  constructor(values: string[]) {
-    this.values = new Set(values);
-    this.prepared = values.map((v) => fuzzysort.prepare(v));
-  }
-
-  getSuggestions(value: string) {
-    return fuzzysort
-      .go(value, this.prepared, {
-        threshold: 0.3,
-        all: true,
-      })
-      .map((v) => v.target);
-  }
-
-  addAndReturnArray(value: string) {
-    if (this.values.has(value)) return Array.from(this.values);
-    return [...Array.from(this.values), value];
-  }
-}
-
 interface Group {
   readonly group: string;
 }
@@ -293,13 +220,4 @@ export const sortTrackableList = <
   });
 
   return newList;
-};
-
-export const getTagStyleHashed = (v: string, theme: string) => {
-  const c = stringToColorHSL(v);
-
-  const cc =
-    theme === "dark" ? findClosestDarkmode(c) : findClosestLightmode(c);
-
-  return `hsl(${cc.h}, ${cc.s}%, ${cc.l}%)`;
 };
