@@ -2,12 +2,11 @@ import { useZero } from "@rocicorp/zero/react";
 import { HeartIcon } from "lucide-react";
 import { m } from "motion/react";
 
-import { mutators } from "@tyl/db/mutators";
-
 import type { ButtonVariants } from "~/@shad/components/button";
 import type { TrackableListItem } from "~/utils/useZ";
 import { Button } from "~/@shad/components/button";
 import { useZ } from "~/utils/useZ";
+import { mutators } from "@tyl/db/server/zero-mutators";
 
 export const FavoriteButton = ({
   variant = "ghost",

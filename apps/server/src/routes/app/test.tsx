@@ -21,7 +21,7 @@ import {
   trackableFlags,
   trackableGroup,
   trackableRecord,
-} from "@tyl/db/schema-powersync";
+} from "@tyl/db/client/schema-powersync";
 
 import { Button } from "~/@shad/components/button";
 import {

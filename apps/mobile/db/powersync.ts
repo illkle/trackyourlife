@@ -10,7 +10,7 @@ import {
 import {
   PowersyncDrizzleSchema,
   PowersyncSchema,
-} from "@tyl/db/schema-powersync";
+} from "@tyl/db/client/schema-powersync";
 
 // Create the factory
 const opSqlite = new OPSqliteOpenFactory({

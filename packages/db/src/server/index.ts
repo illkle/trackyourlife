@@ -4,8 +4,8 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { migrate } from "drizzle-orm/node-postgres/migrator";
 import PG from "pg";
 
+import { schema as schemaZero } from "../client/zero-schema";
 import * as schemaDrizzle from "./schema";
-import { schema as schemaZero } from "./zero-schema";
 
 export * from "drizzle-orm/sql";
 export { alias } from "drizzle-orm/pg-core";

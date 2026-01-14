@@ -5,7 +5,7 @@ import {
   ToggleRight,
 } from "lucide-react";
 
-import type { DbTrackableSelect } from "@tyl/db/schema";
+import type { DbTrackableSelect } from "@tyl/db/server/schema";
 
 export const TrackableIconsMap: Record<
   DbTrackableSelect["type"],

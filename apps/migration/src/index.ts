@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import { migrateDb } from "@tyl/db";
+import { migrateDb } from "@tyl/db/server/index";
 
 const dir =
   process.env.MIGRATE === "DEV" ? "../../packages/db/drizzle" : "./drizzle";

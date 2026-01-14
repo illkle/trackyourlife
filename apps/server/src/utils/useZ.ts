@@ -2,18 +2,12 @@
 import type { Row } from "@rocicorp/zero";
 import { useCallback, useMemo } from "react";
 import { useQuery, useZero } from "@rocicorp/zero/react";
-import {
-  addMonths,
-  addYears,
-  endOfDay,
-  startOfDay,
-  subMonths,
-} from "date-fns";
+import { addMonths, addYears, endOfDay, startOfDay, subMonths } from "date-fns";
 import { v4 as uuidv4 } from "uuid";
 
-import type { Schema } from "@tyl/db/zero-schema";
-import { mutators } from "@tyl/db/mutators";
-import { queries } from "@tyl/db/queries";
+import type { Schema } from "@tyl/db/client/zero-schema";
+import { mutators } from "@tyl/db/server/zero-mutators";
+import { queries } from "@tyl/db/server/zero-queries";
 import { convertDateFromLocalToDb } from "@tyl/helpers/trackables";
 
 import { useSessionAuthed } from "~/utils/useSessionInfo";

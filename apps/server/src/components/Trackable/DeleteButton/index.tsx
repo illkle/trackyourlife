@@ -2,8 +2,6 @@ import { useZero } from "@rocicorp/zero/react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
 
-import { mutators } from "@tyl/db/mutators";
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,6 +13,7 @@ import {
   AlertDialogTitle,
 } from "~/@shad/components/alert-dialog";
 import { useZ } from "~/utils/useZ";
+import { mutators } from "@tyl/db/server/zero-mutators";
 
 const DeleteButton = ({
   id,

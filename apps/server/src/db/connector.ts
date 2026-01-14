@@ -3,7 +3,7 @@ import {
   PowerSyncBackendConnector,
 } from "@powersync/web";
 
-import { SyncEntry } from "@tyl/db/powersync-apply";
+import { SyncEntry } from "@tyl/db/server/powersync-apply";
 
 import { authClient } from "~/auth/client";
 

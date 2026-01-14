@@ -1,8 +1,7 @@
 import { RadioGroupItem } from "@radix-ui/react-radio-group";
 import { cn } from "@shad/lib/utils";
 
-import type { ITrackableZero } from "@tyl/db/zero-schema";
-
+import type { ITrackableZero } from "@tyl/db/client/zero-schema";
 import {
   CardDescription,
   CardHeader,
@@ -78,7 +77,6 @@ export const TrackableTypeSelector = ({
           </CardHeader>
         </Card>
       </RadioGroupItem>
-
     </RadioGroup>
   );
 };

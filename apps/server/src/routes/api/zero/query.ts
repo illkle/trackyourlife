@@ -2,10 +2,9 @@ import { mustGetQuery } from "@rocicorp/zero";
 import { handleQueryRequest } from "@rocicorp/zero/server";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { queries } from "@tyl/db/queries";
-import { schema } from "@tyl/db/zero-schema";
-
 import { auth } from "~/auth/server";
+import { schema } from "@tyl/db/client/zero-schema";
+import { queries } from "@tyl/db/server/zero-queries";
 
 export const Route = createFileRoute("/api/zero/query")({
   server: {

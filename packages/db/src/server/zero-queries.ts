@@ -1,7 +1,7 @@
 import { defineQueries, defineQuery } from "@rocicorp/zero";
 import { z } from "zod";
 
-import { zql } from "./zero-schema";
+import { zql } from "../client/zero-schema";
 
 export const queries = defineQueries({
   trackablesList: defineQuery(z.object(), ({ ctx }) =>

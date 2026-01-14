@@ -1,7 +1,7 @@
 import { parse } from "date-fns";
 import { z } from "zod/v4";
 
-import type { ITrackableFlagsZero } from "@tyl/db/zero-schema";
+import type { ITrackableFlagsZero } from "@tyl/db/client/zero-schema";
 import {
   ZColorValue,
   ZNumberColorCoding,

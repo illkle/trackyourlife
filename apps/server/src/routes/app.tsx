@@ -4,15 +4,14 @@ import { ZeroProvider } from "@rocicorp/zero/react";
 import { cn } from "@shad/lib/utils";
 import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
 
-import { mutators } from "@tyl/db/mutators";
-import { schema } from "@tyl/db/zero-schema";
-
 import { SidebarProvider } from "~/@shad/components/sidebar";
 import Header, { HeaderLogo } from "~/components/Layout/Header";
 import { AppSidebar, SidebarToggle } from "~/components/Layout/Sidebar";
 import { EditorModalV2 } from "~/components/Modal/EditorModalV2";
 import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { usePreloadCore } from "~/utils/useZ";
+import { schema } from "@tyl/db/client/zero-schema";
+import { mutators } from "@tyl/db/server/zero-mutators";
 
 export const Route = createFileRoute("/app")({
   component: AppComponent,

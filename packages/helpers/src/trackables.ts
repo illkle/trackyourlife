@@ -9,8 +9,8 @@ import type {
   INumberColorCoding,
   INumberProgressBounds,
 } from "@tyl/db/jsonValidators";
-import type { DbTrackableSelect } from "@tyl/db/schema";
 
+import type { DbTrackableSelect } from "../../db/dist/server/schema";
 import { range } from "./animation";
 import { presetsMap } from "./colorPresets";
 import { getColorAtPosition } from "./colorTools";

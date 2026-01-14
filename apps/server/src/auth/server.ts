@@ -3,7 +3,7 @@ import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { apiKey, jwt } from "better-auth/plugins";
 
-import { db } from "@tyl/db";
+import { db } from "@tyl/db/server";
 
 import {
   sendChangeVerificationEmail,

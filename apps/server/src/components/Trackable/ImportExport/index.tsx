@@ -4,8 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Check } from "lucide-react";
 
-import type { ITrackableRecordZero } from "@tyl/db/zero-schema";
-
+import type { ITrackableRecordZero } from "@tyl/db/client/zero-schema";
 import { Button } from "~/@shad/components/button";
 import { Label } from "~/@shad/components/label";
 import { Separator } from "~/@shad/components/separator";

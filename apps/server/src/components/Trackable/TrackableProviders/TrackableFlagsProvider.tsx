@@ -11,10 +11,7 @@ import {
 import { useZero } from "@rocicorp/zero/react";
 import { Store, useStore } from "@tanstack/react-store";
 
-import type { ITrackableFlagsZero } from "@tyl/db/zero-schema";
-import { mutators } from "@tyl/db/mutators";
-import { queries } from "@tyl/db/queries";
-
+import type { ITrackableFlagsZero } from "@tyl/db/client/zero-schema";
 import type {
   ITrackableFlagKey,
   ITrackableFlagsKV,
@@ -26,6 +23,8 @@ import {
   FlagDefaults,
   FlagsValidators,
 } from "~/components/Trackable/TrackableProviders/trackableFlags";
+import { mutators } from "@tyl/db/server/zero-mutators";
+import { queries } from "@tyl/db/server/zero-queries";
 
 /*
  * This provides a kv store that is used for trackable settings.

@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { createContext, useContext } from "react";
 
-import type { ITrackableZero } from "@tyl/db/zero-schema";
+import type { ITrackableZero } from "@tyl/db/client/zero-schema";
 
 interface ITrackableContext {
   id: ITrackableZero["id"];

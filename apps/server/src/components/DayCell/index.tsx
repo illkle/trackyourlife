@@ -2,16 +2,13 @@ import { createContext, useContext } from "react";
 import { cn } from "@shad/lib/utils";
 import { format, isAfter, isBefore, isSameDay } from "date-fns";
 
-import type { DbTrackableSelect } from "@tyl/db/schema";
 import type { PureDataRecord } from "@tyl/helpers/trackables";
 
+import type { DbTrackableSelect } from "@tyl/db/server/schema";
 import { DayCellTextPopup } from "~/components/DayCell/DayCellTextPopup";
 import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
-import {
-  useRecordDeleteHandler,
-  useRecordUpdateHandler,
-} from "~/utils/useZ";
+import { useRecordDeleteHandler, useRecordUpdateHandler } from "~/utils/useZ";
 import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
 
@@ -143,7 +140,7 @@ export const LabelInside = () => {
   return (
     <div
       className={cn(
-        "text-muted-foreground absolute top-0 left-1 z-10 text-base select-none",
+        "text-muted-foreground absolute left-1 top-0 z-10 select-none text-base",
         isToday ? "font-normal underline" : "font-light",
         "text-xs sm:text-base",
       )}

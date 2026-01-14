@@ -3,16 +3,16 @@ import { useZero } from "@rocicorp/zero/react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { v4 as uuidv4 } from "uuid";
 
-import type { DbTrackableInsert } from "@tyl/db/schema";
-import type { ITrackableZeroInsert } from "@tyl/db/zero-schema";
-import { mutators } from "@tyl/db/mutators";
 import { cloneDeep } from "@tyl/helpers";
 
+import type { ITrackableZeroInsert } from "@tyl/db/client/zero-schema";
+import type { DbTrackableInsert } from "@tyl/db/server/schema";
 import { Button } from "~/@shad/components/button";
 import { Input } from "~/@shad/components/input";
 import { TrackableTypeSelector } from "~/components/Trackable/Settings/trackableTypeSelector";
 import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { useZ } from "~/utils/useZ";
+import { mutators } from "@tyl/db/server/zero-mutators";
 
 export const Route = createFileRoute("/app/create")({
   component: RouteComponent,

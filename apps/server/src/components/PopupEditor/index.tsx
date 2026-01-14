@@ -1,10 +1,10 @@
 import { formatDate, isSameDay, isToday } from "date-fns";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
-import type { ITrackableZero } from "@tyl/db/zero-schema";
 import type { PureDataRecord } from "@tyl/helpers/trackables";
 import { mapDataToRange } from "@tyl/helpers/trackables";
 
+import type { ITrackableZero } from "@tyl/db/client/zero-schema";
 import { Button } from "~/@shad/components/button";
 import {
   editorModalNextDay,
