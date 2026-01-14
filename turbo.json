@@ -65,7 +65,6 @@
     "TEST_URL",
     "SITE",
     "BETTER_AUTH_SECRET",
-    "BETTER_AUTH_URL",
     "ZERO_UPSTREAM_DB",
     "ZERO_CVR_DB",
     "ZERO_CHANGE_DB",

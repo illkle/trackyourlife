@@ -40,8 +40,8 @@ RUN pnpm install --frozen-lockfile
 COPY --from=builder /app/out/full/ .
 
 # This val is included in client build, therefore we need to pass as ARG
-ARG VITE_ZERO_DOMAIN
-ENV VITE_ZERO_DOMAIN=$VITE_ZERO_DOMAIN
+ARG VITE_DEPLOY_DOMAIN
+ENV VITE_DEPLOY_DOMAIN=$VITE_DEPLOY_DOMAIN
 RUN pnpm turbo run build --filter=@tyl/server...
 
 # ---- Create Runner and Start ----

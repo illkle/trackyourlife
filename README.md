@@ -4,35 +4,21 @@ App to track stuff. It started as a self-hosted habit\mood\stats tracker and I w
 
 ![TrackYourLife screenshot](tooling/images/image.png)
 
-### Current state
-
-updated: 30 August 2025
-
-No interest in developing this project currently. Though it's usable and available at [tyl.illkle.com](https://tyl.illkle.com/) (use at your own risk: data loss may happen)
-
 ### Development
 
-1. Start postgres
-
 ```
-docker run -d --name postgres-tyl-dev \
-  -e POSTGRES_PASSWORD="password" \
-  -p 5432:5432 \
-  postgres:16-alpine \
-  postgres -c wal_level=logical
-```
-
-```
-docker build -f docker/powersync.Dockerfile -t powersync . \
-  && docker run \
-    --name powersync-tyl-dev \
-    --env-file .env \
-    -p 8080:80 \
-    powersync
+PS_VITE_DEPLOY_DOMAIN=http://localhost:3000
+PS_AUTH_DOMAIN=http://host.docker.internal:3000/api/auth/jwks
+VITE_DEPLOY_DOMAIN=http://localhost:3000
+VITE_POWERSYNC_DOMAIN=http://localhost:8080
+BETTER_AUTH_SECRET=wNln7kaAaeglqPAfthf4YFzuUyqDWTOZL
+MIGRATE=DEV
+DATABASE_URL=postgres://postgres:password@localhost:5432/postgres
+PS_DATABASE_URL=postgres://postgres:password@host.docker.internal:5432/postgres
 ```
 
-2. Copy `.env.example` to `.env`
-3. Create 'zeroTemp' folder(right here)
-4. Start zero `pnpm run dev:zero-cache`
-   (if you are getting `Error: Could not locate the bindings file` run `pnpm approve-builds` and approve all)
-5. Start dev `pnpm run dev`
+```
+docker compose -f docker/docker-compose-dev.yml up -d
+```
+
+`pnpm run dev`
