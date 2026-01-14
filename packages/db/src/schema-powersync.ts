@@ -1,22 +1,22 @@
 // * This is schema for local sqlite db that powersync replicated to */
 import { DrizzleAppSchema } from "@powersync/drizzle-driver";
-import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text } from "drizzle-orm/sqlite-core";
 
-const ps_userFlags = sqliteTable("TYL_userFlags", {
+export const userFlags = sqliteTable("TYL_userFlags", {
   id: text("id").primaryKey(),
   user_id: text("user_id").notNull(),
   key: text("key").notNull(),
   value: text("value").notNull(),
 });
 
-const ps_trackable = sqliteTable("TYL_trackable", {
+export const trackable = sqliteTable("TYL_trackable", {
   id: text("id").primaryKey(),
   user_id: text("user_id").notNull(),
   type: text("type").notNull(),
   name: text("name").notNull(),
 });
 
-const ps_trackableFlags = sqliteTable("TYL_trackableFlags", {
+export const trackableFlags = sqliteTable("TYL_trackableFlags", {
   id: text("id").primaryKey(),
   user_id: text("user_id").notNull(),
   trackable_id: text("trackable_id").notNull(),
@@ -24,7 +24,7 @@ const ps_trackableFlags = sqliteTable("TYL_trackableFlags", {
   value: text("value").notNull(),
 });
 
-const ps_trackableRecord = sqliteTable("TYL_trackableRecord", {
+export const trackableRecord = sqliteTable("TYL_trackableRecord", {
   id: text("id").primaryKey(),
   user_id: text("user_id").notNull(),
   date: text("date").notNull(),
@@ -36,7 +36,7 @@ const ps_trackableRecord = sqliteTable("TYL_trackableRecord", {
   external_key: text("external_key").notNull(),
 });
 
-const ps_trackableGroup = sqliteTable("TYL_trackableGroup", {
+export const trackableGroup = sqliteTable("TYL_trackableGroup", {
   id: text("id").primaryKey(),
   user_id: text("user_id").notNull(),
   trackable_id: text("trackable_id").notNull(),
@@ -44,11 +44,11 @@ const ps_trackableGroup = sqliteTable("TYL_trackableGroup", {
 });
 
 export const PowersyncDrizzleSchema = {
-  trackable: ps_trackable,
-  trackableFlags: ps_trackableFlags,
-  trackableRecord: ps_trackableRecord,
-  trackableGroup: ps_trackableGroup,
-  userFlags: ps_userFlags,
+  trackable: trackable,
+  trackableFlags: trackableFlags,
+  trackableRecord: trackableRecord,
+  trackableGroup: trackableGroup,
+  userFlags: userFlags,
 };
 
 export const PowersyncSchema = new DrizzleAppSchema(PowersyncDrizzleSchema);
