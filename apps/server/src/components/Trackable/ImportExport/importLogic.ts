@@ -4,7 +4,7 @@ import { z } from "zod/v4";
 
 import { convertDateFromDbToLocal } from "@tyl/helpers/trackables";
 
-import type { ITrackableZero } from "@tyl/db/client/zero-schema";
+import type { TrackableRow } from "@tyl/db/client/powersync/types";
 import { and, between, db, eq } from "@tyl/db/server";
 import { trackable, trackable_record } from "@tyl/db/server/schema";
 
@@ -162,7 +162,7 @@ const getMapOfExistingRecords = async (
   return mapOfExistingRecords;
 };
 
-const isValueOfExpectedType = (value: string, type: ITrackableZero["type"]) => {
+const isValueOfExpectedType = (value: string, type: TrackableRow["type"]) => {
   if (type === "boolean") {
     return value === "true" || value === "false" || value.length === 0;
   }
@@ -176,7 +176,7 @@ const isValueOfExpectedType = (value: string, type: ITrackableZero["type"]) => {
 
 export const analyzeData = (
   data: IImportJson[],
-  type: ITrackableZero["type"],
+  type: TrackableRow["type"],
 ) => {
   const itemsCount = data.length;
 

@@ -1,18 +1,16 @@
 import { useRef, useState } from "react";
-import { useZero } from "@rocicorp/zero/react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { v4 as uuidv4 } from "uuid";
 
+import type { DbTrackableInsert } from "@tyl/db/server/schema";
+import { usePowersyncDrizzle } from "@tyl/db/client/powersync/context";
+import { insertTrackable } from "@tyl/db/client/powersync/trackable";
 import { cloneDeep } from "@tyl/helpers";
 
-import type { ITrackableZeroInsert } from "@tyl/db/client/zero-schema";
-import type { DbTrackableInsert } from "@tyl/db/server/schema";
 import { Button } from "~/@shad/components/button";
 import { Input } from "~/@shad/components/input";
 import { TrackableTypeSelector } from "~/components/Trackable/Settings/trackableTypeSelector";
-import { useSessionAuthed } from "~/utils/useSessionInfo";
-import { useZ } from "~/utils/useZ";
-import { mutators } from "@tyl/db/server/zero-mutators";
+import { useUser } from "~/db/powersync-provider";
 
 export const Route = createFileRoute("/app/create")({
   component: RouteComponent,
@@ -20,33 +18,35 @@ export const Route = createFileRoute("/app/create")({
 
 function RouteComponent() {
   const router = useRouter();
-  const zero = useZero();
+  const db = usePowersyncDrizzle();
+  const { userId } = useUser();
 
-  const [newOne, setNewOne] = useState<
-    Omit<ITrackableZeroInsert, "id" | "user_id">
-  >({
+  const [newOne, setNewOne] = useState<{
+    type: "boolean" | "number" | "text";
+    name: string;
+  }>({
     type: "boolean",
     name: "",
   });
 
   const nameRef = useRef("");
 
-  const setType = (type: DbTrackableInsert["type"]) => {
-    // This assumes that all settings fields are optional
-    const update = cloneDeep(newOne);
-    update.type = type;
-    setNewOne(update);
+  const setType = (type: DbTrackableInsert["type"] | string) => {
+    if (type === "boolean" || type === "number" || type === "text") {
+      const update = cloneDeep(newOne);
+      update.type = type;
+      setNewOne(update);
+    }
   };
 
   const createTrackable = async () => {
     const id = uuidv4();
-    await zero.mutate(
-      mutators.trackable.insert({
-        id,
-        ...newOne,
-        name: nameRef.current || "",
-      }),
-    );
+    await insertTrackable(db, {
+      id,
+      user_id: userId,
+      name: nameRef.current || "",
+      type: newOne.type,
+    });
 
     await router.navigate({
       to: `/app/trackables/${id}/settings`,

@@ -4,7 +4,7 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import type { PureDataRecord } from "@tyl/helpers/trackables";
 import { mapDataToRange } from "@tyl/helpers/trackables";
 
-import type { ITrackableZero } from "@tyl/db/client/zero-schema";
+import type { TrackableRow } from "@tyl/db/client/powersync/types";
 import { Button } from "~/@shad/components/button";
 import {
   editorModalNextDay,
@@ -41,7 +41,16 @@ export const PopupEditor = ({
 
   if (!data) return null;
 
-  const mapped = mapDataToRange(date, date, data.trackableRecord);
+  // Convert TrackableRecordRow[] to DataRecord[] by converting ISO string dates to timestamps
+  const dataRecords = data.trackableRecord.map((record) => ({
+    id: record.id,
+    value: record.value,
+    date: new Date(record.date).getTime(),
+    created_at: record.created_at,
+    updated_at: record.updated_at,
+  }));
+
+  const mapped = mapDataToRange(date, date, dataRecords);
 
   if (mapped.length !== 1) {
     throw new Error(
@@ -100,7 +109,7 @@ const EditorTitle = ({ date }: { date: Date }) => {
 };
 
 const components: Record<
-  ITrackableZero["type"],
+  TrackableRow["type"],
   React.ComponentType<PopupEditorProps> | null
 > = {
   text: TextPopupEditor,
@@ -111,7 +120,7 @@ const components: Record<
 const EditorFactory = ({
   type,
   ...props
-}: PopupEditorProps & { type: ITrackableZero["type"] }) => {
+}: PopupEditorProps & { type: TrackableRow["type"] }) => {
   const SpecificEditor = components[type];
 
   if (!SpecificEditor) {

@@ -2,9 +2,9 @@ import { createContext, useContext } from "react";
 import { cn } from "@shad/lib/utils";
 import { format, isAfter, isBefore, isSameDay } from "date-fns";
 
+import type { DbTrackableSelect } from "@tyl/db/server/schema";
 import type { PureDataRecord } from "@tyl/helpers/trackables";
 
-import type { DbTrackableSelect } from "@tyl/db/server/schema";
 import { DayCellTextPopup } from "~/components/DayCell/DayCellTextPopup";
 import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
@@ -85,7 +85,7 @@ export const DayCellRouter = ({
 export const DayCellTypeRouter = ({
   type,
 }: {
-  type: DbTrackableSelect["type"];
+  type: DbTrackableSelect["type"] | string;
 }) => {
   const { isOutOfRange } = useDayCellContext();
 

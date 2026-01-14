@@ -40,9 +40,11 @@
   },
   "dependencies": {
     "@powersync/common": "catalog:",
+    "@powersync/drizzle-driver": "catalog:",
     "@rocicorp/zero": "catalog:",
     "drizzle-orm": "catalog:",
     "drizzle-zod": "^0.8.3",
+    "uuid": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {

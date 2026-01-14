@@ -1,12 +1,13 @@
-import { useZero } from "@rocicorp/zero/react";
 import { HeartIcon } from "lucide-react";
 import { m } from "motion/react";
+
+import { usePowersyncDrizzle } from "@tyl/db/client/powersync/context";
+import { deleteGroup, insertGroup } from "@tyl/db/client/powersync/trackable-group";
 
 import type { ButtonVariants } from "~/@shad/components/button";
 import type { TrackableListItem } from "~/utils/useZ";
 import { Button } from "~/@shad/components/button";
-import { useZ } from "~/utils/useZ";
-import { mutators } from "@tyl/db/server/zero-mutators";
+import { useUser } from "~/db/powersync-provider";
 
 export const FavoriteButton = ({
   variant = "ghost",
@@ -17,27 +18,26 @@ export const FavoriteButton = ({
   onlyIcon?: boolean;
   trackable: TrackableListItem;
 }) => {
+  const db = usePowersyncDrizzle();
+  const { userId } = useUser();
+
   const inFavs = trackable.trackableGroup.some(
     (tg) => tg.group === "favorites",
   );
 
-  const zero = useZero();
-
   const favHandler = async () => {
     if (inFavs) {
-      await zero.mutate(
-        mutators.trackableGroup.delete({
-          trackable_id: trackable.id,
-          group: "favorites",
-        }),
-      );
+      await deleteGroup(db, {
+        user_id: userId,
+        trackable_id: trackable.id,
+        group: "favorites",
+      });
     } else {
-      await zero.mutate(
-        mutators.trackableGroup.insert({
-          trackable_id: trackable.id,
-          group: "favorites",
-        }),
-      );
+      await insertGroup(db, {
+        user_id: userId,
+        trackable_id: trackable.id,
+        group: "favorites",
+      });
     }
   };
 

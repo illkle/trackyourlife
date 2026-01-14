@@ -1,7 +1,7 @@
 import { RadioGroupItem } from "@radix-ui/react-radio-group";
 import { cn } from "@shad/lib/utils";
 
-import type { ITrackableZero } from "@tyl/db/client/zero-schema";
+import type { TrackableRow } from "@tyl/db/client/powersync/types";
 import {
   CardDescription,
   CardHeader,
@@ -15,8 +15,8 @@ export const TrackableTypeSelector = ({
   type,
   setType,
 }: {
-  type: ITrackableZero["type"];
-  setType: (type: ITrackableZero["type"]) => void;
+  type: TrackableRow["type"];
+  setType: (type: TrackableRow["type"]) => void;
 }) => {
   const commonClasses =
     "border-2 transition-colors font-normal duration-200 enabled:hover:border-muted-foreground data-[state=checked]:bg-accent";
@@ -24,7 +24,7 @@ export const TrackableTypeSelector = ({
   return (
     <RadioGroup
       value={type}
-      onValueChange={(v) => setType(v as ITrackableZero["type"])}
+      onValueChange={(v) => setType(v as TrackableRow["type"])}
       className="grid grid-cols-1 items-stretch gap-2 sm:grid-cols-6"
     >
       <RadioGroupItem

@@ -1,6 +1,8 @@
-import { useZero } from "@rocicorp/zero/react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "@tanstack/react-router";
+
+import { usePowersyncDrizzle } from "@tyl/db/client/powersync/context";
+import { deleteTrackable } from "@tyl/db/client/powersync/trackable";
 
 import {
   AlertDialog,
@@ -12,8 +14,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~/@shad/components/alert-dialog";
-import { useZ } from "~/utils/useZ";
-import { mutators } from "@tyl/db/server/zero-mutators";
 
 const DeleteButton = ({
   id,
@@ -24,11 +24,12 @@ const DeleteButton = ({
   children?: React.ReactNode;
 }) => {
   const router = useRouter();
-  const zero = useZero();
+  const db = usePowersyncDrizzle();
 
   const mutation = useMutation({
-    mutationFn: async (id: string) =>
-      await zero.mutate(mutators.trackable.delete({ id })),
+    mutationFn: async (trackableId: string) => {
+      await deleteTrackable(db, trackableId);
+    },
     onSuccess: async () => {
       await router.navigate({ to: "/app/trackables" });
     },

@@ -97,13 +97,22 @@ export const MonthFetcher = ({
   const firstDayDate = startOfMonth(date).getTime();
   const lastDayDate = endOfMonth(date).getTime();
 
-  const [data] = useZeroTrackableData({
+  const { data } = useZeroTrackableData({
     id,
     firstDay: firstDayDate,
     lastDay: lastDayDate,
   });
 
-  const mappedData = mapDataToRange(firstDayDate, lastDayDate, data);
+  // Convert TrackableRecordRow[] to DataRecord[] by converting ISO string dates to timestamps
+  const dataRecords = (data ?? []).map((record) => ({
+    id: record.id,
+    value: record.value,
+    date: new Date(record.date).getTime(),
+    created_at: record.created_at,
+    updated_at: record.updated_at,
+  }));
+
+  const mappedData = mapDataToRange(firstDayDate, lastDayDate, dataRecords);
 
   if (viewType === "list") {
     return (

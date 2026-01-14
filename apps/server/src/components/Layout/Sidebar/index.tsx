@@ -64,9 +64,12 @@ const TrackablesMiniList = () => {
                 })}
               >
                 <div className="flex w-full items-center justify-between gap-2">
-                  <div className="flex items-center justify-baseline gap-2 truncate">
+                  <div className="justify-baseline flex items-center gap-2 truncate">
                     <div className="opacity-70">
-                      <RenderTrackableIcon size={16} type={tr.type} />
+                      <RenderTrackableIcon
+                        size={16}
+                        type={tr.type as "number" | "boolean" | "text"}
+                      />
                     </div>
                     <div>{tr.name || "Unnamed"}</div>
                   </div>

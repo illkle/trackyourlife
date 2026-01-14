@@ -1,4 +1,3 @@
-import { useZero } from "@rocicorp/zero/react";
 import {
   createFileRoute,
   Link,
@@ -16,6 +15,9 @@ import {
   TrashIcon,
 } from "lucide-react";
 import { z } from "zod/v4";
+
+import { usePowersyncDrizzle } from "@tyl/db/client/powersync/context";
+import { deleteGroup, insertGroup } from "@tyl/db/client/powersync/trackable-group";
 
 import type { ITrackableFlagType } from "~/components/Trackable/TrackableProviders/trackableFlags";
 import { AlertDialogTrigger } from "~/@shad/components/alert-dialog";
@@ -44,8 +46,8 @@ import {
 import TrackableProvider, {
   useTrackableMeta,
 } from "~/components/Trackable/TrackableProviders/TrackableProvider";
-import { useZ, useZeroTrackable } from "~/utils/useZ";
-import { mutators } from "@tyl/db/server/zero-mutators";
+import { useUser } from "~/db/powersync-provider";
+import { useZeroTrackable } from "~/utils/useZ";
 
 const paramsSchema = z.object({
   month: z
@@ -63,13 +65,7 @@ const paramsSchema = z.object({
     .default(new Date().getFullYear()),
 });
 
-export const Route = createFileRoute("/app/trackables/$id")({
-  component: RouteComponent,
-  validateSearch: paramsSchema,
-  loaderDeps: ({ search: { month, year } }) => ({ month, year }),
-});
-
-function RouteComponent() {
+const RouteComponent = () => {
   const params = Route.useParams();
   const loc = useLocation();
 
@@ -131,10 +127,11 @@ function RouteComponent() {
       </TrackableProvider>
     </TrackableFlagsProvider>
   );
-}
+};
 
 const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
-  const zero = useZero();
+  const db = usePowersyncDrizzle();
+  const { userId } = useUser();
 
   const { id } = useTrackableMeta();
   const setFlag = useSetTrackableFlag();
@@ -145,6 +142,22 @@ const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
     style: ITrackableFlagType<"AnyMonthViewType">,
   ) => {
     await setFlag(id, "AnyMonthViewType", style);
+  };
+
+  const handleArchiveToggle = async () => {
+    if (isArchived) {
+      await deleteGroup(db, {
+        user_id: userId,
+        trackable_id: id,
+        group: "archived",
+      });
+    } else {
+      await insertGroup(db, {
+        user_id: userId,
+        trackable_id: id,
+        group: "archived",
+      });
+    }
   };
 
   return (
@@ -191,23 +204,7 @@ const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
 
           <DropdownMenuItem
             className="cursor-pointer"
-            onClick={() => {
-              if (isArchived) {
-                void zero.mutate(
-                  mutators.trackableGroup.delete({
-                    trackable_id: id,
-                    group: "archived",
-                  }),
-                );
-              } else {
-                void zero.mutate(
-                  mutators.trackableGroup.upsert({
-                    trackable_id: id,
-                    group: "archived",
-                  }),
-                );
-              }
-            }}
+            onClick={() => void handleArchiveToggle()}
           >
             {isArchived ? (
               <>
@@ -230,3 +227,9 @@ const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
     </DeleteButton>
   );
 };
+
+export const Route = createFileRoute("/app/trackables/$id")({
+  component: RouteComponent,
+  validateSearch: paramsSchema,
+  loaderDeps: ({ search: { month, year } }) => ({ month, year }),
+});

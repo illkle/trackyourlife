@@ -1,12 +1,12 @@
 import type { ReactNode } from "react";
 import { createContext, useContext } from "react";
 
-import type { ITrackableZero } from "@tyl/db/client/zero-schema";
+import type { TrackableRow } from "@tyl/db/client/powersync/types";
 
 interface ITrackableContext {
-  id: ITrackableZero["id"];
-  type: ITrackableZero["type"];
-  name: ITrackableZero["name"];
+  id: TrackableRow["id"];
+  type: TrackableRow["type"];
+  name: TrackableRow["name"];
 }
 
 export const TrackableContext = createContext<ITrackableContext | null>(null);
@@ -15,7 +15,7 @@ const TrackableProvider = ({
   trackable,
   children,
 }: {
-  trackable: Pick<ITrackableZero, "id" | "type" | "name">;
+  trackable: Pick<TrackableRow, "id" | "type" | "name">;
   children: ReactNode;
 }) => {
   // Todo: memo

@@ -1,5 +1,8 @@
 // * This is schema for local sqlite db that powersync replicated to */
-import { DrizzleAppSchema } from "@powersync/drizzle-driver";
+import {
+  DrizzleAppSchema,
+  PowerSyncSQLiteDatabase,
+} from "@powersync/drizzle-driver";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const userFlags = sqliteTable("TYL_userFlags", {
@@ -53,4 +56,10 @@ export const PowersyncDrizzleSchema = {
 
 export const PowersyncSchema = new DrizzleAppSchema(PowersyncDrizzleSchema);
 
-export type PowersyncDatabase = (typeof PowersyncSchema)["types"];
+export type TPowersyncDatabase = (typeof PowersyncSchema)["types"];
+
+export type TPowersyncDrizzleDB = PowerSyncSQLiteDatabase<
+  typeof PowersyncDrizzleSchema
+>;
+
+export type DbTrackableFlagsUpsert = (typeof trackableFlags.$inferInsert)

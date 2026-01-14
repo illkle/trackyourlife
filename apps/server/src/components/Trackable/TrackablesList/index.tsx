@@ -61,10 +61,20 @@ const TrackablesList = ({
 
   if (data.length === 0) return <EmptyList />;
 
-  const mappedData = sorted.map((v) => ({
-    trackable: v,
-    data: mapDataToRange(firstDay, lastDay, v.trackableRecord),
-  }));
+  // Convert TrackableRecordRow[] to DataRecord[] by converting ISO string dates to timestamps
+  const mappedData = sorted.map((v) => {
+    const dataRecords = v.trackableRecord.map((record) => ({
+      id: record.id,
+      value: record.value,
+      date: new Date(record.date).getTime(),
+      created_at: record.created_at,
+      updated_at: record.updated_at,
+    }));
+    return {
+      trackable: v,
+      data: mapDataToRange(firstDay, lastDay, dataRecords),
+    };
+  });
 
   return (
     <>
@@ -105,10 +115,20 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
     ),
   );
 
-  const mappedData = sorted.map((v) => ({
-    trackable: v,
-    data: mapDataToRange(firstDay, lastDay, v.trackableRecord, "desc"),
-  }));
+  // Convert TrackableRecordRow[] to DataRecord[] by converting ISO string dates to timestamps
+  const mappedData = sorted.map((v) => {
+    const dataRecords = v.trackableRecord.map((record) => ({
+      id: record.id,
+      value: record.value,
+      date: new Date(record.date).getTime(),
+      created_at: record.created_at,
+      updated_at: record.updated_at,
+    }));
+    return {
+      trackable: v,
+      data: mapDataToRange(firstDay, lastDay, dataRecords, "desc"),
+    };
+  });
 
   if (data.length === 0) {
     if (info.type === "unknown") {

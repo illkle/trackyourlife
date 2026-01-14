@@ -5,26 +5,28 @@ import {
   useCallback,
   useEffect,
   useId,
-  useLayoutEffect,
+  useMemo,
   useState,
 } from "react";
-import { useZero } from "@rocicorp/zero/react";
+import { toCompilableQuery } from "@powersync/drizzle-driver";
+import { useQuery } from "@powersync/react";
 import { Store, useStore } from "@tanstack/react-store";
 
-import type { ITrackableFlagsZero } from "@tyl/db/client/zero-schema";
+import type { TrackableFlagsRow } from "@tyl/db/client/powersync/types";
+import { usePowersyncDrizzle } from "@tyl/db/client/powersync/context";
+import { upsertFlag } from "@tyl/db/client/powersync/trackable-flags";
+
 import type {
   ITrackableFlagKey,
   ITrackableFlagsKV,
   ITrackableFlagValue,
   ITrackableFlagValueInput,
 } from "~/components/Trackable/TrackableProviders/trackableFlags";
-import { Spinner } from "~/@shad/components/spinner";
 import {
   FlagDefaults,
   FlagsValidators,
 } from "~/components/Trackable/TrackableProviders/trackableFlags";
-import { mutators } from "@tyl/db/server/zero-mutators";
-import { queries } from "@tyl/db/server/zero-queries";
+import { useUser } from "~/db/powersync-provider";
 
 /*
  * This provides a kv store that is used for trackable settings.
@@ -38,9 +40,6 @@ import { queries } from "@tyl/db/server/zero-queries";
   Note that those functions are not typically used by components themselves.
   There is a TrackableProvider(nearby file) that wraps getFlag and setFlag and closes over id.
 */
-
-// TS 5.8 talks about improving some stuff with parameter return inference, maybe something can be refactored when it's released
-//https://devblogs.microsoft.com/typescript/announcing-typescript-5-8-beta/#a-note-on-limitations
 
 type GetFlagFunction = <K extends ITrackableFlagKey>(
   trackableId: string,
@@ -64,9 +63,9 @@ export const TrackableFlagsContext =
 type KeyStorage = Record<string, Partial<ITrackableFlagsKV>>;
 
 /*
- * Takes a list of flags(from zero query) and returns an object of flags
+ * Takes a list of flags and returns an object of flags
  */
-export const createFlagsObject = (flags: readonly ITrackableFlagsZero[]) => {
+export const createFlagsObject = (flags: readonly TrackableFlagsRow[]) => {
   const flagMap: KeyStorage = {};
 
   flags.forEach((flag) => {
@@ -75,7 +74,14 @@ export const createFlagsObject = (flags: readonly ITrackableFlagsZero[]) => {
     }
     const key = flag.key as ITrackableFlagKey;
     const validator = FlagsValidators[key];
-    const parsed = validator.safeParse(flag.value);
+    // PowerSync stores flag value as string, need to parse JSON
+    let valueToValidate: unknown;
+    try {
+      valueToValidate = JSON.parse(flag.value);
+    } catch {
+      valueToValidate = flag.value;
+    }
+    const parsed = validator.safeParse(valueToValidate);
     if (parsed.success) {
       flagMap[flag.trackable_id] ??= {};
       // @ts-expect-error - parsed.data is correctly typed for key, but TS can't verify
@@ -97,12 +103,25 @@ const TrackableFlagsProviderNonMemo = ({
   children: ReactNode;
   trackableIds?: string[];
 }) => {
-  const zero = useZero();
-
+  const db = usePowersyncDrizzle();
   const id = useId();
 
-  const [ready, setReady] = useState(false);
+  // Query all flags (PowerSync will sync only user's data based on sync rules)
+  const query = useMemo(
+    () => toCompilableQuery(db.query.trackableFlags.findMany()),
+    [db],
+  );
+  const { data: allFlags, isLoading } = useQuery(query);
 
+  // Filter flags if trackableIds provided
+  const flags = useMemo(() => {
+    if (!allFlags) return [];
+    if (!trackableIds || trackableIds.length === 0) return allFlags;
+    const idSet = new Set(trackableIds);
+    return allFlags.filter((f) => idSet.has(f.trackable_id));
+  }, [allFlags, trackableIds]);
+
+  // Update FlagStorage when flags change
   useEffect(() => {
     if (flagStorageLock === null) {
       flagStorageLock = id;
@@ -110,30 +129,16 @@ const TrackableFlagsProviderNonMemo = ({
       throw new Error("TrackableFlagsProvider can only be used once");
     }
 
-    const q = queries.flags({ ids: trackableIds ?? [] });
-    const m = zero.materialize(q);
-
-    FlagStorage.setState(() => createFlagsObject(m.data));
-    setReady(true);
-
-    m.addListener((flagsUpdate) => {
-      // Casting to unknown to avoid type instanstiation is too deep error
-      const f = createFlagsObject(
-        flagsUpdate as unknown as ITrackableFlagsZero[],
-      );
-
-      FlagStorage.setState(() => f);
-    });
+    FlagStorage.setState(() => createFlagsObject(flags));
 
     return () => {
       if (flagStorageLock === id) {
         flagStorageLock = null;
       }
-      m.destroy();
     };
-  }, [trackableIds, zero, id]);
+  }, [flags, id]);
 
-  if (!ready) {
+  if (isLoading) {
     return <></>;
   }
 
@@ -158,7 +163,8 @@ export const useTrackableFlag = <K extends ITrackableFlagKey>(
 };
 
 export const useSetTrackableFlag = () => {
-  const zero = useZero();
+  const db = usePowersyncDrizzle();
+  const { userId } = useUser();
 
   const setFlag: SetFlagFunction = useCallback(
     async (trackableId, key, value) => {
@@ -168,15 +174,14 @@ export const useSetTrackableFlag = () => {
         throw new Error("Invalid flag value");
       }
 
-      await zero.mutate(
-        mutators.trackableFlags.upsert({
-          trackable_id: trackableId,
-          key: key,
-          value: value,
-        }),
-      );
+      await upsertFlag(db, {
+        user_id: userId,
+        trackable_id: trackableId,
+        key: key,
+        value: JSON.stringify(value),
+      });
     },
-    [zero],
+    [db, userId],
   );
 
   return setFlag;

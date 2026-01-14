@@ -2,46 +2,10 @@ import * as React from "react";
 import { createFileRoute } from "@tanstack/react-router";
 
 import TrackableView from "~/components/Trackable/TrackableView";
-import {
-  usePreloadTrackableMonthView,
-  usePreloadTrackableYearView,
-} from "~/utils/useZ";
 
 export const Route = createFileRoute("/app/trackables/$id/view")({
   component: RouteComponent,
 });
-
-const PreloaderMonth = ({
-  year,
-  children,
-}: {
-  year: number;
-  children: React.ReactNode;
-}) => {
-  const params = Route.useParams();
-  usePreloadTrackableMonthView({
-    id: params.id,
-    year: year,
-  });
-
-  return children;
-};
-
-const PreloaderYear = ({
-  year,
-  children,
-}: {
-  year: number;
-  children: React.ReactNode;
-}) => {
-  const params = Route.useParams();
-  usePreloadTrackableYearView({
-    id: params.id,
-    year: year,
-  });
-
-  return children;
-};
 
 function RouteComponent() {
   const navigate = Route.useNavigate();
@@ -49,31 +13,27 @@ function RouteComponent() {
 
   if (typeof year === "number" && typeof month === "number") {
     return (
-      <PreloaderMonth year={year}>
-        <TrackableView
-          month={month}
-          year={year}
-          setDates={(y, m) => {
-            void navigate({
-              search: (prev) => ({ ...prev, year: y, month: m }),
-            });
-          }}
-        />
-      </PreloaderMonth>
+      <TrackableView
+        month={month}
+        year={year}
+        setDates={(y, m) => {
+          void navigate({
+            search: (prev) => ({ ...prev, year: y, month: m }),
+          });
+        }}
+      />
     );
   } else if (typeof year === "number") {
     return (
-      <PreloaderYear year={year}>
-        <TrackableView
-          month={month}
-          year={year}
-          setDates={(y, m) => {
-            void navigate({
-              search: (prev) => ({ ...prev, year: y, month: m }),
-            });
-          }}
-        />
-      </PreloaderYear>
+      <TrackableView
+        month={month}
+        year={year}
+        setDates={(y, m) => {
+          void navigate({
+            search: (prev) => ({ ...prev, year: y, month: m }),
+          });
+        }}
+      />
     );
   } else {
     // todo when years view is awailable

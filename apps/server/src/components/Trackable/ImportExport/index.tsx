@@ -4,7 +4,8 @@ import { useMutation } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { Check } from "lucide-react";
 
-import type { ITrackableRecordZero } from "@tyl/db/client/zero-schema";
+import type { TrackableRecordRow } from "@tyl/db/client/powersync/types";
+
 import { Button } from "~/@shad/components/button";
 import { Label } from "~/@shad/components/label";
 import { Separator } from "~/@shad/components/separator";
@@ -110,10 +111,10 @@ export const ExportTrackable = () => {
   );
 };
 
-const dataToExportFormat = (data: readonly ITrackableRecordZero[]) => {
+const dataToExportFormat = (data: readonly TrackableRecordRow[]) => {
   return data.map((record) => ({
     value: record.value,
-    date: new Date(record.date).toISOString(),
+    date: record.date, // Already ISO string in PowerSync
     createdAt: record.created_at,
     updatedAt: record.updated_at,
   }));
@@ -125,7 +126,7 @@ const dataToExportFormat = (data: readonly ITrackableRecordZero[]) => {
 const ExportLoader = ({ selected }: { selected: DateRange }) => {
   const { id } = useTrackableMeta();
 
-  const [data, status] = useZeroTrackableData({
+  const { data, isLoading } = useZeroTrackableData({
     id,
     firstDay: selected.from?.getTime() ?? new Date(1970, 0, 1).getTime(),
     lastDay: selected.to?.getTime() ?? new Date().getTime(),
@@ -134,7 +135,7 @@ const ExportLoader = ({ selected }: { selected: DateRange }) => {
   const [exportInternalFields, setExportInternalFields] = useState(true);
 
   const exportDataAsJson = () => {
-    const stripped = dataToExportFormat(data);
+    const stripped = dataToExportFormat(data ?? []);
     const jsonString = JSON.stringify(stripped, null, 2);
     const blob = new Blob([jsonString], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -147,7 +148,7 @@ const ExportLoader = ({ selected }: { selected: DateRange }) => {
     URL.revokeObjectURL(url);
   };
 
-  if (status.type !== "complete") {
+  if (isLoading) {
     return (
       <div className="flex items-center gap-1">
         <Spinner /> Collecting data...
@@ -159,7 +160,7 @@ const ExportLoader = ({ selected }: { selected: DateRange }) => {
     <div className="gap-2">
       {format(selected.from ?? new Date(1970, 0, 1), "dd MMMM yyyy")} —{" "}
       {format(selected.to ?? new Date(), "dd MMMM yyyy")}
-      <span className="ml-2 text-sm opacity-30">({data.length} records)</span>
+      <span className="ml-2 text-sm opacity-30">({(data ?? []).length} records)</span>
       <div className="mt-2 flex items-center gap-2">
         <Button variant="outline" onClick={exportDataAsJson}>
           JSON

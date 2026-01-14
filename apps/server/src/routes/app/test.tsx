@@ -1,5 +1,6 @@
 import { createContext, useContext, useMemo, useState } from "react";
 import {
+  PowerSyncSQLiteDatabase,
   toCompilableQuery,
   wrapPowerSyncWithDrizzle,
 } from "@powersync/drizzle-driver";
@@ -17,6 +18,7 @@ import { v4 as uuidv4 } from "uuid";
 import {
   PowersyncDrizzleSchema,
   PowersyncSchema,
+  TPowersyncDrizzleDB,
   trackable,
   trackableFlags,
   trackableGroup,
@@ -32,7 +34,6 @@ import {
 } from "~/@shad/components/card";
 import { Input } from "~/@shad/components/input";
 import { Label } from "~/@shad/components/label";
-import { Separator } from "~/@shad/components/separator";
 import { Textarea } from "~/@shad/components/textarea";
 import { Connector } from "~/db/connector";
 
@@ -64,9 +65,7 @@ const makePowersyncWeb = () => {
   return { powersyncDb, drizzlePowersyncDb };
 };
 
-const PowersyncDrizzleContext = createContext<
-  ReturnType<typeof makePowersyncWeb>["drizzlePowersyncDb"] | null
->(null);
+const PowersyncDrizzleContext = createContext<TPowersyncDrizzleDB | null>(null);
 
 const useDrizzlePowersyncDb = () => {
   const drizzlePowersyncDb = useContext(PowersyncDrizzleContext);
