@@ -172,7 +172,7 @@ export const useRecordUpdateHandler = ({
       if (recordId) {
         await zero.mutate(
           mutators.trackableRecord.update({
-            record_id: recordId,
+            id: recordId,
             value,
             updated_at: updatedAt,
           }),
@@ -183,7 +183,7 @@ export const useRecordUpdateHandler = ({
         const rid = uuidv4();
         await zero.mutate(
           mutators.trackableRecord.upsert({
-            record_id: rid,
+            id: rid,
             date: d,
             trackable_id: trackableId,
             value,
@@ -202,7 +202,7 @@ export const useRecordDeleteHandler = () => {
   return useCallback(
     async (recordId: string) => {
       await mutators.trackableRecord.delete({
-        record_id: recordId,
+        id: recordId,
       });
     },
     [mutators],

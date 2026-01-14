@@ -1,6 +1,6 @@
 // * This is schema for local sqlite db that powersync replicated to */
 import { DrizzleAppSchema } from "@powersync/drizzle-driver";
-import { sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 export const userFlags = sqliteTable("TYL_userFlags", {
   id: text("id").primaryKey(),
@@ -31,8 +31,8 @@ export const trackableRecord = sqliteTable("TYL_trackableRecord", {
   trackable_id: text("trackable_id").notNull(),
   value: text("value").notNull(),
   attributes: text("attributes").notNull(),
-  created_at: text("created_at").notNull(),
-  updated_at: text("updated_at").notNull(),
+  created_at: integer("created_at").notNull(),
+  updated_at: integer("updated_at").notNull(),
   external_key: text("external_key").notNull(),
 });
 

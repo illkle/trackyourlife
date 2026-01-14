@@ -12,6 +12,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
+import z from "zod";
 
 import { session, user } from "./auth";
 
@@ -135,12 +136,6 @@ export const trackable_record = pgTable(
     external_key: text("external_key"),
   },
   (t) => [
-    /*
-     This table has an additional trigger written manually in 0030_trigger_v3.sql. It makes it so:
-     - Simple trackables (boolean, number, text) can only have one record per day.
-      - On insert date is truncated to hour 0 minute 0 second 0.
-      - If after truncating there is an existing record for that day, it gets updated instead.
-    */
     index("trackable_date_idx").on(t.trackable_id, t.date),
     index("user_date_idx").on(t.user_id, t.date),
   ],
@@ -203,8 +198,12 @@ export type DbUserFlagsInsert = typeof user_flags.$inferInsert;
 export const trackable_insert_schema = createInsertSchema(trackable);
 export const trackable_update_schema = createUpdateSchema(trackable);
 
-export const trackable_record_insert_schema =
-  createInsertSchema(trackable_record);
+export const trackable_record_insert_schema = createInsertSchema(
+  trackable_record,
+  {
+    date: (s) => s.or(z.coerce.date()),
+  },
+);
 export const trackable_record_update_schema =
   createUpdateSchema(trackable_record);
 

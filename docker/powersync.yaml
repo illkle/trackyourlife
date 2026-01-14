@@ -27,12 +27,11 @@ sync_rules:
         parameters: SELECT request.user_id() as user_id
         data:
           - SELECT * FROM "TYL_user" WHERE id = bucket.user_id
-          - SELECT *, "userId" as id FROM "TYL_userFlags" WHERE userId = bucket.user_id
+          - SELECT *, user_id || '|' || key as id FROM "TYL_userFlags" WHERE user_id = bucket.user_id
           - SELECT * FROM "TYL_trackable" WHERE user_id = bucket.user_id
-          - SELECT *, "trackableId" as id FROM "TYL_trackableFlags" WHERE user_id = bucket.user_id
-          - SELECT *, "recordId" as id FROM "TYL_trackableRecord" WHERE user_id = bucket.user_id
-          - SELECT *, "trackableId" as id FROM "TYL_trackableRecordAttributes" WHERE user_id = bucket.user_id
-          - SELECT *, "trackableId" as id FROM "TYL_trackableGroup" WHERE user_id = bucket.user_id
+          - SELECT *, user_id || '|' || trackable_id || '|' || key as id FROM "TYL_trackableFlags" WHERE user_id = bucket.user_id
+          - SELECT * FROM "TYL_trackableRecord" WHERE user_id = bucket.user_id
+          - SELECT *, user_id || '|' || trackable_id || '|' || "group" as id FROM "TYL_trackableGroup" WHERE user_id = bucket.user_id
 
 client_auth:
   jwks_uri: !env PS_AUTH_DOMAIN

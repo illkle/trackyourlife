@@ -3,6 +3,9 @@ import { z } from "zod";
 
 const trackableType = z.enum(["boolean", "number", "text"]);
 
+// Helper to create deterministic composite IDs
+const createCompositeId = (...parts: string[]) => parts.join("|");
+
 export const mutators = defineMutators({
   // TYL_trackable mutations
   trackable: {
@@ -37,7 +40,7 @@ export const mutators = defineMutators({
   trackableRecord: {
     insert: defineMutator(
       z.object({
-        record_id: z.string(),
+        id: z.string(),
         date: z.number(),
         trackable_id: z.string(),
         value: z.string(),
@@ -53,7 +56,7 @@ export const mutators = defineMutators({
     ),
     update: defineMutator(
       z.object({
-        record_id: z.string(),
+        id: z.string(),
         value: z.string().optional(),
         updated_at: z.number().optional(),
       }),
@@ -66,7 +69,7 @@ export const mutators = defineMutators({
     ),
     upsert: defineMutator(
       z.object({
-        record_id: z.string(),
+        id: z.string(),
         date: z.number(),
         trackable_id: z.string(),
         value: z.string(),
@@ -81,7 +84,7 @@ export const mutators = defineMutators({
       },
     ),
     delete: defineMutator(
-      z.object({ record_id: z.string() }),
+      z.object({ id: z.string() }),
       async ({ tx, ctx, args }) => {
         await tx.mutate.TYL_trackableRecord.delete({
           ...args,
@@ -98,7 +101,9 @@ export const mutators = defineMutators({
         group: z.string(),
       }),
       async ({ tx, ctx, args }) => {
+        const id = createCompositeId(args.trackable_id, args.group);
         await tx.mutate.TYL_trackableGroup.insert({
+          id,
           ...args,
           user_id: ctx.userID,
         });
@@ -110,7 +115,9 @@ export const mutators = defineMutators({
         group: z.string(),
       }),
       async ({ tx, ctx, args }) => {
+        const id = createCompositeId(args.trackable_id, args.group);
         await tx.mutate.TYL_trackableGroup.upsert({
+          id,
           ...args,
           user_id: ctx.userID,
         });
@@ -122,8 +129,9 @@ export const mutators = defineMutators({
         group: z.string(),
       }),
       async ({ tx, ctx, args }) => {
+        const id = createCompositeId(args.trackable_id, args.group);
         await tx.mutate.TYL_trackableGroup.delete({
-          ...args,
+          id,
         });
       },
     ),
@@ -138,7 +146,9 @@ export const mutators = defineMutators({
         value: z.any().optional(),
       }),
       async ({ tx, ctx, args }) => {
+        const id = createCompositeId(ctx.userID, args.trackable_id, args.key);
         await tx.mutate.TYL_trackableFlags.upsert({
+          id,
           ...args,
           user_id: ctx.userID,
         });
@@ -150,9 +160,9 @@ export const mutators = defineMutators({
         key: z.string(),
       }),
       async ({ tx, ctx, args }) => {
+        const id = createCompositeId(ctx.userID, args.trackable_id, args.key);
         await tx.mutate.TYL_trackableFlags.delete({
-          ...args,
-          user_id: ctx.userID,
+          id,
         });
       },
     ),
@@ -166,20 +176,26 @@ export const mutators = defineMutators({
         value: z.any().optional(),
       }),
       async ({ tx, ctx, args }) => {
-        await tx.mutate.TYL_userFlags.upsert({ ...args, user_id: ctx.userID });
+        const id = createCompositeId(ctx.userID, args.key);
+        await tx.mutate.TYL_userFlags.upsert({
+          id,
+          ...args,
+          user_id: ctx.userID,
+        });
       },
     ),
     delete: defineMutator(
       z.object({
-        userId: z.string(),
         key: z.string(),
       }),
       async ({ tx, ctx, args }) => {
-        await tx.mutate.TYL_userFlags.delete({ ...args, user_id: ctx.userID });
+        const id = createCompositeId(ctx.userID, args.key);
+        await tx.mutate.TYL_userFlags.delete({
+          id,
+        });
       },
     ),
   },
-
 });
 
 export type Mutators = typeof mutators;

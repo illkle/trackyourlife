@@ -15,7 +15,7 @@ No interest in developing this project currently. Though it's usable and availab
 1. Start postgres
 
 ```
-docker run -d --name zero-postgres \
+docker run -d --name postgres-tyl-dev \
   -e POSTGRES_PASSWORD="password" \
   -p 5432:5432 \
   postgres:16-alpine \
@@ -23,8 +23,9 @@ docker run -d --name zero-postgres \
 ```
 
 ```
-	docker build -f docker/powersync.Dockerfile -t powersync . \
+docker build -f docker/powersync.Dockerfile -t powersync . \
   && docker run \
+    --name powersync-tyl-dev \
     --env-file .env \
     -p 8080:80 \
     powersync

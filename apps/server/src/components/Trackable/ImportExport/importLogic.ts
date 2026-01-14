@@ -1,4 +1,5 @@
 import { format } from "date-fns";
+import { v4 as uuidv4 } from "uuid";
 import { z } from "zod/v4";
 
 import type { ITrackableZero } from "@tyl/db/zero-schema";
@@ -88,6 +89,7 @@ export const importData = async (
           .insert(trackable_record)
           .values(
             toInsert.map((item) => ({
+              id: uuidv4(), // Client must provide id (no more defaultRandom)
               trackable_id: tr.id,
               user_id: userId,
               date: item.date,

@@ -19,7 +19,7 @@ import { getColorAtPosition } from "./colorTools";
 export interface DataRecord {
   readonly date: number;
   readonly value: string;
-  readonly record_id: string;
+  readonly id: string;
   readonly created_at: number | null;
   readonly updated_at: number | null;
 }
@@ -109,7 +109,7 @@ export const mapDataToRange = (
         timestamp: convertDateFromDbToLocal(dataRecord.date).getTime(),
         createdAt: dataRecord.created_at,
         updatedAt: dataRecord.updated_at,
-        recordId: dataRecord.record_id,
+        recordId: dataRecord.id,
       });
       dataPointer++;
     }

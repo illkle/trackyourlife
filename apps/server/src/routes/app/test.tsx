@@ -15,7 +15,6 @@ import { and, eq } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 
 import {
-  PowersyncDatabase,
   PowersyncDrizzleSchema,
   PowersyncSchema,
   trackable,
@@ -172,7 +171,7 @@ const TrackableDetail = ({ trackableId }: { trackableId: string }) => {
   const dbd = useDrizzlePowersyncDb();
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex grid-cols-3 flex-col gap-4 md:grid">
       <Card>
         <CardHeader>
           <CardTitle>Trackable Flags</CardTitle>
@@ -182,8 +181,6 @@ const TrackableDetail = ({ trackableId }: { trackableId: string }) => {
         </CardContent>
       </Card>
 
-      <Separator />
-
       <Card>
         <CardHeader>
           <CardTitle>Trackable Records</CardTitle>
@@ -192,8 +189,6 @@ const TrackableDetail = ({ trackableId }: { trackableId: string }) => {
           <TrackableRecordsSection trackableId={trackableId} />
         </CardContent>
       </Card>
-
-      <Separator />
 
       <Card>
         <CardHeader>
@@ -314,7 +309,7 @@ const TrackableRecordsSection = ({ trackableId }: { trackableId: string }) => {
 
   const createRecord = async () => {
     if (!date || !value) return;
-    const now = Date.now().toString();
+    const now = Date.now();
     await dbd.insert(trackableRecord).values({
       id: uuidv4(),
       user_id: "",
@@ -337,7 +332,7 @@ const TrackableRecordsSection = ({ trackableId }: { trackableId: string }) => {
       .update(trackableRecord)
       .set({
         value: currentValue + "*",
-        updated_at: Date.now().toString(),
+        updated_at: Date.now(),
       })
       .where(eq(trackableRecord.id, id));
   };
@@ -461,7 +456,7 @@ const TrackableGroupsSection = ({ trackableId }: { trackableId: string }) => {
         />
         <Button onClick={createGroup}>Create Group</Button>
       </div>
-
+      {groups.data.length} groups
       <div className="flex flex-col gap-2">
         {groups.data?.map((groupItem) => (
           <div

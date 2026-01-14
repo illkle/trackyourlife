@@ -1,0 +1,1 @@
+DROP TRIGGER IF EXISTS enforce_trackable_record_uniqueness ON "TYL_trackableRecord";

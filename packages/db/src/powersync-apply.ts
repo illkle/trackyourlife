@@ -31,52 +31,69 @@ export type SyncEntry = {
 // TRACKABLE
 // ============================================================================
 
-export const applyCrudTrackable = async (entry: SyncEntry, userId: string) => {
+export const applyCrudTrackable = async (entry: SyncEntry, user_id: string) => {
+  const { id, opData } = entry;
   switch (entry.op) {
     case UpdateType.PUT: {
-      const verified = trackable_insert_schema.parse(entry.opData);
+      const verified = trackable_insert_schema.parse({
+        ...opData,
+        id,
+        user_id,
+      });
 
       await db.insert(trackable).values({
         ...verified,
-        user_id: userId,
+        id,
+        user_id,
       });
       break;
     }
     case UpdateType.PATCH: {
-      const verified = trackable_update_schema.parse(entry.opData);
+      const verified = trackable_update_schema.parse(opData);
 
       await db
         .update(trackable)
         .set(verified)
-        .where(and(eq(trackable.id, entry.id), eq(trackable.user_id, userId)));
+        .where(and(eq(trackable.id, entry.id), eq(trackable.user_id, user_id)));
       break;
     }
     case UpdateType.DELETE: {
       await db
         .delete(trackable)
-        .where(and(eq(trackable.id, entry.id), eq(trackable.user_id, userId)));
+        .where(and(eq(trackable.id, entry.id), eq(trackable.user_id, user_id)));
       break;
     }
   }
 };
 
 // ============================================================================
-// TRACKABLE FLAGS (composite PK: user_id, trackable_id, key)
+// TRACKABLE FLAGS
 // ============================================================================
+
+const trackableFlagsFromClientId = (id: SyncEntry["id"]) => {
+  const spl = id.split("|");
+
+  if (spl.length != 3 || spl.some((s) => !s)) {
+    throw new Error("Invalid trackable flag from client id: " + id);
+  }
+
+  return { trackable_id: spl[1]!, key: spl[2]! };
+};
+
+const trackable_flags_update_schema_only_value =
+  trackable_flags_update_schema.pick({ value: true });
 
 export const applyCrudTrackableFlags = async (
   entry: SyncEntry,
-  userId: string,
+  user_id: string,
 ) => {
-  const opData = entry.opData as Record<string, unknown>;
+  const { opData } = entry;
 
   switch (entry.op) {
     case UpdateType.PUT: {
       const verified = trackable_flags_insert_schema.parse({
-        trackable_id: opData.trackable_id,
-        key: opData.key,
-        value: opData.value ? JSON.parse(opData.value as string) : undefined,
-        user_id: userId,
+        ...opData,
+        user_id,
       });
 
       await db
@@ -93,44 +110,32 @@ export const applyCrudTrackableFlags = async (
       break;
     }
     case UpdateType.PATCH: {
-      const verified = trackable_flags_update_schema.parse({
-        trackable_id: opData.trackable_id,
-        key: opData.key,
-        value: opData.value ? JSON.parse(opData.value as string) : undefined,
-        user_id: userId,
-      });
+      const verified = trackable_flags_update_schema_only_value.parse(opData);
 
-      if (!verified.trackable_id || !verified.key) {
-        throw new Error("TrackableId and key are required for update");
-      }
+      const dataFromId = trackableFlagsFromClientId(entry.id);
 
       await db
         .update(trackable_flags)
         .set({ value: verified.value })
         .where(
           and(
-            eq(trackable_flags.user_id, userId),
-            eq(trackable_flags.trackable_id, verified.trackable_id),
-            eq(trackable_flags.key, verified.key),
+            eq(trackable_flags.trackable_id, dataFromId.trackable_id),
+            eq(trackable_flags.user_id, user_id),
+            eq(trackable_flags.key, dataFromId.key),
           ),
         );
       break;
     }
     case UpdateType.DELETE: {
-      const trackableId = opData.trackable_id as string;
-      const key = opData.key as string;
-
-      if (!trackableId || !key) {
-        throw new Error("TrackableId and key are required for delete");
-      }
+      const dataFromId = trackableFlagsFromClientId(entry.id);
 
       await db
         .delete(trackable_flags)
         .where(
           and(
-            eq(trackable_flags.user_id, userId),
-            eq(trackable_flags.trackable_id, trackableId),
-            eq(trackable_flags.key, key),
+            eq(trackable_flags.trackable_id, dataFromId.trackable_id),
+            eq(trackable_flags.user_id, user_id),
+            eq(trackable_flags.key, dataFromId.key),
           ),
         );
       break;
@@ -139,60 +144,37 @@ export const applyCrudTrackableFlags = async (
 };
 
 // ============================================================================
-// TRACKABLE RECORD (PK: record_id)
+// TRACKABLE RECORD
 // ============================================================================
 
 export const applyCrudTrackableRecord = async (
   entry: SyncEntry,
-  userId: string,
+  user_id: string,
 ) => {
   const opData = entry.opData as Record<string, unknown>;
+  const id = entry.id;
 
   switch (entry.op) {
     case UpdateType.PUT: {
       const verified = trackable_record_insert_schema.parse({
-        record_id: opData.id,
-        trackable_id: opData.trackable_id,
-        date: opData.date ? new Date(opData.date as string) : undefined,
-        value: opData.value,
-        attributes: opData.attributes
-          ? JSON.parse(opData.attributes as string)
-          : undefined,
-        created_at: opData.created_at ? Number(opData.created_at) : undefined,
-        updated_at: opData.updated_at ? Number(opData.updated_at) : undefined,
-        external_key: opData.external_key,
-        user_id: userId,
+        ...opData,
+        id,
+        user_id,
       });
 
       await db.insert(trackable_record).values(verified);
       break;
     }
     case UpdateType.PATCH: {
-      const verified = trackable_record_update_schema.parse({
-        record_id: opData.id,
-        trackable_id: opData.trackable_id,
-        date: opData.date ? new Date(opData.date as string) : undefined,
-        value: opData.value,
-        attributes: opData.attributes
-          ? JSON.parse(opData.attributes as string)
-          : undefined,
-        created_at: opData.created_at ? Number(opData.created_at) : undefined,
-        updated_at: opData.updated_at ? Number(opData.updated_at) : undefined,
-        external_key: opData.external_key,
-        user_id: userId,
-      });
-
-      if (!verified.id) {
-        throw new Error("RecordId is required for update");
-      }
+      const verified = trackable_record_update_schema.parse(opData);
 
       await db
         .update(trackable_record)
         .set(verified)
         .where(
           and(
-            eq(trackable_record.id, verified.id),
-            eq(trackable_record.user_id, userId),
+            eq(trackable_record.id, id),
+            eq(trackable_record.user_id, user_id),
           ),
         );
       break;
@@ -203,7 +185,7 @@ export const applyCrudTrackableRecord = async (
         .where(
           and(
             eq(trackable_record.id, entry.id),
-            eq(trackable_record.user_id, userId),
+            eq(trackable_record.user_id, user_id),
           ),
         );
       break;
@@ -212,47 +194,67 @@ export const applyCrudTrackableRecord = async (
 };
 
 // ============================================================================
-// TRACKABLE GROUP (composite PK: trackable_id, group)
+// TRACKABLE GROUP
 // ============================================================================
+
+const trackableGroupFromClientId = (id: SyncEntry["id"]) => {
+  const spl = id.split("|");
+
+  if (spl.length != 3 || spl.some((s) => !s)) {
+    throw new Error("Invalid trackable group id: " + id);
+  }
+
+  return { trackable_id: spl[1]!, group: spl[2]! };
+};
 
 export const applyCrudTrackableGroup = async (
   entry: SyncEntry,
-  userId: string,
+  user_id: string,
 ) => {
-  const opData = entry.opData as Record<string, unknown>;
+  const { opData } = entry;
 
   switch (entry.op) {
     case UpdateType.PUT: {
       const verified = trackable_group_insert_schema.parse({
-        trackable_id: opData.trackable_id,
-        group: opData.group,
-        user_id: userId,
+        ...opData,
+        user_id,
       });
 
       await db.insert(trackable_group).values(verified).onConflictDoNothing();
       break;
     }
     case UpdateType.PATCH: {
-      // TrackableGroup only has trackable_id, group, and user_id
-      // No fields to update - the composite key IS the data
-      // This is essentially a no-op or could be treated as a re-insert
+      const verified = trackable_group_update_schema.parse(opData);
+
+      if (!verified.trackable_id || !verified.group) {
+        console.error(
+          "trying to patch trackable group with invalid data",
+          verified,
+        );
+        return;
+      }
+
+      await db
+        .update(trackable_group)
+        .set(verified)
+        .where(
+          and(
+            eq(trackable_group.trackable_id, verified.trackable_id),
+            eq(trackable_group.user_id, user_id),
+            eq(trackable_group.group, verified.group),
+          ),
+        );
       break;
     }
     case UpdateType.DELETE: {
-      const trackableId = opData.trackable_id as string;
-      const group = opData.group as string;
-
-      if (!trackableId || !group) {
-        throw new Error("TrackableId and group are required for delete");
-      }
-
+      const dataFromId = trackableGroupFromClientId(entry.id);
       await db
         .delete(trackable_group)
         .where(
           and(
-            eq(trackable_group.user_id, userId),
-            eq(trackable_group.trackable_id, trackableId),
-            eq(trackable_group.group, group),
+            eq(trackable_group.user_id, user_id),
+            eq(trackable_group.trackable_id, dataFromId.trackable_id),
+            eq(trackable_group.group, dataFromId.group),
           ),
         );
       break;
@@ -261,18 +263,27 @@ export const applyCrudTrackableGroup = async (
 };
 
 // ============================================================================
-// USER FLAGS (composite PK: user_id, key)
+// USER FLAGS
 // ============================================================================
 
-export const applyCrudUserFlags = async (entry: SyncEntry, userId: string) => {
-  const opData = entry.opData as Record<string, unknown>;
+const userFlagsFromClientID = (id: SyncEntry["id"]) => {
+  const spl = id.split("|");
+
+  if (spl.length != 2 || spl.some((s) => !s)) {
+    throw new Error("Invalid user flags id: " + id);
+  }
+
+  return { key: spl[1]! };
+};
+
+export const applyCrudUserFlags = async (entry: SyncEntry, user_id: string) => {
+  const { opData } = entry;
 
   switch (entry.op) {
     case UpdateType.PUT: {
       const verified = user_flags_insert_schema.parse({
-        key: opData.key,
-        value: opData.value ? JSON.parse(opData.value as string) : undefined,
-        user_id: userId,
+        ...opData,
+        user_id,
       });
 
       await db
@@ -285,34 +296,35 @@ export const applyCrudUserFlags = async (entry: SyncEntry, userId: string) => {
       break;
     }
     case UpdateType.PATCH: {
-      const verified = user_flags_update_schema.parse({
-        key: opData.key,
-        value: opData.value ? JSON.parse(opData.value as string) : undefined,
-        user_id: userId,
-      });
+      const verified = user_flags_update_schema.parse(opData);
 
       if (!verified.key) {
-        throw new Error("Key is required for update");
+        console.error("trying to patch flag without key");
+        return;
       }
 
       await db
         .update(user_flags)
         .set({ value: verified.value })
         .where(
-          and(eq(user_flags.user_id, userId), eq(user_flags.key, verified.key)),
+          and(
+            eq(user_flags.key, verified.key),
+            eq(user_flags.user_id, user_id),
+          ),
         );
       break;
     }
     case UpdateType.DELETE: {
-      const key = opData.key as string;
-
-      if (!key) {
-        throw new Error("Key is required for delete");
-      }
+      const dataFromId = userFlagsFromClientID(entry.id);
 
       await db
         .delete(user_flags)
-        .where(and(eq(user_flags.user_id, userId), eq(user_flags.key, key)));
+        .where(
+          and(
+            eq(user_flags.key, dataFromId.key),
+            eq(user_flags.user_id, user_id),
+          ),
+        );
       break;
     }
   }
