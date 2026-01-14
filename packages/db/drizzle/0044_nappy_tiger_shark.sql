@@ -1,0 +1,1 @@
+ALTER TABLE "TYL_trackableRecord" RENAME COLUMN "record_id" TO "id";

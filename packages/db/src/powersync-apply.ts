@@ -182,7 +182,7 @@ export const applyCrudTrackableRecord = async (
         user_id: userId,
       });
 
-      if (!verified.record_id) {
+      if (!verified.id) {
         throw new Error("RecordId is required for update");
       }
 
@@ -191,7 +191,7 @@ export const applyCrudTrackableRecord = async (
         .set(verified)
         .where(
           and(
-            eq(trackable_record.record_id, verified.record_id),
+            eq(trackable_record.id, verified.id),
             eq(trackable_record.user_id, userId),
           ),
         );
@@ -202,7 +202,7 @@ export const applyCrudTrackableRecord = async (
         .delete(trackable_record)
         .where(
           and(
-            eq(trackable_record.record_id, entry.id),
+            eq(trackable_record.id, entry.id),
             eq(trackable_record.user_id, userId),
           ),
         );

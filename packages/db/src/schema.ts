@@ -59,10 +59,10 @@ export const trackable_type_enum = pgEnum("type", [
 export const trackable = pgTable(
   "trackable",
   {
+    id: uuid("id").defaultRandom().primaryKey(),
     user_id: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
-    id: uuid("id").defaultRandom().primaryKey(),
     name: text("name").notNull(),
     type: trackable_type_enum("type").notNull(),
   },
@@ -108,7 +108,7 @@ export const trackable_relations = relations(trackable, ({ many }) => ({
 export const trackable_record = pgTable(
   "trackableRecord",
   {
-    record_id: uuid("record_id").defaultRandom().primaryKey(),
+    id: uuid("id").defaultRandom().primaryKey(),
     user_id: text("user_id")
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),

@@ -76,7 +76,7 @@ export const importData = async (
       existingRecord.updated_at < item.updatedAt
     ) {
       // Update if value from import data is newer than db
-      toUpdate.push({ id: existingRecord.record_id, value: item });
+      toUpdate.push({ id: existingRecord.id, value: item });
     }
   }
 
@@ -110,7 +110,7 @@ export const importData = async (
                 updated_at: getValidDate(item.value.updatedAt),
                 external_key: item.value.externalKey,
               })
-              .where(eq(trackable_record.record_id, item.id)),
+              .where(eq(trackable_record.id, item.id)),
           ),
         );
       }
@@ -139,7 +139,11 @@ const getMapOfExistingRecords = async (
   const existingRecords = await db.query.trackable_record.findMany({
     where: and(
       eq(trackable_record.trackable_id, trackable.id),
-      between(trackable_record.date, analysis.earliestDate, analysis.latestDate),
+      between(
+        trackable_record.date,
+        analysis.earliestDate,
+        analysis.latestDate,
+      ),
     ),
   });
 

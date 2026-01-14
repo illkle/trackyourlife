@@ -16,7 +16,7 @@ import {
 
 const TYL_trackableRecord = table("TYL_trackableRecord")
   .columns({
-    record_id: string(),
+    id: string(),
     date: number(),
     trackable_id: string(),
     value: string(),
@@ -24,7 +24,7 @@ const TYL_trackableRecord = table("TYL_trackableRecord")
     created_at: number().optional(),
     updated_at: number().optional(),
   })
-  .primaryKey("record_id");
+  .primaryKey("id");
 
 const TYL_trackableGroup = table("TYL_trackableGroup")
   .columns({
