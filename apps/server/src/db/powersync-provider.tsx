@@ -13,29 +13,15 @@ import {
   WASQLiteVFS,
 } from "@powersync/web";
 
-import { PowersyncDrizzleContext } from "@tyl/db/client/powersync/context";
+import { PowersyncDrizzleContext } from "@tyl/db/client/context";
 import {
   PowersyncDrizzleSchema,
   PowersyncSchema,
   TPowersyncDrizzleDB,
 } from "@tyl/db/client/schema-powersync";
 
+import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { Connector } from "./connector";
-
-// User context to provide user ID throughout the app
-interface UserContextValue {
-  userId: string;
-}
-
-const UserContext = createContext<UserContextValue | null>(null);
-
-export const useUser = (): UserContextValue => {
-  const ctx = useContext(UserContext);
-  if (!ctx) {
-    throw new Error("useUser must be used within PowerSyncProvider");
-  }
-  return ctx;
-};
 
 // Create PowerSync database instance
 const createPowersyncWeb = () => {
@@ -85,17 +71,19 @@ export const PowerSyncProvider = ({
     };
   }, [userId]);
 
+  const { sessionInfo } = useSessionAuthed();
+
   if (!databases) {
     return null;
   }
 
   return (
-    <UserContext.Provider value={{ userId }}>
-      <PowerSyncContext.Provider value={databases.powersyncDb}>
-        <PowersyncDrizzleContext.Provider value={databases.drizzleDb}>
-          {children}
-        </PowersyncDrizzleContext.Provider>
-      </PowerSyncContext.Provider>
-    </UserContext.Provider>
+    <PowerSyncContext.Provider value={databases.powersyncDb}>
+      <PowersyncDrizzleContext.Provider
+        value={{ db: databases.drizzleDb, userID: sessionInfo.user.id }}
+      >
+        {children}
+      </PowersyncDrizzleContext.Provider>
+    </PowerSyncContext.Provider>
   );
 };

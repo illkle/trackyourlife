@@ -21,7 +21,7 @@ import { TrackableNoteEditable } from "~/components/Trackable/TrackableNote";
 import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { ViewController } from "~/components/Trackable/TrackableView/viewController";
-import { useZeroTrackableData } from "~/utils/useZ";
+import { useTrackableData } from "~/utils/useZ";
 
 const MonthVisualCalendar = ({
   data,
@@ -30,7 +30,7 @@ const MonthVisualCalendar = ({
   data: PureDataRecord[];
   mini?: boolean;
 }) => {
-  const prefaceWith = data[0] ? getISODay(data[0].date) - 1 : 0;
+  const prefaceWith = data[0] ? getISODay(data[0].timestamp) - 1 : 0;
 
   return (
     <div
@@ -66,12 +66,12 @@ const MonthVisualList = ({ data }: { data: PureDataRecord[] }) => {
             <h5
               className={cn(
                 "-translate-y-0.5 select-none font-mono text-3xl font-extralight leading-[100%]",
-                isToday(el.date)
+                isToday(el.timestamp)
                   ? "text-foreground"
                   : "text-muted-foreground/40",
               )}
             >
-              {format(el.date, "dd")}
+              {format(el.timestamp, "dd")}
             </h5>
             <DayCellRouter key={i} {...el} labelType={"none"} />
           </Fragment>
@@ -97,20 +97,21 @@ export const MonthFetcher = ({
   const firstDayDate = startOfMonth(date).getTime();
   const lastDayDate = endOfMonth(date).getTime();
 
-  const { data } = useZeroTrackableData({
+  const q = useTrackableData({
     id,
     firstDay: firstDayDate,
     lastDay: lastDayDate,
   });
 
   // Convert TrackableRecordRow[] to DataRecord[] by converting ISO string dates to timestamps
-  const dataRecords = (data ?? []).map((record) => ({
+  const dataRecords = (q.data ?? []).map((record) => ({
     id: record.id,
     value: record.value,
-    date: new Date(record.date).getTime(),
-    created_at: record.created_at,
+    timestamp: new Date(record.timestamp).getTime(),
     updated_at: record.updated_at,
   }));
+
+  console.log(q.data);
 
   const mappedData = mapDataToRange(firstDayDate, lastDayDate, dataRecords);
 

@@ -39,14 +39,6 @@ const migrator = async () => {
   console.log("+: Migrating database");
 
   await migrateDb(dir);
-  /*const zeroPermissions = fs.readFileSync("./zero-permissions.sql").toString();
-
-  if (!zeroPermissions.length) {
-    throw new Error("No zero-permissions.sql found");
-  }
-
-  await executeRaw(zeroPermissions);
-  */
 };
 
 migrator().then(() => {

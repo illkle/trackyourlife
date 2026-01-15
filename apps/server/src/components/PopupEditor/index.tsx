@@ -2,9 +2,9 @@ import { formatDate, isSameDay, isToday } from "date-fns";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 import type { PureDataRecord } from "@tyl/helpers/trackables";
+import { DbTrackableSelect } from "@tyl/db/client/schema-powersync";
 import { mapDataToRange } from "@tyl/helpers/trackables";
 
-import type { TrackableRow } from "@tyl/db/client/powersync/types";
 import { Button } from "~/@shad/components/button";
 import {
   editorModalNextDay,
@@ -16,6 +16,7 @@ import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/Trac
 import TrackableProvider, {
   useTrackableMeta,
 } from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { useSessionAuthed } from "~/utils/useSessionInfo";
 import {
   useRecordDeleteHandler,
   useRecordUpdateHandler,
@@ -29,24 +30,29 @@ export const PopupEditor = ({
   date: Date;
   trackableId: string;
 }) => {
-  const [data] = useTrackableDay({ date, trackableId });
+  const q = useTrackableDay({ date, trackableId });
+
+  const {
+    data: [trackable],
+  } = q;
+
+  const { sessionInfo } = useSessionAuthed();
 
   const onChange = useRecordUpdateHandler({
     date,
     trackableId,
-    type: data?.type ?? "",
+    type: trackable?.type ?? "",
   });
 
   const onDelete = useRecordDeleteHandler();
 
-  if (!data) return null;
+  if (!trackable) return null;
 
   // Convert TrackableRecordRow[] to DataRecord[] by converting ISO string dates to timestamps
-  const dataRecords = data.trackableRecord.map((record) => ({
+  const dataRecords = trackable.data.map((record) => ({
     id: record.id,
     value: record.value,
-    date: new Date(record.date).getTime(),
-    created_at: record.created_at,
+    timestamp: new Date(record.timestamp).getTime(),
     updated_at: record.updated_at,
   }));
 
@@ -65,10 +71,10 @@ export const PopupEditor = ({
   }
 
   return (
-    <TrackableProvider trackable={data}>
+    <TrackableProvider trackable={trackable}>
       <EditorTitle date={date} />
       <EditorFactory
-        type={data.type}
+        type={trackable.type}
         data={mapDay}
         onChange={onChange}
         onDelete={onDelete}
@@ -109,7 +115,7 @@ const EditorTitle = ({ date }: { date: Date }) => {
 };
 
 const components: Record<
-  TrackableRow["type"],
+  DbTrackableSelect["type"],
   React.ComponentType<PopupEditorProps> | null
 > = {
   text: TextPopupEditor,
@@ -120,7 +126,7 @@ const components: Record<
 const EditorFactory = ({
   type,
   ...props
-}: PopupEditorProps & { type: TrackableRow["type"] }) => {
+}: PopupEditorProps & { type: DbTrackableSelect["type"] }) => {
   const SpecificEditor = components[type];
 
   if (!SpecificEditor) {

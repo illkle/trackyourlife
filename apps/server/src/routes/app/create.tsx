@@ -1,16 +1,13 @@
 import { useRef, useState } from "react";
 import { createFileRoute, useRouter } from "@tanstack/react-router";
-import { v4 as uuidv4 } from "uuid";
 
 import type { DbTrackableInsert } from "@tyl/db/server/schema";
-import { usePowersyncDrizzle } from "@tyl/db/client/powersync/context";
-import { insertTrackable } from "@tyl/db/client/powersync/trackable";
 import { cloneDeep } from "@tyl/helpers";
 
 import { Button } from "~/@shad/components/button";
 import { Input } from "~/@shad/components/input";
 import { TrackableTypeSelector } from "~/components/Trackable/Settings/trackableTypeSelector";
-import { useUser } from "~/db/powersync-provider";
+import { useTrackableHandlers } from "~/utils/useZ";
 
 export const Route = createFileRoute("/app/create")({
   component: RouteComponent,
@@ -18,8 +15,8 @@ export const Route = createFileRoute("/app/create")({
 
 function RouteComponent() {
   const router = useRouter();
-  const db = usePowersyncDrizzle();
-  const { userId } = useUser();
+
+  const { createTrackable } = useTrackableHandlers();
 
   const [newOne, setNewOne] = useState<{
     type: "boolean" | "number" | "text";
@@ -39,11 +36,8 @@ function RouteComponent() {
     }
   };
 
-  const createTrackable = async () => {
-    const id = uuidv4();
-    await insertTrackable(db, {
-      id,
-      user_id: userId,
+  const handleCreate = async () => {
+    const id = await createTrackable({
       name: nameRef.current || "",
       type: newOne.type,
     });
@@ -68,10 +62,7 @@ function RouteComponent() {
       <div className="h-2"></div>
       <TrackableTypeSelector type={newOne.type} setType={setType} />
 
-      <Button
-        className="mt-2 flex justify-center gap-2"
-        onClick={createTrackable}
-      >
+      <Button className="mt-2 flex justify-center gap-2" onClick={handleCreate}>
         Create
       </Button>
     </div>

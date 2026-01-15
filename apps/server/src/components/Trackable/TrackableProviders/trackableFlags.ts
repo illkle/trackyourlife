@@ -1,7 +1,7 @@
 import { parse } from "date-fns";
 import { z } from "zod/v4";
 
-import type { TrackableFlagsRow } from "@tyl/db/client/powersync/types";
+import { DbTrackableFlagsSelect } from "@tyl/db/client/schema-powersync";
 import {
   ZColorValue,
   ZNumberColorCoding,
@@ -109,7 +109,7 @@ export type ITrackableFlagsInputKV = {
   Helper for settings form
 */
 export const createFlagsForSettingsForm = (
-  flags: readonly TrackableFlagsRow[],
+  flags: readonly DbTrackableFlagsSelect[],
 ) => {
   const object = {} as ITrackableFlagsInputKV;
 

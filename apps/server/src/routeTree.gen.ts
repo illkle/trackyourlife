@@ -18,7 +18,6 @@ import { Route as AuthPasswordresetRouteImport } from './routes/auth/passwordres
 import { Route as AuthLoginRouteImport } from './routes/auth/login'
 import { Route as AuthForgotpasswordRouteImport } from './routes/auth/forgotpassword'
 import { Route as AppTestingRouteImport } from './routes/app/testing'
-import { Route as AppTestRouteImport } from './routes/app/test'
 import { Route as AppSettingsRouteImport } from './routes/app/settings'
 import { Route as AppCreateRouteImport } from './routes/app/create'
 import { Route as AppTrackablesIndexRouteImport } from './routes/app/trackables/index'
@@ -29,7 +28,6 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as AppTrackablesIdIndexRouteImport } from './routes/app/trackables/$id/index'
 import { Route as AppTrackablesIdViewRouteImport } from './routes/app/trackables/$id/view'
 import { Route as AppTrackablesIdSettingsRouteImport } from './routes/app/trackables/$id/settings'
-import { Route as AppTrackablesIdImportRouteImport } from './routes/app/trackables/$id/import'
 
 const ConvertersRoute = ConvertersRouteImport.update({
   id: '/converters',
@@ -74,11 +72,6 @@ const AuthForgotpasswordRoute = AuthForgotpasswordRouteImport.update({
 const AppTestingRoute = AppTestingRouteImport.update({
   id: '/testing',
   path: '/testing',
-  getParentRoute: () => AppRoute,
-} as any)
-const AppTestRoute = AppTestRouteImport.update({
-  id: '/test',
-  path: '/test',
   getParentRoute: () => AppRoute,
 } as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
@@ -131,11 +124,6 @@ const AppTrackablesIdSettingsRoute = AppTrackablesIdSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AppTrackablesIdRoute,
 } as any)
-const AppTrackablesIdImportRoute = AppTrackablesIdImportRouteImport.update({
-  id: '/import',
-  path: '/import',
-  getParentRoute: () => AppTrackablesIdRoute,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -144,7 +132,6 @@ export interface FileRoutesByFullPath {
   '/converters': typeof ConvertersRoute
   '/app/create': typeof AppCreateRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
-  '/app/test': typeof AppTestRoute
   '/app/testing': typeof AppTestingRoute
   '/auth/forgotpassword': typeof AuthForgotpasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -155,7 +142,6 @@ export interface FileRoutesByFullPath {
   '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
   '/app/settings/': typeof AppSettingsIndexRoute
   '/app/trackables': typeof AppTrackablesIndexRoute
-  '/app/trackables/$id/import': typeof AppTrackablesIdImportRoute
   '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
   '/app/trackables/$id/view': typeof AppTrackablesIdViewRoute
   '/app/trackables/$id/': typeof AppTrackablesIdIndexRoute
@@ -165,7 +151,6 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRouteWithChildren
   '/converters': typeof ConvertersRoute
   '/app/create': typeof AppCreateRoute
-  '/app/test': typeof AppTestRoute
   '/app/testing': typeof AppTestingRoute
   '/auth/forgotpassword': typeof AuthForgotpasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -175,7 +160,6 @@ export interface FileRoutesByTo {
   '/api/powersync/syncbatch': typeof ApiPowersyncSyncbatchRoute
   '/app/settings': typeof AppSettingsIndexRoute
   '/app/trackables': typeof AppTrackablesIndexRoute
-  '/app/trackables/$id/import': typeof AppTrackablesIdImportRoute
   '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
   '/app/trackables/$id/view': typeof AppTrackablesIdViewRoute
   '/app/trackables/$id': typeof AppTrackablesIdIndexRoute
@@ -188,7 +172,6 @@ export interface FileRoutesById {
   '/converters': typeof ConvertersRoute
   '/app/create': typeof AppCreateRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
-  '/app/test': typeof AppTestRoute
   '/app/testing': typeof AppTestingRoute
   '/auth/forgotpassword': typeof AuthForgotpasswordRoute
   '/auth/login': typeof AuthLoginRoute
@@ -199,7 +182,6 @@ export interface FileRoutesById {
   '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
   '/app/settings/': typeof AppSettingsIndexRoute
   '/app/trackables/': typeof AppTrackablesIndexRoute
-  '/app/trackables/$id/import': typeof AppTrackablesIdImportRoute
   '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
   '/app/trackables/$id/view': typeof AppTrackablesIdViewRoute
   '/app/trackables/$id/': typeof AppTrackablesIdIndexRoute
@@ -213,7 +195,6 @@ export interface FileRouteTypes {
     | '/converters'
     | '/app/create'
     | '/app/settings'
-    | '/app/test'
     | '/app/testing'
     | '/auth/forgotpassword'
     | '/auth/login'
@@ -224,7 +205,6 @@ export interface FileRouteTypes {
     | '/app/trackables/$id'
     | '/app/settings/'
     | '/app/trackables'
-    | '/app/trackables/$id/import'
     | '/app/trackables/$id/settings'
     | '/app/trackables/$id/view'
     | '/app/trackables/$id/'
@@ -234,7 +214,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/converters'
     | '/app/create'
-    | '/app/test'
     | '/app/testing'
     | '/auth/forgotpassword'
     | '/auth/login'
@@ -244,7 +223,6 @@ export interface FileRouteTypes {
     | '/api/powersync/syncbatch'
     | '/app/settings'
     | '/app/trackables'
-    | '/app/trackables/$id/import'
     | '/app/trackables/$id/settings'
     | '/app/trackables/$id/view'
     | '/app/trackables/$id'
@@ -256,7 +234,6 @@ export interface FileRouteTypes {
     | '/converters'
     | '/app/create'
     | '/app/settings'
-    | '/app/test'
     | '/app/testing'
     | '/auth/forgotpassword'
     | '/auth/login'
@@ -267,7 +244,6 @@ export interface FileRouteTypes {
     | '/app/trackables/$id'
     | '/app/settings/'
     | '/app/trackables/'
-    | '/app/trackables/$id/import'
     | '/app/trackables/$id/settings'
     | '/app/trackables/$id/view'
     | '/app/trackables/$id/'
@@ -347,13 +323,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTestingRouteImport
       parentRoute: typeof AppRoute
     }
-    '/app/test': {
-      id: '/app/test'
-      path: '/test'
-      fullPath: '/app/test'
-      preLoaderRoute: typeof AppTestRouteImport
-      parentRoute: typeof AppRoute
-    }
     '/app/settings': {
       id: '/app/settings'
       path: '/settings'
@@ -424,13 +393,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTrackablesIdSettingsRouteImport
       parentRoute: typeof AppTrackablesIdRoute
     }
-    '/app/trackables/$id/import': {
-      id: '/app/trackables/$id/import'
-      path: '/import'
-      fullPath: '/app/trackables/$id/import'
-      preLoaderRoute: typeof AppTrackablesIdImportRouteImport
-      parentRoute: typeof AppTrackablesIdRoute
-    }
   }
 }
 
@@ -447,14 +409,12 @@ const AppSettingsRouteWithChildren = AppSettingsRoute._addFileChildren(
 )
 
 interface AppTrackablesIdRouteChildren {
-  AppTrackablesIdImportRoute: typeof AppTrackablesIdImportRoute
   AppTrackablesIdSettingsRoute: typeof AppTrackablesIdSettingsRoute
   AppTrackablesIdViewRoute: typeof AppTrackablesIdViewRoute
   AppTrackablesIdIndexRoute: typeof AppTrackablesIdIndexRoute
 }
 
 const AppTrackablesIdRouteChildren: AppTrackablesIdRouteChildren = {
-  AppTrackablesIdImportRoute: AppTrackablesIdImportRoute,
   AppTrackablesIdSettingsRoute: AppTrackablesIdSettingsRoute,
   AppTrackablesIdViewRoute: AppTrackablesIdViewRoute,
   AppTrackablesIdIndexRoute: AppTrackablesIdIndexRoute,
@@ -467,7 +427,6 @@ const AppTrackablesIdRouteWithChildren = AppTrackablesIdRoute._addFileChildren(
 interface AppRouteChildren {
   AppCreateRoute: typeof AppCreateRoute
   AppSettingsRoute: typeof AppSettingsRouteWithChildren
-  AppTestRoute: typeof AppTestRoute
   AppTestingRoute: typeof AppTestingRoute
   AppIndexRoute: typeof AppIndexRoute
   AppTrackablesIdRoute: typeof AppTrackablesIdRouteWithChildren
@@ -477,7 +436,6 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppCreateRoute: AppCreateRoute,
   AppSettingsRoute: AppSettingsRouteWithChildren,
-  AppTestRoute: AppTestRoute,
   AppTestingRoute: AppTestingRoute,
   AppIndexRoute: AppIndexRoute,
   AppTrackablesIdRoute: AppTrackablesIdRouteWithChildren,

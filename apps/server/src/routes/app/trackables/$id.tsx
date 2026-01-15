@@ -8,7 +8,6 @@ import {
   ArchiveIcon,
   ArchiveRestoreIcon,
   CalendarDaysIcon,
-  ImportIcon,
   LayoutTemplateIcon,
   MoreHorizontalIcon,
   SettingsIcon,
@@ -16,8 +15,7 @@ import {
 } from "lucide-react";
 import { z } from "zod/v4";
 
-import { usePowersyncDrizzle } from "@tyl/db/client/powersync/context";
-import { deleteGroup, insertGroup } from "@tyl/db/client/powersync/trackable-group";
+import { usePowersyncDrizzle } from "@tyl/db/client/context";
 
 import type { ITrackableFlagType } from "~/components/Trackable/TrackableProviders/trackableFlags";
 import { AlertDialogTrigger } from "~/@shad/components/alert-dialog";
@@ -46,8 +44,7 @@ import {
 import TrackableProvider, {
   useTrackableMeta,
 } from "~/components/Trackable/TrackableProviders/TrackableProvider";
-import { useUser } from "~/db/powersync-provider";
-import { useZeroTrackable } from "~/utils/useZ";
+import { useGroupHandlers, useTrackable } from "~/utils/useZ";
 
 const paramsSchema = z.object({
   month: z
@@ -71,7 +68,10 @@ const RouteComponent = () => {
 
   const isView = loc.pathname === `/app/trackables/${params.id}/view`;
 
-  const [trackable] = useZeroTrackable({ id: params.id });
+  const q = useTrackable({ id: params.id });
+  const {
+    data: [trackable],
+  } = q;
 
   if (!trackable) {
     return (
@@ -81,9 +81,7 @@ const RouteComponent = () => {
     );
   }
 
-  const isArchived = trackable.trackableGroup.some(
-    (tg) => tg.group === "archived",
-  );
+  const isArchived = trackable.groups.some((tg) => tg.group === "archived");
 
   return (
     <TrackableFlagsProvider trackableIds={[params.id]}>
@@ -130,13 +128,12 @@ const RouteComponent = () => {
 };
 
 const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
-  const db = usePowersyncDrizzle();
-  const { userId } = useUser();
-
   const { id } = useTrackableMeta();
   const setFlag = useSetTrackableFlag();
 
   const monthViewStyle = useTrackableFlag(id, "AnyMonthViewType");
+
+  const { removeFromGroup, addToGroup } = useGroupHandlers();
 
   const setMonthViewStyle = async (
     style: ITrackableFlagType<"AnyMonthViewType">,
@@ -146,15 +143,13 @@ const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
 
   const handleArchiveToggle = async () => {
     if (isArchived) {
-      await deleteGroup(db, {
-        user_id: userId,
-        trackable_id: id,
+      await removeFromGroup({
+        trackableId: id,
         group: "archived",
       });
     } else {
-      await insertGroup(db, {
-        user_id: userId,
-        trackable_id: id,
+      await addToGroup({
+        trackableId: id,
         group: "archived",
       });
     }
@@ -195,12 +190,6 @@ const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
-
-          <DropdownMenuItem className="cursor-pointer" asChild>
-            <Link to={"/app/trackables/$id/import"} params={{ id: id }}>
-              <ImportIcon className="mr-1" /> Import
-            </Link>
-          </DropdownMenuItem>
 
           <DropdownMenuItem
             className="cursor-pointer"

@@ -1,9 +1,8 @@
 import { useState } from "react";
 
-import { usePowersyncDrizzle } from "@tyl/db/client/powersync/context";
-import { updateTrackable } from "@tyl/db/client/powersync/trackable";
+import { usePowersyncDrizzle } from "@tyl/db/client/context";
+import { DbTrackableSelect } from "@tyl/db/client/schema-powersync";
 
-import type { TrackableListItem } from "~/utils/useZ";
 import {
   Dialog,
   DialogContent,
@@ -20,24 +19,24 @@ import {
 import { Input } from "~/@shad/components/input";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
-import { useZeroTrackable } from "~/utils/useZ";
+import { useTrackable, useTrackableHandlers } from "~/utils/useZ";
 
 export const TrackableNameEditable = () => {
   const { id } = useTrackableMeta();
-  const db = usePowersyncDrizzle();
 
-  const [trackable] = useZeroTrackable({ id });
-
-  const handleUpdateName = async (name: string) => {
-    await updateTrackable(db, { id, name });
-  };
+  const q = useTrackable({ id: id });
+  const {
+    data: [trackable],
+  } = q;
 
   const [isEditing, setIsEditing] = useState(false);
   const [internalValue, setInternalValue] = useState("");
   const isDesktop = useIsDesktop();
 
+  const { updateTrackableName } = useTrackableHandlers();
+
   const saveHandler = () => {
-    void handleUpdateName(internalValue);
+    void updateTrackableName({ id, name: internalValue });
     setIsEditing(false);
   };
 
@@ -101,7 +100,7 @@ export const TrackableNameEditable = () => {
 export const TrackableNameText = ({
   trackable,
 }: {
-  trackable: TrackableListItem;
+  trackable: DbTrackableSelect;
 }) => {
   return (
     <>{trackable.name.length ? trackable.name : `Unnamed ${trackable.type}`}</>

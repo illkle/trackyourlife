@@ -8,6 +8,7 @@ import type { PureDataRecord } from "@tyl/helpers/trackables";
 import { DayCellTextPopup } from "~/components/DayCell/DayCellTextPopup";
 import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { useRecordDeleteHandler, useRecordUpdateHandler } from "~/utils/useZ";
 import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
@@ -44,7 +45,7 @@ export const useDayCellContext = () => {
 };
 
 export const DayCellRouter = ({
-  date,
+  timestamp,
   values,
   labelType = "auto",
   className,
@@ -52,20 +53,25 @@ export const DayCellRouter = ({
   // TODO: memo?
   const { id, type } = useTrackableMeta();
   const trackingStart = useTrackableFlag(id, "AnyTrackingStart");
+  const { sessionInfo } = useSessionAuthed();
 
   const now = new Date();
-  const isToday = isSameDay(date, now);
+  const isToday = isSameDay(timestamp, now);
   const isOutOfRange =
-    isAfter(date, now) ||
-    Boolean(trackingStart && isBefore(date, trackingStart));
+    isAfter(timestamp, now) ||
+    Boolean(trackingStart && isBefore(timestamp, trackingStart));
 
-  const onChange = useRecordUpdateHandler({ date, trackableId: id, type });
+  const onChange = useRecordUpdateHandler({
+    date: timestamp,
+    trackableId: id,
+    type,
+  });
   const onDelete = useRecordDeleteHandler();
 
   return (
     <DayCellContext.Provider
       value={{
-        date,
+        timestamp,
         isToday,
         isOutOfRange,
         values,
@@ -121,7 +127,7 @@ export const OutOfRangeSimple = () => {
 };
 
 const LabelOutside = () => {
-  const { date, isToday } = useDayCellContext();
+  const { timestamp, isToday } = useDayCellContext();
 
   return (
     <div
@@ -130,13 +136,13 @@ const LabelOutside = () => {
         isToday ? "font-normal underline" : "font-light",
       )}
     >
-      {format(date, "d")}
+      {format(timestamp, "d")}
     </div>
   );
 };
 
 export const LabelInside = () => {
-  const { date, isToday } = useDayCellContext();
+  const { timestamp, isToday } = useDayCellContext();
   return (
     <div
       className={cn(
@@ -145,7 +151,7 @@ export const LabelInside = () => {
         "text-xs sm:text-base",
       )}
     >
-      {format(date, "d")}
+      {format(timestamp, "d")}
     </div>
   );
 };

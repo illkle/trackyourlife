@@ -316,6 +316,13 @@
       "when": 1768415538188,
       "tag": "0045_remove_trigger",
       "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "7",
+      "when": 1768498451640,
+      "tag": "0046_flippant_grim_reaper",
+      "breakpoints": true
     }
   ]
 }

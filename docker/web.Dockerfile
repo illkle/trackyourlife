@@ -3,15 +3,7 @@
 # not using slim to do healtcheck with curl, coolify docker compose requires it
 FROM node:24 AS base
 	
-# Also add stuff required to build @rocicorp/zero-sqlite3
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    ca-certificates \
-    python3 \
-    make \
-    g++ \
-    build-essential && \
-    rm -rf /var/lib/apt/lists/*
+
 
 FROM base AS builder
 WORKDIR /app

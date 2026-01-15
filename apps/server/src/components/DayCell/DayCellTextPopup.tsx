@@ -13,15 +13,15 @@ import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/Trac
 
 export const DayCellTextPopup = () => {
   const { id } = useTrackableMeta();
-  const { labelType, values, date } = useDayCellContext();
+  const { labelType, values, timestamp } = useDayCellContext();
   const { value } = values[0] ?? {};
 
-  const isOpen = useAmIOpenInStore({ date, trackableId: id });
+  const isOpen = useAmIOpenInStore({ date: timestamp, trackableId: id });
 
   return (
     <button
       data-text-cell
-      onClick={() => openDayEditor({ date, trackableId: id })}
+      onClick={() => openDayEditor({ date: timestamp, trackableId: id })}
       className={cn(
         "text-foreground flex-col text-ellipsis border-2 p-1 text-left sm:p-2",
         DayCellBaseClasses,

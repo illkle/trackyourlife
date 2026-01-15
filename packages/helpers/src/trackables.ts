@@ -17,15 +17,14 @@ import { getColorAtPosition } from "./colorTools";
 
 // Comes from db
 export interface DataRecord {
-  readonly date: number;
+  readonly timestamp: number;
   readonly value: string;
   readonly id: string;
-  readonly created_at: number | null;
   readonly updated_at: number | null;
 }
 
 export interface PureDataRecord {
-  readonly date: Date;
+  readonly timestamp: Date;
   readonly values: RecordValue[];
   readonly disabled: boolean;
 }
@@ -34,9 +33,8 @@ export interface RecordValue {
   readonly recordId: string;
   /** Will never actually be undefined, but this makes for simpler inherited types in daycell */
   readonly value?: string;
-  readonly createdAt: number | null;
-  readonly updatedAt: number | null;
   readonly timestamp: number;
+  readonly updatedAt: number | null;
 }
 
 /**
@@ -59,7 +57,7 @@ export const mapDataToRange = (
   const first = data[0];
   const last = data[data.length - 1];
 
-  if (first && last && first.date > last.date) {
+  if (first && last && first.timestamp > last.timestamp) {
     throw new Error("Error in mapDataToRange: data must be in ascending order");
   }
 
@@ -77,7 +75,7 @@ export const mapDataToRange = (
     const disabled = day.getTime() >= disabledAfter;
 
     const dayRecord: PureDataRecord = {
-      date: day,
+      timestamp: day,
       disabled,
       values: [],
     };
@@ -88,15 +86,8 @@ export const mapDataToRange = (
       const dataRecord = data[dataPointer];
       if (!dataRecord) break;
 
-      /**
-       * We store dates in UTC, but zero reads them and assumes local timesone
-       */
-      const recordDateInCorrectTimezone = convertDateFromDbToLocal(
-        dataRecord.date,
-      );
-
-      if (!isSameDay(day, recordDateInCorrectTimezone)) {
-        if (isBefore(dataRecord.date, day.getTime())) {
+      if (!isSameDay(day, dataRecord.timestamp)) {
+        if (isBefore(dataRecord.timestamp, day.getTime())) {
           dataPointer++;
           continue;
         }
@@ -106,8 +97,7 @@ export const mapDataToRange = (
 
       dayRecord.values.push({
         value: dataRecord.value,
-        timestamp: convertDateFromDbToLocal(dataRecord.date).getTime(),
-        createdAt: dataRecord.created_at,
+        timestamp: dataRecord.timestamp,
         updatedAt: dataRecord.updated_at,
         recordId: dataRecord.id,
       });
@@ -122,31 +112,6 @@ export const mapDataToRange = (
   }
 
   return result;
-};
-
-export const convertDateFromDbToLocal = (date: number | Date) => {
-  const d = typeof date === "number" ? new Date(date) : date;
-  return new Date(
-    d.getUTCFullYear(),
-    d.getUTCMonth(),
-    d.getUTCDate(),
-    d.getUTCHours(),
-    d.getUTCMinutes(),
-    d.getUTCSeconds(),
-  );
-};
-
-export const convertDateFromLocalToDb = (date: Date) => {
-  return Number(
-    Date.UTC(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      date.getHours(),
-      date.getMinutes(),
-      date.getSeconds(),
-    ),
-  );
 };
 
 export class NumberColorCodingMapper {
@@ -193,31 +158,3 @@ interface Group {
   readonly group: string;
 }
 type GroupArray = readonly Group[];
-
-export const sortTrackableList = <
-  T extends Pick<DbTrackableSelect, "id" | "name"> & {
-    readonly trackableGroup: GroupArray;
-  },
->(
-  list: T[],
-) => {
-  const newList = list.sort((a, b) => {
-    if (
-      a.trackableGroup.some((v) => v.group === "favorites") &&
-      !b.trackableGroup.some((v) => v.group === "favorites")
-    )
-      return -1;
-    if (
-      !a.trackableGroup.some((v) => v.group === "favorites") &&
-      b.trackableGroup.some((v) => v.group === "favorites")
-    )
-      return 1;
-
-    const aName = a.name || "";
-    const bName = b.name || "";
-
-    return aName.localeCompare(bName);
-  });
-
-  return newList;
-};

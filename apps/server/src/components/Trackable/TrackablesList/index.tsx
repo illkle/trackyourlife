@@ -4,15 +4,14 @@ import { Link } from "@tanstack/react-router";
 import { format, isLastDayOfMonth, subDays } from "date-fns";
 import { m } from "motion/react";
 
-import { mapDataToRange, sortTrackableList } from "@tyl/helpers/trackables";
+import { mapDataToRange } from "@tyl/helpers/trackables";
 
 import { Button } from "~/@shad/components/button";
-import { Spinner } from "~/@shad/components/spinner";
 import DayCellRouter from "~/components/DayCell";
 import { TrackableNameText } from "~/components/Trackable/TrackableName";
 import { TrackableFlagsProvider } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import TrackableProvider from "~/components/Trackable/TrackableProviders/TrackableProvider";
-import { useZeroTrackableListWithData } from "~/utils/useZ";
+import { useTrackableListWithData } from "~/utils/useZ";
 import MiniTrackable from "./miniTrackable";
 
 const EmptyList = () => {
@@ -40,34 +39,19 @@ const TrackablesList = ({
   const lastDay = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const firstDay = subDays(lastDay, daysToShow - 1).getTime();
 
-  const [data] = useZeroTrackableListWithData({
+  const q = useTrackableListWithData({
     firstDay,
     lastDay,
   });
 
-  const sorted = useMemo(
-    () =>
-      sortTrackableList(
-        archived
-          ? [...data].filter((v) =>
-              v.trackableGroup.some((v) => v.group === "archived"),
-            )
-          : [...data].filter(
-              (v) => !v.trackableGroup.some((v) => v.group === "archived"),
-            ),
-      ),
-    [data, archived],
-  );
-
-  if (data.length === 0) return <EmptyList />;
+  if (q.data.length === 0) return <EmptyList />;
 
   // Convert TrackableRecordRow[] to DataRecord[] by converting ISO string dates to timestamps
-  const mappedData = sorted.map((v) => {
-    const dataRecords = v.trackableRecord.map((record) => ({
+  const mappedData = q.data.map((v) => {
+    const dataRecords = v.data.map((record) => ({
       id: record.id,
       value: record.value,
-      date: new Date(record.date).getTime(),
-      created_at: record.created_at,
+      timestamp: new Date(record.timestamp).getTime(),
       updated_at: record.updated_at,
     }));
     return {
@@ -104,24 +88,21 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
   const lastDay = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const firstDay = subDays(lastDay, daysToShow).getTime();
 
-  const [data, info] = useZeroTrackableListWithData({
+  const q = useTrackableListWithData({
     firstDay: firstDay,
     lastDay,
   });
 
-  const sorted = sortTrackableList(
-    [...data].filter(
-      (v) => !v.trackableGroup.some((v) => v.group === "archived"),
-    ),
-  );
+  if (q.data.length === 0) {
+    return <EmptyList />;
+  }
 
   // Convert TrackableRecordRow[] to DataRecord[] by converting ISO string dates to timestamps
-  const mappedData = sorted.map((v) => {
-    const dataRecords = v.trackableRecord.map((record) => ({
+  const mappedData = q.data.map((v) => {
+    const dataRecords = v.data.map((record) => ({
       id: record.id,
       value: record.value,
-      date: new Date(record.date).getTime(),
-      created_at: record.created_at,
+      timestamp: new Date(record.timestamp).getTime(),
       updated_at: record.updated_at,
     }));
     return {
@@ -130,18 +111,7 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
     };
   });
 
-  if (data.length === 0) {
-    if (info.type === "unknown") {
-      return (
-        <div className="flex h-full items-center justify-center py-10">
-          <Spinner />
-        </div>
-      );
-    }
-    return <EmptyList />;
-  }
-
-  const days = mappedData[0]?.data.map((v) => v.date) ?? [];
+  const days = mappedData[0]?.data.map((v) => v.timestamp) ?? [];
 
   const trackables = mappedData.map((_, i) => i);
 

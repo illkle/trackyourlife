@@ -1,4 +1,4 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
   bigint,
   index,
@@ -8,6 +8,7 @@ import {
   primaryKey,
   text,
   timestamp,
+  unique,
   uniqueIndex,
   uuid,
 } from "drizzle-orm/pg-core";
@@ -104,6 +105,7 @@ export const trackable_flags_relations = relations(
 export const trackable_relations = relations(trackable, ({ many }) => ({
   data: many(trackable_record),
   flags: many(trackable_flags),
+  groups: many(trackable_group),
 }));
 
 export const trackable_record = pgTable(
@@ -116,28 +118,23 @@ export const trackable_record = pgTable(
     trackable_id: uuid("trackable_id")
       .notNull()
       .references(() => trackable.id, { onDelete: "cascade" }),
-    date: timestamp("date").notNull(),
+    timestamp: timestamp("timestamp", { mode: "string" }).notNull(),
+    /* Client managed ID to enforce stuff like 1 record per day\hour\month etc. */
+    time_bucket: timestamp("time_bucket", { mode: "string" }),
     value: text("value").notNull(),
-
-    /*
-     * Only for trackables that allow multiple records per day, used to sort records.
-     * Since this application is local first and insert to PG can differ from actual creation date, value is set by the client.
-     * Stored as unix timestamp to avoid timezone issues and simplify sorting.
-     */
-    created_at: bigint("created_at", { mode: "number" }),
-    /*
-     * Used to unserstand when value was written to compare db with lazy input. Also used to choose newer record when ingesting data.
-     Stored as unix timestamp to avoid timezone issues and simplify sorting.
-     */
-    updated_at: bigint("updated_at", { mode: "number" }),
-    /*
-     * Set by external systems to identify the source of the record.
-     */
+    /* Set by external systems to identify the source of the record. */
     external_key: text("external_key"),
+    /* Used to unserstand when value was written to compare db with lazy input. Also used to choose newer record when ingesting data.
+    Stored as unix timestamp to avoid timezone issues and simplify sorting.
+    */
+    updated_at: bigint("updated_at", { mode: "number" }),
   },
   (t) => [
-    index("trackable_date_idx").on(t.trackable_id, t.date),
-    index("user_date_idx").on(t.user_id, t.date),
+    index("trackable_date_idx").on(t.trackable_id, t.timestamp),
+    index("user_date_idx").on(t.user_id, t.timestamp),
+    uniqueIndex("unique_track_time_bucket")
+      .on(t.trackable_id, t.time_bucket)
+      .where(sql`${t.time_bucket} IS NOT NULL`),
   ],
 );
 
@@ -191,6 +188,7 @@ export type DbTrackableRecordInsert = typeof trackable_record.$inferInsert;
 
 export type DbTrackableFlagsSelect = typeof trackable_flags.$inferSelect;
 export type DbTrackableFlagsInsert = typeof trackable_flags.$inferInsert;
+export type DbTrackableFlagsDelete = Omit<DbTrackableFlagsInsert, "value">;
 
 export type DbUserFlagsSelect = typeof user_flags.$inferSelect;
 export type DbUserFlagsInsert = typeof user_flags.$inferInsert;
@@ -198,12 +196,8 @@ export type DbUserFlagsInsert = typeof user_flags.$inferInsert;
 export const trackable_insert_schema = createInsertSchema(trackable);
 export const trackable_update_schema = createUpdateSchema(trackable);
 
-export const trackable_record_insert_schema = createInsertSchema(
-  trackable_record,
-  {
-    date: (s) => s.or(z.coerce.date()),
-  },
-);
+export const trackable_record_insert_schema =
+  createInsertSchema(trackable_record);
 export const trackable_record_update_schema =
   createUpdateSchema(trackable_record);
 

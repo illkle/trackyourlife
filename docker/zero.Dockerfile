@@ -1,1 +1,0 @@
-FROM registry.hub.docker.com/rocicorp/zero:0.25.8

@@ -1,13 +1,15 @@
 import { HeartIcon } from "lucide-react";
 import { m } from "motion/react";
 
-import { usePowersyncDrizzle } from "@tyl/db/client/powersync/context";
-import { deleteGroup, insertGroup } from "@tyl/db/client/powersync/trackable-group";
+import { usePowersyncDrizzle } from "@tyl/db/client/context";
+import {
+  DbTrackableGroupSelect,
+  DbTrackableSelect,
+} from "@tyl/db/client/schema-powersync";
 
 import type { ButtonVariants } from "~/@shad/components/button";
-import type { TrackableListItem } from "~/utils/useZ";
 import { Button } from "~/@shad/components/button";
-import { useUser } from "~/db/powersync-provider";
+import { useGroupHandlers } from "~/utils/useZ";
 
 export const FavoriteButton = ({
   variant = "ghost",
@@ -16,26 +18,21 @@ export const FavoriteButton = ({
 }: {
   variant?: ButtonVariants["variant"];
   onlyIcon?: boolean;
-  trackable: TrackableListItem;
+  trackable: DbTrackableSelect & { groups: DbTrackableGroupSelect[] };
 }) => {
-  const db = usePowersyncDrizzle();
-  const { userId } = useUser();
+  const { removeFromGroup, addToGroup } = useGroupHandlers();
 
-  const inFavs = trackable.trackableGroup.some(
-    (tg) => tg.group === "favorites",
-  );
+  const inFavs = trackable.groups.some((tg) => tg.group === "favorites");
 
   const favHandler = async () => {
     if (inFavs) {
-      await deleteGroup(db, {
-        user_id: userId,
-        trackable_id: trackable.id,
+      await removeFromGroup({
+        trackableId: trackable.id,
         group: "favorites",
       });
     } else {
-      await insertGroup(db, {
-        user_id: userId,
-        trackable_id: trackable.id,
+      await addToGroup({
+        trackableId: trackable.id,
         group: "favorites",
       });
     }

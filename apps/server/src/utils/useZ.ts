@@ -1,61 +1,20 @@
-/**
- * PowerSync data hooks for trackables.
- * Replaces the previous Zero-based hooks with PowerSync equivalents.
- */
-
 import { useCallback, useMemo } from "react";
 import { toCompilableQuery } from "@powersync/drizzle-driver";
 import { useQuery } from "@powersync/react";
-import { endOfDay, startOfDay } from "date-fns";
-import { and, asc, eq, gte, lte } from "drizzle-orm";
+import { endOfDay, format, startOfDay } from "date-fns";
+import { and, asc, eq, gte, lte, sql } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 
-import type {
-  TrackableGroupRow,
-  TrackableRecordRow,
-  TrackableWithData,
-  TrackableWithGroups,
-} from "@tyl/db/client/powersync/types";
-import { usePowersyncDrizzle } from "@tyl/db/client/powersync/context";
+import { usePowersyncDrizzle } from "@tyl/db/client/context";
 import {
-  deleteRecord,
-  updateRecord,
-  upsertRecord,
-} from "@tyl/db/client/powersync/trackable-record";
-import {
+  DbTrackableInsert,
   trackable,
-  trackableGroup,
-  trackableRecord,
+  trackable_group,
+  trackable_record,
 } from "@tyl/db/client/schema-powersync";
 
-import { useUser } from "~/db/powersync-provider";
-
-const generateDateTime = (date: Date) => {
-  return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0);
-};
-
-// Re-export types for backwards compatibility
-export type TrackableListItem = TrackableWithGroups;
-
-// ============================================================================
-// Date conversion utilities
-// ============================================================================
-
-/** Convert a Date to ISO string for PowerSync storage (UTC midnight) */
-const dateToISOString = (date: Date | number): string => {
-  const d = typeof date === "number" ? new Date(date) : date;
-  return new Date(
-    Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()),
-  ).toISOString();
-};
-
-// ============================================================================
-// Core hooks
-// ============================================================================
-
-/** Hook to get the PowerSync Drizzle database instance */
-export const useDb = () => {
-  return usePowersyncDrizzle();
+const dateToSQLiteString = (date: Date | number): string => {
+  return format(date, "yyyy-MM-dd HH:mm:ss.SSS");
 };
 
 // ============================================================================
@@ -63,49 +22,43 @@ export const useDb = () => {
 // ============================================================================
 
 /** Hook to get all trackables with groups */
-export const useZeroTrackablesList = (): [
-  TrackableWithGroups[],
-  { type: string },
-] => {
-  const db = usePowersyncDrizzle();
+export const useTrackablesList = () => {
+  const { db } = usePowersyncDrizzle();
 
   const trackablesQuery = useMemo(
     () =>
       toCompilableQuery(
-        db.query.trackable.findMany({ orderBy: asc(trackable.name) }),
+        db.query.trackable.findMany({
+          orderBy: [
+            sql`CASE WHEN EXISTS (
+              SELECT 1 FROM TYL_trackableGroup 
+              WHERE TYL_trackableGroup.trackable_id = ${trackable.id} 
+              AND TYL_trackableGroup."group" = 'favorites'
+            ) THEN 0 ELSE 1 END`,
+            asc(trackable.name),
+          ],
+          where: (trackable, { exists, eq, not }) =>
+            not(
+              exists(
+                db
+                  .select()
+                  .from(trackable_group)
+                  .where(
+                    and(
+                      eq(trackable_group.trackable_id, trackable.id),
+                      eq(trackable_group.group, "archived"),
+                    ),
+                  ),
+              ),
+            ),
+
+          with: { groups: true },
+        }),
       ),
     [db],
   );
-  const groupsQuery = useMemo(
-    () => toCompilableQuery(db.query.trackableGroup.findMany()),
-    [db],
-  );
 
-  const trackablesResult = useQuery(trackablesQuery);
-  const groupsResult = useQuery(groupsQuery);
-
-  const data = useMemo(() => {
-    if (!trackablesResult.data || !groupsResult.data) return [];
-
-    const groupsByTrackable = new Map<string, TrackableGroupRow[]>();
-    for (const group of groupsResult.data) {
-      const existing = groupsByTrackable.get(group.trackable_id) ?? [];
-      existing.push(group);
-      groupsByTrackable.set(group.trackable_id, existing);
-    }
-
-    return trackablesResult.data.map((t) => ({
-      ...t,
-      trackableGroup: groupsByTrackable.get(t.id) ?? [],
-    }));
-  }, [trackablesResult.data, groupsResult.data]);
-
-  const type =
-    trackablesResult.isLoading || groupsResult.isLoading
-      ? "unknown"
-      : "complete";
-
-  return [data, { type }];
+  return useQuery(trackablesQuery);
 };
 
 interface TrackableRangeParams {
@@ -114,75 +67,54 @@ interface TrackableRangeParams {
 }
 
 /** Hook to get trackables with records in a date range */
-export const useZeroTrackableListWithData = (
-  params: TrackableRangeParams,
-): [TrackableWithData[], { type: string }] => {
-  const db = usePowersyncDrizzle();
-  const startDate = dateToISOString(startOfDay(params.firstDay));
-  const endDate = dateToISOString(endOfDay(params.lastDay));
+export const useTrackableListWithData = (params: TrackableRangeParams) => {
+  const { db } = usePowersyncDrizzle();
+
+  const startISO = dateToSQLiteString(params.firstDay);
+  const endISO = dateToSQLiteString(params.lastDay);
 
   const trackablesQuery = useMemo(
     () =>
       toCompilableQuery(
-        db.query.trackable.findMany({ orderBy: asc(trackable.name) }),
-      ),
-    [db],
-  );
-  const groupsQuery = useMemo(
-    () => toCompilableQuery(db.query.trackableGroup.findMany()),
-    [db],
-  );
-  const recordsQuery = useMemo(
-    () =>
-      toCompilableQuery(
-        db.query.trackableRecord.findMany({
-          where: and(
-            gte(trackableRecord.date, startDate),
-            lte(trackableRecord.date, endDate),
-          ),
-          orderBy: [asc(trackableRecord.date), asc(trackableRecord.created_at)],
+        db.query.trackable.findMany({
+          orderBy: [
+            sql`CASE WHEN EXISTS (
+              SELECT 1 FROM TYL_trackableGroup 
+              WHERE TYL_trackableGroup.trackable_id = ${trackable.id} 
+              AND TYL_trackableGroup."group" = 'favorites'
+            ) THEN 0 ELSE 1 END`,
+            asc(trackable.name),
+          ],
+          where: (trackable, { exists, eq, not }) =>
+            not(
+              exists(
+                db
+                  .select()
+                  .from(trackable_group)
+                  .where(
+                    and(
+                      eq(trackable_group.trackable_id, trackable.id),
+                      eq(trackable_group.group, "archived"),
+                    ),
+                  ),
+              ),
+            ),
+          with: {
+            groups: true,
+            data: {
+              where: and(
+                gte(trackable_record.timestamp, startISO),
+                lte(trackable_record.timestamp, endISO),
+              ),
+              orderBy: [asc(trackable_record.timestamp)],
+            },
+          },
         }),
       ),
-    [db, startDate, endDate],
+    [db, startISO, endISO],
   );
 
-  const trackablesResult = useQuery(trackablesQuery);
-  const groupsResult = useQuery(groupsQuery);
-  const recordsResult = useQuery(recordsQuery);
-
-  const data = useMemo(() => {
-    if (!trackablesResult.data || !groupsResult.data || !recordsResult.data)
-      return [];
-
-    const groupsByTrackable = new Map<string, TrackableGroupRow[]>();
-    for (const group of groupsResult.data) {
-      const existing = groupsByTrackable.get(group.trackable_id) ?? [];
-      existing.push(group);
-      groupsByTrackable.set(group.trackable_id, existing);
-    }
-
-    const recordsByTrackable = new Map<string, TrackableRecordRow[]>();
-    for (const record of recordsResult.data) {
-      const existing = recordsByTrackable.get(record.trackable_id) ?? [];
-      existing.push(record);
-      recordsByTrackable.set(record.trackable_id, existing);
-    }
-
-    return trackablesResult.data.map((t) => ({
-      ...t,
-      trackableGroup: groupsByTrackable.get(t.id) ?? [],
-      trackableRecord: recordsByTrackable.get(t.id) ?? [],
-    }));
-  }, [trackablesResult.data, groupsResult.data, recordsResult.data]);
-
-  const type =
-    trackablesResult.isLoading ||
-    groupsResult.isLoading ||
-    recordsResult.isLoading
-      ? "unknown"
-      : "complete";
-
-  return [data, { type }];
+  return useQuery(trackablesQuery);
 };
 
 // ============================================================================
@@ -190,48 +122,21 @@ export const useZeroTrackableListWithData = (
 // ============================================================================
 
 /** Hook to get a single trackable with groups */
-export const useZeroTrackable = ({
-  id,
-}: {
-  id: string;
-}): [TrackableWithGroups | undefined, { type: string }] => {
-  const db = usePowersyncDrizzle();
+export const useTrackable = ({ id }: { id: string }) => {
+  const { db } = usePowersyncDrizzle();
 
   const trackableQuery = useMemo(
     () =>
       toCompilableQuery(
-        db.query.trackable.findMany({ where: eq(trackable.id, id) }),
-      ),
-    [db, id],
-  );
-  const groupsQuery = useMemo(
-    () =>
-      toCompilableQuery(
-        db.query.trackableGroup.findMany({
-          where: eq(trackableGroup.trackable_id, id),
+        db.query.trackable.findFirst({
+          where: eq(trackable.id, id),
+          with: { groups: true },
         }),
       ),
     [db, id],
   );
 
-  const trackableResult = useQuery(trackableQuery);
-  const groupsResult = useQuery(groupsQuery);
-
-  const data = useMemo(() => {
-    const t = trackableResult.data?.[0];
-    if (!t) return undefined;
-    return {
-      ...t,
-      trackableGroup: groupsResult.data ?? [],
-    };
-  }, [trackableResult.data, groupsResult.data]);
-
-  const type =
-    trackableResult.isLoading || groupsResult.isLoading
-      ? "unknown"
-      : "complete";
-
-  return [data, { type }];
+  return useQuery(trackableQuery);
 };
 
 interface ByIdParams extends TrackableRangeParams {
@@ -239,81 +144,27 @@ interface ByIdParams extends TrackableRangeParams {
 }
 
 /** Hook to get records for a specific trackable in a date range */
-export const useZeroTrackableData = ({ id, firstDay, lastDay }: ByIdParams) => {
-  const db = usePowersyncDrizzle();
-  const startDate = dateToISOString(startOfDay(firstDay));
-  const endDate = dateToISOString(endOfDay(lastDay));
+export const useTrackableData = ({ id, firstDay, lastDay }: ByIdParams) => {
+  const { db } = usePowersyncDrizzle();
+  const startDate = dateToSQLiteString(startOfDay(firstDay));
+  const endDate = dateToSQLiteString(endOfDay(lastDay));
 
   const query = useMemo(
     () =>
       toCompilableQuery(
         db.query.trackableRecord.findMany({
           where: and(
-            eq(trackableRecord.trackable_id, id),
-            gte(trackableRecord.date, startDate),
-            lte(trackableRecord.date, endDate),
+            eq(trackable_record.trackable_id, id),
+            gte(trackable_record.timestamp, startDate),
+            lte(trackable_record.timestamp, endDate),
           ),
-          orderBy: [asc(trackableRecord.date), asc(trackableRecord.created_at)],
+          orderBy: [asc(trackable_record.timestamp)],
         }),
       ),
     [db, id, startDate, endDate],
   );
 
   return useQuery(query);
-};
-
-// ============================================================================
-// Group hooks
-// ============================================================================
-
-/** Hook to get all trackables in a group */
-export const useZeroGroupList = (group: string) => {
-  const db = usePowersyncDrizzle();
-  const query = useMemo(
-    () =>
-      toCompilableQuery(
-        db.query.trackableGroup.findMany({
-          where: eq(trackableGroup.group, group),
-        }),
-      ),
-    [db, group],
-  );
-  const result = useQuery(query);
-  return [
-    result.data ?? [],
-    { type: result.isLoading ? "unknown" : "complete" },
-  ] as const;
-};
-
-/** Hook to get a Set of trackable IDs in a group */
-export const useZeroGroupSet = (group: string) => {
-  const [data] = useZeroGroupList(group);
-  return useMemo(
-    () => new Set<string>(data.map((f) => f.trackable_id)),
-    [data],
-  );
-};
-
-/** Hook to check if a trackable is in a group */
-export const useZeroInGroup = (trackableId: string, group: string) => {
-  const db = usePowersyncDrizzle();
-  const query = useMemo(
-    () =>
-      toCompilableQuery(
-        db.query.trackableGroup.findMany({
-          where: and(
-            eq(trackableGroup.trackable_id, trackableId),
-            eq(trackableGroup.group, group),
-          ),
-        }),
-      ),
-    [db, trackableId, group],
-  );
-  const result = useQuery(query);
-  return [
-    result.data ?? [],
-    { type: result.isLoading ? "unknown" : "complete" },
-  ] as const;
 };
 
 // ============================================================================
@@ -328,57 +179,34 @@ export const useTrackableDay = ({
   date: Date;
   trackableId: string;
 }) => {
-  const db = usePowersyncDrizzle();
-  const startDate = dateToISOString(startOfDay(date));
-  const endDate = dateToISOString(endOfDay(date));
+  const { db } = usePowersyncDrizzle();
+  const startDate = dateToSQLiteString(startOfDay(date));
+  const endDate = dateToSQLiteString(endOfDay(date));
 
-  const trackableQuery = useMemo(
+  const q = useMemo(
     () =>
       toCompilableQuery(
-        db.query.trackable.findMany({ where: eq(trackable.id, trackableId) }),
-      ),
-    [db, trackableId],
-  );
-  const recordsQuery = useMemo(
-    () =>
-      toCompilableQuery(
-        db.query.trackableRecord.findMany({
-          where: and(
-            eq(trackableRecord.trackable_id, trackableId),
-            gte(trackableRecord.date, startDate),
-            lte(trackableRecord.date, endDate),
-          ),
-          orderBy: [
-            asc(trackableRecord.date),
-            asc(trackableRecord.value),
-            asc(trackableRecord.created_at),
-          ],
+        db.query.trackable.findFirst({
+          where: eq(trackable.id, trackableId),
+          with: {
+            data: {
+              where: and(
+                eq(trackable_record.trackable_id, trackableId),
+                gte(trackable_record.timestamp, startDate),
+                lte(trackable_record.timestamp, endDate),
+              ),
+              orderBy: [
+                asc(trackable_record.timestamp),
+                asc(trackable_record.value),
+              ],
+            },
+          },
         }),
       ),
     [db, trackableId, startDate, endDate],
   );
 
-  const trackableResult = useQuery(trackableQuery);
-  const recordsResult = useQuery(recordsQuery);
-
-  const data = useMemo(() => {
-    const t = trackableResult.data?.[0];
-    if (!t) return undefined;
-    return {
-      ...t,
-      trackableRecord: recordsResult.data ?? [],
-    };
-  }, [trackableResult.data, recordsResult.data]);
-
-  return [
-    data,
-    {
-      type:
-        trackableResult.isLoading || recordsResult.isLoading
-          ? "unknown"
-          : "complete",
-    },
-  ] as const;
+  return useQuery(q);
 };
 
 // ============================================================================
@@ -394,9 +222,8 @@ export const useRecordUpdateHandler = ({
   trackableId: string;
   type?: string;
 }) => {
-  const db = usePowersyncDrizzle();
-  const { userId } = useUser();
-  const dateString = dateToISOString(date);
+  const { db, userID } = usePowersyncDrizzle();
+  const dateString = dateToSQLiteString(date);
 
   return useCallback(
     async ({
@@ -409,35 +236,110 @@ export const useRecordUpdateHandler = ({
       updatedAt?: number;
     }) => {
       if (recordId) {
-        await updateRecord(db, {
-          id: recordId,
-          value,
-          updated_at: updatedAt,
-        });
+        await db
+          .update(trackable_record)
+          .set({
+            updated_at: updatedAt,
+            value,
+          })
+          .where(eq(trackable_record.id, recordId));
+
         return recordId;
-      } else {
-        const rid = uuidv4();
-        await upsertRecord(db, {
-          id: rid,
-          user_id: userId,
-          trackable_id: trackableId,
-          date: dateString,
-          value,
-        });
-        return rid;
       }
+
+      const id = uuidv4();
+      await db.insert(trackable_record).values({
+        id: id,
+        user_id: userID,
+        trackable_id: trackableId,
+        timestamp: dateString,
+        time_bucket: dateString,
+        updated_at: updatedAt,
+        value,
+        external_key: "",
+      });
+      return id;
     },
-    [db, trackableId, dateString, userId],
+    [db, trackableId, dateString, userID],
   );
 };
 
 /** Hook to get a record delete handler */
 export const useRecordDeleteHandler = () => {
-  const db = usePowersyncDrizzle();
+  const { db } = usePowersyncDrizzle();
   return useCallback(
     async (recordId: string) => {
-      await deleteRecord(db, recordId);
+      await db
+        .delete(trackable_record)
+        .where(eq(trackable_record.id, recordId));
     },
     [db],
   );
+};
+
+export const useGroupHandlers = () => {
+  const { db, userID } = usePowersyncDrizzle();
+
+  const addToGroup = async ({
+    trackableId,
+    group,
+  }: {
+    trackableId: string;
+    group: string;
+  }) => {
+    await db.insert(trackable_group).values({
+      id: uuidv4(),
+      user_id: userID,
+      trackable_id: trackableId,
+      group,
+    });
+  };
+
+  const removeFromGroup = async ({
+    trackableId,
+    group,
+  }: {
+    trackableId: string;
+    group: string;
+  }) => {
+    await db
+      .delete(trackable_group)
+      .where(
+        and(
+          eq(trackable_group.user_id, userID),
+          eq(trackable_group.trackable_id, trackableId),
+          eq(trackable_group.group, group),
+        ),
+      );
+  };
+
+  return { addToGroup, removeFromGroup };
+};
+
+export const useTrackableHandlers = () => {
+  const { db, userID } = usePowersyncDrizzle();
+
+  const deleteTrackable = async (id: string) => {
+    await db.delete(trackable).where(eq(trackable.id, id));
+  };
+
+  const updateTrackableName = async ({
+    id,
+    name,
+  }: {
+    id: string;
+    name: string;
+  }) => {
+    await db.update(trackable).set({ name }).where(eq(trackable.id, id));
+  };
+
+  const createTrackable = async (
+    data: Omit<DbTrackableInsert, "user_id" | "id">,
+  ) => {
+    const id = uuidv4();
+    await db.insert(trackable).values({ ...data, user_id: userID, id });
+    return id;
+  };
+
+  return { deleteTrackable, updateTrackableName, createTrackable };
 };

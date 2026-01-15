@@ -11,10 +11,13 @@ import {
 import { toCompilableQuery } from "@powersync/drizzle-driver";
 import { useQuery } from "@powersync/react";
 import { Store, useStore } from "@tanstack/react-store";
+import { v4 as uuidv4 } from "uuid";
 
-import type { TrackableFlagsRow } from "@tyl/db/client/powersync/types";
-import { usePowersyncDrizzle } from "@tyl/db/client/powersync/context";
-import { upsertFlag } from "@tyl/db/client/powersync/trackable-flags";
+import { usePowersyncDrizzle } from "@tyl/db/client/context";
+import {
+  DbTrackableFlagsSelect,
+  trackable_flags,
+} from "@tyl/db/client/schema-powersync";
 
 import type {
   ITrackableFlagKey,
@@ -26,7 +29,6 @@ import {
   FlagDefaults,
   FlagsValidators,
 } from "~/components/Trackable/TrackableProviders/trackableFlags";
-import { useUser } from "~/db/powersync-provider";
 
 /*
  * This provides a kv store that is used for trackable settings.
@@ -65,7 +67,7 @@ type KeyStorage = Record<string, Partial<ITrackableFlagsKV>>;
 /*
  * Takes a list of flags and returns an object of flags
  */
-export const createFlagsObject = (flags: readonly TrackableFlagsRow[]) => {
+export const createFlagsObject = (flags: readonly DbTrackableFlagsSelect[]) => {
   const flagMap: KeyStorage = {};
 
   flags.forEach((flag) => {
@@ -103,7 +105,7 @@ const TrackableFlagsProviderNonMemo = ({
   children: ReactNode;
   trackableIds?: string[];
 }) => {
-  const db = usePowersyncDrizzle();
+  const { db } = usePowersyncDrizzle();
   const id = useId();
 
   // Query all flags (PowerSync will sync only user's data based on sync rules)
@@ -163,8 +165,7 @@ export const useTrackableFlag = <K extends ITrackableFlagKey>(
 };
 
 export const useSetTrackableFlag = () => {
-  const db = usePowersyncDrizzle();
-  const { userId } = useUser();
+  const { db, userID } = usePowersyncDrizzle();
 
   const setFlag: SetFlagFunction = useCallback(
     async (trackableId, key, value) => {
@@ -174,14 +175,28 @@ export const useSetTrackableFlag = () => {
         throw new Error("Invalid flag value");
       }
 
-      await upsertFlag(db, {
-        user_id: userId,
-        trackable_id: trackableId,
-        key: key,
-        value: JSON.stringify(value),
-      });
+      await db
+        .insert(trackable_flags)
+        .values({
+          id: uuidv4(),
+          user_id: userID,
+          trackable_id: trackableId,
+          key,
+          value: validated.data as any,
+        })
+        .onConflictDoUpdate({
+          target: [
+            trackable_flags.user_id,
+            trackable_flags.trackable_id,
+            trackable_flags.key,
+          ],
+          set: {
+            key,
+            value: validated.data as any,
+          },
+        });
     },
-    [db, userId],
+    [db, userID],
   );
 
   return setFlag;

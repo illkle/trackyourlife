@@ -9,8 +9,6 @@ import {
   User2,
 } from "lucide-react";
 
-import { sortTrackableList } from "@tyl/helpers/trackables";
-
 import { Button } from "~/@shad/components/button";
 import {
   DropdownMenuContent,
@@ -35,23 +33,18 @@ import { CoreLinks } from "~/components/Layout/Header";
 import { ThemeSwitcher } from "~/components/UserAppSettings/themeSwitcher";
 import { RenderTrackableIcon } from "~/utils/trackableIcons";
 import { invalidateSession, useSessionAuthed } from "~/utils/useSessionInfo";
-import { useZeroTrackablesList } from "~/utils/useZ";
+import { useTrackablesList } from "~/utils/useZ";
 
 const TrackablesMiniList = () => {
-  const [data] = useZeroTrackablesList();
+  const q = useTrackablesList();
 
   const loc = useLocation();
 
-  if (data.length === 0) return <div></div>;
-
-  const sorted = sortTrackableList(
-    // Temporary fix for bugged query
-    data.filter((tr) => !tr.trackableGroup.some((v) => v.group === "archived")),
-  );
+  if (q.data.length === 0) return <div>None {q.error?.message}</div>;
 
   return (
     <SidebarMenu>
-      {sorted.map((tr) => {
+      {q.data.map((tr) => {
         return (
           <SidebarMenuItem key={tr.id}>
             <SidebarMenuButton asChild isActive={loc.pathname.includes(tr.id)}>
@@ -74,7 +67,7 @@ const TrackablesMiniList = () => {
                     <div>{tr.name || "Unnamed"}</div>
                   </div>
 
-                  {tr.trackableGroup.some((v) => v.group === "favorites") && (
+                  {tr.groups.some((v) => v.group === "favorites") && (
                     <div>
                       <HeartIcon fill="currentColor" size={16} />
                     </div>
