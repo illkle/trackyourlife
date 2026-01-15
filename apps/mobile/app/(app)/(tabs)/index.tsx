@@ -1,4 +1,3 @@
-import { Text, View } from "react-native";
 import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { Button } from "@/components/ui/button";
 import { setupPowerSync } from "@/db/powersync";

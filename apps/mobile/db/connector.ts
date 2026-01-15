@@ -31,7 +31,7 @@ export class Connector implements PowerSyncBackendConnector {
 
     for (const op of transaction.crud) {
       // The data that needs to be changed in the remote db
-      const record = { ...op.opData, id: op.id };
+      const _record = { ...op.opData, id: op.id };
       switch (op.op) {
         case UpdateType.PUT:
           // TODO: Instruct your backend API to CREATE a record

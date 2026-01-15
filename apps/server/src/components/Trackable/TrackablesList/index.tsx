@@ -1,4 +1,4 @@
-import { Fragment, useMemo } from "react";
+import { Fragment } from "react";
 import { cn } from "@shad/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { format, isLastDayOfMonth, subDays } from "date-fns";
@@ -30,7 +30,6 @@ const EmptyList = () => {
 
 const TrackablesList = ({
   daysToShow,
-  archived,
 }: {
   daysToShow: number;
   archived: boolean;

@@ -4,7 +4,7 @@
  */
 
 import type { ReactNode } from "react";
-import { createContext, useContext, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { wrapPowerSyncWithDrizzle } from "@powersync/drizzle-driver";
 import { PowerSyncContext } from "@powersync/react";
 import {

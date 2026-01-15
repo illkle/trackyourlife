@@ -6,7 +6,6 @@ import {
   useEffect,
   useId,
   useMemo,
-  useState,
 } from "react";
 import { toCompilableQuery } from "@powersync/drizzle-driver";
 import { useQuery } from "@powersync/react";

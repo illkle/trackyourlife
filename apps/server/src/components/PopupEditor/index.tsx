@@ -36,8 +36,6 @@ export const PopupEditor = ({
     data: [trackable],
   } = q;
 
-  const { sessionInfo } = useSessionAuthed();
-
   const onChange = useRecordUpdateHandler({
     date,
     trackableId,

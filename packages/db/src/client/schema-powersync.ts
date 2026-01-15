@@ -93,11 +93,11 @@ export const todos = sqliteTable("todos", {
   created_at: text("created_at"),
 });
 
-export const listsRelations = relations(lists, ({ one, many }) => ({
+export const listsRelations = relations(lists, ({ many }) => ({
   todos: many(todos),
 }));
 
-export const todosRelations = relations(todos, ({ one, many }) => ({
+export const todosRelations = relations(todos, ({ one }) => ({
   list: one(lists, {
     fields: [todos.list_id],
     references: [lists.id],

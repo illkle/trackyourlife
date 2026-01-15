@@ -53,7 +53,6 @@ export const DayCellRouter = ({
   // TODO: memo?
   const { id, type } = useTrackableMeta();
   const trackingStart = useTrackableFlag(id, "AnyTrackingStart");
-  const { sessionInfo } = useSessionAuthed();
 
   const now = new Date();
   const isToday = isSameDay(timestamp, now);

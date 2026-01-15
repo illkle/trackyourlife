@@ -5,7 +5,6 @@ import { format } from "date-fns";
 import type { PureDataRecord } from "@tyl/helpers/trackables";
 import {
   DbTrackableGroupSelect,
-  DbTrackableRecordSelect,
   DbTrackableSelect,
 } from "@tyl/db/client/schema-powersync";
 

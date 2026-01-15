@@ -6,6 +6,7 @@ import debounce from "lodash/debounce";
 export const useAllowAnimation = (animationDuration: number) => {
   const [isAllowedToAnimate, setIsAllowedToAnimate] = useState(false);
 
+  // oxlint-disable-next-line eslint-plugin-react-hooks/exhaustive-deps
   const resetAnimation = useCallback(
     debounce(() => {
       setIsAllowedToAnimate(false);

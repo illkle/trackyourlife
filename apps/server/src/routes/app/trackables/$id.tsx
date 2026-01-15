@@ -15,8 +15,6 @@ import {
 } from "lucide-react";
 import { z } from "zod/v4";
 
-import { usePowersyncDrizzle } from "@tyl/db/client/context";
-
 import type { ITrackableFlagType } from "~/components/Trackable/TrackableProviders/trackableFlags";
 import { AlertDialogTrigger } from "~/@shad/components/alert-dialog";
 import { Button } from "~/@shad/components/button";

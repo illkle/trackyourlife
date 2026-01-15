@@ -89,7 +89,7 @@ const register = async (
  */
 const logout = async (page: Page) => {
   // Open sidebar if on mobile or collapsed
-  const sidebarToggle = page
+  page
     .getByRole("button")
     .filter({ has: page.locator("svg") })
     .first();
@@ -116,20 +116,20 @@ const logout = async (page: Page) => {
  * Extended test with authentication fixtures
  */
 export const test = base.extend<AuthFixtures>({
-  testUser: async ({}, use) => {
+  testUser: async (_fixtures, use) => {
     const user = generateTestUser();
     await use(user);
   },
 
-  login: async ({}, use) => {
+  login: async (_fixtures, use) => {
     await use(login);
   },
 
-  register: async ({}, use) => {
+  register: async (_fixtures, use) => {
     await use(register);
   },
 
-  logout: async ({}, use) => {
+  logout: async (_fixtures, use) => {
     await use(logout);
   },
 

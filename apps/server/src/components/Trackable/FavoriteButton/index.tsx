@@ -1,7 +1,6 @@
 import { HeartIcon } from "lucide-react";
 import { m } from "motion/react";
 
-import { usePowersyncDrizzle } from "@tyl/db/client/context";
 import {
   DbTrackableGroupSelect,
   DbTrackableSelect,

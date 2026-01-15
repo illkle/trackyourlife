@@ -1,7 +1,5 @@
-import { CrudBatch } from "@powersync/common";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { auth } from "~/auth/server";
 import {
   applyCrudTrackable,
   applyCrudTrackableFlags,
@@ -10,6 +8,8 @@ import {
   applyCrudUserFlags,
   SyncEntry,
 } from "@tyl/db/server/powersync-apply";
+
+import { auth } from "~/auth/server";
 
 export const Route = createFileRoute("/api/powersync/syncbatch")({
   server: {
