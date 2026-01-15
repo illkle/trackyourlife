@@ -10,7 +10,6 @@ import type {
   INumberProgressBounds,
 } from "@tyl/db/jsonValidators";
 
-import type { DbTrackableSelect } from "../../db/dist/server/schema";
 import { range } from "./animation";
 import { presetsMap } from "./colorPresets";
 import { getColorAtPosition } from "./colorTools";
@@ -153,8 +152,3 @@ export class NumberProgressMapper {
     return range(this.progress.min, this.progress.max, 0, 100, val);
   }
 }
-
-interface Group {
-  readonly group: string;
-}
-type GroupArray = readonly Group[];

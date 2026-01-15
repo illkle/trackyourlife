@@ -1,6 +1,5 @@
 import { useState } from "react";
 
-import { usePowersyncDrizzle } from "@tyl/db/client/context";
 import { DbTrackableSelect } from "@tyl/db/client/schema-powersync";
 
 import {

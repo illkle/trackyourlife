@@ -94,7 +94,7 @@ export const ViewController = ({
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [navigate, toPrev, toNext]);
+  }, [navigate, toPrev, toNext, toPrevYear, toNextYear]);
 
   const [switchingYears, setSwitchingYears] = useState(false);
 

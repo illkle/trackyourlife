@@ -61,8 +61,6 @@ test.describe("Trackable Views", () => {
         "Sunday",
       ];
 
-      // At least one day name should be visible
-      let foundDayName = false;
       for (const day of dayNames) {
         await expect(page.getByText(day).first()).toBeVisible({
           timeout: 1000,
@@ -148,7 +146,6 @@ test.describe("Trackable Views", () => {
     test("should navigate to previous month", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
       const now = new Date();
-      const currentMonth = format(now, "MMMM");
       const previousMonth = format(subMonths(now, 1), "MMMM");
 
       await page.goto(`/app/trackables/${trackableId}/view`);
