@@ -9,7 +9,7 @@ test.describe("Data Persistence", () => {
 
       // Create boolean trackable
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+
       await page
         .getByPlaceholder("Unnamed Trackable")
         .fill(`E2E Persist Bool ${Date.now()}`);
@@ -21,7 +21,6 @@ test.describe("Data Persistence", () => {
 
       // Go to view and set data
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
 
       const dayCell = page.locator("button[data-value]").first();
       await dayCell.click();
@@ -31,7 +30,6 @@ test.describe("Data Persistence", () => {
 
       // Reload page
       await page.reload();
-      await page.waitForLoadState("networkidle");
 
       // Data should persist
       const reloadedCell = page.locator("button[data-value='true']").first();
@@ -45,7 +43,7 @@ test.describe("Data Persistence", () => {
 
       // Create number trackable
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+
       await page
         .getByPlaceholder("Unnamed Trackable")
         .fill(`E2E Persist Num ${Date.now()}`);
@@ -57,7 +55,6 @@ test.describe("Data Persistence", () => {
 
       // Go to view and set data
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
 
       // Find and fill a day cell for number input
       const dayCell = page.locator("[data-number-cell]").first();
@@ -75,7 +72,6 @@ test.describe("Data Persistence", () => {
 
       // Reload page
       await page.reload();
-      await page.waitForLoadState("networkidle");
 
       // Data should persist
       const reloadedCell = page.locator('[data-empty="false"]').first();
@@ -90,7 +86,7 @@ test.describe("Data Persistence", () => {
 
       // Create text trackable
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+
       await page
         .getByPlaceholder("Unnamed Trackable")
         .fill(`E2E Persist Text ${Date.now()}`);
@@ -102,7 +98,6 @@ test.describe("Data Persistence", () => {
 
       // Go to view and set data
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
 
       // Click on day 1 button to open editor
       const dayCell = page.locator("[data-text-cell]").first();
@@ -118,7 +113,6 @@ test.describe("Data Persistence", () => {
 
       // Reload page
       await page.reload();
-      await page.waitForLoadState("networkidle");
 
       // Data should persist - click to open and verify
       await dayCell.click();
@@ -136,7 +130,7 @@ test.describe("Data Persistence", () => {
 
       // Create boolean trackable
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+
       await page
         .getByPlaceholder("Unnamed Trackable")
         .fill(`E2E Multi Day ${Date.now()}`);
@@ -148,7 +142,6 @@ test.describe("Data Persistence", () => {
 
       // Go to view
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
 
       const dayCells = page.locator("[data-boolean-cell]");
 
@@ -169,7 +162,6 @@ test.describe("Data Persistence", () => {
       // Reload page
       await page.waitForTimeout(500);
       await page.reload();
-      await page.waitForLoadState("networkidle");
 
       // All toggled cells should still be true
       const trueCells = page.locator("button[data-value='true']");
@@ -186,7 +178,7 @@ test.describe("Data Persistence", () => {
 
       // Create a trackable first
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+
       await page
         .getByPlaceholder("Unnamed Trackable")
         .fill(`E2E Loading ${Date.now()}`);
@@ -216,7 +208,6 @@ test.describe("Data Persistence", () => {
 
       // Fresh user should have no trackables
       await page.goto("/app/trackables");
-      await page.waitForLoadState("networkidle");
 
       // Should show empty state
       await expect(
@@ -231,7 +222,7 @@ test.describe("Data Persistence", () => {
 
       // Create a trackable
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+
       await page
         .getByPlaceholder("Unnamed Trackable")
         .fill(`E2E Spinner ${Date.now()}`);
@@ -252,7 +243,6 @@ test.describe("Data Persistence", () => {
       ]);
 
       // Eventually should show content
-      await page.waitForLoadState("networkidle");
     });
   });
 
@@ -265,7 +255,7 @@ test.describe("Data Persistence", () => {
 
       // Create boolean trackable
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
       // Boolean type is selected by default, no need to click
       await page.getByRole("button", { name: "Create" }).click();
@@ -275,7 +265,6 @@ test.describe("Data Persistence", () => {
 
       // Go to detail view and set data
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
 
       const dayCell = page.locator("button[data-value]").last();
       await dayCell.click();
@@ -285,7 +274,6 @@ test.describe("Data Persistence", () => {
 
       // Go to trackables list
       await page.goto("/app/trackables");
-      await page.waitForLoadState("networkidle");
 
       // The same day should show as checked in the mini row
       await expect(page.getByText(trackableName).first()).toBeVisible({
@@ -307,7 +295,7 @@ test.describe("Data Persistence", () => {
 
       // Create boolean trackable
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
       // Boolean type is selected by default, no need to click
       await page.getByRole("button", { name: "Create" }).click();
@@ -317,7 +305,6 @@ test.describe("Data Persistence", () => {
 
       // Go to detail view and set data
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
 
       const dayCell = page.locator("button[data-value]").last();
       await dayCell.click();
@@ -327,7 +314,6 @@ test.describe("Data Persistence", () => {
 
       // Go to home page
       await page.goto("/app");
-      await page.waitForLoadState("networkidle");
 
       // The same data should be visible (use .first() to avoid strict mode with duplicate elements)
       await expect(page.getByText(trackableName).first()).toBeVisible({
@@ -348,7 +334,7 @@ test.describe("Data Persistence", () => {
 
       // Create boolean trackable
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+
       await page
         .getByPlaceholder("Unnamed Trackable")
         .fill(`E2E Navigate ${Date.now()}`);
@@ -360,7 +346,6 @@ test.describe("Data Persistence", () => {
 
       // Set data
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
 
       const dayCell = page.locator("button[data-value]").first();
       await dayCell.click();
@@ -370,15 +355,12 @@ test.describe("Data Persistence", () => {
 
       // Navigate to settings
       await page.goto("/app/settings");
-      await page.waitForLoadState("networkidle");
 
       // Navigate to home
       await page.goto("/app");
-      await page.waitForLoadState("networkidle");
 
       // Navigate back to trackable
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
 
       // Data should still be there
       const persistedCell = page.locator("button[data-value='true']").first();
@@ -392,7 +374,7 @@ test.describe("Data Persistence", () => {
 
       // Create boolean trackable
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+
       await page
         .getByPlaceholder("Unnamed Trackable")
         .fill(`E2E BackForward ${Date.now()}`);
@@ -404,7 +386,6 @@ test.describe("Data Persistence", () => {
 
       // Set data
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
 
       const dayCell = page.locator("button[data-value]").first();
       await dayCell.click();
@@ -416,11 +397,9 @@ test.describe("Data Persistence", () => {
 
       // Navigate to another page
       await page.goto("/app");
-      await page.waitForLoadState("networkidle");
 
       // Go back
       await page.goBack();
-      await page.waitForLoadState("networkidle");
 
       // Data should still be there
       const persistedCell = page.locator("button[data-value='true']").first();
@@ -436,7 +415,7 @@ test.describe("Data Persistence", () => {
 
       // Create boolean trackable
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+
       await page
         .getByPlaceholder("Unnamed Trackable")
         .fill(`E2E Realtime ${Date.now()}`);
@@ -447,7 +426,6 @@ test.describe("Data Persistence", () => {
       const trackableId = url.match(/trackables\/([^/]+)/)?.[1];
 
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
 
       const dayCell = page.locator("button[data-value]").first();
 

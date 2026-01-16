@@ -16,7 +16,6 @@ import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/Trac
 import TrackableProvider, {
   useTrackableMeta,
 } from "~/components/Trackable/TrackableProviders/TrackableProvider";
-import { useSessionAuthed } from "~/utils/useSessionInfo";
 import {
   useRecordDeleteHandler,
   useRecordUpdateHandler,

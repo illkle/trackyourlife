@@ -1,3 +1,4 @@
+// oxlint-disable no-empty-pattern
 import type { Page } from "@playwright/test";
 import { test as base, expect } from "@playwright/test";
 
@@ -116,20 +117,20 @@ const logout = async (page: Page) => {
  * Extended test with authentication fixtures
  */
 export const test = base.extend<AuthFixtures>({
-  testUser: async (_fixtures, use) => {
+  testUser: async ({}, use) => {
     const user = generateTestUser();
     await use(user);
   },
 
-  login: async (_fixtures, use) => {
+  login: async ({}, use) => {
     await use(login);
   },
 
-  register: async (_fixtures, use) => {
+  register: async ({}, use) => {
     await use(register);
   },
 
-  logout: async (_fixtures, use) => {
+  logout: async ({}, use) => {
     await use(logout);
   },
 

@@ -8,7 +8,6 @@ import type { PureDataRecord } from "@tyl/helpers/trackables";
 import { DayCellTextPopup } from "~/components/DayCell/DayCellTextPopup";
 import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
-import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { useRecordDeleteHandler, useRecordUpdateHandler } from "~/utils/useZ";
 import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
