@@ -24,11 +24,11 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "@turbo/gen": "2.6.1",
+    "@turbo/gen": "2.7.4",
     "@tyl/prettier-config": "workspace:*",
     "oxlint": "^1.39.0",
     "prettier": "catalog:",
-    "turbo": "2.6.1",
+    "turbo": "2.7.4",
     "typescript": "catalog:"
   },
   "prettier": "@tyl/prettier-config",
