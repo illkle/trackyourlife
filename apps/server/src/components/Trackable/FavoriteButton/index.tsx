@@ -38,20 +38,24 @@ export const FavoriteButton = ({
   };
 
   return (
-    <Button asChild variant={variant} onClick={() => void favHandler()}>
-      <m.button layout transition={{ ease: "circOut" }}>
-        {inFavs ? (
-          <>
-            <HeartIcon className="iconFill" fill="currentColor" size={16} />
-            {!onlyIcon && <span className="max-md:hidden">Unfavorite</span>}
-          </>
-        ) : (
-          <>
-            <HeartIcon size={16} />
-            {!onlyIcon && <span className="max-md:hidden">Favorite</span>}
-          </>
-        )}
-      </m.button>
-    </Button>
+    <Button
+      render={
+        <m.button layout transition={{ ease: "circOut" }}>
+          {inFavs ? (
+            <>
+              <HeartIcon className="iconFill" fill="currentColor" size={16} />
+              {!onlyIcon && <span className="max-md:hidden">Unfavorite</span>}
+            </>
+          ) : (
+            <>
+              <HeartIcon size={16} />
+              {!onlyIcon && <span className="max-md:hidden">Favorite</span>}
+            </>
+          )}
+        </m.button>
+      }
+      variant={variant}
+      onClick={() => void favHandler()}
+    ></Button>
   );
 };

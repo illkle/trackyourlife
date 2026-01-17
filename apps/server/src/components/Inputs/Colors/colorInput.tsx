@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import { PopoverContent } from "@radix-ui/react-popover";
 
 import type { IColorValue } from "@tyl/db/jsonValidators";
 import { presetsMap } from "@tyl/helpers/colorPresets";
@@ -12,7 +11,11 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/@shad/components/drawer";
-import { Popover, PopoverTrigger } from "~/@shad/components/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "~/@shad/components/popover";
 import { ColorDisplay } from "~/components/Inputs/Colors/colorDisplay";
 import ColorPicker from "~/components/Inputs/Colors/colorPicker";
 import { useLinkedValue } from "~/utils/useDbLinkedValue";
@@ -45,14 +48,13 @@ const ColorInput = ({
 
           <PopoverContent
             side="right"
-            className="border-border bg-popover text-popover-foreground box-border overflow-hidden rounded-md border p-3 shadow-sm"
+            className="border-border bg-popover text-popover-foreground sm:w-md box-border w-[300px] overflow-hidden rounded-md border p-3 shadow-sm"
           >
             <ColorPicker
               value={internalValue}
               onChange={async (v) => {
                 await updateHandler(v);
               }}
-              className="max-w-[300px] sm:max-w-md"
             />
           </PopoverContent>
         </Popover>

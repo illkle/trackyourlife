@@ -1,4 +1,3 @@
-import { DropdownMenu } from "@radix-ui/react-dropdown-menu";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation } from "@tanstack/react-router";
 import {
@@ -11,6 +10,7 @@ import {
 
 import { Button } from "~/@shad/components/button";
 import {
+  DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
@@ -47,34 +47,37 @@ const TrackablesMiniList = () => {
       {q.data.map((tr) => {
         return (
           <SidebarMenuItem key={tr.id}>
-            <SidebarMenuButton asChild isActive={loc.pathname.includes(tr.id)}>
-              <Link
-                key={tr.id}
-                to={"/app/trackables/$id/view"}
-                params={{ id: tr.id }}
-                search={(prev) => ({
-                  ...prev,
-                })}
-              >
-                <div className="flex w-full items-center justify-between gap-2">
-                  <div className="justify-baseline flex items-center gap-2 truncate">
-                    <div className="opacity-70">
-                      <RenderTrackableIcon
-                        size={16}
-                        type={tr.type as "number" | "boolean" | "text"}
-                      />
+            <SidebarMenuButton
+              render={
+                <Link
+                  key={tr.id}
+                  to={"/app/trackables/$id/view"}
+                  params={{ id: tr.id }}
+                  search={(prev) => ({
+                    ...prev,
+                  })}
+                >
+                  <div className="flex w-full items-center justify-between gap-2">
+                    <div className="justify-baseline flex items-center gap-2 truncate">
+                      <div className="opacity-70">
+                        <RenderTrackableIcon
+                          size={16}
+                          type={tr.type as "number" | "boolean" | "text"}
+                        />
+                      </div>
+                      <div>{tr.name || "Unnamed"}</div>
                     </div>
-                    <div>{tr.name || "Unnamed"}</div>
-                  </div>
 
-                  {tr.groups.some((v) => v.group === "favorites") && (
-                    <div>
-                      <HeartIcon fill="currentColor" size={16} />
-                    </div>
-                  )}
-                </div>
-              </Link>
-            </SidebarMenuButton>
+                    {tr.groups.some((v) => v.group === "favorites") && (
+                      <div>
+                        <HeartIcon fill="currentColor" size={16} />
+                      </div>
+                    )}
+                  </div>
+                </Link>
+              }
+              isActive={loc.pathname.includes(tr.id)}
+            />
           </SidebarMenuItem>
         );
       })}
@@ -94,9 +97,10 @@ export const AppSidebar = () => {
         <SidebarMenu>
           {CoreLinks.map((item) => (
             <SidebarMenuItem key={item.to}>
-              <SidebarMenuButton asChild isActive={loc.pathname === item.to}>
-                <Link {...item}>{item.label}</Link>
-              </SidebarMenuButton>
+              <SidebarMenuButton
+                render={<Link {...item}>{item.label}</Link>}
+                isActive={loc.pathname === item.to}
+              ></SidebarMenuButton>
             </SidebarMenuItem>
           ))}
         </SidebarMenu>
@@ -113,16 +117,15 @@ export const AppSidebar = () => {
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
-                  <User2 /> {sessionInfo.user.name}
-                  <ChevronUp className="ml-auto" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                className="w-(--radix-popper-anchor-width)"
-              >
+              <DropdownMenuTrigger
+                render={
+                  <SidebarMenuButton className="w-full">
+                    <User2 /> {sessionInfo.user.name}
+                    <ChevronUp className="ml-auto" />
+                  </SidebarMenuButton>
+                }
+              />
+              <DropdownMenuContent side="top">
                 <ThemeSwitcher className="mb-2 w-full" />
                 <DropdownMenuItem
                   onClick={async () => {

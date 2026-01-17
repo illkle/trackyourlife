@@ -156,11 +156,13 @@ const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
   return (
     <DeleteButton className="w-full" id={id}>
       <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button variant="outline">
-            <MoreHorizontalIcon className="h-4 w-4" />
-          </Button>
-        </DropdownMenuTrigger>
+        <DropdownMenuTrigger
+          render={
+            <Button variant="outline">
+              <MoreHorizontalIcon className="h-4 w-4" />
+            </Button>
+          }
+        />
         <DropdownMenuContent side="bottom" align="end" className="min-w-44">
           <DropdownMenuSub>
             <DropdownMenuSubTrigger>
@@ -204,11 +206,14 @@ const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
             )}
           </DropdownMenuItem>
 
-          <AlertDialogTrigger name="delete" asChild>
-            <DropdownMenuItem className="cursor-pointer">
-              <TrashIcon className="mr-1" /> Delete
-            </DropdownMenuItem>
-          </AlertDialogTrigger>
+          <AlertDialogTrigger
+            name="delete"
+            render={
+              <DropdownMenuItem className="cursor-pointer">
+                <TrashIcon className="mr-1" /> Delete
+              </DropdownMenuItem>
+            }
+          ></AlertDialogTrigger>
         </DropdownMenuContent>
       </DropdownMenu>
     </DeleteButton>

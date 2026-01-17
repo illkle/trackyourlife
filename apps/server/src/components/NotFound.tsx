@@ -12,9 +12,10 @@ export function NotFound() {
         <Button variant={"secondary"} onClick={() => window.history.back()}>
           Go back
         </Button>
-        <Button asChild variant={"secondary"}>
-          <Link to="/">Start Over</Link>
-        </Button>
+        <Button
+          render={<Link to="/">Start Over</Link>}
+          variant={"secondary"}
+        ></Button>
       </p>
     </div>
   );

@@ -109,25 +109,25 @@ export const ViewController = ({
           aria-label="Previous month"
           variant="ghost"
           size="icon"
-          asChild
+          render={
+            switchingYears ? (
+              <Link
+                from={Route.fullPath}
+                search={(prev) => ({ ...prev, ...toPrevYear })}
+              >
+                <ChevronsLeft className="h-4 w-4" />
+              </Link>
+            ) : (
+              <Link
+                from={Route.fullPath}
+                search={(prev) => ({ ...prev, ...toPrev })}
+              >
+                <ChevronLeftIcon className="h-4 w-4" />
+              </Link>
+            )
+          }
           className="rounded-sm"
-        >
-          {switchingYears ? (
-            <Link
-              from={Route.fullPath}
-              search={(prev) => ({ ...prev, ...toPrevYear })}
-            >
-              <ChevronsLeft className="h-4 w-4" />
-            </Link>
-          ) : (
-            <Link
-              from={Route.fullPath}
-              search={(prev) => ({ ...prev, ...toPrev })}
-            >
-              <ChevronLeftIcon className="h-4 w-4" />
-            </Link>
-          )}
-        </Button>
+        />
 
         <div className="flex items-center justify-center">
           <YearSelector
@@ -168,24 +168,24 @@ export const ViewController = ({
           variant="ghost"
           size="icon"
           className="rounded-sm rounded-r-none"
-          asChild
-        >
-          {switchingYears ? (
-            <Link
-              from={Route.fullPath}
-              search={(prev) => ({ ...prev, ...toNextYear })}
-            >
-              <ChevronsRight className="h-4 w-4" />
-            </Link>
-          ) : (
-            <Link
-              from={Route.fullPath}
-              search={(prev) => ({ ...prev, ...toNext })}
-            >
-              <ChevronRightIcon className="h-4 w-4" />{" "}
-            </Link>
-          )}
-        </Button>
+          render={
+            switchingYears ? (
+              <Link
+                from={Route.fullPath}
+                search={(prev) => ({ ...prev, ...toNextYear })}
+              >
+                <ChevronsRight className="h-4 w-4" />
+              </Link>
+            ) : (
+              <Link
+                from={Route.fullPath}
+                search={(prev) => ({ ...prev, ...toNext })}
+              >
+                <ChevronRightIcon className="h-4 w-4" />{" "}
+              </Link>
+            )
+          }
+        ></Button>
 
         <Button
           variant={"ghost"}

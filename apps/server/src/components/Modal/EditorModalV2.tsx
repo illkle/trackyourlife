@@ -13,7 +13,7 @@ import { PopupEditor } from "~/components/PopupEditor";
 import { useIsMobile } from "~/utils/useIsDesktop";
 
 /**
- * I much prefer the radix-style modals where content is declared inside component that opens the modal
+ * I much prefer the composition style modals where content is declared inside component that opens the modal
  * However here I think it's justified to move to a separate component with own state
  * 1. This makes daycells lighter
  * 2. Way easier to manage movement between days
