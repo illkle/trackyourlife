@@ -8,427 +8,429 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as ConvertersRouteImport } from "./routes/converters";
-import { Route as AuthRouteImport } from "./routes/auth";
-import { Route as AppRouteImport } from "./routes/app";
-import { Route as IndexRouteImport } from "./routes/index";
-import { Route as AppIndexRouteImport } from "./routes/app/index";
-import { Route as AuthPasswordresetRouteImport } from "./routes/auth/passwordreset";
-import { Route as AuthLoginRouteImport } from "./routes/auth/login";
-import { Route as AuthForgotpasswordRouteImport } from "./routes/auth/forgotpassword";
-import { Route as AppTestingRouteImport } from "./routes/app/testing";
-import { Route as AppSettingsRouteImport } from "./routes/app/settings";
-import { Route as AppCreateRouteImport } from "./routes/app/create";
-import { Route as AppTrackablesIndexRouteImport } from "./routes/app/trackables/index";
-import { Route as AppSettingsIndexRouteImport } from "./routes/app/settings/index";
-import { Route as AppTrackablesIdRouteImport } from "./routes/app/trackables/$id";
-import { Route as ApiPowersyncSyncbatchRouteImport } from "./routes/api/powersync/syncbatch";
-import { Route as ApiAuthSplatRouteImport } from "./routes/api/auth/$";
-import { Route as AppTrackablesIdIndexRouteImport } from "./routes/app/trackables/$id/index";
-import { Route as AppTrackablesIdViewRouteImport } from "./routes/app/trackables/$id/view";
-import { Route as AppTrackablesIdSettingsRouteImport } from "./routes/app/trackables/$id/settings";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as ConvertersRouteImport } from './routes/converters'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AppRouteImport } from './routes/app'
+import { Route as IndexRouteImport } from './routes/index'
+import { Route as AppIndexRouteImport } from './routes/app/index'
+import { Route as AuthPasswordresetRouteImport } from './routes/auth/passwordreset'
+import { Route as AuthLoginRouteImport } from './routes/auth/login'
+import { Route as AuthForgotpasswordRouteImport } from './routes/auth/forgotpassword'
+import { Route as AppTestingRouteImport } from './routes/app/testing'
+import { Route as AppSettingsRouteImport } from './routes/app/settings'
+import { Route as AppCreateRouteImport } from './routes/app/create'
+import { Route as AppTrackablesIndexRouteImport } from './routes/app/trackables/index'
+import { Route as AppSettingsIndexRouteImport } from './routes/app/settings/index'
+import { Route as AppTrackablesIdRouteImport } from './routes/app/trackables/$id'
+import { Route as ApiPowersyncSyncbatchRouteImport } from './routes/api/powersync/syncbatch'
+import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as AppTrackablesIdIndexRouteImport } from './routes/app/trackables/$id/index'
+import { Route as AppTrackablesIdViewRouteImport } from './routes/app/trackables/$id/view'
+import { Route as AppTrackablesIdSettingsRouteImport } from './routes/app/trackables/$id/settings'
 
 const ConvertersRoute = ConvertersRouteImport.update({
-  id: "/converters",
-  path: "/converters",
+  id: '/converters',
+  path: '/converters',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthRoute = AuthRouteImport.update({
-  id: "/auth",
-  path: "/auth",
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AppRoute = AppRouteImport.update({
-  id: "/app",
-  path: "/app",
+  id: '/app',
+  path: '/app',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const IndexRoute = IndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AppIndexRoute = AppIndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => AppRoute,
-} as any);
+} as any)
 const AuthPasswordresetRoute = AuthPasswordresetRouteImport.update({
-  id: "/passwordreset",
-  path: "/passwordreset",
+  id: '/passwordreset',
+  path: '/passwordreset',
   getParentRoute: () => AuthRoute,
-} as any);
+} as any)
 const AuthLoginRoute = AuthLoginRouteImport.update({
-  id: "/login",
-  path: "/login",
+  id: '/login',
+  path: '/login',
   getParentRoute: () => AuthRoute,
-} as any);
+} as any)
 const AuthForgotpasswordRoute = AuthForgotpasswordRouteImport.update({
-  id: "/forgotpassword",
-  path: "/forgotpassword",
+  id: '/forgotpassword',
+  path: '/forgotpassword',
   getParentRoute: () => AuthRoute,
-} as any);
+} as any)
 const AppTestingRoute = AppTestingRouteImport.update({
-  id: "/testing",
-  path: "/testing",
+  id: '/testing',
+  path: '/testing',
   getParentRoute: () => AppRoute,
-} as any);
+} as any)
 const AppSettingsRoute = AppSettingsRouteImport.update({
-  id: "/settings",
-  path: "/settings",
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AppRoute,
-} as any);
+} as any)
 const AppCreateRoute = AppCreateRouteImport.update({
-  id: "/create",
-  path: "/create",
+  id: '/create',
+  path: '/create',
   getParentRoute: () => AppRoute,
-} as any);
+} as any)
 const AppTrackablesIndexRoute = AppTrackablesIndexRouteImport.update({
-  id: "/trackables/",
-  path: "/trackables/",
+  id: '/trackables/',
+  path: '/trackables/',
   getParentRoute: () => AppRoute,
-} as any);
+} as any)
 const AppSettingsIndexRoute = AppSettingsIndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => AppSettingsRoute,
-} as any);
+} as any)
 const AppTrackablesIdRoute = AppTrackablesIdRouteImport.update({
-  id: "/trackables/$id",
-  path: "/trackables/$id",
+  id: '/trackables/$id',
+  path: '/trackables/$id',
   getParentRoute: () => AppRoute,
-} as any);
+} as any)
 const ApiPowersyncSyncbatchRoute = ApiPowersyncSyncbatchRouteImport.update({
-  id: "/api/powersync/syncbatch",
-  path: "/api/powersync/syncbatch",
+  id: '/api/powersync/syncbatch',
+  path: '/api/powersync/syncbatch',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
-  id: "/api/auth/$",
-  path: "/api/auth/$",
+  id: '/api/auth/$',
+  path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AppTrackablesIdIndexRoute = AppTrackablesIdIndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => AppTrackablesIdRoute,
-} as any);
+} as any)
 const AppTrackablesIdViewRoute = AppTrackablesIdViewRouteImport.update({
-  id: "/view",
-  path: "/view",
+  id: '/view',
+  path: '/view',
   getParentRoute: () => AppTrackablesIdRoute,
-} as any);
+} as any)
 const AppTrackablesIdSettingsRoute = AppTrackablesIdSettingsRouteImport.update({
-  id: "/settings",
-  path: "/settings",
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => AppTrackablesIdRoute,
-} as any);
+} as any)
 
 export interface FileRoutesByFullPath {
-  "/": typeof IndexRoute;
-  "/app": typeof AppRouteWithChildren;
-  "/auth": typeof AuthRouteWithChildren;
-  "/converters": typeof ConvertersRoute;
-  "/app/create": typeof AppCreateRoute;
-  "/app/settings": typeof AppSettingsRouteWithChildren;
-  "/app/testing": typeof AppTestingRoute;
-  "/auth/forgotpassword": typeof AuthForgotpasswordRoute;
-  "/auth/login": typeof AuthLoginRoute;
-  "/auth/passwordreset": typeof AuthPasswordresetRoute;
-  "/app/": typeof AppIndexRoute;
-  "/api/auth/$": typeof ApiAuthSplatRoute;
-  "/api/powersync/syncbatch": typeof ApiPowersyncSyncbatchRoute;
-  "/app/trackables/$id": typeof AppTrackablesIdRouteWithChildren;
-  "/app/settings/": typeof AppSettingsIndexRoute;
-  "/app/trackables": typeof AppTrackablesIndexRoute;
-  "/app/trackables/$id/settings": typeof AppTrackablesIdSettingsRoute;
-  "/app/trackables/$id/view": typeof AppTrackablesIdViewRoute;
-  "/app/trackables/$id/": typeof AppTrackablesIdIndexRoute;
+  '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/auth': typeof AuthRouteWithChildren
+  '/converters': typeof ConvertersRoute
+  '/app/create': typeof AppCreateRoute
+  '/app/settings': typeof AppSettingsRouteWithChildren
+  '/app/testing': typeof AppTestingRoute
+  '/auth/forgotpassword': typeof AuthForgotpasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/passwordreset': typeof AuthPasswordresetRoute
+  '/app/': typeof AppIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/powersync/syncbatch': typeof ApiPowersyncSyncbatchRoute
+  '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
+  '/app/settings/': typeof AppSettingsIndexRoute
+  '/app/trackables': typeof AppTrackablesIndexRoute
+  '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
+  '/app/trackables/$id/view': typeof AppTrackablesIdViewRoute
+  '/app/trackables/$id/': typeof AppTrackablesIdIndexRoute
 }
 export interface FileRoutesByTo {
-  "/": typeof IndexRoute;
-  "/auth": typeof AuthRouteWithChildren;
-  "/converters": typeof ConvertersRoute;
-  "/app/create": typeof AppCreateRoute;
-  "/app/testing": typeof AppTestingRoute;
-  "/auth/forgotpassword": typeof AuthForgotpasswordRoute;
-  "/auth/login": typeof AuthLoginRoute;
-  "/auth/passwordreset": typeof AuthPasswordresetRoute;
-  "/app": typeof AppIndexRoute;
-  "/api/auth/$": typeof ApiAuthSplatRoute;
-  "/api/powersync/syncbatch": typeof ApiPowersyncSyncbatchRoute;
-  "/app/settings": typeof AppSettingsIndexRoute;
-  "/app/trackables": typeof AppTrackablesIndexRoute;
-  "/app/trackables/$id/settings": typeof AppTrackablesIdSettingsRoute;
-  "/app/trackables/$id/view": typeof AppTrackablesIdViewRoute;
-  "/app/trackables/$id": typeof AppTrackablesIdIndexRoute;
+  '/': typeof IndexRoute
+  '/auth': typeof AuthRouteWithChildren
+  '/converters': typeof ConvertersRoute
+  '/app/create': typeof AppCreateRoute
+  '/app/testing': typeof AppTestingRoute
+  '/auth/forgotpassword': typeof AuthForgotpasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/passwordreset': typeof AuthPasswordresetRoute
+  '/app': typeof AppIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/powersync/syncbatch': typeof ApiPowersyncSyncbatchRoute
+  '/app/settings': typeof AppSettingsIndexRoute
+  '/app/trackables': typeof AppTrackablesIndexRoute
+  '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
+  '/app/trackables/$id/view': typeof AppTrackablesIdViewRoute
+  '/app/trackables/$id': typeof AppTrackablesIdIndexRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/": typeof IndexRoute;
-  "/app": typeof AppRouteWithChildren;
-  "/auth": typeof AuthRouteWithChildren;
-  "/converters": typeof ConvertersRoute;
-  "/app/create": typeof AppCreateRoute;
-  "/app/settings": typeof AppSettingsRouteWithChildren;
-  "/app/testing": typeof AppTestingRoute;
-  "/auth/forgotpassword": typeof AuthForgotpasswordRoute;
-  "/auth/login": typeof AuthLoginRoute;
-  "/auth/passwordreset": typeof AuthPasswordresetRoute;
-  "/app/": typeof AppIndexRoute;
-  "/api/auth/$": typeof ApiAuthSplatRoute;
-  "/api/powersync/syncbatch": typeof ApiPowersyncSyncbatchRoute;
-  "/app/trackables/$id": typeof AppTrackablesIdRouteWithChildren;
-  "/app/settings/": typeof AppSettingsIndexRoute;
-  "/app/trackables/": typeof AppTrackablesIndexRoute;
-  "/app/trackables/$id/settings": typeof AppTrackablesIdSettingsRoute;
-  "/app/trackables/$id/view": typeof AppTrackablesIdViewRoute;
-  "/app/trackables/$id/": typeof AppTrackablesIdIndexRoute;
+  __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
+  '/app': typeof AppRouteWithChildren
+  '/auth': typeof AuthRouteWithChildren
+  '/converters': typeof ConvertersRoute
+  '/app/create': typeof AppCreateRoute
+  '/app/settings': typeof AppSettingsRouteWithChildren
+  '/app/testing': typeof AppTestingRoute
+  '/auth/forgotpassword': typeof AuthForgotpasswordRoute
+  '/auth/login': typeof AuthLoginRoute
+  '/auth/passwordreset': typeof AuthPasswordresetRoute
+  '/app/': typeof AppIndexRoute
+  '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/powersync/syncbatch': typeof ApiPowersyncSyncbatchRoute
+  '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
+  '/app/settings/': typeof AppSettingsIndexRoute
+  '/app/trackables/': typeof AppTrackablesIndexRoute
+  '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
+  '/app/trackables/$id/view': typeof AppTrackablesIdViewRoute
+  '/app/trackables/$id/': typeof AppTrackablesIdIndexRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | "/"
-    | "/app"
-    | "/auth"
-    | "/converters"
-    | "/app/create"
-    | "/app/settings"
-    | "/app/testing"
-    | "/auth/forgotpassword"
-    | "/auth/login"
-    | "/auth/passwordreset"
-    | "/app/"
-    | "/api/auth/$"
-    | "/api/powersync/syncbatch"
-    | "/app/trackables/$id"
-    | "/app/settings/"
-    | "/app/trackables"
-    | "/app/trackables/$id/settings"
-    | "/app/trackables/$id/view"
-    | "/app/trackables/$id/";
-  fileRoutesByTo: FileRoutesByTo;
+    | '/'
+    | '/app'
+    | '/auth'
+    | '/converters'
+    | '/app/create'
+    | '/app/settings'
+    | '/app/testing'
+    | '/auth/forgotpassword'
+    | '/auth/login'
+    | '/auth/passwordreset'
+    | '/app/'
+    | '/api/auth/$'
+    | '/api/powersync/syncbatch'
+    | '/app/trackables/$id'
+    | '/app/settings/'
+    | '/app/trackables'
+    | '/app/trackables/$id/settings'
+    | '/app/trackables/$id/view'
+    | '/app/trackables/$id/'
+  fileRoutesByTo: FileRoutesByTo
   to:
-    | "/"
-    | "/auth"
-    | "/converters"
-    | "/app/create"
-    | "/app/testing"
-    | "/auth/forgotpassword"
-    | "/auth/login"
-    | "/auth/passwordreset"
-    | "/app"
-    | "/api/auth/$"
-    | "/api/powersync/syncbatch"
-    | "/app/settings"
-    | "/app/trackables"
-    | "/app/trackables/$id/settings"
-    | "/app/trackables/$id/view"
-    | "/app/trackables/$id";
+    | '/'
+    | '/auth'
+    | '/converters'
+    | '/app/create'
+    | '/app/testing'
+    | '/auth/forgotpassword'
+    | '/auth/login'
+    | '/auth/passwordreset'
+    | '/app'
+    | '/api/auth/$'
+    | '/api/powersync/syncbatch'
+    | '/app/settings'
+    | '/app/trackables'
+    | '/app/trackables/$id/settings'
+    | '/app/trackables/$id/view'
+    | '/app/trackables/$id'
   id:
-    | "__root__"
-    | "/"
-    | "/app"
-    | "/auth"
-    | "/converters"
-    | "/app/create"
-    | "/app/settings"
-    | "/app/testing"
-    | "/auth/forgotpassword"
-    | "/auth/login"
-    | "/auth/passwordreset"
-    | "/app/"
-    | "/api/auth/$"
-    | "/api/powersync/syncbatch"
-    | "/app/trackables/$id"
-    | "/app/settings/"
-    | "/app/trackables/"
-    | "/app/trackables/$id/settings"
-    | "/app/trackables/$id/view"
-    | "/app/trackables/$id/";
-  fileRoutesById: FileRoutesById;
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/auth'
+    | '/converters'
+    | '/app/create'
+    | '/app/settings'
+    | '/app/testing'
+    | '/auth/forgotpassword'
+    | '/auth/login'
+    | '/auth/passwordreset'
+    | '/app/'
+    | '/api/auth/$'
+    | '/api/powersync/syncbatch'
+    | '/app/trackables/$id'
+    | '/app/settings/'
+    | '/app/trackables/'
+    | '/app/trackables/$id/settings'
+    | '/app/trackables/$id/view'
+    | '/app/trackables/$id/'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute;
-  AppRoute: typeof AppRouteWithChildren;
-  AuthRoute: typeof AuthRouteWithChildren;
-  ConvertersRoute: typeof ConvertersRoute;
-  ApiAuthSplatRoute: typeof ApiAuthSplatRoute;
-  ApiPowersyncSyncbatchRoute: typeof ApiPowersyncSyncbatchRoute;
+  IndexRoute: typeof IndexRoute
+  AppRoute: typeof AppRouteWithChildren
+  AuthRoute: typeof AuthRouteWithChildren
+  ConvertersRoute: typeof ConvertersRoute
+  ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiPowersyncSyncbatchRoute: typeof ApiPowersyncSyncbatchRoute
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/converters": {
-      id: "/converters";
-      path: "/converters";
-      fullPath: "/converters";
-      preLoaderRoute: typeof ConvertersRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/auth": {
-      id: "/auth";
-      path: "/auth";
-      fullPath: "/auth";
-      preLoaderRoute: typeof AuthRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/app": {
-      id: "/app";
-      path: "/app";
-      fullPath: "/app";
-      preLoaderRoute: typeof AppRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/": {
-      id: "/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof IndexRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/app/": {
-      id: "/app/";
-      path: "/";
-      fullPath: "/app/";
-      preLoaderRoute: typeof AppIndexRouteImport;
-      parentRoute: typeof AppRoute;
-    };
-    "/auth/passwordreset": {
-      id: "/auth/passwordreset";
-      path: "/passwordreset";
-      fullPath: "/auth/passwordreset";
-      preLoaderRoute: typeof AuthPasswordresetRouteImport;
-      parentRoute: typeof AuthRoute;
-    };
-    "/auth/login": {
-      id: "/auth/login";
-      path: "/login";
-      fullPath: "/auth/login";
-      preLoaderRoute: typeof AuthLoginRouteImport;
-      parentRoute: typeof AuthRoute;
-    };
-    "/auth/forgotpassword": {
-      id: "/auth/forgotpassword";
-      path: "/forgotpassword";
-      fullPath: "/auth/forgotpassword";
-      preLoaderRoute: typeof AuthForgotpasswordRouteImport;
-      parentRoute: typeof AuthRoute;
-    };
-    "/app/testing": {
-      id: "/app/testing";
-      path: "/testing";
-      fullPath: "/app/testing";
-      preLoaderRoute: typeof AppTestingRouteImport;
-      parentRoute: typeof AppRoute;
-    };
-    "/app/settings": {
-      id: "/app/settings";
-      path: "/settings";
-      fullPath: "/app/settings";
-      preLoaderRoute: typeof AppSettingsRouteImport;
-      parentRoute: typeof AppRoute;
-    };
-    "/app/create": {
-      id: "/app/create";
-      path: "/create";
-      fullPath: "/app/create";
-      preLoaderRoute: typeof AppCreateRouteImport;
-      parentRoute: typeof AppRoute;
-    };
-    "/app/trackables/": {
-      id: "/app/trackables/";
-      path: "/trackables";
-      fullPath: "/app/trackables";
-      preLoaderRoute: typeof AppTrackablesIndexRouteImport;
-      parentRoute: typeof AppRoute;
-    };
-    "/app/settings/": {
-      id: "/app/settings/";
-      path: "/";
-      fullPath: "/app/settings/";
-      preLoaderRoute: typeof AppSettingsIndexRouteImport;
-      parentRoute: typeof AppSettingsRoute;
-    };
-    "/app/trackables/$id": {
-      id: "/app/trackables/$id";
-      path: "/trackables/$id";
-      fullPath: "/app/trackables/$id";
-      preLoaderRoute: typeof AppTrackablesIdRouteImport;
-      parentRoute: typeof AppRoute;
-    };
-    "/api/powersync/syncbatch": {
-      id: "/api/powersync/syncbatch";
-      path: "/api/powersync/syncbatch";
-      fullPath: "/api/powersync/syncbatch";
-      preLoaderRoute: typeof ApiPowersyncSyncbatchRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/api/auth/$": {
-      id: "/api/auth/$";
-      path: "/api/auth/$";
-      fullPath: "/api/auth/$";
-      preLoaderRoute: typeof ApiAuthSplatRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/app/trackables/$id/": {
-      id: "/app/trackables/$id/";
-      path: "/";
-      fullPath: "/app/trackables/$id/";
-      preLoaderRoute: typeof AppTrackablesIdIndexRouteImport;
-      parentRoute: typeof AppTrackablesIdRoute;
-    };
-    "/app/trackables/$id/view": {
-      id: "/app/trackables/$id/view";
-      path: "/view";
-      fullPath: "/app/trackables/$id/view";
-      preLoaderRoute: typeof AppTrackablesIdViewRouteImport;
-      parentRoute: typeof AppTrackablesIdRoute;
-    };
-    "/app/trackables/$id/settings": {
-      id: "/app/trackables/$id/settings";
-      path: "/settings";
-      fullPath: "/app/trackables/$id/settings";
-      preLoaderRoute: typeof AppTrackablesIdSettingsRouteImport;
-      parentRoute: typeof AppTrackablesIdRoute;
-    };
+    '/converters': {
+      id: '/converters'
+      path: '/converters'
+      fullPath: '/converters'
+      preLoaderRoute: typeof ConvertersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app': {
+      id: '/app'
+      path: '/app'
+      fullPath: '/app'
+      preLoaderRoute: typeof AppRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/': {
+      id: '/app/'
+      path: '/'
+      fullPath: '/app/'
+      preLoaderRoute: typeof AppIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/auth/passwordreset': {
+      id: '/auth/passwordreset'
+      path: '/passwordreset'
+      fullPath: '/auth/passwordreset'
+      preLoaderRoute: typeof AuthPasswordresetRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/auth/forgotpassword': {
+      id: '/auth/forgotpassword'
+      path: '/forgotpassword'
+      fullPath: '/auth/forgotpassword'
+      preLoaderRoute: typeof AuthForgotpasswordRouteImport
+      parentRoute: typeof AuthRoute
+    }
+    '/app/testing': {
+      id: '/app/testing'
+      path: '/testing'
+      fullPath: '/app/testing'
+      preLoaderRoute: typeof AppTestingRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/settings': {
+      id: '/app/settings'
+      path: '/settings'
+      fullPath: '/app/settings'
+      preLoaderRoute: typeof AppSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/create': {
+      id: '/app/create'
+      path: '/create'
+      fullPath: '/app/create'
+      preLoaderRoute: typeof AppCreateRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/trackables/': {
+      id: '/app/trackables/'
+      path: '/trackables'
+      fullPath: '/app/trackables'
+      preLoaderRoute: typeof AppTrackablesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/settings/': {
+      id: '/app/settings/'
+      path: '/'
+      fullPath: '/app/settings/'
+      preLoaderRoute: typeof AppSettingsIndexRouteImport
+      parentRoute: typeof AppSettingsRoute
+    }
+    '/app/trackables/$id': {
+      id: '/app/trackables/$id'
+      path: '/trackables/$id'
+      fullPath: '/app/trackables/$id'
+      preLoaderRoute: typeof AppTrackablesIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/api/powersync/syncbatch': {
+      id: '/api/powersync/syncbatch'
+      path: '/api/powersync/syncbatch'
+      fullPath: '/api/powersync/syncbatch'
+      preLoaderRoute: typeof ApiPowersyncSyncbatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/$': {
+      id: '/api/auth/$'
+      path: '/api/auth/$'
+      fullPath: '/api/auth/$'
+      preLoaderRoute: typeof ApiAuthSplatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/app/trackables/$id/': {
+      id: '/app/trackables/$id/'
+      path: '/'
+      fullPath: '/app/trackables/$id/'
+      preLoaderRoute: typeof AppTrackablesIdIndexRouteImport
+      parentRoute: typeof AppTrackablesIdRoute
+    }
+    '/app/trackables/$id/view': {
+      id: '/app/trackables/$id/view'
+      path: '/view'
+      fullPath: '/app/trackables/$id/view'
+      preLoaderRoute: typeof AppTrackablesIdViewRouteImport
+      parentRoute: typeof AppTrackablesIdRoute
+    }
+    '/app/trackables/$id/settings': {
+      id: '/app/trackables/$id/settings'
+      path: '/settings'
+      fullPath: '/app/trackables/$id/settings'
+      preLoaderRoute: typeof AppTrackablesIdSettingsRouteImport
+      parentRoute: typeof AppTrackablesIdRoute
+    }
   }
 }
 
 interface AppSettingsRouteChildren {
-  AppSettingsIndexRoute: typeof AppSettingsIndexRoute;
+  AppSettingsIndexRoute: typeof AppSettingsIndexRoute
 }
 
 const AppSettingsRouteChildren: AppSettingsRouteChildren = {
   AppSettingsIndexRoute: AppSettingsIndexRoute,
-};
+}
 
-const AppSettingsRouteWithChildren = AppSettingsRoute._addFileChildren(AppSettingsRouteChildren);
+const AppSettingsRouteWithChildren = AppSettingsRoute._addFileChildren(
+  AppSettingsRouteChildren,
+)
 
 interface AppTrackablesIdRouteChildren {
-  AppTrackablesIdSettingsRoute: typeof AppTrackablesIdSettingsRoute;
-  AppTrackablesIdViewRoute: typeof AppTrackablesIdViewRoute;
-  AppTrackablesIdIndexRoute: typeof AppTrackablesIdIndexRoute;
+  AppTrackablesIdSettingsRoute: typeof AppTrackablesIdSettingsRoute
+  AppTrackablesIdViewRoute: typeof AppTrackablesIdViewRoute
+  AppTrackablesIdIndexRoute: typeof AppTrackablesIdIndexRoute
 }
 
 const AppTrackablesIdRouteChildren: AppTrackablesIdRouteChildren = {
   AppTrackablesIdSettingsRoute: AppTrackablesIdSettingsRoute,
   AppTrackablesIdViewRoute: AppTrackablesIdViewRoute,
   AppTrackablesIdIndexRoute: AppTrackablesIdIndexRoute,
-};
+}
 
 const AppTrackablesIdRouteWithChildren = AppTrackablesIdRoute._addFileChildren(
   AppTrackablesIdRouteChildren,
-);
+)
 
 interface AppRouteChildren {
-  AppCreateRoute: typeof AppCreateRoute;
-  AppSettingsRoute: typeof AppSettingsRouteWithChildren;
-  AppTestingRoute: typeof AppTestingRoute;
-  AppIndexRoute: typeof AppIndexRoute;
-  AppTrackablesIdRoute: typeof AppTrackablesIdRouteWithChildren;
-  AppTrackablesIndexRoute: typeof AppTrackablesIndexRoute;
+  AppCreateRoute: typeof AppCreateRoute
+  AppSettingsRoute: typeof AppSettingsRouteWithChildren
+  AppTestingRoute: typeof AppTestingRoute
+  AppIndexRoute: typeof AppIndexRoute
+  AppTrackablesIdRoute: typeof AppTrackablesIdRouteWithChildren
+  AppTrackablesIndexRoute: typeof AppTrackablesIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -438,23 +440,23 @@ const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppTrackablesIdRoute: AppTrackablesIdRouteWithChildren,
   AppTrackablesIndexRoute: AppTrackablesIndexRoute,
-};
+}
 
-const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren);
+const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 
 interface AuthRouteChildren {
-  AuthForgotpasswordRoute: typeof AuthForgotpasswordRoute;
-  AuthLoginRoute: typeof AuthLoginRoute;
-  AuthPasswordresetRoute: typeof AuthPasswordresetRoute;
+  AuthForgotpasswordRoute: typeof AuthForgotpasswordRoute
+  AuthLoginRoute: typeof AuthLoginRoute
+  AuthPasswordresetRoute: typeof AuthPasswordresetRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
   AuthForgotpasswordRoute: AuthForgotpasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
   AuthPasswordresetRoute: AuthPasswordresetRoute,
-};
+}
 
-const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren);
+const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -463,16 +465,16 @@ const rootRouteChildren: RootRouteChildren = {
   ConvertersRoute: ConvertersRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiPowersyncSyncbatchRoute: ApiPowersyncSyncbatchRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
 
-import type { getRouter } from "./router.tsx";
-import type { createStart } from "@tanstack/react-start";
-declare module "@tanstack/react-start" {
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
   interface Register {
-    ssr: true;
-    router: Awaited<ReturnType<typeof getRouter>>;
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
   }
 }
