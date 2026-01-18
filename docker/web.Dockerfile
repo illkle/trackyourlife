@@ -33,6 +33,7 @@ COPY --from=builder /app/out/full/ .
 
 # This val is included in client build, therefore we need to pass as ARG
 ARG VITE_DEPLOY_DOMAIN
+ARG VITE_POWERSYNC_DOMAIN
 ENV VITE_DEPLOY_DOMAIN=$VITE_DEPLOY_DOMAIN
 ENV VITE_POWERSYNC_DOMAIN=$VITE_POWERSYNC_DOMAIN
 RUN pnpm turbo run build --filter=@tyl/server...
