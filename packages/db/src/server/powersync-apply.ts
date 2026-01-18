@@ -1,5 +1,5 @@
 import { CrudBatch, UpdateType } from "@powersync/common";
-import { and, eq } from "drizzle-orm";
+import { and, eq, isNotNull } from "drizzle-orm";
 
 import { db } from ".";
 import {
@@ -162,7 +162,11 @@ export const applyCrudTrackableRecord = async (
         user_id,
       });
 
-      await db.insert(trackable_record).values(verified);
+      await db.insert(trackable_record).values(verified).onConflictDoUpdate({
+        target: [trackable_record.trackable_id, trackable_record.time_bucket],
+        targetWhere: isNotNull(trackable_record.time_bucket),
+        set: { value: verified.value, updated_at: verified.updated_at },
+      });
       break;
     }
     case UpdateType.PATCH: {

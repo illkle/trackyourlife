@@ -18,7 +18,7 @@ import {
 import { Input } from "~/@shad/components/input";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
-import { useTrackable, useTrackableHandlers } from "~/utils/useZ";
+import { useTrackable, useTrackableHandlers } from "@tyl/helpers/dbHooks";
 
 export const TrackableNameEditable = () => {
   const { id } = useTrackableMeta();

@@ -10,7 +10,7 @@ test.describe("Number Trackable Data Entry", () => {
 
     // Create a number trackable
     await page.goto("/app/create");
-    await page.waitForLoadState("networkidle");
+    
 
     await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
     // Select number type from radio group
@@ -30,7 +30,7 @@ test.describe("Number Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    await page.waitForLoadState("networkidle");
+    
 
     // Find the first day cell with data-empty attribute (number cells have this)
     const dayCell = page.locator("[data-number-cell]").first();
@@ -61,7 +61,7 @@ test.describe("Number Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    await page.waitForLoadState("networkidle");
+    
 
     const dayCell = page.locator("[data-number-cell]").first();
     const input = dayCell.locator("input");
@@ -78,7 +78,7 @@ test.describe("Number Trackable Data Entry", () => {
 
     // Reload the page
     await page.reload();
-    await page.waitForLoadState("networkidle");
+    
 
     // Value should persist
     const reloadedCell = page.locator('[data-empty="false"]').first();
@@ -89,7 +89,7 @@ test.describe("Number Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    await page.waitForLoadState("networkidle");
+    
 
     const dayCell = page.locator("[data-number-cell]").first();
     const input = dayCell.locator("input");
@@ -105,7 +105,7 @@ test.describe("Number Trackable Data Entry", () => {
 
     // Reload and verify
     await page.reload();
-    await page.waitForLoadState("networkidle");
+    
 
     const reloadedCell = page.locator('[data-empty="false"]').first();
     await expect(reloadedCell).toBeVisible({ timeout: 10000 });
@@ -115,7 +115,7 @@ test.describe("Number Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    await page.waitForLoadState("networkidle");
+    
 
     const dayCell = page.locator("[data-number-cell]").first();
     const input = dayCell.locator("input");
@@ -138,7 +138,7 @@ test.describe("Number Trackable Data Entry", () => {
 
     // Reload and verify update persisted
     await page.reload();
-    await page.waitForLoadState("networkidle");
+    
 
     const reloadedCell = page.locator('[data-empty="false"]').first();
     await expect(reloadedCell).toBeVisible({ timeout: 10000 });
@@ -148,7 +148,7 @@ test.describe("Number Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    await page.waitForLoadState("networkidle");
+    
 
     const dayCell = page.locator("[data-number-cell]").first();
     const input = dayCell.locator("input");
@@ -178,7 +178,7 @@ test.describe("Number Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    await page.waitForLoadState("networkidle");
+    
 
     const dayCell = page.locator("[data-number-cell]").first();
     const input = dayCell.locator("input");
@@ -200,7 +200,7 @@ test.describe("Number Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    await page.waitForLoadState("networkidle");
+    
 
     const dayCell = page.locator("[data-number-cell]").first();
     const input = dayCell.locator("input");

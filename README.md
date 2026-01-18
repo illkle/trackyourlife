@@ -18,7 +18,7 @@ PS_DATABASE_URL=postgres://postgres:password@host.docker.internal:5432/postgres
 ```
 
 ```
-docker compose -f docker/docker-compose-dev.yml up -d
+docker compose -f docker/docker-compose-dev.yml up -d --build
 ```
 
 `pnpm run dev`

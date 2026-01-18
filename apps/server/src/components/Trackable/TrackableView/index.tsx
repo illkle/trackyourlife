@@ -20,7 +20,7 @@ import DayCellRouter from "~/components/DayCell";
 import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { ViewController } from "~/components/Trackable/TrackableView/viewController";
-import { useTrackableData } from "~/utils/useZ";
+import { useTrackableData } from "@tyl/helpers/dbHooks";
 
 const MonthVisualCalendar = ({
   data,
@@ -101,6 +101,7 @@ export const MonthFetcher = ({
     firstDay: firstDayDate,
     lastDay: lastDayDate,
   });
+  
 
   // Convert TrackableRecordRow[] to DataRecord[] by converting ISO string dates to timestamps
   const dataRecords = (q.data ?? []).map((record) => ({
@@ -109,8 +110,6 @@ export const MonthFetcher = ({
     timestamp: new Date(record.timestamp).getTime(),
     updated_at: record.updated_at,
   }));
-
-  console.log(q.data);
 
   const mappedData = mapDataToRange(firstDayDate, lastDayDate, dataRecords);
 

@@ -8,7 +8,7 @@ import {
 
 import type { ButtonVariants } from "~/@shad/components/button";
 import { Button } from "~/@shad/components/button";
-import { useGroupHandlers } from "~/utils/useZ";
+import { useGroupHandlers } from "@tyl/helpers/dbHooks";
 
 export const FavoriteButton = ({
   variant = "ghost",

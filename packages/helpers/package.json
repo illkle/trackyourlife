@@ -5,13 +5,10 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
-    "./animation": "./src/animation.ts",
-    "./colorPresets": "./src/colorPresets.ts",
-    "./colorTools": "./src/colorTools.ts",
-    "./timezone": "./src/timezone.ts",
-    "./trackables": "./src/trackables.ts",
-    "./types": "./src/types.ts",
-    "./validators": "./src/validators.ts"
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "default": "./src/*.ts"
+    }
   },
   "license": "MIT",
   "scripts": {
@@ -22,10 +19,13 @@
   },
   "dependencies": {
     "@date-fns/tz": "catalog:",
+    "@powersync/drizzle-driver": "catalog:",
     "chroma-js": "^3.1.2",
     "date-fns": "catalog:",
+    "drizzle-orm": "catalog:",
     "fuzzysort": "^3.1.0",
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.21",
+    "uuid": "catalog:"
   },
   "devDependencies": {
     "@tyl/db": "workspace:*",

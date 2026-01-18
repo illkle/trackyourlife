@@ -10,7 +10,7 @@ test.describe("Boolean Trackable Data Entry", () => {
 
     // Create a boolean trackable
     await page.goto("/app/create");
-    await page.waitForLoadState("networkidle");
+    
 
     await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
     // Boolean type is selected by default (it's a radio group)
@@ -33,7 +33,7 @@ test.describe("Boolean Trackable Data Entry", () => {
 
     // Go to trackable view
     await page.goto(`/app/trackables/${trackableId}/view`);
-    await page.waitForLoadState("networkidle");
+    
 
     // Find a day cell (today's cell should be clickable)
     const todayCell = page.locator("button[data-value]").first();
@@ -57,7 +57,7 @@ test.describe("Boolean Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    await page.waitForLoadState("networkidle");
+    
 
     const todayCell = page.locator("button[data-value]").first();
     await expect(todayCell).toBeVisible({ timeout: 10000 });
@@ -81,7 +81,7 @@ test.describe("Boolean Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    await page.waitForLoadState("networkidle");
+    
 
     const todayCell = page.locator("button[data-value]").first();
     await expect(todayCell).toBeVisible({ timeout: 10000 });
@@ -94,7 +94,7 @@ test.describe("Boolean Trackable Data Entry", () => {
 
     // Reload the page
     await page.reload();
-    await page.waitForLoadState("networkidle");
+    
 
     // Value should still be true
     const reloadedCell = page.locator("button[data-value]").first();
@@ -115,7 +115,7 @@ test.describe("Boolean Trackable Data Entry", () => {
     await page.goto(
       `/app/trackables/${trackableId}/view?month=${month}&year=${year}`,
     );
-    await page.waitForLoadState("networkidle");
+    
 
     // Wait for cells to be available
     await page.waitForSelector("button[data-value]", { timeout: 10000 });
@@ -129,7 +129,7 @@ test.describe("Boolean Trackable Data Entry", () => {
 
     // Go to home page (daily list view)
     await page.goto("/app");
-    await page.waitForLoadState("networkidle");
+    
 
     // Should see the trackable in the daily list (use link instead of text to be more specific)
     await expect(
@@ -144,7 +144,7 @@ test.describe("Boolean Trackable Data Entry", () => {
 
     // First set a value
     await page.goto(`/app/trackables/${trackableId}/view`);
-    await page.waitForLoadState("networkidle");
+    
 
     const todayCell = page.locator("button[data-value]").first();
     await todayCell.click();
@@ -154,7 +154,7 @@ test.describe("Boolean Trackable Data Entry", () => {
 
     // Go to trackables list
     await page.goto("/app/trackables");
-    await page.waitForLoadState("networkidle");
+    
 
     // Should see the trackable with its mini row
     await expect(page.getByText(trackableName).first()).toBeVisible({
@@ -166,7 +166,7 @@ test.describe("Boolean Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    await page.waitForLoadState("networkidle");
+    
 
     const todayCell = page.locator("button[data-value]").first();
     await expect(todayCell).toBeVisible({ timeout: 10000 });
@@ -201,7 +201,7 @@ test.describe("Boolean Trackable Data Entry", () => {
     await page.goto(
       `/app/trackables/${trackableId}/view?month=${month}&year=${year}`,
     );
-    await page.waitForLoadState("networkidle");
+    
 
     // Wait for the calendar grid to be rendered
     await page.waitForSelector("button[data-value]", { timeout: 10000 });

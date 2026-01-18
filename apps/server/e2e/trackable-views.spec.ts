@@ -12,7 +12,7 @@ test.describe("Trackable Views", () => {
 
     // Create a boolean trackable for testing views
     await page.goto("/app/create");
-    await page.waitForLoadState("networkidle");
+    
 
     await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
     // Boolean type is selected by default
@@ -34,7 +34,7 @@ test.describe("Trackable Views", () => {
       const page = authenticatedPage;
 
       await page.goto("/app");
-      await page.waitForLoadState("networkidle");
+      
 
       // Should see the trackable name
       await expect(page.getByText(trackableName).first()).toBeVisible({
@@ -48,7 +48,7 @@ test.describe("Trackable Views", () => {
       const page = authenticatedPage;
 
       await page.goto("/app");
-      await page.waitForLoadState("networkidle");
+      
 
       // Should show day names (Monday, Tuesday, etc.)
       const dayNames = [
@@ -72,7 +72,7 @@ test.describe("Trackable Views", () => {
       const page = authenticatedPage;
 
       await page.goto("/app");
-      await page.waitForLoadState("networkidle");
+      
 
       // Current month should be visible
       const currentMonth = format(new Date(), "MMMM");
@@ -87,7 +87,7 @@ test.describe("Trackable Views", () => {
       const page = authenticatedPage;
 
       await page.goto("/app");
-      await page.waitForLoadState("networkidle");
+      
 
       // Click on trackable name
       await page.getByText(trackableName).first().click();
@@ -109,7 +109,7 @@ test.describe("Trackable Views", () => {
       const page = authenticatedPage;
 
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
+      
 
       // Should show a grid of day cells (7 columns for week)
       const dayCells = page.locator(".grid-cols-7");
@@ -122,7 +122,7 @@ test.describe("Trackable Views", () => {
       const page = authenticatedPage;
 
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
+      
 
       // Day numbers 1-31 should be visible (some subset)
       await expect(page.getByText("1").first()).toBeVisible({ timeout: 10000 });
@@ -133,7 +133,7 @@ test.describe("Trackable Views", () => {
       const page = authenticatedPage;
 
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
+      
 
       // Today's date should have underline or special styling
       const today = format(new Date(), "d");
@@ -149,7 +149,7 @@ test.describe("Trackable Views", () => {
       const previousMonth = format(subMonths(now, 1), "MMMM");
 
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
+      
 
       // Find and click previous month button
       const prevButton = page.getByRole("button", {
@@ -171,7 +171,7 @@ test.describe("Trackable Views", () => {
       const nextMonth = format(addMonths(now, 1), "MMMM");
 
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
+      
 
       // Find and click next month button
       const nextButton = page.getByRole("button", { name: /next|→|>/i });
@@ -194,7 +194,7 @@ test.describe("Trackable Views", () => {
 
       // Create another trackable
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+      
       await page
         .getByPlaceholder("Unnamed Trackable")
         .fill(`E2E Second ${Date.now()}`);
@@ -205,7 +205,7 @@ test.describe("Trackable Views", () => {
 
       // Go to trackables list
       await page.goto("/app/trackables");
-      await page.waitForLoadState("networkidle");
+      
 
       // Should show both trackables (use .first() to avoid strict mode with sidebar)
       await expect(page.getByText(trackableName).first()).toBeVisible({
@@ -221,7 +221,7 @@ test.describe("Trackable Views", () => {
 
       // First set some data
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
+      
 
       const dayCell = page.locator("button[data-value]").first();
       await dayCell.click();
@@ -231,7 +231,7 @@ test.describe("Trackable Views", () => {
 
       // Go to trackables list
       await page.goto("/app/trackables");
-      await page.waitForLoadState("networkidle");
+      
 
       // The mini row should show day cells
       const miniRow = page
@@ -247,7 +247,7 @@ test.describe("Trackable Views", () => {
       const page = authenticatedPage;
 
       await page.goto("/app/trackables");
-      await page.waitForLoadState("networkidle");
+      
 
       // Click on trackable link (use .last() to get the main content link, not sidebar)
       await page.getByRole("link", { name: trackableName }).last().click();
@@ -269,7 +269,7 @@ test.describe("Trackable Views", () => {
       const page = authenticatedPage;
 
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
+      
 
       // Look for view toggle buttons (calendar/list icons or text)
       const listViewButton = page.getByRole("button", { name: /list/i });
@@ -281,7 +281,7 @@ test.describe("Trackable Views", () => {
         await listViewButton.click();
 
         // Should show list layout
-        await page.waitForLoadState("networkidle");
+        
 
         // Toggle back to calendar
         if (await calendarViewButton.isVisible()) {
@@ -302,7 +302,7 @@ test.describe("Trackable Views", () => {
       const page = authenticatedPage;
 
       await page.goto("/app");
-      await page.waitForLoadState("networkidle");
+      
 
       // Open sidebar if collapsed
       const sidebarToggle = page
@@ -326,7 +326,7 @@ test.describe("Trackable Views", () => {
       const page = authenticatedPage;
 
       await page.goto("/app");
-      await page.waitForLoadState("networkidle");
+      
 
       // Click trackable in sidebar
       const sidebar = page.locator("[data-sidebar]");
@@ -348,7 +348,7 @@ test.describe("Trackable Views", () => {
 
       // First favorite the trackable
       await page.goto(`/app/trackables/${trackableId}/view`);
-      await page.waitForLoadState("networkidle");
+      
 
       const favoriteButton = page.getByRole("button", { name: /favorite/i });
       if (await favoriteButton.isVisible()) {
@@ -360,7 +360,7 @@ test.describe("Trackable Views", () => {
 
       // Check sidebar for heart icon
       await page.goto("/app");
-      await page.waitForLoadState("networkidle");
+      
 
       const sidebar = page.locator("[data-sidebar]");
       const trackableRow = sidebar

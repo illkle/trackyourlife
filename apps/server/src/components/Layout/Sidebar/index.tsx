@@ -33,14 +33,14 @@ import { CoreLinks } from "~/components/Layout/Header";
 import { ThemeSwitcher } from "~/components/UserAppSettings/themeSwitcher";
 import { RenderTrackableIcon } from "~/utils/trackableIcons";
 import { invalidateSession, useSessionAuthed } from "~/utils/useSessionInfo";
-import { useTrackablesList } from "~/utils/useZ";
+import { useTrackablesList } from "@tyl/helpers/dbHooks";
 
 const TrackablesMiniList = () => {
   const q = useTrackablesList();
 
   const loc = useLocation();
 
-  if (q.data.length === 0) return <div>None {q.error?.message}</div>;
+  if (q.data.length === 0) return <div>{q.error?.message}</div>;
 
   return (
     <SidebarMenu>

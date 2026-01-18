@@ -11,7 +11,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "~/@shad/components/alert-dialog";
-import { useTrackableHandlers } from "~/utils/useZ";
+import { useTrackableHandlers } from "@tyl/helpers/dbHooks";
 
 const DeleteButton = ({
   id,

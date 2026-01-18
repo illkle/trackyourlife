@@ -21,6 +21,9 @@ port: 80
 # Specify sync rules
 sync_rules:
   content: |
+    config:
+      edition: 2
+      timestamp_max_precision: milliseconds
     bucket_definitions:
       user_lists:
         priority: 1

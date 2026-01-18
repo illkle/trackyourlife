@@ -8,7 +8,7 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Navigate to create page
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+      
 
       // Fill in name
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
@@ -27,7 +27,7 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Navigate to trackables list
       await page.goto("/app/trackables");
-      await page.waitForLoadState("networkidle");
+      
 
       // Verify trackable appears in list
       await expect(page.getByText(trackableName).first()).toBeVisible({
@@ -40,7 +40,7 @@ test.describe("Trackable CRUD Operations", () => {
       const trackableName = `E2E Number ${Date.now()}`;
 
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+      
 
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
 
@@ -54,7 +54,7 @@ test.describe("Trackable CRUD Operations", () => {
       });
 
       await page.goto("/app/trackables");
-      await page.waitForLoadState("networkidle");
+      
 
       await expect(page.getByText(trackableName).first()).toBeVisible({
         timeout: 10000,
@@ -66,7 +66,7 @@ test.describe("Trackable CRUD Operations", () => {
       const trackableName = `E2E Text ${Date.now()}`;
 
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+      
 
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
 
@@ -80,7 +80,7 @@ test.describe("Trackable CRUD Operations", () => {
       });
 
       await page.goto("/app/trackables");
-      await page.waitForLoadState("networkidle");
+      
 
       await expect(page.getByText(trackableName).first()).toBeVisible({
         timeout: 10000,
@@ -93,7 +93,7 @@ test.describe("Trackable CRUD Operations", () => {
       const page = authenticatedPage;
 
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+      
 
       // Don't fill in name, just create
       await page.getByRole("button", { name: "Create" }).click();
@@ -104,7 +104,7 @@ test.describe("Trackable CRUD Operations", () => {
 
       // The trackable should exist (even without a name)
       await page.goto("/app/trackables");
-      await page.waitForLoadState("networkidle");
+      
 
       // Look for "Unnamed" in the sidebar or list
       await expect(page.getByText("Unnamed").first()).toBeVisible({
@@ -122,7 +122,7 @@ test.describe("Trackable CRUD Operations", () => {
 
       // First create a trackable
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+      
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
       await page.getByRole("button", { name: "Create" }).click();
       await expect(page).toHaveURL(/\/app\/trackables\/.*\/settings/, {
@@ -151,10 +151,10 @@ test.describe("Trackable CRUD Operations", () => {
       await page.getByRole("button", { name: "Delete" }).click();
 
       // Should redirect to trackables list
-      await expect(page).toHaveURL(/\/app\/trackables/, { timeout: 10000 });
+      await expect(page).toHaveURL(/\/app\/trackables(\/?(?:\?|#|$)|$)/, { timeout: 10000 });
 
       // Verify trackable no longer appears
-      await page.waitForLoadState("networkidle");
+      
       await expect(page.getByText(trackableName)).not.toBeVisible({
         timeout: 5000,
       });
@@ -168,7 +168,7 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Create a trackable
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+      
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
       await page.getByRole("button", { name: "Create" }).click();
       await expect(page).toHaveURL(/\/app\/trackables\/.*\/settings/, {
@@ -211,7 +211,7 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Create a trackable
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+      
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
       await page.getByRole("button", { name: "Create" }).click();
       await expect(page).toHaveURL(/\/app\/trackables\/.*\/settings/, {
@@ -232,7 +232,7 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Go to trackables list - should not appear in main list
       await page.goto("/app/trackables");
-      await page.waitForLoadState("networkidle");
+      
 
       // The trackable should not be in the main list
       await expect(page.getByText(trackableName)).not.toBeVisible({
@@ -241,7 +241,7 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Click "Archive" link/button to view archived trackables
       await page.getByRole("button", { name: "Archive" }).click();
-      await page.waitForLoadState("networkidle");
+      
 
       // Should appear in archived list
       await expect(page.getByText(trackableName).first()).toBeVisible({
@@ -259,7 +259,7 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Create a trackable
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+      
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
       await page.getByRole("button", { name: "Create" }).click();
       await expect(page).toHaveURL(/\/app\/trackables\/.*\/settings/, {
@@ -300,7 +300,7 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Fresh user should have empty state
       await page.goto("/app/trackables");
-      await page.waitForLoadState("networkidle");
+      
 
       await expect(
         page.getByText("You do not have any trackables yet"),
@@ -316,7 +316,7 @@ test.describe("Trackable CRUD Operations", () => {
       const page = authenticatedPage;
 
       await page.goto("/app/trackables");
-      await page.waitForLoadState("networkidle");
+      
 
       await page.getByRole("button", { name: "Create Trackable" }).click();
 
@@ -330,7 +330,7 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Create a trackable first
       await page.goto("/app/create");
-      await page.waitForLoadState("networkidle");
+      
       await page
         .getByPlaceholder("Unnamed Trackable")
         .fill(`E2E Toggle ${Date.now()}`);
@@ -341,7 +341,7 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Go to trackables list
       await page.goto("/app/trackables");
-      await page.waitForLoadState("networkidle");
+      
 
       // Should show "Your Trackables" heading
       await expect(page.getByText("Your Trackables")).toBeVisible();

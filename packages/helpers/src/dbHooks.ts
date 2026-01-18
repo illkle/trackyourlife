@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { toCompilableQuery } from "@powersync/drizzle-driver";
 import { useQuery } from "@powersync/react";
-import { endOfDay, format, startOfDay } from "date-fns";
+import { endOfDay, format,  startOfDay } from "date-fns";
 import { and, asc, eq, gte, lte, sql } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 
@@ -14,15 +14,16 @@ import {
 } from "@tyl/db/client/schema-powersync";
 
 const dateToSQLiteString = (date: Date | number): string => {
-  return format(date, "yyyy-MM-dd HH:mm:ss.SSS");
+  return format(date, "yyyy-MM-dd'T'HH:mm:ss.SSS");
 };
 
-// ============================================================================
-// Trackable list hooks
-// ============================================================================
 
-/** Hook to get all trackables with groups */
-export const useTrackablesList = () => {
+interface TrackableRangeParams {
+  firstDay: number;
+  lastDay: number;
+}
+
+export const useTrackablesList = ({withData, showArchived}: {withData?: TrackableRangeParams, showArchived?: boolean} = {}) => {
   const { db } = usePowersyncDrizzle();
 
   const trackablesQuery = useMemo(
@@ -38,7 +39,16 @@ export const useTrackablesList = () => {
             asc(trackable.name),
           ],
           where: (trackable, { exists, eq, not }) =>
-            not(
+           showArchived ?  exists(
+            db
+              .select()
+              .from(trackable_group)
+              .where(
+                and(
+                  eq(trackable_group.trackable_id, trackable.id),
+                 eq(trackable_group.group, "archived"),
+                ),
+              )) : not(
               exists(
                 db
                   .select()
@@ -46,16 +56,25 @@ export const useTrackablesList = () => {
                   .where(
                     and(
                       eq(trackable_group.trackable_id, trackable.id),
-                      eq(trackable_group.group, "archived"),
+                     eq(trackable_group.group, "archived"),
                     ),
                   ),
               ),
             ),
 
-          with: { groups: true },
+          with: {
+            groups: true, 
+            data: withData ? {
+              where: and(
+                gte(trackable_record.timestamp, dateToSQLiteString(withData.firstDay)),
+                lte(trackable_record.timestamp, dateToSQLiteString(withData.lastDay)),
+              ),
+              orderBy: [asc(trackable_record.timestamp)],
+            } : undefined,
+           },
         }),
       ),
-    [db],
+    [db, withData, showArchived],
   );
 
   return useQuery(trackablesQuery);
@@ -66,62 +85,6 @@ interface TrackableRangeParams {
   lastDay: number;
 }
 
-/** Hook to get trackables with records in a date range */
-export const useTrackableListWithData = (params: TrackableRangeParams) => {
-  const { db } = usePowersyncDrizzle();
-
-  const startISO = dateToSQLiteString(params.firstDay);
-  const endISO = dateToSQLiteString(params.lastDay);
-
-  const trackablesQuery = useMemo(
-    () =>
-      toCompilableQuery(
-        db.query.trackable.findMany({
-          orderBy: [
-            sql`CASE WHEN EXISTS (
-              SELECT 1 FROM TYL_trackableGroup 
-              WHERE TYL_trackableGroup.trackable_id = ${trackable.id} 
-              AND TYL_trackableGroup."group" = 'favorites'
-            ) THEN 0 ELSE 1 END`,
-            asc(trackable.name),
-          ],
-          where: (trackable, { exists, eq, not }) =>
-            not(
-              exists(
-                db
-                  .select()
-                  .from(trackable_group)
-                  .where(
-                    and(
-                      eq(trackable_group.trackable_id, trackable.id),
-                      eq(trackable_group.group, "archived"),
-                    ),
-                  ),
-              ),
-            ),
-          with: {
-            groups: true,
-            data: {
-              where: and(
-                gte(trackable_record.timestamp, startISO),
-                lte(trackable_record.timestamp, endISO),
-              ),
-              orderBy: [asc(trackable_record.timestamp)],
-            },
-          },
-        }),
-      ),
-    [db, startISO, endISO],
-  );
-
-  return useQuery(trackablesQuery);
-};
-
-// ============================================================================
-// Single trackable hooks
-// ============================================================================
-
-/** Hook to get a single trackable with groups */
 export const useTrackable = ({ id }: { id: string }) => {
   const { db } = usePowersyncDrizzle();
 
@@ -143,7 +106,6 @@ interface ByIdParams extends TrackableRangeParams {
   id: string;
 }
 
-/** Hook to get records for a specific trackable in a date range */
 export const useTrackableData = ({ id, firstDay, lastDay }: ByIdParams) => {
   const { db } = usePowersyncDrizzle();
   const startDate = dateToSQLiteString(startOfDay(firstDay));
@@ -167,11 +129,7 @@ export const useTrackableData = ({ id, firstDay, lastDay }: ByIdParams) => {
   return useQuery(query);
 };
 
-// ============================================================================
-// Day hooks
-// ============================================================================
 
-/** Hook to get trackable data for a single day */
 export const useTrackableDay = ({
   date,
   trackableId,

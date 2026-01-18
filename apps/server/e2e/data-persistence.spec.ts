@@ -16,11 +16,8 @@ test.describe("Data Persistence", () => {
       // Boolean type is selected by default, no need to click
       await page.getByRole("button", { name: "Create" }).click();
 
-      const url = page.url();
-      const trackableId = url.match(/trackables\/([^/]+)/)?.[1];
-
       // Go to view and set data
-      await page.goto(`/app/trackables/${trackableId}/view`);
+      await page.getByRole("button", { name: "View" }).click();
 
       const dayCell = page.locator("button[data-value]").first();
       await dayCell.click();
@@ -50,11 +47,8 @@ test.describe("Data Persistence", () => {
       await page.getByRole("radio", { name: /Number/i }).click();
       await page.getByRole("button", { name: "Create" }).click();
 
-      const url = page.url();
-      const trackableId = url.match(/trackables\/([^/]+)/)?.[1];
-
       // Go to view and set data
-      await page.goto(`/app/trackables/${trackableId}/view`);
+      await page.getByRole("button", { name: "View" }).click();
 
       // Find and fill a day cell for number input
       const dayCell = page.locator("[data-number-cell]").first();
@@ -93,11 +87,8 @@ test.describe("Data Persistence", () => {
       await page.getByRole("radio", { name: /Text/i }).click();
       await page.getByRole("button", { name: "Create" }).click();
 
-      const url = page.url();
-      const trackableId = url.match(/trackables\/([^/]+)/)?.[1];
-
       // Go to view and set data
-      await page.goto(`/app/trackables/${trackableId}/view`);
+      await page.getByRole("button", { name: "View" }).click();
 
       // Click on day 1 button to open editor
       const dayCell = page.locator("[data-text-cell]").first();
@@ -137,11 +128,8 @@ test.describe("Data Persistence", () => {
       // Boolean type is selected by default, no need to click
       await page.getByRole("button", { name: "Create" }).click();
 
-      const url = page.url();
-      const trackableId = url.match(/trackables\/([^/]+)/)?.[1];
-
       // Go to view
-      await page.goto(`/app/trackables/${trackableId}/view`);
+      await page.getByRole("button", { name: "View" }).click();
 
       const dayCells = page.locator("[data-boolean-cell]");
 
@@ -162,6 +150,8 @@ test.describe("Data Persistence", () => {
       // Reload page
       await page.waitForTimeout(500);
       await page.reload();
+
+      await expect(dayCells.first()).toBeVisible();
 
       // All toggled cells should still be true
       const trueCells = page.locator("button[data-value='true']");
@@ -184,16 +174,13 @@ test.describe("Data Persistence", () => {
         .fill(`E2E Loading ${Date.now()}`);
       await page.getByRole("button", { name: "Create" }).click();
 
-      const url = page.url();
-      const trackableId = url.match(/trackables\/([^/]+)/)?.[1];
-
       // Navigate with slow network simulation
       await page.route("**/*", async (route) => {
         await new Promise((resolve) => setTimeout(resolve, 100));
         await route.continue();
       });
 
-      await page.goto(`/app/trackables/${trackableId}/view`);
+      await page.getByRole("button", { name: "View" }).click();
 
       // Should eventually load
       await expect(page.locator(".grid-cols-7").first()).toBeVisible({
@@ -260,11 +247,8 @@ test.describe("Data Persistence", () => {
       // Boolean type is selected by default, no need to click
       await page.getByRole("button", { name: "Create" }).click();
 
-      const url = page.url();
-      const trackableId = url.match(/trackables\/([^/]+)/)?.[1];
-
       // Go to detail view and set data
-      await page.goto(`/app/trackables/${trackableId}/view`);
+      await page.getByRole("button", { name: "View" }).click();
 
       const dayCell = page.locator("button[data-value]").last();
       await dayCell.click();
@@ -300,11 +284,8 @@ test.describe("Data Persistence", () => {
       // Boolean type is selected by default, no need to click
       await page.getByRole("button", { name: "Create" }).click();
 
-      const url = page.url();
-      const trackableId = url.match(/trackables\/([^/]+)/)?.[1];
-
       // Go to detail view and set data
-      await page.goto(`/app/trackables/${trackableId}/view`);
+      await page.getByRole("button", { name: "View" }).click();
 
       const dayCell = page.locator("button[data-value]").last();
       await dayCell.click();
@@ -341,11 +322,12 @@ test.describe("Data Persistence", () => {
       // Boolean type is selected by default, no need to click
       await page.getByRole("button", { name: "Create" }).click();
 
+      // Set data
+      await page.getByRole("button", { name: "View" }).click();
+      
+      // Extract trackableId from URL for later navigation
       const url = page.url();
       const trackableId = url.match(/trackables\/([^/]+)/)?.[1];
-
-      // Set data
-      await page.goto(`/app/trackables/${trackableId}/view`);
 
       const dayCell = page.locator("button[data-value]").first();
       await dayCell.click();
@@ -381,11 +363,8 @@ test.describe("Data Persistence", () => {
       // Boolean type is selected by default, no need to click
       await page.getByRole("button", { name: "Create" }).click();
 
-      const url = page.url();
-      const trackableId = url.match(/trackables\/([^/]+)/)?.[1];
-
       // Set data
-      await page.goto(`/app/trackables/${trackableId}/view`);
+      await page.getByRole("button", { name: "View" }).click();
 
       const dayCell = page.locator("button[data-value]").first();
       await dayCell.click();
@@ -422,10 +401,7 @@ test.describe("Data Persistence", () => {
       // Boolean type is selected by default, no need to click
       await page.getByRole("button", { name: "Create" }).click();
 
-      const url = page.url();
-      const trackableId = url.match(/trackables\/([^/]+)/)?.[1];
-
-      await page.goto(`/app/trackables/${trackableId}/view`);
+      await page.getByRole("button", { name: "View" }).click();
 
       const dayCell = page.locator("button[data-value]").first();
 

@@ -11,7 +11,7 @@ import DayCellRouter from "~/components/DayCell";
 import { TrackableNameText } from "~/components/Trackable/TrackableName";
 import { TrackableFlagsProvider } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import TrackableProvider from "~/components/Trackable/TrackableProviders/TrackableProvider";
-import { useTrackableListWithData } from "~/utils/useZ";
+import {  useTrackablesList } from "@tyl/helpers/dbHooks";
 import MiniTrackable from "./miniTrackable";
 
 const EmptyList = () => {
@@ -30,6 +30,7 @@ const EmptyList = () => {
 
 const TrackablesList = ({
   daysToShow,
+  archived
 }: {
   daysToShow: number;
   archived: boolean;
@@ -38,9 +39,13 @@ const TrackablesList = ({
   const lastDay = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const firstDay = subDays(lastDay, daysToShow - 1).getTime();
 
-  const q = useTrackableListWithData({
-    firstDay,
-    lastDay,
+  const q = useTrackablesList({
+    withData: {
+      firstDay,
+      lastDay,
+
+    },
+    showArchived: archived,
   });
 
   if (q.data.length === 0) return <EmptyList />;
@@ -87,9 +92,11 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
   const lastDay = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const firstDay = subDays(lastDay, daysToShow).getTime();
 
-  const q = useTrackableListWithData({
-    firstDay: firstDay,
-    lastDay,
+  const q = useTrackablesList({
+    withData: {
+      firstDay,
+      lastDay,
+    },
   });
 
   if (q.data.length === 0) {
