@@ -96,6 +96,8 @@ export const applyCrudTrackableFlags = async (
         user_id,
       });
 
+      const parsed = JSON.parse(verified.value as any);
+
       await db
         .insert(trackable_flags)
         .values(verified)
@@ -105,7 +107,7 @@ export const applyCrudTrackableFlags = async (
             trackable_flags.trackable_id,
             trackable_flags.key,
           ],
-          set: { value: verified.value },
+          set: { value: parsed },
         });
       break;
     }
@@ -114,9 +116,11 @@ export const applyCrudTrackableFlags = async (
 
       const dataFromId = trackableFlagsFromClientId(entry.id);
 
+      const parsed = JSON.parse(verified.value as any);
+
       await db
         .update(trackable_flags)
-        .set({ value: verified.value })
+        .set({ value: parsed })
         .where(
           and(
             eq(trackable_flags.trackable_id, dataFromId.trackable_id),

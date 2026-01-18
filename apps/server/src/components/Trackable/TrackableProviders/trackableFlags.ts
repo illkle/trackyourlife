@@ -1,7 +1,6 @@
 import { parse } from "date-fns";
 import { z } from "zod/v4";
 
-import { DbTrackableFlagsSelect } from "@tyl/db/client/schema-powersync";
 import {
   ZColorValue,
   ZNumberColorCoding,
@@ -103,44 +102,4 @@ export type ITrackableFlagsKV = {
 
 export type ITrackableFlagsInputKV = {
   [K in ITrackableFlagKey]: ITrackableFlagValueInput<K>;
-};
-
-/*
-  Helper for settings form
-*/
-export const createFlagsForSettingsForm = (
-  flags: readonly DbTrackableFlagsSelect[],
-) => {
-  const object = {} as ITrackableFlagsInputKV;
-
-  flags.forEach((flag) => {
-    if (!(flag.key in FlagsValidators)) {
-      return;
-    }
-    const validator = FlagsValidators[flag.key as ITrackableFlagKey];
-
-    // PowerSync stores values as JSON strings, parse them
-    let valueToValidate: unknown;
-    try {
-      valueToValidate = JSON.parse(flag.value);
-    } catch {
-      valueToValidate = flag.value;
-    }
-
-    const parsed = validator.safeParse(valueToValidate);
-
-    const key = flag.key as ITrackableFlagKey;
-    if (parsed.success) {
-      // @ts-expect-error this is fine
-      object[key] = valueToValidate;
-    } else {
-      // @ts-expect-error this is fine
-      object[key] = FlagDefaultInputs[key];
-    }
-  });
-
-  return {
-    ...FlagDefaultInputs,
-    ...object,
-  };
 };

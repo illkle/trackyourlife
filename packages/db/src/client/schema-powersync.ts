@@ -10,7 +10,7 @@ export const user_flags = sqliteTable("TYL_userFlags", {
   id: text("id").primaryKey(),
   user_id: text("user_id").notNull(),
   key: text("key").notNull(),
-  value: text("value").notNull(),
+  value: text("value", {mode: "json"}).notNull(),
 });
 
 export const trackable = sqliteTable("TYL_trackable", {
@@ -25,7 +25,7 @@ export const trackable_flags = sqliteTable("TYL_trackableFlags", {
   user_id: text("user_id").notNull(),
   trackable_id: text("trackable_id").notNull(),
   key: text("key").notNull(),
-  value: text("value").notNull(),
+  value: text("value", {mode: "json"}).notNull(),
 });
 
 export const trackable_record = sqliteTable("TYL_trackableRecord", {

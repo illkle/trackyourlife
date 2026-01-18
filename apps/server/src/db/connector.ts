@@ -14,7 +14,6 @@ export class Connector implements PowerSyncBackendConnector {
       throw new Error("no auth");
     }
     const jwtToken = data.token;
-    console.log("jwtToken", jwtToken);
 
     return {
       endpoint: import.meta.env.VITE_POWERSYNC_DOMAIN,

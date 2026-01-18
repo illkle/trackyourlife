@@ -14,6 +14,7 @@ import {
 import { createInsertSchema, createUpdateSchema } from "drizzle-zod";
 
 import { session, user } from "./auth";
+import z from "zod";
 
 export * from "./auth";
 
@@ -202,10 +203,10 @@ export const trackable_record_update_schema =
 export const trackable_flags_insert_schema =
   createInsertSchema(trackable_flags);
 export const trackable_flags_update_schema =
-  createUpdateSchema(trackable_flags);
+  createUpdateSchema(trackable_flags, { value: z.json() });
 
 export const user_flags_insert_schema = createInsertSchema(user_flags);
-export const user_flags_update_schema = createUpdateSchema(user_flags);
+export const user_flags_update_schema = createUpdateSchema(user_flags,);
 
 export const trackable_group_insert_schema =
   createInsertSchema(trackable_group);

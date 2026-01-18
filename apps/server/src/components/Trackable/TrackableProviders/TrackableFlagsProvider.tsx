@@ -6,6 +6,7 @@ import {
   useEffect,
   useId,
   useMemo,
+  useState,
 } from "react";
 import { toCompilableQuery } from "@powersync/drizzle-driver";
 import { useQuery } from "@powersync/react";
@@ -28,6 +29,8 @@ import {
   FlagDefaults,
   FlagsValidators,
 } from "~/components/Trackable/TrackableProviders/trackableFlags";
+import { and, eq, inArray } from "drizzle-orm";
+import { Spinner } from "~/@shad/components/spinner";
 
 /*
  * This provides a kv store that is used for trackable settings.
@@ -75,10 +78,10 @@ export const createFlagsObject = (flags: readonly DbTrackableFlagsSelect[]) => {
     }
     const key = flag.key as ITrackableFlagKey;
     const validator = FlagsValidators[key];
-    // PowerSync stores flag value as string, need to parse JSON
+    // PowerSync stores values as JSON strings, parse them
     let valueToValidate: unknown;
     try {
-      valueToValidate = JSON.parse(flag.value);
+      valueToValidate = JSON.parse(flag.value as string);
     } catch {
       valueToValidate = flag.value;
     }
@@ -87,6 +90,8 @@ export const createFlagsObject = (flags: readonly DbTrackableFlagsSelect[]) => {
       flagMap[flag.trackable_id] ??= {};
       // @ts-expect-error - parsed.data is correctly typed for key, but TS can't verify
       flagMap[flag.trackable_id][key] = parsed.data;
+    } else {
+      console.log("parsed failed", parsed.error, valueToValidate);
     }
   });
 
@@ -109,20 +114,15 @@ const TrackableFlagsProviderNonMemo = ({
 
   // Query all flags (PowerSync will sync only user's data based on sync rules)
   const query = useMemo(
-    () => toCompilableQuery(db.query.trackableFlags.findMany()),
-    [db],
+    () => toCompilableQuery(db.query.trackableFlags.findMany({
+      where: trackableIds ? inArray(trackable_flags.trackable_id, trackableIds) : undefined,
+    })),
+    [db, trackableIds],
   );
   const { data: allFlags, isLoading } = useQuery(query);
 
-  // Filter flags if trackableIds provided
-  const flags = useMemo(() => {
-    if (!allFlags) return [];
-    if (!trackableIds || trackableIds.length === 0) return allFlags;
-    const idSet = new Set(trackableIds);
-    return allFlags.filter((f) => idSet.has(f.trackable_id));
-  }, [allFlags, trackableIds]);
+  const [isReady, setIsReady] = useState(false);
 
-  // Update FlagStorage when flags change
   useEffect(() => {
     if (flagStorageLock === null) {
       flagStorageLock = id;
@@ -130,17 +130,22 @@ const TrackableFlagsProviderNonMemo = ({
       throw new Error("TrackableFlagsProvider can only be used once");
     }
 
-    FlagStorage.setState(() => createFlagsObject(flags));
+    FlagStorage.setState(() => createFlagsObject(allFlags));
+
+    // Kinda crude hack, ideally we need a better way to provide flags
+    if (!isLoading) {
+      setIsReady(true);
+    }
 
     return () => {
       if (flagStorageLock === id) {
         flagStorageLock = null;
       }
     };
-  }, [flags, id]);
+  }, [allFlags, id, isLoading]);
 
-  if (isLoading) {
-    return <></>;
+  if (isLoading || !isReady) {
+    return <><Spinner /></>;
   }
 
   return children;
@@ -174,26 +179,26 @@ export const useSetTrackableFlag = () => {
         throw new Error("Invalid flag value");
       }
 
-      await db
-        .insert(trackable_flags)
-        .values({
-          id: uuidv4(),
-          user_id: userID,
-          trackable_id: trackableId,
-          key,
-          value: validated.data as any,
-        })
-        .onConflictDoUpdate({
-          target: [
-            trackable_flags.user_id,
-            trackable_flags.trackable_id,
-            trackable_flags.key,
-          ],
-          set: {
+      // Note that we are not using validated.data here. This is intentional because we do not want zod .transform() to apply here.
+      const r = await db.update(trackable_flags).set({
+        value,
+      }).where(and(
+        eq(trackable_flags.user_id, userID),
+        eq(trackable_flags.trackable_id, trackableId),
+        eq(trackable_flags.key, key),
+      ));
+
+      if (r.rowsAffected === 0) {
+        await db
+          .insert(trackable_flags)
+          .values({
+            id: uuidv4(),
+            user_id: userID,
+            trackable_id: trackableId,
             key,
-            value: validated.data as any,
-          },
-        });
+            value,
+          })
+      }
     },
     [db, userID],
   );
