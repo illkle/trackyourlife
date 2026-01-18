@@ -15,6 +15,8 @@ import {
 } from "lucide-react";
 import { z } from "zod/v4";
 
+import { useGroupHandlers, useTrackable } from "@tyl/helpers/dbHooks";
+
 import type { ITrackableFlagType } from "~/components/Trackable/TrackableProviders/trackableFlags";
 import { AlertDialogTrigger } from "~/@shad/components/alert-dialog";
 import { Button } from "~/@shad/components/button";
@@ -31,6 +33,7 @@ import {
   DropdownMenuTrigger,
 } from "~/@shad/components/dropdown-menu";
 import { Spinner } from "~/@shad/components/spinner";
+import { QueryError } from "~/components/QueryError";
 import DeleteButton from "~/components/Trackable/DeleteButton";
 import { FavoriteButton } from "~/components/Trackable/FavoriteButton";
 import { TrackableNameEditable } from "~/components/Trackable/TrackableName";
@@ -42,7 +45,6 @@ import {
 import TrackableProvider, {
   useTrackableMeta,
 } from "~/components/Trackable/TrackableProviders/TrackableProvider";
-import { useGroupHandlers, useTrackable } from "@tyl/helpers/dbHooks";
 
 const paramsSchema = z.object({
   month: z
@@ -71,10 +73,22 @@ const RouteComponent = () => {
     data: [trackable],
   } = q;
 
-  if (!trackable) {
+  if (q.isLoading) {
     return (
       <div className="flex h-full w-full items-center justify-center">
         <Spinner />
+      </div>
+    );
+  }
+
+  if (q.error) {
+    return <QueryError error={q.error} onRetry={q.refresh} />;
+  }
+
+  if (!trackable) {
+    return (
+      <div className="text-muted-foreground flex h-full w-full items-center justify-center">
+        Trackable not found
       </div>
     );
   }

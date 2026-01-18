@@ -1,3 +1,4 @@
+import { Spinner } from "@shad/components/spinner";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation } from "@tanstack/react-router";
 import {
@@ -7,6 +8,8 @@ import {
   PanelLeftOpen,
   User2,
 } from "lucide-react";
+
+import { useTrackablesList } from "@tyl/helpers/dbHooks";
 
 import { Button } from "~/@shad/components/button";
 import {
@@ -30,19 +33,39 @@ import {
 } from "~/@shad/components/sidebar";
 import { authClient } from "~/auth/client";
 import { CoreLinks } from "~/components/Layout/Header";
+import { QueryError } from "~/components/QueryError";
 import { ThemeSwitcher } from "~/components/UserAppSettings/themeSwitcher";
 import { RenderTrackableIcon } from "~/utils/trackableIcons";
 import { invalidateSession, useSessionAuthed } from "~/utils/useSessionInfo";
-import { useTrackablesList } from "@tyl/helpers/dbHooks";
 
 const TrackablesMiniList = () => {
   const q = useTrackablesList();
 
   const loc = useLocation();
 
-  if (q.data.length === 0) return <div>{q.error?.message}</div>;
+  if (q.isLoading) {
+    return (
+      <div className="flex justify-center py-4">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (q.error) {
+    return <QueryError error={q.error} onRetry={q.refresh} />;
+  }
+
+  if (q.data.length === 0) {
+    return (
+      <div className="text-muted-foreground text-xs py-16 text-center ">
+      </div>
+    );
+  }
 
   return (
+    <>
+    <SidebarGroupLabel>Trackables</SidebarGroupLabel>
+    <SidebarGroupContent>
     <SidebarMenu>
       {q.data.map((tr) => {
         return (
@@ -82,6 +105,8 @@ const TrackablesMiniList = () => {
         );
       })}
     </SidebarMenu>
+    </SidebarGroupContent>
+    </>
   );
 };
 
@@ -107,10 +132,7 @@ export const AppSidebar = () => {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Trackables</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <TrackablesMiniList />
-          </SidebarGroupContent>
+        <TrackablesMiniList />
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>

@@ -1,4 +1,5 @@
 import { Fragment } from "react/jsx-runtime";
+import { Spinner } from "@shad/components/spinner";
 import { cn } from "@shad/lib/utils";
 import {
   eachMonthOfInterval,
@@ -12,15 +13,16 @@ import {
 } from "date-fns";
 
 import type { PureDataRecord } from "@tyl/helpers/trackables";
+import { useTrackableData } from "@tyl/helpers/dbHooks";
 import { mapDataToRange } from "@tyl/helpers/trackables";
 
 import type { ITrackableFlagType } from "~/components/Trackable/TrackableProviders/trackableFlags";
 import { Button } from "~/@shad/components/button";
 import DayCellRouter from "~/components/DayCell";
+import { QueryError } from "~/components/QueryError";
 import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { ViewController } from "~/components/Trackable/TrackableView/viewController";
-import { useTrackableData } from "@tyl/helpers/dbHooks";
 
 const MonthVisualCalendar = ({
   data,
@@ -101,7 +103,18 @@ export const MonthFetcher = ({
     firstDay: firstDayDate,
     lastDay: lastDayDate,
   });
-  
+
+  if (q.isLoading) {
+    return (
+      <div className="flex justify-center py-8">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (q.error) {
+    return <QueryError error={q.error} onRetry={q.refresh} />;
+  }
 
   // Convert TrackableRecordRow[] to DataRecord[] by converting ISO string dates to timestamps
   const dataRecords = (q.data ?? []).map((record) => ({

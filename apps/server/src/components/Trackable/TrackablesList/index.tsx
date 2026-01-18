@@ -1,17 +1,19 @@
 import { Fragment } from "react";
+import { Spinner } from "@shad/components/spinner";
 import { cn } from "@shad/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { format, isLastDayOfMonth, subDays } from "date-fns";
 import { m } from "motion/react";
 
+import { useTrackablesList } from "@tyl/helpers/dbHooks";
 import { mapDataToRange } from "@tyl/helpers/trackables";
 
 import { Button } from "~/@shad/components/button";
 import DayCellRouter from "~/components/DayCell";
+import { QueryError } from "~/components/QueryError";
 import { TrackableNameText } from "~/components/Trackable/TrackableName";
 import { TrackableFlagsProvider } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
 import TrackableProvider from "~/components/Trackable/TrackableProviders/TrackableProvider";
-import {  useTrackablesList } from "@tyl/helpers/dbHooks";
 import MiniTrackable from "./miniTrackable";
 
 const EmptyList = () => {
@@ -30,7 +32,7 @@ const EmptyList = () => {
 
 const TrackablesList = ({
   daysToShow,
-  archived
+  archived,
 }: {
   daysToShow: number;
   archived: boolean;
@@ -43,10 +45,21 @@ const TrackablesList = ({
     withData: {
       firstDay,
       lastDay,
-
     },
     showArchived: archived,
   });
+
+  if (q.isLoading) {
+    return (
+      <div className="flex justify-center py-20">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (q.error) {
+    return <QueryError error={q.error} onRetry={q.refresh} />;
+  }
 
   if (q.data.length === 0) return <EmptyList />;
 
@@ -98,6 +111,18 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
       lastDay,
     },
   });
+
+  if (q.isLoading) {
+    return (
+      <div className="flex justify-center py-20">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (q.error) {
+    return <QueryError error={q.error} onRetry={q.refresh} />;
+  }
 
   if (q.data.length === 0) {
     return <EmptyList />;
