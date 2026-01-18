@@ -7,7 +7,12 @@ import type { ReactNode } from "react";
 import { useLayoutEffect, useState } from "react";
 import { wrapPowerSyncWithDrizzle } from "@powersync/drizzle-driver";
 import { PowerSyncContext } from "@powersync/react";
-import { PowerSyncDatabase, WASQLiteOpenFactory, WASQLiteVFS } from "@powersync/web";
+import {
+  PowerSyncBackendConnector,
+  PowerSyncDatabase,
+  WASQLiteOpenFactory,
+  WASQLiteVFS,
+} from "@powersync/web";
 
 import { PowersyncDrizzleContext } from "@tyl/db/client/context";
 import {
@@ -53,10 +58,21 @@ export const PowerSyncProvider = ({ children, userId }: PowerSyncProviderProps) 
     drizzleDb: TPowersyncDrizzleDB;
   } | null>(null);
 
+  const asyncConnect = async (db: PowerSyncDatabase, connector: PowerSyncBackendConnector) => {
+    console.log("Connecting to PowerSync");
+    try {
+      await db.connect(connector);
+      console.log("Connected to PowerSync");
+    } catch (error) {
+      console.error("Error connecting to PowerSync", error);
+      throw error;
+    }
+  };
+
   useLayoutEffect(() => {
     const { powersyncDb, drizzleDb } = createPowersyncWeb();
     const connector = new Connector();
-    powersyncDb.connect(connector);
+    asyncConnect(powersyncDb, connector);
     setDatabases({ powersyncDb, drizzleDb });
 
     return () => {
