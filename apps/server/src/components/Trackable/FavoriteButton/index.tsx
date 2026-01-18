@@ -6,16 +6,17 @@ import {
   DbTrackableSelect,
 } from "@tyl/db/client/schema-powersync";
 
-import type { ButtonVariants } from "~/@shad/components/button";
+import { buttonVariants } from "~/@shad/components/button";
 import { Button } from "~/@shad/components/button";
 import { useGroupHandlers } from "@tyl/helpers/dbHooks";
+import { VariantProps } from "class-variance-authority";
 
 export const FavoriteButton = ({
   variant = "ghost",
   onlyIcon = false,
   trackable,
 }: {
-  variant?: ButtonVariants["variant"];
+  variant?: VariantProps<typeof buttonVariants>["variant"];
   onlyIcon?: boolean;
   trackable: DbTrackableSelect & { groups: DbTrackableGroupSelect[] };
 }) => {
@@ -36,6 +37,7 @@ export const FavoriteButton = ({
       });
     }
   };
+
 
   return (
     <Button

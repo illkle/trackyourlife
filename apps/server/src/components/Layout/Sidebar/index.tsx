@@ -64,48 +64,48 @@ const TrackablesMiniList = () => {
 
   return (
     <>
-    <SidebarGroupLabel>Trackables</SidebarGroupLabel>
-    <SidebarGroupContent>
-    <SidebarMenu>
-      {q.data.map((tr) => {
-        return (
-          <SidebarMenuItem key={tr.id}>
-            <SidebarMenuButton
-              render={
-                <Link
-                  key={tr.id}
-                  to={"/app/trackables/$id/view"}
-                  params={{ id: tr.id }}
-                  search={(prev) => ({
-                    ...prev,
-                  })}
-                >
-                  <div className="flex w-full items-center justify-between gap-2">
-                    <div className="justify-baseline flex items-center gap-2 truncate">
-                      <div className="opacity-70">
-                        <RenderTrackableIcon
-                          size={16}
-                          type={tr.type as "number" | "boolean" | "text"}
-                        />
-                      </div>
-                      <div>{tr.name || "Unnamed"}</div>
-                    </div>
+      <SidebarGroupLabel>Trackables</SidebarGroupLabel>
+      <SidebarGroupContent>
+        <SidebarMenu>
+          {q.data.map((tr) => {
+            return (
+              <SidebarMenuItem key={tr.id}>
+                <SidebarMenuButton
+                  render={
+                    <Link
+                      key={tr.id}
+                      to={"/app/trackables/$id/view"}
+                      params={{ id: tr.id }}
+                      search={(prev) => ({
+                        ...prev,
+                      })}
+                    >
+                      <div className="flex w-full items-center justify-between gap-2">
+                        <div className="justify-baseline flex items-center gap-2 truncate">
+                          <div className="opacity-70">
+                            <RenderTrackableIcon
+                              size={16}
+                              type={tr.type as "number" | "boolean" | "text"}
+                            />
+                          </div>
+                          <div>{tr.name || "Unnamed"}</div>
+                        </div>
 
-                    {tr.groups.some((v) => v.group === "favorites") && (
-                      <div>
-                        <HeartIcon fill="currentColor" size={16} />
+                        {tr.groups.some((v) => v.group === "favorites") && (
+                          <div>
+                            <HeartIcon fill="currentColor" size={16} />
+                          </div>
+                        )}
                       </div>
-                    )}
-                  </div>
-                </Link>
-              }
-              isActive={loc.pathname.includes(tr.id)}
-            />
-          </SidebarMenuItem>
-        );
-      })}
-    </SidebarMenu>
-    </SidebarGroupContent>
+                    </Link>
+                  }
+                  isActive={loc.pathname.includes(tr.id)}
+                />
+              </SidebarMenuItem>
+            );
+          })}
+        </SidebarMenu>
+      </SidebarGroupContent>
     </>
   );
 };
@@ -132,7 +132,7 @@ export const AppSidebar = () => {
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-        <TrackablesMiniList />
+          <TrackablesMiniList />
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>

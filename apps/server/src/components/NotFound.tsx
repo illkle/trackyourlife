@@ -13,6 +13,7 @@ export function NotFound() {
           Go back
         </Button>
         <Button
+          nativeButton={false}
           render={<Link to="/">Start Over</Link>}
           variant={"secondary"}
         ></Button>

@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "~/@shad/components/card";
 import { Input } from "~/@shad/components/input";
+import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 import { authClient } from "~/auth/client";
 import { FieldInfo, MutationErrorInfo } from ".";
 
@@ -93,12 +94,13 @@ const ForgotPasswordForm = () => {
           ) : (
             <Button
               onClick={() => form.handleSubmit()}
-              isLoading={form.state.isSubmitting}
               variant={"default"}
               className="mt-4 w-full"
               type="submit"
             >
-              Send link
+              <MaybeLoading isLoading={form.state.isSubmitting}>
+                Send link
+              </MaybeLoading>
             </Button>
           )}
 

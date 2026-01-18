@@ -109,6 +109,8 @@ export const ViewController = ({
           aria-label="Previous month"
           variant="ghost"
           size="icon"
+          nativeButton={false}
+          className="border-0"
           render={
             switchingYears ? (
               <Link
@@ -126,10 +128,9 @@ export const ViewController = ({
               </Link>
             )
           }
-          className="rounded-sm"
         />
 
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center h-8">
           <YearSelector
             value={typeof year === "number" ? year : undefined}
             onChange={(v) =>
@@ -167,7 +168,8 @@ export const ViewController = ({
           aria-label="Next month"
           variant="ghost"
           size="icon"
-          className="rounded-sm rounded-r-none"
+          className="rounded-sm rounded-r-none border-0"
+          nativeButton={false}
           render={
             switchingYears ? (
               <Link
@@ -192,7 +194,7 @@ export const ViewController = ({
           onClick={() =>
             navigate({ search: (prev) => ({ ...prev, ...toToday }) })
           }
-          className="border-border rounded-l-none border-l"
+          className="rounded-l-none border-0 border-l border-l-border "
         >
           Today
         </Button>

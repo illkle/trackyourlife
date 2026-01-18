@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 
 import { Button } from "~/@shad/components/button";
+import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 
 export const Route = createFileRoute("/app/testing")({
   component: RouteComponent,
@@ -9,18 +10,20 @@ export const Route = createFileRoute("/app/testing")({
 function RouteComponent() {
   return (
     <div className="mx-auto max-w-md">
-      <Button isLoading={true}>Hello</Button>
-      <Button isLoading={true} variant={"secondary"}>
-        Open Sidebar
+      <Button>
+        <MaybeLoading isLoading={true}>Hello</MaybeLoading>
       </Button>
-      <Button isLoading={true} variant={"ghost"}>
-        Open Sidebar
+      <Button variant={"secondary"}>
+        <MaybeLoading isLoading={true}>Open Sidebar</MaybeLoading>
       </Button>
-      <Button isLoading={true} variant={"outline"}>
-        Open Sidebar
+      <Button variant={"ghost"}>
+        <MaybeLoading isLoading={true}>Open Sidebar</MaybeLoading>
       </Button>
-      <Button isLoading={true} variant={"destructive"}>
-        Open Sidebar
+      <Button variant={"outline"}>
+        <MaybeLoading isLoading={true}>Open Sidebar</MaybeLoading>
+      </Button>
+      <Button variant={"destructive"}>
+        <MaybeLoading isLoading={true}>Open Sidebar</MaybeLoading>
       </Button>
     </div>
   );

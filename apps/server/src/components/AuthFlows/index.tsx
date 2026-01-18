@@ -24,6 +24,7 @@ import {
   CardTitle,
 } from "~/@shad/components/card";
 import { Input } from "~/@shad/components/input";
+import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 import { RadioTabItem, RadioTabs } from "~/@shad/custom/radio-tabs";
 import { authClient } from "~/auth/client";
 import { invalidateSession } from "~/utils/useSessionInfo";
@@ -171,13 +172,14 @@ const Register = () => {
       />
 
       <Button
-        isLoading={form.state.isSubmitting}
         size={"lg"}
         type="submit"
         variant="outline"
         className={cn("mt-6 w-full")}
       >
-        Create Account
+        <MaybeLoading isLoading={form.state.isSubmitting}>
+          Create Account
+        </MaybeLoading>
       </Button>
       {registerMutation.error && (
         <MutationErrorInfo message={registerMutation.error.message} />
@@ -271,13 +273,14 @@ const Login = () => {
       />
 
       <Button
-        isLoading={form.state.isSubmitting}
         type="submit"
         size={"lg"}
         variant="outline"
         className={cn("mt-6 w-full")}
       >
-        Login
+        <MaybeLoading isLoading={form.state.isSubmitting}>
+          Login
+        </MaybeLoading>
       </Button>
       {loginMutation.error && (
         <MutationErrorInfo message={loginMutation.error.message} />

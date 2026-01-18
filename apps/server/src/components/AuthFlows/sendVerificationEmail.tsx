@@ -1,6 +1,7 @@
 import { useMutation } from "@tanstack/react-query";
 
 import { Button } from "~/@shad/components/button";
+import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 import { authClient } from "~/auth/client";
 import { useSessionAuthed } from "~/utils/useSessionInfo";
 import { MutationErrorInfo } from ".";
@@ -32,10 +33,11 @@ export const SendVerificationEmailButton = () => {
         variant={"default"}
         className="w-full"
         disabled={sendMutation.isSuccess}
-        isLoading={sendMutation.isPending}
         onClick={() => sendMutation.mutate()}
       >
-        {sendMutation.isSuccess ? "Email sent" : "Resend verification email"}
+        <MaybeLoading isLoading={sendMutation.isPending}>
+          {sendMutation.isSuccess ? "Email sent" : "Resend verification email"}
+        </MaybeLoading>
       </Button>
 
       {sendMutation.error && (

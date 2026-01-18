@@ -14,6 +14,7 @@ import {
   CardTitle,
 } from "~/@shad/components/card";
 import { Input } from "~/@shad/components/input";
+import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 import { authClient } from "~/auth/client";
 import { FieldInfo, MutationErrorInfo } from ".";
 
@@ -111,12 +112,13 @@ export const PasswordChangeForm = ({ className }: { className?: string }) => {
           ) : (
             <Button
               onClick={() => form.handleSubmit()}
-              isLoading={form.state.isSubmitting}
               variant={"outline"}
               className="mt-4 w-full"
               type="submit"
             >
-              Change password
+              <MaybeLoading isLoading={form.state.isSubmitting}>
+                Change password
+              </MaybeLoading>
             </Button>
           )}
 

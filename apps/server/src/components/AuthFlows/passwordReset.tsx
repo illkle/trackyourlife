@@ -13,6 +13,7 @@ import {
   CardTitle,
 } from "~/@shad/components/card";
 import { Input } from "~/@shad/components/input";
+import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 import { authClient } from "~/auth/client";
 import { FieldInfo, MutationErrorInfo } from ".";
 
@@ -79,12 +80,13 @@ export const PasswordResetForm = () => {
           />
 
           <Button
-            isLoading={form.state.isSubmitting}
             onClick={() => form.handleSubmit()}
             className="mt-4 w-full"
             type="submit"
           >
-            Update password
+            <MaybeLoading isLoading={form.state.isSubmitting}>
+              Update password
+            </MaybeLoading>
           </Button>
           {resetMutation.error && (
             <MutationErrorInfo message={resetMutation.error.message} />
