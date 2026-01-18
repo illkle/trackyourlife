@@ -40,9 +40,7 @@ export const SendVerificationEmailButton = () => {
         </MaybeLoading>
       </Button>
 
-      {sendMutation.error && (
-        <MutationErrorInfo message={sendMutation.error.message} />
-      )}
+      {sendMutation.error && <MutationErrorInfo message={sendMutation.error.message} />}
     </>
   );
 };

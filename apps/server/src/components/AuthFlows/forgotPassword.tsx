@@ -6,13 +6,7 @@ import { EmailValidator } from "@tyl/helpers/validators";
 
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
 import { Button } from "~/@shad/components/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/@shad/components/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/@shad/components/card";
 import { Input } from "~/@shad/components/input";
 import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 import { authClient } from "~/auth/client";
@@ -50,8 +44,7 @@ const ForgotPasswordForm = () => {
       <CardHeader>
         <CardTitle>Forgot password</CardTitle>
         <CardDescription>
-          Enter your email address and we will send you a link to reset your
-          password.
+          Enter your email address and we will send you a link to reset your password.
         </CardDescription>
       </CardHeader>
       <CardContent>
@@ -66,9 +59,7 @@ const ForgotPasswordForm = () => {
             children={(field) => (
               <>
                 <Input
-                  disabled={
-                    field.form.state.isSubmitted || field.form.state.isSubmitted
-                  }
+                  disabled={field.form.state.isSubmitted || field.form.state.isSubmitted}
                   autoComplete="email"
                   value={field.state.value}
                   onChange={(e) => {
@@ -77,7 +68,7 @@ const ForgotPasswordForm = () => {
                   type="email"
                   name="email"
                   id="email"
-                  className="z-2 relative"
+                  className="relative z-2"
                   placeholder="person@somemail.com"
                 />
                 <FieldInfo field={field} />
@@ -87,9 +78,7 @@ const ForgotPasswordForm = () => {
           {sendMutation.isSuccess ? (
             <Alert className="mt-4">
               <AlertTitle className="">Link sent</AlertTitle>
-              <AlertDescription>
-                Check your email for a password reset link.
-              </AlertDescription>
+              <AlertDescription>Check your email for a password reset link.</AlertDescription>
             </Alert>
           ) : (
             <Button
@@ -98,15 +87,11 @@ const ForgotPasswordForm = () => {
               className="mt-4 w-full"
               type="submit"
             >
-              <MaybeLoading isLoading={form.state.isSubmitting}>
-                Send link
-              </MaybeLoading>
+              <MaybeLoading isLoading={form.state.isSubmitting}>Send link</MaybeLoading>
             </Button>
           )}
 
-          {sendMutation.error && (
-            <MutationErrorInfo message={sendMutation.error.message} />
-          )}
+          {sendMutation.error && <MutationErrorInfo message={sendMutation.error.message} />}
         </form>
       </CardContent>
     </Card>

@@ -3,10 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { format } from "date-fns";
 
 import type { PureDataRecord } from "@tyl/helpers/trackables";
-import {
-  DbTrackableGroupSelect,
-  DbTrackableSelect,
-} from "@tyl/db/client/schema-powersync";
+import { DbTrackableGroupSelect, DbTrackableSelect } from "@tyl/db/client/schema-powersync";
 
 import DayCellRouter from "~/components/DayCell";
 import { FavoriteButton } from "~/components/Trackable/FavoriteButton";
@@ -27,7 +24,7 @@ const MiniTrackable = ({
         <Link
           to={"/app/trackables/$id/view"}
           params={{ id: trackable.id }}
-          className={cn("text-foreground mb-1 block w-full text-xl font-light")}
+          className={cn("mb-1 block w-full text-xl font-light text-foreground")}
         >
           <TrackableNameText trackable={trackable} />
         </Link>
@@ -51,9 +48,7 @@ const MiniTrackable = ({
                   <span className="text-muted-foreground opacity-50">
                     {format(day.timestamp, "EEE")}
                   </span>
-                  <span className="text-muted-foreground">
-                    {format(day.timestamp, "d")}
-                  </span>
+                  <span className="text-muted-foreground">{format(day.timestamp, "d")}</span>
                 </div>
                 <DayCellRouter
                   key={index}

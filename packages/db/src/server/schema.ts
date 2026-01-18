@@ -51,11 +51,7 @@ export const user_relations = relations(user, ({ many }) => ({
  * TRACKABLES
  */
 
-export const trackable_type_enum = pgEnum("type", [
-  "boolean",
-  "number",
-  "text",
-]);
+export const trackable_type_enum = pgEnum("type", ["boolean", "number", "text"]);
 
 export const trackable = pgTable(
   "trackable",
@@ -91,15 +87,12 @@ export const trackable_flags = pgTable(
   (t) => [primaryKey({ columns: [t.user_id, t.trackable_id, t.key] })],
 );
 
-export const trackable_flags_relations = relations(
-  trackable_flags,
-  ({ one }) => ({
-    trackable: one(trackable, {
-      fields: [trackable_flags.trackable_id],
-      references: [trackable.id],
-    }),
+export const trackable_flags_relations = relations(trackable_flags, ({ one }) => ({
+  trackable: one(trackable, {
+    fields: [trackable_flags.trackable_id],
+    references: [trackable.id],
   }),
-);
+}));
 
 export const trackable_relations = relations(trackable, ({ many }) => ({
   data: many(trackable_record),
@@ -162,19 +155,16 @@ export const trackable_group = pgTable(
   (t) => [primaryKey({ columns: [t.trackable_id, t.group] })],
 );
 
-export const trackable_group_relations = relations(
-  trackable_group,
-  ({ one }) => ({
-    trackable: one(trackable, {
-      fields: [trackable_group.trackable_id],
-      references: [trackable.id],
-    }),
-    user: one(user, {
-      fields: [trackable_group.user_id],
-      references: [user.id],
-    }),
+export const trackable_group_relations = relations(trackable_group, ({ one }) => ({
+  trackable: one(trackable, {
+    fields: [trackable_group.trackable_id],
+    references: [trackable.id],
   }),
-);
+  user: one(user, {
+    fields: [trackable_group.user_id],
+    references: [user.id],
+  }),
+}));
 
 export type DbUserSelect = typeof user.$inferSelect;
 export type DbSessionSelect = typeof session.$inferSelect;
@@ -195,20 +185,16 @@ export type DbUserFlagsInsert = typeof user_flags.$inferInsert;
 export const trackable_insert_schema = createInsertSchema(trackable);
 export const trackable_update_schema = createUpdateSchema(trackable);
 
-export const trackable_record_insert_schema =
-  createInsertSchema(trackable_record);
-export const trackable_record_update_schema =
-  createUpdateSchema(trackable_record);
+export const trackable_record_insert_schema = createInsertSchema(trackable_record);
+export const trackable_record_update_schema = createUpdateSchema(trackable_record);
 
-export const trackable_flags_insert_schema =
-  createInsertSchema(trackable_flags);
-export const trackable_flags_update_schema =
-  createUpdateSchema(trackable_flags, { value: z.json() });
+export const trackable_flags_insert_schema = createInsertSchema(trackable_flags);
+export const trackable_flags_update_schema = createUpdateSchema(trackable_flags, {
+  value: z.json(),
+});
 
 export const user_flags_insert_schema = createInsertSchema(user_flags);
-export const user_flags_update_schema = createUpdateSchema(user_flags,);
+export const user_flags_update_schema = createUpdateSchema(user_flags);
 
-export const trackable_group_insert_schema =
-  createInsertSchema(trackable_group);
-export const trackable_group_update_schema =
-  createUpdateSchema(trackable_group);
+export const trackable_group_insert_schema = createInsertSchema(trackable_group);
+export const trackable_group_update_schema = createUpdateSchema(trackable_group);

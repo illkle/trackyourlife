@@ -11,11 +11,7 @@ export interface IRangeLabelSelector {
   className?: string;
 }
 
-const NumberLimitsSelector = ({
-  value,
-  onChange,
-  className,
-}: IRangeLabelSelector) => {
+const NumberLimitsSelector = ({ value, onChange, className }: IRangeLabelSelector) => {
   const [innerMin, setInnerMin] = useState(String(value.min ?? "0"));
   const [innerMax, setInnerMax] = useState(String(value.max ?? "100"));
 
@@ -37,16 +33,9 @@ const NumberLimitsSelector = ({
   };
 
   return (
-    <div
-      className={cn(
-        "grid w-fit grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-x-3",
-        className,
-      )}
-    >
+    <div className={cn("grid w-fit grid-cols-1 gap-1 sm:grid-cols-2 sm:gap-x-3", className)}>
       <div className="w-52 text-muted-foreground">0%</div>
-      <div className="w-52 text-muted-foreground max-sm:row-start-3 max-sm:row-end-3">
-        100%
-      </div>
+      <div className="w-52 text-muted-foreground max-sm:row-start-3 max-sm:row-end-3">100%</div>
       <Input
         className="w-52"
         value={innerMin}

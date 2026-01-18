@@ -10,7 +10,6 @@ test.describe("Number Trackable Data Entry", () => {
 
     // Create a number trackable
     await page.goto("/app/create");
-    
 
     await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
     // Select number type from radio group
@@ -30,7 +29,6 @@ test.describe("Number Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     // Find the first day cell with data-empty attribute (number cells have this)
     const dayCell = page.locator("[data-number-cell]").first();
@@ -55,13 +53,10 @@ test.describe("Number Trackable Data Entry", () => {
     });
   });
 
-  test("should persist number value after page reload", async ({
-    authenticatedPage,
-  }) => {
+  test("should persist number value after page reload", async ({ authenticatedPage }) => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     const dayCell = page.locator("[data-number-cell]").first();
     const input = dayCell.locator("input");
@@ -78,7 +73,6 @@ test.describe("Number Trackable Data Entry", () => {
 
     // Reload the page
     await page.reload();
-    
 
     // Value should persist
     const reloadedCell = page.locator('[data-empty="false"]').first();
@@ -89,7 +83,6 @@ test.describe("Number Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     const dayCell = page.locator("[data-number-cell]").first();
     const input = dayCell.locator("input");
@@ -105,7 +98,6 @@ test.describe("Number Trackable Data Entry", () => {
 
     // Reload and verify
     await page.reload();
-    
 
     const reloadedCell = page.locator('[data-empty="false"]').first();
     await expect(reloadedCell).toBeVisible({ timeout: 10000 });
@@ -115,7 +107,6 @@ test.describe("Number Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     const dayCell = page.locator("[data-number-cell]").first();
     const input = dayCell.locator("input");
@@ -138,7 +129,6 @@ test.describe("Number Trackable Data Entry", () => {
 
     // Reload and verify update persisted
     await page.reload();
-    
 
     const reloadedCell = page.locator('[data-empty="false"]').first();
     await expect(reloadedCell).toBeVisible({ timeout: 10000 });
@@ -148,7 +138,6 @@ test.describe("Number Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     const dayCell = page.locator("[data-number-cell]").first();
     const input = dayCell.locator("input");
@@ -178,7 +167,6 @@ test.describe("Number Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     const dayCell = page.locator("[data-number-cell]").first();
     const input = dayCell.locator("input");
@@ -194,13 +182,10 @@ test.describe("Number Trackable Data Entry", () => {
     });
   });
 
-  test("should format large numbers with compact notation", async ({
-    authenticatedPage,
-  }) => {
+  test("should format large numbers with compact notation", async ({ authenticatedPage }) => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     const dayCell = page.locator("[data-number-cell]").first();
     const input = dayCell.locator("input");

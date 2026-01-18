@@ -10,7 +10,6 @@ test.describe("Boolean Trackable Data Entry", () => {
 
     // Create a boolean trackable
     await page.goto("/app/create");
-    
 
     await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
     // Boolean type is selected by default (it's a radio group)
@@ -26,14 +25,11 @@ test.describe("Boolean Trackable Data Entry", () => {
     trackableId = url.match(/trackables\/([^/]+)/)?.[1] ?? "";
   });
 
-  test("should toggle boolean value from false to true", async ({
-    authenticatedPage,
-  }) => {
+  test("should toggle boolean value from false to true", async ({ authenticatedPage }) => {
     const page = authenticatedPage;
 
     // Go to trackable view
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     // Find a day cell (today's cell should be clickable)
     const todayCell = page.locator("button[data-value]").first();
@@ -51,13 +47,10 @@ test.describe("Boolean Trackable Data Entry", () => {
     });
   });
 
-  test("should toggle boolean value from true back to false", async ({
-    authenticatedPage,
-  }) => {
+  test("should toggle boolean value from true back to false", async ({ authenticatedPage }) => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     const todayCell = page.locator("button[data-value]").first();
     await expect(todayCell).toBeVisible({ timeout: 10000 });
@@ -75,13 +68,10 @@ test.describe("Boolean Trackable Data Entry", () => {
     });
   });
 
-  test("should persist boolean value after page reload", async ({
-    authenticatedPage,
-  }) => {
+  test("should persist boolean value after page reload", async ({ authenticatedPage }) => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     const todayCell = page.locator("button[data-value]").first();
     await expect(todayCell).toBeVisible({ timeout: 10000 });
@@ -94,7 +84,6 @@ test.describe("Boolean Trackable Data Entry", () => {
 
     // Reload the page
     await page.reload();
-    
 
     // Value should still be true
     const reloadedCell = page.locator("button[data-value]").first();
@@ -103,19 +92,14 @@ test.describe("Boolean Trackable Data Entry", () => {
     });
   });
 
-  test("should display boolean in daily list view", async ({
-    authenticatedPage,
-  }) => {
+  test("should display boolean in daily list view", async ({ authenticatedPage }) => {
     const page = authenticatedPage;
 
     // Navigate to view page with current month
     const now = new Date();
     const month = now.getMonth();
     const year = now.getFullYear();
-    await page.goto(
-      `/app/trackables/${trackableId}/view?month=${month}&year=${year}`,
-    );
-    
+    await page.goto(`/app/trackables/${trackableId}/view?month=${month}&year=${year}`);
 
     // Wait for cells to be available
     await page.waitForSelector("button[data-value]", { timeout: 10000 });
@@ -129,22 +113,18 @@ test.describe("Boolean Trackable Data Entry", () => {
 
     // Go to home page (daily list view)
     await page.goto("/app");
-    
 
     // Should see the trackable in the daily list (use link instead of text to be more specific)
-    await expect(
-      page.getByRole("link", { name: trackableName }).first(),
-    ).toBeVisible({ timeout: 10000 });
+    await expect(page.getByRole("link", { name: trackableName }).first()).toBeVisible({
+      timeout: 10000,
+    });
   });
 
-  test("should display boolean in trackables list view", async ({
-    authenticatedPage,
-  }) => {
+  test("should display boolean in trackables list view", async ({ authenticatedPage }) => {
     const page = authenticatedPage;
 
     // First set a value
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     const todayCell = page.locator("button[data-value]").first();
     await todayCell.click();
@@ -154,7 +134,6 @@ test.describe("Boolean Trackable Data Entry", () => {
 
     // Go to trackables list
     await page.goto("/app/trackables");
-    
 
     // Should see the trackable with its mini row
     await expect(page.getByText(trackableName).first()).toBeVisible({
@@ -166,7 +145,6 @@ test.describe("Boolean Trackable Data Entry", () => {
     const page = authenticatedPage;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     const todayCell = page.locator("button[data-value]").first();
     await expect(todayCell).toBeVisible({ timeout: 10000 });
@@ -189,19 +167,14 @@ test.describe("Boolean Trackable Data Entry", () => {
     });
   });
 
-  test("should show multiple days in month view", async ({
-    authenticatedPage,
-  }) => {
+  test("should show multiple days in month view", async ({ authenticatedPage }) => {
     const page = authenticatedPage;
 
     // Navigate to view page with current month
     const now = new Date();
     const month = now.getMonth();
     const year = now.getFullYear();
-    await page.goto(
-      `/app/trackables/${trackableId}/view?month=${month}&year=${year}`,
-    );
-    
+    await page.goto(`/app/trackables/${trackableId}/view?month=${month}&year=${year}`);
 
     // Wait for the calendar grid to be rendered
     await page.waitForSelector("button[data-value]", { timeout: 10000 });

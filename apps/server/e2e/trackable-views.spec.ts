@@ -12,7 +12,6 @@ test.describe("Trackable Views", () => {
 
     // Create a boolean trackable for testing views
     await page.goto("/app/create");
-    
 
     await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
     // Boolean type is selected by default
@@ -28,13 +27,10 @@ test.describe("Trackable Views", () => {
   });
 
   test.describe("Daily List View (Home)", () => {
-    test("should display trackables in daily list on home page", async ({
-      authenticatedPage,
-    }) => {
+    test("should display trackables in daily list on home page", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       await page.goto("/app");
-      
 
       // Should see the trackable name
       await expect(page.getByText(trackableName).first()).toBeVisible({
@@ -42,13 +38,10 @@ test.describe("Trackable Views", () => {
       });
     });
 
-    test("should show days organized by date", async ({
-      authenticatedPage,
-    }) => {
+    test("should show days organized by date", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       await page.goto("/app");
-      
 
       // Should show day names (Monday, Tuesday, etc.)
       const dayNames = [
@@ -72,7 +65,6 @@ test.describe("Trackable Views", () => {
       const page = authenticatedPage;
 
       await page.goto("/app");
-      
 
       // Current month should be visible
       const currentMonth = format(new Date(), "MMMM");
@@ -87,42 +79,32 @@ test.describe("Trackable Views", () => {
       const page = authenticatedPage;
 
       await page.goto("/app");
-      
 
       // Click on trackable name
       await page.getByText(trackableName).first().click();
 
       // Should navigate to trackable view
-      await expect(page).toHaveURL(
-        new RegExp(`/app/trackables/${trackableId}`),
-        {
-          timeout: 10000,
-        },
-      );
+      await expect(page).toHaveURL(new RegExp(`/app/trackables/${trackableId}`), {
+        timeout: 10000,
+      });
     });
   });
 
   test.describe("Month Calendar View", () => {
-    test("should display month calendar with days", async ({
-      authenticatedPage,
-    }) => {
+    test("should display month calendar with days", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       await page.goto(`/app/trackables/${trackableId}/view`);
-      
 
       // Should show a grid of day cells (7 columns for week)
       const dayCells = page.locator(".grid-cols-7");
       await expect(dayCells.first()).toBeVisible({ timeout: 10000 });
     });
 
-    test("should show day numbers in calendar", async ({
-      authenticatedPage,
-    }) => {
+    test("should show day numbers in calendar", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       await page.goto(`/app/trackables/${trackableId}/view`);
-      
 
       // Day numbers 1-31 should be visible (some subset)
       await expect(page.getByText("1").first()).toBeVisible({ timeout: 10000 });
@@ -133,7 +115,6 @@ test.describe("Trackable Views", () => {
       const page = authenticatedPage;
 
       await page.goto(`/app/trackables/${trackableId}/view`);
-      
 
       // Today's date should have underline or special styling
       const today = format(new Date(), "d");
@@ -149,7 +130,6 @@ test.describe("Trackable Views", () => {
       const previousMonth = format(subMonths(now, 1), "MMMM");
 
       await page.goto(`/app/trackables/${trackableId}/view`);
-      
 
       // Find and click previous month button
       const prevButton = page.getByRole("button", {
@@ -171,7 +151,6 @@ test.describe("Trackable Views", () => {
       const nextMonth = format(addMonths(now, 1), "MMMM");
 
       await page.goto(`/app/trackables/${trackableId}/view`);
-      
 
       // Find and click next month button
       const nextButton = page.getByRole("button", { name: /next|→|>/i });
@@ -187,17 +166,13 @@ test.describe("Trackable Views", () => {
   });
 
   test.describe("Trackables List View", () => {
-    test("should display all trackables with mini rows", async ({
-      authenticatedPage,
-    }) => {
+    test("should display all trackables with mini rows", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       // Create another trackable
       await page.goto("/app/create");
-      
-      await page
-        .getByPlaceholder("Unnamed Trackable")
-        .fill(`E2E Second ${Date.now()}`);
+
+      await page.getByPlaceholder("Unnamed Trackable").fill(`E2E Second ${Date.now()}`);
       await page.getByRole("button", { name: "Create" }).click();
       await expect(page).toHaveURL(/\/app\/trackables\/.*\/settings/, {
         timeout: 10000,
@@ -205,7 +180,6 @@ test.describe("Trackable Views", () => {
 
       // Go to trackables list
       await page.goto("/app/trackables");
-      
 
       // Should show both trackables (use .first() to avoid strict mode with sidebar)
       await expect(page.getByText(trackableName).first()).toBeVisible({
@@ -214,14 +188,11 @@ test.describe("Trackable Views", () => {
       await expect(page.getByText(/E2E Second/).first()).toBeVisible();
     });
 
-    test("should show recent days data in mini row", async ({
-      authenticatedPage,
-    }) => {
+    test("should show recent days data in mini row", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       // First set some data
       await page.goto(`/app/trackables/${trackableId}/view`);
-      
 
       const dayCell = page.locator("button[data-value]").first();
       await dayCell.click();
@@ -231,7 +202,6 @@ test.describe("Trackable Views", () => {
 
       // Go to trackables list
       await page.goto("/app/trackables");
-      
 
       // The mini row should show day cells
       const miniRow = page
@@ -241,24 +211,18 @@ test.describe("Trackable Views", () => {
       await expect(miniRow).toBeVisible({ timeout: 10000 });
     });
 
-    test("should navigate to trackable view when clicking row", async ({
-      authenticatedPage,
-    }) => {
+    test("should navigate to trackable view when clicking row", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       await page.goto("/app/trackables");
-      
 
       // Click on trackable link (use .last() to get the main content link, not sidebar)
       await page.getByRole("link", { name: trackableName }).last().click();
 
       // Should navigate to trackable view
-      await expect(page).toHaveURL(
-        new RegExp(`/app/trackables/${trackableId}`),
-        {
-          timeout: 10000,
-        },
-      );
+      await expect(page).toHaveURL(new RegExp(`/app/trackables/${trackableId}`), {
+        timeout: 10000,
+      });
     });
   });
 
@@ -269,7 +233,6 @@ test.describe("Trackable Views", () => {
       const page = authenticatedPage;
 
       await page.goto(`/app/trackables/${trackableId}/view`);
-      
 
       // Look for view toggle buttons (calendar/list icons or text)
       const listViewButton = page.getByRole("button", { name: /list/i });
@@ -281,7 +244,6 @@ test.describe("Trackable Views", () => {
         await listViewButton.click();
 
         // Should show list layout
-        
 
         // Toggle back to calendar
         if (await calendarViewButton.isVisible()) {
@@ -296,13 +258,10 @@ test.describe("Trackable Views", () => {
   });
 
   test.describe("Sidebar Navigation", () => {
-    test("should display trackables in sidebar", async ({
-      authenticatedPage,
-    }) => {
+    test("should display trackables in sidebar", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       await page.goto("/app");
-      
 
       // Open sidebar if collapsed
       const sidebarToggle = page
@@ -320,52 +279,40 @@ test.describe("Trackable Views", () => {
       });
     });
 
-    test("should navigate to trackable from sidebar", async ({
-      authenticatedPage,
-    }) => {
+    test("should navigate to trackable from sidebar", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       await page.goto("/app");
-      
 
       // Click trackable in sidebar
       const sidebar = page.locator("[data-sidebar]");
       await sidebar.getByText(trackableName).click();
 
       // Should navigate to trackable view
-      await expect(page).toHaveURL(
-        new RegExp(`/app/trackables/${trackableId}`),
-        {
-          timeout: 10000,
-        },
-      );
+      await expect(page).toHaveURL(new RegExp(`/app/trackables/${trackableId}`), {
+        timeout: 10000,
+      });
     });
 
-    test("should show favorite indicator in sidebar", async ({
-      authenticatedPage,
-    }) => {
+    test("should show favorite indicator in sidebar", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       // First favorite the trackable
       await page.goto(`/app/trackables/${trackableId}/view`);
-      
 
       const favoriteButton = page.getByRole("button", { name: /favorite/i });
       if (await favoriteButton.isVisible()) {
         await favoriteButton.click();
-        await expect(
-          page.getByRole("button", { name: /unfavorite/i }),
-        ).toBeVisible({ timeout: 5000 });
+        await expect(page.getByRole("button", { name: /unfavorite/i })).toBeVisible({
+          timeout: 5000,
+        });
       }
 
       // Check sidebar for heart icon
       await page.goto("/app");
-      
 
       const sidebar = page.locator("[data-sidebar]");
-      const trackableRow = sidebar
-        .locator(`text=${trackableName}`)
-        .locator("..");
+      const trackableRow = sidebar.locator(`text=${trackableName}`).locator("..");
 
       // Should have heart icon
       const heartIcon = trackableRow.locator("svg");

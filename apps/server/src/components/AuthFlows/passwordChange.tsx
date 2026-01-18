@@ -6,13 +6,7 @@ import { PasswordValidator } from "@tyl/helpers/validators";
 
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
 import { Button } from "~/@shad/components/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/@shad/components/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/@shad/components/card";
 import { Input } from "~/@shad/components/input";
 import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 import { authClient } from "~/auth/client";
@@ -81,7 +75,7 @@ export const PasswordChangeForm = ({ className }: { className?: string }) => {
             )}
           />
 
-          <h4 className="mb-2 mt-4">New password</h4>
+          <h4 className="mt-4 mb-2">New password</h4>
           <form.Field
             name="newPassword"
             children={(field) => (
@@ -105,8 +99,7 @@ export const PasswordChangeForm = ({ className }: { className?: string }) => {
             <Alert className="mt-4">
               <AlertTitle className="">Password changed</AlertTitle>
               <AlertDescription>
-                Your password has been changed. All sessions except this one
-                have been revoked.
+                Your password has been changed. All sessions except this one have been revoked.
               </AlertDescription>
             </Alert>
           ) : (
@@ -116,15 +109,11 @@ export const PasswordChangeForm = ({ className }: { className?: string }) => {
               className="mt-4 w-full"
               type="submit"
             >
-              <MaybeLoading isLoading={form.state.isSubmitting}>
-                Change password
-              </MaybeLoading>
+              <MaybeLoading isLoading={form.state.isSubmitting}>Change password</MaybeLoading>
             </Button>
           )}
 
-          {changeMutation.error && (
-            <MutationErrorInfo message={changeMutation.error.message} />
-          )}
+          {changeMutation.error && <MutationErrorInfo message={changeMutation.error.message} />}
         </form>
       </CardContent>
     </Card>

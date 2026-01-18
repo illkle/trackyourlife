@@ -1,7 +1,4 @@
-import {
-  AbstractPowerSyncDatabase,
-  PowerSyncBackendConnector,
-} from "@powersync/web";
+import { AbstractPowerSyncDatabase, PowerSyncBackendConnector } from "@powersync/web";
 
 import { SyncEntry } from "@tyl/db/server/powersync-apply";
 

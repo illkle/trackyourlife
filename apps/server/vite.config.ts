@@ -11,10 +11,7 @@ export default defineConfig({
   server: {
     host: true,
     port: 80,
-    allowedHosts:
-      process.env.NODE_ENV === "development"
-        ? ["host.docker.internal"]
-        : undefined,
+    allowedHosts: process.env.NODE_ENV === "development" ? ["host.docker.internal"] : undefined,
   },
   optimizeDeps: {
     exclude: ["@journeyapps/wa-sqlite", "@powersync/web"],

@@ -3,41 +3,20 @@
   "ui": "tui",
   "tasks": {
     "topo": {
-      "dependsOn": [
-        "^topo"
-      ]
+      "dependsOn": ["^topo"]
     },
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        ".expo/**",
-        ".output/**",
-        "dist/**"
-      ],
-      "env": [
-        "VITE_ZERO_DOMAIN"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": [".expo/**", ".output/**", "dist/**"],
+      "env": ["VITE_ZERO_DOMAIN"]
     },
     "dev": {
       "persistent": true,
       "cache": false
     },
-    "format": {
-      "outputs": [
-        "node_modules/.cache/.prettiercache"
-      ],
-      "outputLogs": "new-only"
-    },
     "typecheck": {
-      "dependsOn": [
-        "^topo",
-        "^build"
-      ],
-      "outputs": [
-        "node_modules/.cache/tsbuildinfo.json"
-      ]
+      "dependsOn": ["^topo", "^build"],
+      "outputs": ["node_modules/.cache/tsbuildinfo.json"]
     },
     "clean": {
       "cache": false

@@ -80,13 +80,11 @@ const trackableFlagsFromClientId = (id: SyncEntry["id"]) => {
   return { trackable_id: spl[1]!, key: spl[2]! };
 };
 
-const trackable_flags_update_schema_only_value =
-  trackable_flags_update_schema.pick({ value: true });
+const trackable_flags_update_schema_only_value = trackable_flags_update_schema.pick({
+  value: true,
+});
 
-export const applyCrudTrackableFlags = async (
-  entry: SyncEntry,
-  user_id: string,
-) => {
+export const applyCrudTrackableFlags = async (entry: SyncEntry, user_id: string) => {
   const { opData } = entry;
 
   switch (entry.op) {
@@ -102,11 +100,7 @@ export const applyCrudTrackableFlags = async (
         .insert(trackable_flags)
         .values(verified)
         .onConflictDoUpdate({
-          target: [
-            trackable_flags.user_id,
-            trackable_flags.trackable_id,
-            trackable_flags.key,
-          ],
+          target: [trackable_flags.user_id, trackable_flags.trackable_id, trackable_flags.key],
           set: { value: parsed },
         });
       break;
@@ -151,10 +145,7 @@ export const applyCrudTrackableFlags = async (
 // TRACKABLE RECORD
 // ============================================================================
 
-export const applyCrudTrackableRecord = async (
-  entry: SyncEntry,
-  user_id: string,
-) => {
+export const applyCrudTrackableRecord = async (entry: SyncEntry, user_id: string) => {
   const opData = entry.opData as Record<string, unknown>;
   const id = entry.id;
 
@@ -166,11 +157,14 @@ export const applyCrudTrackableRecord = async (
         user_id,
       });
 
-      await db.insert(trackable_record).values(verified).onConflictDoUpdate({
-        target: [trackable_record.trackable_id, trackable_record.time_bucket],
-        targetWhere: isNotNull(trackable_record.time_bucket),
-        set: { value: verified.value, updated_at: verified.updated_at },
-      });
+      await db
+        .insert(trackable_record)
+        .values(verified)
+        .onConflictDoUpdate({
+          target: [trackable_record.trackable_id, trackable_record.time_bucket],
+          targetWhere: isNotNull(trackable_record.time_bucket),
+          set: { value: verified.value, updated_at: verified.updated_at },
+        });
       break;
     }
     case UpdateType.PATCH: {
@@ -179,23 +173,13 @@ export const applyCrudTrackableRecord = async (
       await db
         .update(trackable_record)
         .set(verified)
-        .where(
-          and(
-            eq(trackable_record.id, id),
-            eq(trackable_record.user_id, user_id),
-          ),
-        );
+        .where(and(eq(trackable_record.id, id), eq(trackable_record.user_id, user_id)));
       break;
     }
     case UpdateType.DELETE: {
       await db
         .delete(trackable_record)
-        .where(
-          and(
-            eq(trackable_record.id, entry.id),
-            eq(trackable_record.user_id, user_id),
-          ),
-        );
+        .where(and(eq(trackable_record.id, entry.id), eq(trackable_record.user_id, user_id)));
       break;
     }
   }
@@ -215,10 +199,7 @@ const trackableGroupFromClientId = (id: SyncEntry["id"]) => {
   return { trackable_id: spl[1]!, group: spl[2]! };
 };
 
-export const applyCrudTrackableGroup = async (
-  entry: SyncEntry,
-  user_id: string,
-) => {
+export const applyCrudTrackableGroup = async (entry: SyncEntry, user_id: string) => {
   const { opData } = entry;
 
   switch (entry.op) {
@@ -235,10 +216,7 @@ export const applyCrudTrackableGroup = async (
       const verified = trackable_group_update_schema.parse(opData);
 
       if (!verified.trackable_id || !verified.group) {
-        console.error(
-          "trying to patch trackable group with invalid data",
-          verified,
-        );
+        console.error("trying to patch trackable group with invalid data", verified);
         return;
       }
 
@@ -314,12 +292,7 @@ export const applyCrudUserFlags = async (entry: SyncEntry, user_id: string) => {
       await db
         .update(user_flags)
         .set({ value: verified.value })
-        .where(
-          and(
-            eq(user_flags.key, verified.key),
-            eq(user_flags.user_id, user_id),
-          ),
-        );
+        .where(and(eq(user_flags.key, verified.key), eq(user_flags.user_id, user_id)));
       break;
     }
     case UpdateType.DELETE: {
@@ -327,12 +300,7 @@ export const applyCrudUserFlags = async (entry: SyncEntry, user_id: string) => {
 
       await db
         .delete(user_flags)
-        .where(
-          and(
-            eq(user_flags.key, dataFromId.key),
-            eq(user_flags.user_id, user_id),
-          ),
-        );
+        .where(and(eq(user_flags.key, dataFromId.key), eq(user_flags.user_id, user_id)));
       break;
     }
   }

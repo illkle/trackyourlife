@@ -53,10 +53,7 @@ export const useAmIOpenInStore = (me: EditorModalRegisterInput) => {
 
       const { date, trackableId } = v.currentVal.data ?? {};
 
-      const isMe =
-        date && trackableId
-          ? me.trackableId === trackableId && me.date === date
-          : false;
+      const isMe = date && trackableId ? me.trackableId === trackableId && me.date === date : false;
 
       setIsOpen(isMe);
     };
@@ -162,7 +159,7 @@ export const EditorModalV2 = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed left-0 top-0 h-screen w-screen bg-black/30"
+            className="fixed top-0 left-0 h-screen w-screen bg-black/30"
           ></m.div>
         )}
       </AnimatePresence>
@@ -183,10 +180,7 @@ export const EditorModalV2 = () => {
       >
         <AnimatePresence>
           {dayData && (
-            <m.div
-              exit={{ opacity: 0 }}
-              className="flex max-h-[200px] flex-col"
-            >
+            <m.div exit={{ opacity: 0 }} className="flex max-h-[200px] flex-col">
               <PopupEditor
                 date={dayData.date}
                 trackableId={dayData.trackableId}
@@ -200,9 +194,7 @@ export const EditorModalV2 = () => {
   );
 };
 
-export const setIgnoreEditorModalClose = (
-  e: MouseEvent | TouchEvent | FocusEvent,
-) => {
+export const setIgnoreEditorModalClose = (e: MouseEvent | TouchEvent | FocusEvent) => {
   e.ignoreEditorModalClose = true;
 };
 
@@ -249,9 +241,7 @@ export const MiniDrawer = React.forwardRef<
        */
       const position = Math.max(
         0,
-        window.innerHeight -
-          window.visualViewport.height -
-          window.visualViewport.offsetTop,
+        window.innerHeight - window.visualViewport.height - window.visualViewport.offsetTop,
       );
 
       outerRef.current.style.setProperty("--bottom-position", position + "px");
@@ -283,7 +273,7 @@ export const MiniDrawer = React.forwardRef<
           "data-[state=collapsed]:translate-y-[calc(100%-24px)]",
           "fixed bottom-[var(--bottom-position)] translate-y-[100vh]",
           "data-[sidebar-offset=false]:-translate-x-1/2 data-[sidebar-offset=true]:translate-x-[calc(-50%+var(--sidebar-offset,0px)/2)]",
-          "duration-350 transition-all",
+          "transition-all duration-350",
           "data-[hidden=true]:pointer-events-none data-[hidden=true]:opacity-0",
           isMobile && state === "opened" && "hideCaretAnimation",
           props.className,
@@ -355,14 +345,13 @@ export const Debugger = () => {
     };
   }, []);
 
-  const shoudOffsetBy =
-    dimensions.innerHeight - dimensions.viewportHeight - dimensions.offsetTop;
+  const shoudOffsetBy = dimensions.innerHeight - dimensions.viewportHeight - dimensions.offsetTop;
 
   const target = useRef<HTMLDivElement>(null);
 
   return (
     <>
-      <div className="bg-secondary text-secondary-foreground fixed right-4 top-4 z-50 -translate-y-[300px] rounded p-4 text-sm opacity-75">
+      <div className="fixed top-4 right-4 z-50 -translate-y-[300px] rounded bg-secondary p-4 text-sm text-secondary-foreground opacity-75">
         <div>scrollTop: {Math.round(dimensions.scrollTop)}</div>
         <div>scrollHeight: {Math.round(dimensions.scrollHeight)}</div>
         <div>innerHeight: {Math.round(dimensions.innerHeight)}</div>
@@ -371,13 +360,9 @@ export const Debugger = () => {
         <div>viewport offsetTop: {Math.round(dimensions.offsetTop)}</div>
         <div>should offset by: {Math.round(shoudOffsetBy)}</div>
       </div>
-      <div
-        ref={target}
-        className="translate-z-0 fixed bottom-0 h-40 w-full bg-red-500"
-      >
+      <div ref={target} className="fixed bottom-0 h-40 w-full translate-z-0 bg-red-500">
         {offset}
-        {Math.round(dimensions.innerHeight)}{" "}
-        {Math.round(dimensions.viewportHeight)}{" "}
+        {Math.round(dimensions.innerHeight)} {Math.round(dimensions.viewportHeight)}{" "}
         {Math.round(dimensions.offsetTop)}
       </div>
     </>

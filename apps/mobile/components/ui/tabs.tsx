@@ -16,7 +16,7 @@ function TabsList({
   return (
     <TabsPrimitive.List
       className={cn(
-        "bg-muted text-muted-foreground h-11 w-full flex-row items-stretch justify-center rounded-lg p-1",
+        "h-11 w-full flex-row items-stretch justify-center rounded-lg bg-muted p-1 text-muted-foreground",
         className,
       )}
       {...props}
@@ -38,7 +38,7 @@ function TabsTrigger({
     <TabsPrimitive.Trigger
       className={cn(
         "relative inline-flex grow items-center justify-center rounded-md px-3 text-sm",
-        "whitespace-nowrap font-medium",
+        "font-medium whitespace-nowrap",
         isActive && "bg-background",
         className,
       )}
@@ -46,12 +46,7 @@ function TabsTrigger({
     >
       <>
         {text && (
-          <Text
-            className={cn(
-              "font-bold",
-              isActive ? "text-foreground" : "text-muted-foreground",
-            )}
-          >
+          <Text className={cn("font-bold", isActive ? "text-foreground" : "text-muted-foreground")}>
             {text}
           </Text>
         )}

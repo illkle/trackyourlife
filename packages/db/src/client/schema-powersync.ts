@@ -1,8 +1,5 @@
 // * This is schema for local sqlite db that powersync replicated to */
-import {
-  DrizzleAppSchema,
-  PowerSyncSQLiteDatabase,
-} from "@powersync/drizzle-driver";
+import { DrizzleAppSchema, PowerSyncSQLiteDatabase } from "@powersync/drizzle-driver";
 import { relations } from "drizzle-orm";
 import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
@@ -10,7 +7,7 @@ export const user_flags = sqliteTable("TYL_userFlags", {
   id: text("id").primaryKey(),
   user_id: text("user_id").notNull(),
   key: text("key").notNull(),
-  value: text("value", {mode: "json"}).notNull(),
+  value: text("value", { mode: "json" }).notNull(),
 });
 
 export const trackable = sqliteTable("TYL_trackable", {
@@ -25,7 +22,7 @@ export const trackable_flags = sqliteTable("TYL_trackableFlags", {
   user_id: text("user_id").notNull(),
   trackable_id: text("trackable_id").notNull(),
   key: text("key").notNull(),
-  value: text("value", {mode: "json"}).notNull(),
+  value: text("value", { mode: "json" }).notNull(),
 });
 
 export const trackable_record = sqliteTable("TYL_trackableRecord", {
@@ -52,15 +49,12 @@ export const trackable_relations = relations(trackable, ({ many }) => ({
   groups: many(trackable_group),
 }));
 
-export const trackable_group_relations = relations(
-  trackable_group,
-  ({ one }) => ({
-    trackable: one(trackable, {
-      fields: [trackable_group.trackable_id],
-      references: [trackable.id],
-    }),
+export const trackable_group_relations = relations(trackable_group, ({ one }) => ({
+  trackable: one(trackable, {
+    fields: [trackable_group.trackable_id],
+    references: [trackable.id],
   }),
-);
+}));
 
 export const record_relations = relations(trackable_record, ({ one }) => ({
   trackable: one(trackable, {
@@ -69,15 +63,12 @@ export const record_relations = relations(trackable_record, ({ one }) => ({
   }),
 }));
 
-export const trackable_flags_relations = relations(
-  trackable_flags,
-  ({ one }) => ({
-    trackable: one(trackable, {
-      fields: [trackable_flags.trackable_id],
-      references: [trackable.id],
-    }),
+export const trackable_flags_relations = relations(trackable_flags, ({ one }) => ({
+  trackable: one(trackable, {
+    fields: [trackable_flags.trackable_id],
+    references: [trackable.id],
   }),
-);
+}));
 
 /*** testing */
 
@@ -125,9 +116,7 @@ export const PowersyncSchema = new DrizzleAppSchema(PowersyncDrizzleSchema);
 
 export type TPowersyncDatabase = (typeof PowersyncSchema)["types"];
 
-export type TPowersyncDrizzleDB = PowerSyncSQLiteDatabase<
-  typeof PowersyncDrizzleSchema
->;
+export type TPowersyncDrizzleDB = PowerSyncSQLiteDatabase<typeof PowersyncDrizzleSchema>;
 
 export type DbTrackableFlagsUpsert = typeof trackable_flags.$inferInsert;
 

@@ -1,17 +1,10 @@
 import { parse } from "date-fns";
 import { z } from "zod/v4";
 
-import {
-  ZColorValue,
-  ZNumberColorCoding,
-  ZNumberProgressBounds,
-} from "@tyl/db/jsonValidators";
+import { ZColorValue, ZNumberColorCoding, ZNumberProgressBounds } from "@tyl/db/jsonValidators";
 import { presetsMap } from "@tyl/helpers/colorPresets";
 import { makeColorStrings } from "@tyl/helpers/colorTools";
-import {
-  NumberColorCodingMapper,
-  NumberProgressMapper,
-} from "@tyl/helpers/trackables";
+import { NumberColorCodingMapper, NumberProgressMapper } from "@tyl/helpers/trackables";
 
 /**
  * Flags that are stored in db and are accessed by trackable components.
@@ -28,21 +21,15 @@ export const FlagsValidators = {
   AnyTrackingStart: z.iso
     .date()
     .or(z.null())
-    .transform((v) =>
-      v ? parse(v, "yyyy-MM-dd", new Date()).getTime() : null,
-    ), // converting to number because transtack store can't store reactive dates
+    .transform((v) => (v ? parse(v, "yyyy-MM-dd", new Date()).getTime() : null)), // converting to number because transtack store can't store reactive dates
   AnyNote: z.string(),
   AnyMonthViewType: z.enum(["calendar", "list"]),
   AnyLastDedupeStrategy: z.string(),
 
   BooleanCheckedColor: ZColorValue.transform(makeColorStrings),
   BooleanUncheckedColor: ZColorValue.transform(makeColorStrings),
-  NumberProgessBounds: ZNumberProgressBounds.transform(
-    (v) => new NumberProgressMapper(v),
-  ),
-  NumberColorCoding: ZNumberColorCoding.transform(
-    (v) => new NumberColorCodingMapper(v),
-  ),
+  NumberProgessBounds: ZNumberProgressBounds.transform((v) => new NumberProgressMapper(v)),
+  NumberColorCoding: ZNumberColorCoding.transform((v) => new NumberColorCodingMapper(v)),
 
   AnyTestFlag: z.string(),
 };
@@ -71,21 +58,17 @@ export const FlagDefaultInputs: ITrackableFlagsInputKV = {
 
 const fullObject = z.object(FlagsValidators);
 
-export const FlagDefaults: ITrackableFlagsKV =
-  fullObject.parse(FlagDefaultInputs);
+export const FlagDefaults: ITrackableFlagsKV = fullObject.parse(FlagDefaultInputs);
 
 /**
  * Use this helper to get type of flag value accounting for default set.
  * `viewType: ITrackableFlagType<"AnyMonthViewType">;`
  */
-export type ITrackableFlagType<K extends ITrackableFlagKey> =
-  ITrackableFlagValue<K>;
+export type ITrackableFlagType<K extends ITrackableFlagKey> = ITrackableFlagValue<K>;
 
 export type ITrackableFlagKey = keyof typeof FlagsValidators;
 
-export type ITrackableFlagValue<K extends ITrackableFlagKey> = z.infer<
-  (typeof FlagsValidators)[K]
->;
+export type ITrackableFlagValue<K extends ITrackableFlagKey> = z.infer<(typeof FlagsValidators)[K]>;
 export type ITrackableFlagValueInput<K extends ITrackableFlagKey> = z.input<
   (typeof FlagsValidators)[K]
 >;

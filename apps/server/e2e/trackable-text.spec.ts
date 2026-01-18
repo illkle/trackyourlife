@@ -10,7 +10,6 @@ test.describe("Text Trackable Data Entry", () => {
 
     // Create a text trackable
     await page.goto("/app/create");
-    
 
     await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
     // Select text type from radio group
@@ -26,14 +25,12 @@ test.describe("Text Trackable Data Entry", () => {
     trackableId = url.match(/trackables\/([^/]+)/)?.[1] ?? "";
   });
 
-  test("should open text popup editor when clicking day cell", async ({
-    authenticatedPage,
-  }) => {
+  test("should open text popup editor when clicking day cell", async ({ authenticatedPage }) => {
     const page = authenticatedPage;
 
     // Navigate to view (will redirect to include month/year params)
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
+
     await page.waitForURL(/\/app\/trackables\/.*\/view/, { timeout: 10000 });
 
     // Click on day 1 button (use role+name for more reliable selection)
@@ -51,7 +48,6 @@ test.describe("Text Trackable Data Entry", () => {
     const testText = "This is my test entry for today";
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     // Click on day 1 button to open editor
     const dayCell = page.locator("[data-text-cell]").first();
@@ -78,14 +74,11 @@ test.describe("Text Trackable Data Entry", () => {
     await expect(reopenedTextarea).toHaveValue(testText, { timeout: 5000 });
   });
 
-  test("should persist text value after page reload", async ({
-    authenticatedPage,
-  }) => {
+  test("should persist text value after page reload", async ({ authenticatedPage }) => {
     const page = authenticatedPage;
     const testText = `Persistence test ${Date.now()}`;
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     // Click on day 1 button
     const dayCell = page.locator("[data-text-cell]").first();
@@ -104,7 +97,6 @@ test.describe("Text Trackable Data Entry", () => {
 
     // Reload the page
     await page.reload();
-    
 
     // Click on day 1 to verify text persisted
     await dayCell.click();
@@ -119,7 +111,6 @@ test.describe("Text Trackable Data Entry", () => {
     const updatedText = "Updated text value";
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     // Click on day 1 button
     const dayCell = page.locator("[data-text-cell]").first();
@@ -149,7 +140,6 @@ test.describe("Text Trackable Data Entry", () => {
 
     // Verify updated text after reload
     await page.reload();
-    
 
     await dayCell.click();
     const reopenedTextarea = page.locator("#editorModal textarea");
@@ -162,7 +152,6 @@ test.describe("Text Trackable Data Entry", () => {
     const testText = "Text to be cleared";
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     // Click on day 1 button
     const dayCell = page.locator("[data-text-cell]").first();
@@ -183,19 +172,15 @@ test.describe("Text Trackable Data Entry", () => {
 
     // Verify text is cleared
     await page.reload();
-    
 
     await expect(page.getByText(testText)).not.toBeVisible({ timeout: 5000 });
   });
 
-  test("should display text preview in day cell", async ({
-    authenticatedPage,
-  }) => {
+  test("should display text preview in day cell", async ({ authenticatedPage }) => {
     const page = authenticatedPage;
     const testText = "A longer text entry";
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     // Click on day 1 button
     const dayCell = page.locator("[data-text-cell]").first();
@@ -215,14 +200,11 @@ test.describe("Text Trackable Data Entry", () => {
     });
   });
 
-  test("should display text in trackables list view", async ({
-    authenticatedPage,
-  }) => {
+  test("should display text in trackables list view", async ({ authenticatedPage }) => {
     const page = authenticatedPage;
     const testText = "List view test";
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     // Click on day 1 button
     const dayCell = page.locator("[data-text-cell]").first();
@@ -235,7 +217,6 @@ test.describe("Text Trackable Data Entry", () => {
 
     // Go to trackables list
     await page.goto("/app/trackables");
-    
 
     // Trackable should appear in the list
     await expect(page.getByText(trackableName).first()).toBeVisible({
@@ -248,7 +229,6 @@ test.describe("Text Trackable Data Entry", () => {
     const multilineText = "Line 1\nLine 2\nLine 3";
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     // Click on day 1 button
     const dayCell = page.locator("[data-text-cell]").first();
@@ -263,7 +243,6 @@ test.describe("Text Trackable Data Entry", () => {
 
     // Reload and verify
     await page.reload();
-    
 
     // Open the popup again to verify multiline was saved
     await dayCell.click();
@@ -279,7 +258,6 @@ test.describe("Text Trackable Data Entry", () => {
     const specialText = "Special chars: &<>\"'@#$%^&*()";
 
     await page.goto(`/app/trackables/${trackableId}/view`);
-    
 
     // Click on day 1 button
     const dayCell = page.locator("[data-text-cell]").first();
@@ -293,7 +271,6 @@ test.describe("Text Trackable Data Entry", () => {
     await expect(textarea).not.toBeVisible({ timeout: 5000 });
 
     await page.reload();
-    
 
     // Verify special characters were saved correctly
     await dayCell.click();

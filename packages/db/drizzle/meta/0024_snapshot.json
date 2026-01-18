@@ -93,12 +93,8 @@
           "name": "TYL_account_userId_TYL_user_id_fk",
           "tableFrom": "TYL_account",
           "tableTo": "TYL_user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -205,12 +201,8 @@
           "name": "TYL_session_userId_TYL_user_id_fk",
           "tableFrom": "TYL_session",
           "tableTo": "TYL_user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -220,9 +212,7 @@
         "TYL_session_token_unique": {
           "name": "TYL_session_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -322,12 +312,8 @@
           "name": "TYL_trackable_user_id_TYL_user_id_fk",
           "tableFrom": "TYL_trackable",
           "tableTo": "TYL_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -367,12 +353,8 @@
           "name": "TYL_trackableGroup_trackableId_TYL_trackable_id_fk",
           "tableFrom": "TYL_trackableGroup",
           "tableTo": "TYL_trackable",
-          "columnsFrom": [
-            "trackableId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["trackableId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -380,12 +362,8 @@
           "name": "TYL_trackableGroup_user_id_TYL_user_id_fk",
           "tableFrom": "TYL_trackableGroup",
           "tableTo": "TYL_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -393,10 +371,7 @@
       "compositePrimaryKeys": {
         "TYL_trackableGroup_trackableId_group_pk": {
           "name": "TYL_trackableGroup_trackableId_group_pk",
-          "columns": [
-            "trackableId",
-            "group"
-          ]
+          "columns": ["trackableId", "group"]
         }
       },
       "uniqueConstraints": {},
@@ -495,12 +470,8 @@
           "name": "TYL_trackableRecord_user_id_TYL_user_id_fk",
           "tableFrom": "TYL_trackableRecord",
           "tableTo": "TYL_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -508,12 +479,8 @@
           "name": "TYL_trackableRecord_trackableId_TYL_trackable_id_fk",
           "tableFrom": "TYL_trackableRecord",
           "tableTo": "TYL_trackable",
-          "columnsFrom": [
-            "trackableId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["trackableId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -581,9 +548,7 @@
         "TYL_user_email_unique": {
           "name": "TYL_user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -644,11 +609,7 @@
     "public.type": {
       "name": "type",
       "schema": "public",
-      "values": [
-        "boolean",
-        "number",
-        "range"
-      ]
+      "values": ["boolean", "number", "range"]
     }
   },
   "schemas": {},

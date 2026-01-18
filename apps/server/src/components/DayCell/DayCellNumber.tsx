@@ -66,15 +66,12 @@ export const DayCellNumber = () => {
       {labelType === "auto" && <LabelInside />}
       {!isMobile && (
         <NumberInput
-          className={cn(
-            ...classes,
-            "peer opacity-0 focus:opacity-100 group-hover:opacity-100",
-          )}
+          className={cn(...classes, "peer opacity-0 group-hover:opacity-100 focus:opacity-100")}
         />
       )}
       <FormatterFader
         className={cn(
-          "z-100 absolute left-0 top-0 h-full w-full",
+          "absolute top-0 left-0 z-100 h-full w-full",
           ...classes,
           "pointer-events-none",
           !isMobile && "opacity-100 group-hover:opacity-0 peer-focus:opacity-0",
@@ -105,25 +102,18 @@ const ProgressBar = () => {
 
   return (
     <div
-      className={cn(
-        "bg-(--themeLight) dark:bg-(--themeDark) absolute bottom-0 left-0 w-full",
-      )}
+      className={cn("absolute bottom-0 left-0 w-full bg-(--themeLight) dark:bg-(--themeDark)")}
       style={{ height: `${progress}%` }}
     ></div>
   );
 };
 
-const FormatterFader = ({
-  className,
-  ...props
-}: React.ComponentProps<"div">) => {
+const FormatterFader = ({ className, ...props }: React.ComponentProps<"div">) => {
   const { internalNumber } = useNumberInputContext();
 
   const isBigNumber = internalNumber >= 10000;
 
-  const displayedValue = isBigNumber
-    ? NumberFormatter.format(internalNumber)
-    : internalNumber;
+  const displayedValue = isBigNumber ? NumberFormatter.format(internalNumber) : internalNumber;
 
   return (
     <div data-empty={internalNumber === 0} {...props} className={cn(className)}>
@@ -156,100 +146,90 @@ export const NumberInputWrapper = forwardRef<
     children?: React.ReactNode;
     updateTimestamp?: number;
   }
->(
-  (
-    { value, onChange, children, updateTimestamp: timestamp, ...props },
-    ref,
-  ) => {
-    const { internalValue, internalValueValidated, updateHandler, reset } =
-      useLinkedValue({
-        value: String(getNumberSafe(value)),
-        onChange,
-        timestamp: timestamp,
-        validate: (v) => {
-          return !Number.isNaN(Number(v));
-        },
-      });
+>(({ value, onChange, children, updateTimestamp: timestamp, ...props }, ref) => {
+  const { internalValue, internalValueValidated, updateHandler, reset } = useLinkedValue({
+    value: String(getNumberSafe(value)),
+    onChange,
+    timestamp: timestamp,
+    validate: (v) => {
+      return !Number.isNaN(Number(v));
+    },
+  });
 
-    const internalNumber = getNumberSafe(internalValueValidated);
+  const internalNumber = getNumberSafe(internalValueValidated);
 
-    const useEditing = useRef(false);
+  const useEditing = useRef(false);
 
-    const handleInput = async (value: string) => {
-      //
-      // This is needed to force decimal points to be "."
-      // We need to force them because otherwise decimal input is bugged in safari
-      // for people who have a language and region mismatch(i.e region with 30.2 convention an language with 30,2 convention).
-      // So ios keyboard might show , as a separator, but browser will say that for value 30,2 valueasnumber is NaN
-      // https://github.com/home-assistant/frontend/pull/18268#issuecomment-1769182417
-      // For the same reason  input type is set to text, because otherwise it will not allow input with wrong decimal
-      //
-      const replaced = value.replace(",", ".");
-      await updateHandler(replaced);
-    };
+  const handleInput = async (value: string) => {
+    //
+    // This is needed to force decimal points to be "."
+    // We need to force them because otherwise decimal input is bugged in safari
+    // for people who have a language and region mismatch(i.e region with 30.2 convention an language with 30,2 convention).
+    // So ios keyboard might show , as a separator, but browser will say that for value 30,2 valueasnumber is NaN
+    // https://github.com/home-assistant/frontend/pull/18268#issuecomment-1769182417
+    // For the same reason  input type is set to text, because otherwise it will not allow input with wrong decimal
+    //
+    const replaced = value.replace(",", ".");
+    await updateHandler(replaced);
+  };
 
-    const handleInputBlur = () => {
-      console.log("handleInputBlur", internalValue, internalValueValidated);
-      if (internalValue !== internalValueValidated) {
-        reset();
-      }
-      useEditing.current = false;
-    };
+  const handleInputBlur = () => {
+    console.log("handleInputBlur", internalValue, internalValueValidated);
+    if (internalValue !== internalValueValidated) {
+      reset();
+    }
+    useEditing.current = false;
+  };
 
-    const focusHandler: React.FocusEventHandler<HTMLInputElement> = (e) => {
-      useEditing.current = true;
-      if (internalNumber === 0) {
-        e.target.select();
-      }
-    };
+  const focusHandler: React.FocusEventHandler<HTMLInputElement> = (e) => {
+    useEditing.current = true;
+    if (internalNumber === 0) {
+      e.target.select();
+    }
+  };
 
-    const { id } = useTrackableMeta();
-    const colorCoding = useTrackableFlag(id, "NumberColorCoding");
+  const { id } = useTrackableMeta();
+  const colorCoding = useTrackableFlag(id, "NumberColorCoding");
 
-    const color = useMemo(() => {
-      return colorCoding.valueToColor(internalNumber);
-    }, [internalNumber, colorCoding]);
+  const color = useMemo(() => {
+    return colorCoding.valueToColor(internalNumber);
+  }, [internalNumber, colorCoding]);
 
-    return (
-      <>
-        <NumberInputContext.Provider
-          value={{
-            internalNumber,
-            inputValue: internalValue,
-            handleInput,
-            onFocus: focusHandler,
-            onBlur: handleInputBlur,
-          }}
+  return (
+    <>
+      <NumberInputContext.Provider
+        value={{
+          internalNumber,
+          inputValue: internalValue,
+          handleInput,
+          onFocus: focusHandler,
+          onBlur: handleInputBlur,
+        }}
+      >
+        <div
+          ref={ref}
+          data-number-cell
+          data-empty={internalNumber === 0}
+          style={
+            {
+              "--themeLight": makeColorString(color.lightMode),
+              "--themeDark": makeColorString(color.darkMode),
+            } as CSSProperties
+          }
+          {...props}
         >
-          <div
-            ref={ref}
-            data-number-cell
-            data-empty={internalNumber === 0}
-            style={
-              {
-                "--themeLight": makeColorString(color.lightMode),
-                "--themeDark": makeColorString(color.darkMode),
-              } as CSSProperties
-            }
-            {...props}
-          >
-            {children}
-          </div>
-        </NumberInputContext.Provider>
-      </>
-    );
-  },
-);
+          {children}
+        </div>
+      </NumberInputContext.Provider>
+    </>
+  );
+});
 
 export const NumberInput = forwardRef<
   HTMLInputElement,
-  Omit<
-    React.ComponentProps<"input">,
-    "onChange" | "value" | "type" | "inputMode"
-  >
+  Omit<React.ComponentProps<"input">, "onChange" | "value" | "type" | "inputMode">
 >((props, ref) => {
-  const { internalNumber, inputValue, onFocus, onBlur, handleInput } =
-    useNumberInputContext();
+  const { internalNumber, inputValue, onFocus, onBlur, handleInput } = useNumberInputContext();
 
   return (
     <input

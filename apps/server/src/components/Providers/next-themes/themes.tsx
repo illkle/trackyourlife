@@ -10,11 +10,10 @@ interface ValueObject {
 
 type DataAttribute = `data-${string}`;
 
-interface ScriptProps
-  extends React.DetailedHTMLProps<
-    React.ScriptHTMLAttributes<HTMLScriptElement>,
-    HTMLScriptElement
-  > {
+interface ScriptProps extends React.DetailedHTMLProps<
+  React.ScriptHTMLAttributes<HTMLScriptElement>,
+  HTMLScriptElement
+> {
   [dataAttribute: DataAttribute]: unknown;
 }
 
@@ -79,8 +78,7 @@ const script = (
 
     attributes.forEach((attr) => {
       const isClass = attr === "class";
-      const classes =
-        isClass && value ? themes.map((t) => value[t] ?? t) : themes;
+      const classes = isClass && value ? themes.map((t) => value[t] ?? t) : themes;
       if (isClass) {
         el.classList.remove(...classes);
         el.classList.add(value?.[theme] ?? theme);
@@ -99,9 +97,7 @@ const script = (
   }
 
   function getSystemTheme() {
-    return window.matchMedia("(prefers-color-scheme: dark)").matches
-      ? "dark"
-      : "light";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
   }
 
   if (forcedTheme) {
@@ -156,12 +152,8 @@ const Theme = ({
   nonce,
   scriptProps,
 }: ThemeProviderProps) => {
-  const [theme, setThemeState] = React.useState(() =>
-    getTheme(storageKey, defaultTheme),
-  );
-  const [resolvedTheme, setResolvedTheme] = React.useState(() =>
-    getTheme(storageKey),
-  );
+  const [theme, setThemeState] = React.useState(() => getTheme(storageKey, defaultTheme));
+  const [resolvedTheme, setResolvedTheme] = React.useState(() => getTheme(storageKey));
   const attrs = !value ? themes : Object.values(value);
 
   const applyTheme = React.useCallback(
@@ -195,12 +187,8 @@ const Theme = ({
       else handleAttribute(attribute);
 
       if (enableColorScheme) {
-        const fallback = colorSchemes.includes(defaultTheme)
-          ? defaultTheme
-          : null;
-        const colorScheme = colorSchemes.includes(resolved)
-          ? resolved
-          : fallback;
+        const fallback = colorSchemes.includes(defaultTheme) ? defaultTheme : null;
+        const colorScheme = colorSchemes.includes(resolved) ? resolved : fallback;
         d.style.colorScheme = colorScheme ?? "";
       }
 
@@ -283,10 +271,7 @@ const Theme = ({
       forcedTheme,
       resolvedTheme: theme === "system" ? resolvedTheme : theme,
       themes: enableSystem ? [...themes, "system"] : themes,
-      systemTheme: (enableSystem ? resolvedTheme : undefined) as
-        | "light"
-        | "dark"
-        | undefined,
+      systemTheme: (enableSystem ? resolvedTheme : undefined) as "light" | "dark" | undefined,
     }),
     [theme, setTheme, forcedTheme, resolvedTheme, enableSystem, themes],
   );

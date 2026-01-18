@@ -93,12 +93,8 @@
           "name": "TYL_account_userId_TYL_user_id_fk",
           "tableFrom": "TYL_account",
           "tableTo": "TYL_user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -150,12 +146,8 @@
           "name": "TYL_ingestApiKeys_userId_TYL_user_id_fk",
           "tableFrom": "TYL_ingestApiKeys",
           "tableTo": "TYL_user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -163,12 +155,8 @@
           "name": "TYL_ingestApiKeys_trackableId_TYL_trackable_id_fk",
           "tableFrom": "TYL_ingestApiKeys",
           "tableTo": "TYL_trackable",
-          "columnsFrom": [
-            "trackableId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["trackableId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -176,11 +164,7 @@
       "compositePrimaryKeys": {
         "TYL_ingestApiKeys_userId_trackableId_key_pk": {
           "name": "TYL_ingestApiKeys_userId_trackableId_key_pk",
-          "columns": [
-            "userId",
-            "trackableId",
-            "key"
-          ]
+          "columns": ["userId", "trackableId", "key"]
         }
       },
       "uniqueConstraints": {},
@@ -284,12 +268,8 @@
           "name": "TYL_session_userId_TYL_user_id_fk",
           "tableFrom": "TYL_session",
           "tableTo": "TYL_user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -299,9 +279,7 @@
         "TYL_session_token_unique": {
           "name": "TYL_session_token_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "token"
-          ]
+          "columns": ["token"]
         }
       },
       "policies": {},
@@ -388,12 +366,8 @@
           "name": "TYL_trackable_user_id_TYL_user_id_fk",
           "tableFrom": "TYL_trackable",
           "tableTo": "TYL_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -440,12 +414,8 @@
           "name": "TYL_trackableFlags_user_id_TYL_user_id_fk",
           "tableFrom": "TYL_trackableFlags",
           "tableTo": "TYL_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -453,12 +423,8 @@
           "name": "TYL_trackableFlags_trackableId_TYL_trackable_id_fk",
           "tableFrom": "TYL_trackableFlags",
           "tableTo": "TYL_trackable",
-          "columnsFrom": [
-            "trackableId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["trackableId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -466,11 +432,7 @@
       "compositePrimaryKeys": {
         "TYL_trackableFlags_user_id_trackableId_key_pk": {
           "name": "TYL_trackableFlags_user_id_trackableId_key_pk",
-          "columns": [
-            "user_id",
-            "trackableId",
-            "key"
-          ]
+          "columns": ["user_id", "trackableId", "key"]
         }
       },
       "uniqueConstraints": {},
@@ -507,12 +469,8 @@
           "name": "TYL_trackableGroup_trackableId_TYL_trackable_id_fk",
           "tableFrom": "TYL_trackableGroup",
           "tableTo": "TYL_trackable",
-          "columnsFrom": [
-            "trackableId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["trackableId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -520,12 +478,8 @@
           "name": "TYL_trackableGroup_user_id_TYL_user_id_fk",
           "tableFrom": "TYL_trackableGroup",
           "tableTo": "TYL_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -533,10 +487,7 @@
       "compositePrimaryKeys": {
         "TYL_trackableGroup_trackableId_group_pk": {
           "name": "TYL_trackableGroup_trackableId_group_pk",
-          "columns": [
-            "trackableId",
-            "group"
-          ]
+          "columns": ["trackableId", "group"]
         }
       },
       "uniqueConstraints": {},
@@ -654,12 +605,8 @@
           "name": "TYL_trackableRecord_user_id_TYL_user_id_fk",
           "tableFrom": "TYL_trackableRecord",
           "tableTo": "TYL_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -667,12 +614,8 @@
           "name": "TYL_trackableRecord_trackableId_TYL_trackable_id_fk",
           "tableFrom": "TYL_trackableRecord",
           "tableTo": "TYL_trackable",
-          "columnsFrom": [
-            "trackableId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["trackableId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -731,12 +674,8 @@
           "name": "TYL_trackableRecordAttributes_user_id_TYL_user_id_fk",
           "tableFrom": "TYL_trackableRecordAttributes",
           "tableTo": "TYL_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -744,12 +683,8 @@
           "name": "TYL_trackableRecordAttributes_trackableId_TYL_trackable_id_fk",
           "tableFrom": "TYL_trackableRecordAttributes",
           "tableTo": "TYL_trackable",
-          "columnsFrom": [
-            "trackableId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["trackableId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -757,12 +692,8 @@
           "name": "TYL_trackableRecordAttributes_recordId_TYL_trackableRecord_recordId_fk",
           "tableFrom": "TYL_trackableRecordAttributes",
           "tableTo": "TYL_trackableRecord",
-          "columnsFrom": [
-            "recordId"
-          ],
-          "columnsTo": [
-            "recordId"
-          ],
+          "columnsFrom": ["recordId"],
+          "columnsTo": ["recordId"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -770,12 +701,7 @@
       "compositePrimaryKeys": {
         "TYL_trackableRecordAttributes_user_id_trackableId_recordId_key_pk": {
           "name": "TYL_trackableRecordAttributes_user_id_trackableId_recordId_key_pk",
-          "columns": [
-            "user_id",
-            "trackableId",
-            "recordId",
-            "key"
-          ]
+          "columns": ["user_id", "trackableId", "recordId", "key"]
         }
       },
       "uniqueConstraints": {},
@@ -840,9 +766,7 @@
         "TYL_user_email_unique": {
           "name": "TYL_user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -879,12 +803,8 @@
           "name": "TYL_userFlags_userId_TYL_user_id_fk",
           "tableFrom": "TYL_userFlags",
           "tableTo": "TYL_user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["userId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -892,10 +812,7 @@
       "compositePrimaryKeys": {
         "TYL_userFlags_userId_key_pk": {
           "name": "TYL_userFlags_userId_key_pk",
-          "columns": [
-            "userId",
-            "key"
-          ]
+          "columns": ["userId", "key"]
         }
       },
       "uniqueConstraints": {},
@@ -957,22 +874,12 @@
     "public.attributeType": {
       "name": "attributeType",
       "schema": "public",
-      "values": [
-        "boolean",
-        "number",
-        "text"
-      ]
+      "values": ["boolean", "number", "text"]
     },
     "public.type": {
       "name": "type",
       "schema": "public",
-      "values": [
-        "boolean",
-        "number",
-        "text",
-        "tags",
-        "logs"
-      ]
+      "values": ["boolean", "number", "text", "tags", "logs"]
     }
   },
   "schemas": {},

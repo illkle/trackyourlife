@@ -9,14 +9,9 @@ import { createFormHookContexts, useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 
-import {
-  EmailValidator,
-  NameValidator,
-  PasswordValidator,
-} from "@tyl/helpers/validators";
+import { EmailValidator, NameValidator, PasswordValidator } from "@tyl/helpers/validators";
 
-export const { fieldContext, formContext, useFieldContext } =
-  createFormHookContexts();
+export const { fieldContext, formContext, useFieldContext } = createFormHookContexts();
 
 const Login = () => {
   const form = useForm({
@@ -67,12 +62,7 @@ const Login = () => {
           />
         )}
       />
-      <Button
-        onPress={() => void form.handleSubmit()}
-        size="lg"
-        text="Login"
-        className="mt-4"
-      />
+      <Button onPress={() => void form.handleSubmit()} size="lg" text="Login" className="mt-4" />
       <MutationError mutation={mutation} className="mt-4" />
     </View>
   );
@@ -116,11 +106,7 @@ const Register = () => {
       <form.Field
         name="name"
         children={(field) => (
-          <FormTextField
-            field={field}
-            label="Name"
-            inputProps={{ keyboardType: "default" }}
-          />
+          <FormTextField field={field} label="Name" inputProps={{ keyboardType: "default" }} />
         )}
       />
       <form.Field
@@ -146,12 +132,7 @@ const Register = () => {
           />
         )}
       />
-      <Button
-        onPress={() => void form.handleSubmit()}
-        size="lg"
-        text="Register"
-        className="mt-4"
-      />
+      <Button onPress={() => void form.handleSubmit()} size="lg" text="Register" className="mt-4" />
       <MutationError mutation={mutation} className="mt-4" />
     </View>
   );

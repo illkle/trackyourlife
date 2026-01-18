@@ -2,6 +2,7 @@
   "name": "@tyl/db",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "exports": {
     "./server": {
@@ -21,12 +22,10 @@
       "default": "./src/*.ts"
     }
   },
-  "license": "MIT",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rm -rf .turbo node_modules",
-    "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "oxlint .",
     "generate": "pnpm with-env drizzle-kit generate",
     "generate:manual-migration": "pnpm with-env drizzle-kit generate --custom",
@@ -47,14 +46,11 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@tyl/prettier-config": "workspace:*",
     "@tyl/tsconfig": "workspace:*",
     "@types/pg": "^8.15.6",
     "dotenv-cli": "catalog:",
     "drizzle-kit": "catalog:",
     "pg": "^8.16.3",
-    "prettier": "catalog:",
     "typescript": "catalog:"
-  },
-  "prettier": "@tyl/prettier-config"
+  }
 }

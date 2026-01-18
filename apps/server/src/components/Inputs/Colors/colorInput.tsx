@@ -11,11 +11,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/@shad/components/drawer";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/@shad/components/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "~/@shad/components/popover";
 import { ColorDisplay } from "~/components/Inputs/Colors/colorDisplay";
 import ColorPicker from "~/components/Inputs/Colors/colorPicker";
 import { useLinkedValue } from "~/utils/useDbLinkedValue";
@@ -48,7 +44,7 @@ const ColorInput = ({
 
           <PopoverContent
             side="right"
-            className="border-border bg-popover text-popover-foreground sm:w-md box-border w-[300px] overflow-hidden rounded-md border p-3 shadow-sm"
+            className="box-border w-[300px] overflow-hidden rounded-md border border-border bg-popover p-3 text-popover-foreground shadow-sm sm:w-md"
           >
             <ColorPicker
               value={internalValue}
@@ -69,9 +65,7 @@ const ColorInput = ({
           <ColorDisplay color={internalValue} className="h-9 w-36" />
         </DrawerTrigger>
         <DrawerContent className="p-4">
-          <DrawerHeader>
-            {mobileTitle && <DrawerTitle>{mobileTitle}</DrawerTitle>}
-          </DrawerHeader>
+          <DrawerHeader>{mobileTitle && <DrawerTitle>{mobileTitle}</DrawerTitle>}</DrawerHeader>
           <ColorPicker
             value={internalValue}
             onChange={async (v) => {

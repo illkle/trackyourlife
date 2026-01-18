@@ -88,11 +88,4 @@ export const presetsMap = {
   pink,
   neutral,
 };
-export const presetsArray: IColorValue[] = [
-  neutral,
-  red,
-  orange,
-  green,
-  purple,
-  pink,
-];
+export const presetsArray: IColorValue[] = [neutral, red, orange, green, purple, pink];

@@ -12,10 +12,7 @@ import {
 import { mapDataToRange } from "@tyl/helpers/trackables";
 
 import { Button } from "~/@shad/components/button";
-import {
-  editorModalNextDay,
-  editorModalPreviousDay,
-} from "~/components/Modal/EditorModalV2";
+import { editorModalNextDay, editorModalPreviousDay } from "~/components/Modal/EditorModalV2";
 import { NumberPopupEditor } from "~/components/PopupEditor/NumberPopup";
 import { TextPopupEditor } from "~/components/PopupEditor/TextPopup";
 import { QueryError } from "~/components/QueryError";
@@ -24,13 +21,7 @@ import TrackableProvider, {
   useTrackableMeta,
 } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
-export const PopupEditor = ({
-  date,
-  trackableId,
-}: {
-  date: Date;
-  trackableId: string;
-}) => {
+export const PopupEditor = ({ date, trackableId }: { date: Date; trackableId: string }) => {
   const q = useTrackableDay({ date, trackableId });
 
   const {
@@ -70,9 +61,7 @@ export const PopupEditor = ({
   const mapped = mapDataToRange(date, date, dataRecords);
 
   if (mapped.length !== 1) {
-    throw new Error(
-      "Error, mapDataToRange popup editor returned zero, or multiple days",
-    );
+    throw new Error("Error, mapDataToRange popup editor returned zero, or multiple days");
   }
 
   const mapDay = mapped[0];
@@ -84,12 +73,7 @@ export const PopupEditor = ({
   return (
     <TrackableProvider trackable={trackable}>
       <EditorTitle date={date} />
-      <EditorFactory
-        type={trackable.type}
-        data={mapDay}
-        onChange={onChange}
-        onDelete={onDelete}
-      />
+      <EditorFactory type={trackable.type} data={mapDay} onChange={onChange} onDelete={onDelete} />
     </TrackableProvider>
   );
 };
@@ -98,7 +82,7 @@ const EditorTitle = ({ date }: { date: Date }) => {
   const { name, id } = useTrackableMeta();
   const trackingStart = useTrackableFlag(id, "AnyTrackingStart");
   return (
-    <div className="border-border flex items-center justify-between gap-2 border-b pr-2 sm:text-sm">
+    <div className="flex items-center justify-between gap-2 border-b border-border pr-2 sm:text-sm">
       <div className="flex items-center gap-2">
         <Button
           variant="ghost"
@@ -125,14 +109,12 @@ const EditorTitle = ({ date }: { date: Date }) => {
   );
 };
 
-const components: Record<
-  DbTrackableSelect["type"],
-  React.ComponentType<PopupEditorProps> | null
-> = {
-  text: TextPopupEditor,
-  number: NumberPopupEditor,
-  boolean: null,
-};
+const components: Record<DbTrackableSelect["type"], React.ComponentType<PopupEditorProps> | null> =
+  {
+    text: TextPopupEditor,
+    number: NumberPopupEditor,
+    boolean: null,
+  };
 
 const EditorFactory = ({
   type,

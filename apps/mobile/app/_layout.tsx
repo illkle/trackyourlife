@@ -2,11 +2,7 @@ import "@azure/core-asynciterator-polyfill";
 
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 
 import "react-native-reanimated";
 import "@/style/global.css";

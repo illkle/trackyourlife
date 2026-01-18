@@ -6,12 +6,7 @@ import { z } from "zod/v4";
 import { PasswordValidator } from "@tyl/helpers/validators";
 
 import { Button } from "~/@shad/components/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "~/@shad/components/card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/@shad/components/card";
 import { Input } from "~/@shad/components/input";
 import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 import { authClient } from "~/auth/client";
@@ -79,18 +74,10 @@ export const PasswordResetForm = () => {
             )}
           />
 
-          <Button
-            onClick={() => form.handleSubmit()}
-            className="mt-4 w-full"
-            type="submit"
-          >
-            <MaybeLoading isLoading={form.state.isSubmitting}>
-              Update password
-            </MaybeLoading>
+          <Button onClick={() => form.handleSubmit()} className="mt-4 w-full" type="submit">
+            <MaybeLoading isLoading={form.state.isSubmitting}>Update password</MaybeLoading>
           </Button>
-          {resetMutation.error && (
-            <MutationErrorInfo message={resetMutation.error.message} />
-          )}
+          {resetMutation.error && <MutationErrorInfo message={resetMutation.error.message} />}
         </form>
       </CardContent>
     </Card>

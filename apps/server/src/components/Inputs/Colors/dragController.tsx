@@ -1,12 +1,5 @@
 import type { CSSProperties, MutableRefObject } from "react";
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useId,
-  useRef,
-  useState,
-} from "react";
+import React, { createContext, useCallback, useContext, useId, useRef, useState } from "react";
 import { cn } from "@shad/lib/utils";
 import { TrashIcon } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
@@ -45,9 +38,7 @@ const ControllerContext = createContext<{
 const useControllerContextSafe = () => {
   const context = useContext(ControllerContext);
   if (!context) {
-    throw new Error(
-      "useControllerContext must be used within a ControllerRoot",
-    );
+    throw new Error("useControllerContext must be used within a ControllerRoot");
   }
   return context;
 };
@@ -131,13 +122,7 @@ export const ControllerRoot = ({
     (x: number) => {
       if (disableX) return 50;
       return Math.round(
-        range(
-          dataRef.current.left,
-          dataRef.current.width + dataRef.current.left,
-          xMin,
-          xMax,
-          x,
-        ),
+        range(dataRef.current.left, dataRef.current.width + dataRef.current.left, xMin, xMax, x),
       );
     },
     [xMin, xMax, dataRef, disableX],
@@ -146,13 +131,7 @@ export const ControllerRoot = ({
     (y: number) => {
       if (disableY) return 50;
       return Math.round(
-        range(
-          dataRef.current.top,
-          dataRef.current.height + dataRef.current.top,
-          yMin,
-          yMax,
-          y,
-        ),
+        range(dataRef.current.top, dataRef.current.height + dataRef.current.top, yMin, yMax, y),
       );
     },
     [yMin, yMax, dataRef, disableY],
@@ -173,8 +152,7 @@ export const ControllerRoot = ({
       );
 
       const distance =
-        Math.abs(nX - x) * (1 - Number(disableY)) +
-        Math.abs(nY - y) * (1 - Number(disableX));
+        Math.abs(nX - x) * (1 - Number(disableY)) + Math.abs(nY - y) * (1 - Number(disableX));
 
       return range(dragAwayDistance / 4, dragAwayDistance, 0, 100, distance);
     },
@@ -182,11 +160,10 @@ export const ControllerRoot = ({
   );
 
   const externallyControlled =
-    typeof selectedPoint !== "undefined" &&
-    typeof onSelectedPointChange === "function";
-  const [selectedPointInternal, setSelectedPointInternal] = useState<
-    string | null
-  >(initialSelectedPointId ?? null);
+    typeof selectedPoint !== "undefined" && typeof onSelectedPointChange === "function";
+  const [selectedPointInternal, setSelectedPointInternal] = useState<string | null>(
+    initialSelectedPointId ?? null,
+  );
 
   const clickHandler = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.button !== 0 || draggingId) return;
@@ -232,9 +209,7 @@ export const ControllerRoot = ({
     forceRefresh();
 
     setDraggingId(initialSelectedPointId ?? null);
-    document
-      .getElementById(`${id}-${initialSelectedPointId}`)
-      ?.setPointerCapture(e.pointerId);
+    document.getElementById(`${id}-${initialSelectedPointId}`)?.setPointerCapture(e.pointerId);
 
     onEmptySpaceDrag?.({
       x: xToValue(e.clientX),
@@ -248,9 +223,7 @@ export const ControllerRoot = ({
     forceRefresh();
 
     setDraggingId(initialSelectedPointId ?? null);
-    document
-      .getElementById(`${id}-${initialSelectedPointId}`)
-      ?.setPointerCapture(e.pointerId);
+    document.getElementById(`${id}-${initialSelectedPointId}`)?.setPointerCapture(e.pointerId);
 
     const { x, y } = getNearestPoint(e.clientX, e.clientY);
     onEmptySpaceDrag?.({
@@ -263,7 +236,7 @@ export const ControllerRoot = ({
     <div
       className={cn(
         /* Using outline instead of border, because "border" color token is semi transparent and Controller is used in color selection where style={background: gradient} is passed */
-        "outline-border relative box-border rounded-md outline-2",
+        "relative box-border rounded-md outline-2 outline-border",
         disableX ? "" : "px-2 max-sm:px-3",
         disableY ? "" : "py-2 max-sm:py-3",
         getPanClass(disableX, disableY),
@@ -292,9 +265,7 @@ export const ControllerRoot = ({
             xToValue,
             valueToY,
             yToValue,
-            selectedPoint: externallyControlled
-              ? selectedPoint
-              : selectedPointInternal,
+            selectedPoint: externallyControlled ? selectedPoint : selectedPointInternal,
             setSelectedPoint: externallyControlled
               ? onSelectedPointChange
               : setSelectedPointInternal,
@@ -430,16 +401,12 @@ export const ControllerPoint = ({
         "absolute box-border",
         "w-4 data-[disabled-x=true]:w-[110%] max-sm:w-6",
         "h-4 data-[disabled-y=true]:h-[110%] max-sm:h-6",
-        "border-foreground ring-ring border-2 ring-2",
+        "border-2 border-foreground ring-2 ring-ring",
         "data-[active=false]:border data-[active=false]:ring-1",
         "opacity-50 data-[selected=true]:opacity-100",
         "rounded-md",
         "transition-opacity",
-        isActive
-          ? dragAwayPercent >= 100
-            ? "cursor-default"
-            : "cursor-grab"
-          : "",
+        isActive ? (dragAwayPercent >= 100 ? "cursor-default" : "cursor-grab") : "",
         isSelected ? "z-20" : "z-10",
         className,
       )}
@@ -470,7 +437,7 @@ export const ControllerPoint = ({
             transition={{ duration: 0.15 }}
             className={cn(
               "absolute -top-2 left-1/2 h-5 w-5 -translate-x-1/2 -translate-y-[100%] rounded-md",
-              "border-foreground ring-ring border ring-1",
+              "border border-foreground ring-1 ring-ring",
               className,
             )}
             style={{ ...style }}
@@ -483,10 +450,10 @@ export const ControllerPoint = ({
           opacity: dragAwayPercent / 100,
         }}
         transition={{ duration: 0 }}
-        className="bg-muted absolute bottom-0 left-0 h-full w-full rounded-sm"
+        className="absolute bottom-0 left-0 h-full w-full rounded-sm bg-muted"
       >
         <TrashIcon
-          className="text-foreground absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-foreground"
           size={11}
           style={{
             opacity: range(50, 100, 0, 1, dragAwayPercent),

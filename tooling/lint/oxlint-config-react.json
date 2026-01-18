@@ -1,12 +1,7 @@
 {
-    "extends": [
-        "oxlint-config-ts.json"
-    ],
-    "plugins": [
-        "react",
-        "react-perf"
-    ],
-    "rules": {
-        "react/no-children-prop": "off"
-    }
+  "extends": ["oxlint-config-ts.json"],
+  "plugins": ["react", "react-perf"],
+  "rules": {
+    "react/no-children-prop": "off"
+  }
 }

@@ -1,11 +1,6 @@
 import { cn } from "@shad/lib/utils";
 import { linkOptions } from "@tanstack/react-router";
-import {
-  Calendar1Icon,
-  CirclePlusIcon,
-  LogsIcon,
-  SettingsIcon,
-} from "lucide-react";
+import { Calendar1Icon, CirclePlusIcon, LogsIcon, SettingsIcon } from "lucide-react";
 
 export const CoreLinks = [
   linkOptions({
@@ -59,11 +54,9 @@ const Header = ({ children }: { children: React.ReactNode }) => {
         "mt-3 px-3",
       )}
     >
-      <div className="bg-background absolute h-full w-full -translate-y-1/2 opacity-95 backdrop-blur-3xl"></div>
-      <div className="bg-sidebar border-sidebar-border relative flex h-full w-full items-center justify-between rounded-md border px-4 py-2">
-        <div className="row-reverse flex w-full items-center justify-between gap-2">
-          {children}
-        </div>
+      <div className="absolute h-full w-full -translate-y-1/2 bg-background opacity-95 backdrop-blur-3xl"></div>
+      <div className="relative flex h-full w-full items-center justify-between rounded-md border border-sidebar-border bg-sidebar px-4 py-2">
+        <div className="row-reverse flex w-full items-center justify-between gap-2">{children}</div>
       </div>
     </div>
   );

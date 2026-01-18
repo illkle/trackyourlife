@@ -54,20 +54,17 @@ const DatePicker = ({
 }) => {
   const dateNow = new Date();
 
-  const { internalValue: innerDate, updateHandler: setInnerDate } =
-    useLinkedValue({
-      value: date,
-      onChange,
-      timestamp: date?.getTime(),
-      alwaysUpdate: true,
-    });
+  const { internalValue: innerDate, updateHandler: setInnerDate } = useLinkedValue({
+    value: date,
+    onChange,
+    timestamp: date?.getTime(),
+    alwaysUpdate: true,
+  });
 
   const calRef = useRef<HTMLDivElement>(null);
   const [isOpened, setIsOpened] = useState(false);
 
-  const [cursor, setCursor] = useState(() =>
-    startOfMonth(innerDate ?? dateNow),
-  );
+  const [cursor, setCursor] = useState(() => startOfMonth(innerDate ?? dateNow));
 
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -123,8 +120,7 @@ const DatePicker = ({
     return true;
   };
 
-  const highlightSelected =
-    innerDate && isSameMonth(innerDate, cursor) ? innerDate.getDate() : -1;
+  const highlightSelected = innerDate && isSameMonth(innerDate, cursor) ? innerDate.getDate() : -1;
 
   const variants = {
     enter: (d = 0) => {
@@ -142,16 +138,10 @@ const DatePicker = ({
 
   return (
     <div className={cn("relative flex", className)}>
-      <DynamicModal
-        open={isOpened}
-        onOpenChange={setIsOpened}
-        desktopMode="popover"
-      >
+      <DynamicModal open={isOpened} onOpenChange={setIsOpened} desktopMode="popover">
         <DynamicModalContent className="overflow-hidden">
           <div className="relative max-sm:m-auto max-sm:w-fit max-sm:pb-4">
-            <DynamicModalDrawerTitle className="text-center">
-              {mobileTitle}
-            </DynamicModalDrawerTitle>
+            <DynamicModalDrawerTitle className="text-center">{mobileTitle}</DynamicModalDrawerTitle>
             <DynamicModalDescription> </DynamicModalDescription>
             <m.div
               animate={{ height: height }}
@@ -178,11 +168,7 @@ const DatePicker = ({
                       <ChevronLeftIcon size={16} />
                     </Button>
                   </div>
-                  <AnimatePresence
-                    mode="popLayout"
-                    initial={false}
-                    custom={moveDirection * 0.1}
-                  >
+                  <AnimatePresence mode="popLayout" initial={false} custom={moveDirection * 0.1}>
                     <m.div
                       initial="enter"
                       animate="middle"
@@ -191,7 +177,7 @@ const DatePicker = ({
                       variants={variants}
                       custom={moveDirection * 0.1}
                       key={cursor.toString()}
-                      className="pointer-events-none select-none whitespace-nowrap"
+                      className="pointer-events-none whitespace-nowrap select-none"
                     >
                       {format(cursor, "MMMM yyyy")}
                     </m.div>
@@ -217,11 +203,7 @@ const DatePicker = ({
                   </div>
                 </div>
 
-                <AnimatePresence
-                  mode="popLayout"
-                  initial={false}
-                  custom={moveDirection * 0.5}
-                >
+                <AnimatePresence mode="popLayout" initial={false} custom={moveDirection * 0.5}>
                   <m.div
                     initial="enter"
                     animate="middle"
@@ -261,9 +243,7 @@ const DatePicker = ({
               "min-w-[200px]",
             )}
           >
-            <span className="">
-              {innerDate ? format(innerDate, "d MMMM yyyy") : "No date set"}
-            </span>
+            <span className="">{innerDate ? format(innerDate, "d MMMM yyyy") : "No date set"}</span>
             <CalendarIcon size={16} className="ml-auto" />
           </div>
         </DynamicModalTrigger>

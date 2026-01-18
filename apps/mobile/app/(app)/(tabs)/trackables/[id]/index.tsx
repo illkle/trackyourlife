@@ -13,7 +13,7 @@ const TrackableView = () => {
   return (
     <View>
       <Text className="text-primary">hello {data?.name}</Text>
-      <Text className="text-primary mt-4">
+      <Text className="mt-4 text-primary">
         records {records?.length} {JSON.stringify(records)}
       </Text>
     </View>

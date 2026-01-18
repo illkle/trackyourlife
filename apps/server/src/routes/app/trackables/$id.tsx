@@ -1,9 +1,4 @@
-import {
-  createFileRoute,
-  Link,
-  Outlet,
-  useLocation,
-} from "@tanstack/react-router";
+import { createFileRoute, Link, Outlet, useLocation } from "@tanstack/react-router";
 import {
   ArchiveIcon,
   ArchiveRestoreIcon,
@@ -47,19 +42,8 @@ import TrackableProvider, {
 } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
 const paramsSchema = z.object({
-  month: z
-    .number()
-    .min(0)
-    .max(11)
-    .or(z.literal("list"))
-    .optional()
-    .default(new Date().getMonth()),
-  year: z
-    .number()
-    .min(1970)
-    .or(z.literal("list"))
-    .optional()
-    .default(new Date().getFullYear()),
+  month: z.number().min(0).max(11).or(z.literal("list")).optional().default(new Date().getMonth()),
+  year: z.number().min(1970).or(z.literal("list")).optional().default(new Date().getFullYear()),
 });
 
 const RouteComponent = () => {
@@ -87,7 +71,7 @@ const RouteComponent = () => {
 
   if (!trackable) {
     return (
-      <div className="text-muted-foreground flex h-full w-full items-center justify-center">
+      <div className="flex h-full w-full items-center justify-center text-muted-foreground">
         Trackable not found
       </div>
     );
@@ -105,10 +89,7 @@ const RouteComponent = () => {
               <FavoriteButton variant={"outline"} trackable={trackable} />
               {isView ? (
                 <>
-                  <Link
-                    to={"/app/trackables/$id/settings"}
-                    params={{ id: params.id }}
-                  >
+                  <Link to={"/app/trackables/$id/settings"} params={{ id: params.id }}>
                     <Button name="settings" variant="outline">
                       <SettingsIcon className="h-4 w-4" />
                       <span className="max-md:hidden">Settings</span>
@@ -117,10 +98,7 @@ const RouteComponent = () => {
                 </>
               ) : (
                 <>
-                  <Link
-                    to={"/app/trackables/$id/view"}
-                    params={{ id: params.id }}
-                  >
+                  <Link to={"/app/trackables/$id/view"} params={{ id: params.id }}>
                     <Button variant="outline">
                       <CalendarDaysIcon className="h-4 w-4" />
                       <span className="max-md:hidden">View</span>
@@ -131,7 +109,7 @@ const RouteComponent = () => {
               <TrackableDropdown isArchived={isArchived} />
             </div>
           </div>
-          <hr className="bg-foreground outline-hidden my-4 h-px border-none opacity-10" />
+          <hr className="my-4 h-px border-none bg-foreground opacity-10 outline-hidden" />
           <Outlet />
         </div>
       </TrackableProvider>
@@ -147,9 +125,7 @@ const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
 
   const { removeFromGroup, addToGroup } = useGroupHandlers();
 
-  const setMonthViewStyle = async (
-    style: ITrackableFlagType<"AnyMonthViewType">,
-  ) => {
+  const setMonthViewStyle = async (style: ITrackableFlagType<"AnyMonthViewType">) => {
     await setFlag(id, "AnyMonthViewType", style);
   };
 
@@ -189,26 +165,17 @@ const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
                   value={monthViewStyle}
                   className="min-w-46"
                   onValueChange={(style) =>
-                    void setMonthViewStyle(
-                      style as ITrackableFlagType<"AnyMonthViewType">,
-                    )
+                    void setMonthViewStyle(style as ITrackableFlagType<"AnyMonthViewType">)
                   }
                 >
-                  <DropdownMenuRadioItem value="calendar">
-                    Calendar
-                  </DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="list">
-                    List
-                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="calendar">Calendar</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="list">List</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
 
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onClick={() => void handleArchiveToggle()}
-          >
+          <DropdownMenuItem className="cursor-pointer" onClick={() => void handleArchiveToggle()}>
             {isArchived ? (
               <>
                 <ArchiveRestoreIcon className="mr-1" /> Unarchve

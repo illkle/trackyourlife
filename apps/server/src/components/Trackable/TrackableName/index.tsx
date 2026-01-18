@@ -9,12 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "~/@shad/components/dialog";
-import {
-  Drawer,
-  DrawerContent,
-  DrawerTitle,
-  DrawerTrigger,
-} from "~/@shad/components/drawer";
+import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "~/@shad/components/drawer";
 import { Input } from "~/@shad/components/input";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
@@ -73,11 +68,7 @@ export const TrackableNameEditable = () => {
       </DialogContent>
     </Dialog>
   ) : (
-    <Drawer
-      open={isEditing}
-      onClose={() => setIsEditing(false)}
-      onOpenChange={openChangeHandler}
-    >
+    <Drawer open={isEditing} onClose={() => setIsEditing(false)} onOpenChange={openChangeHandler}>
       <DrawerTrigger>{display}</DrawerTrigger>
       <DrawerContent className="py-4">
         <DrawerTitle>Rename Trackable</DrawerTitle>
@@ -96,12 +87,6 @@ export const TrackableNameEditable = () => {
   );
 };
 
-export const TrackableNameText = ({
-  trackable,
-}: {
-  trackable: DbTrackableSelect;
-}) => {
-  return (
-    <>{trackable.name.length ? trackable.name : `Unnamed ${trackable.type}`}</>
-  );
+export const TrackableNameText = ({ trackable }: { trackable: DbTrackableSelect }) => {
+  return <>{trackable.name.length ? trackable.name : `Unnamed ${trackable.type}`}</>;
 };

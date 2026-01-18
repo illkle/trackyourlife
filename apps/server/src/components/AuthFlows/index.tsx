@@ -8,21 +8,11 @@ import { XIcon } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
 import { z } from "zod/v4";
 
-import {
-  EmailValidator,
-  NameValidator,
-  PasswordValidator,
-} from "@tyl/helpers/validators";
+import { EmailValidator, NameValidator, PasswordValidator } from "@tyl/helpers/validators";
 
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
 import { Button } from "~/@shad/components/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/@shad/components/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/@shad/components/card";
 import { Input } from "~/@shad/components/input";
 import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 import { RadioTabItem, RadioTabs } from "~/@shad/custom/radio-tabs";
@@ -43,12 +33,10 @@ export function FieldInfo({ field }: { field: AnyFieldApi }) {
           }}
           exit={{ opacity: 0, height: 0 }}
           layout
-          className="text-foreground box-border flex w-fit items-center gap-2 px-2.5 text-sm font-light"
+          className="box-border flex w-fit items-center gap-2 px-2.5 text-sm font-light text-foreground"
         >
           <XIcon size={16} strokeWidth={1.5} />
-          {(field.state.meta.errors as { message: string }[])
-            .map((e) => e.message)
-            .join(",")}
+          {(field.state.meta.errors as { message: string }[]).map((e) => e.message).join(",")}
         </m.div>
       )}
     </AnimatePresence>
@@ -58,9 +46,7 @@ export function FieldInfo({ field }: { field: AnyFieldApi }) {
 export const MutationErrorInfo = ({ message }: { message: string }) => {
   return (
     <Alert variant="destructive" className="mt-4">
-      <AlertTitle className="flex items-center gap-2">
-        Something went wrong
-      </AlertTitle>
+      <AlertTitle className="flex items-center gap-2">Something went wrong</AlertTitle>
       <AlertDescription>{message}</AlertDescription>
     </Alert>
   );
@@ -124,7 +110,7 @@ const Register = () => {
               type="email"
               name="email"
               id="email"
-              className="z-2 relative"
+              className="relative z-2"
               placeholder="person@somemail.com"
             />
             <FieldInfo field={field} />
@@ -132,7 +118,7 @@ const Register = () => {
         )}
       />
 
-      <h4 className="mb-2 mt-4">Name</h4>
+      <h4 className="mt-4 mb-2">Name</h4>
       <form.Field
         name="name"
         children={(field) => (
@@ -151,7 +137,7 @@ const Register = () => {
           </>
         )}
       />
-      <h4 className="mb-2 mt-4">Password</h4>
+      <h4 className="mt-4 mb-2">Password</h4>
       <form.Field
         name="password"
         children={(field) => (
@@ -171,19 +157,10 @@ const Register = () => {
         )}
       />
 
-      <Button
-        size={"lg"}
-        type="submit"
-        variant="outline"
-        className={cn("mt-6 w-full")}
-      >
-        <MaybeLoading isLoading={form.state.isSubmitting}>
-          Create Account
-        </MaybeLoading>
+      <Button size={"lg"} type="submit" variant="outline" className={cn("mt-6 w-full")}>
+        <MaybeLoading isLoading={form.state.isSubmitting}>Create Account</MaybeLoading>
       </Button>
-      {registerMutation.error && (
-        <MutationErrorInfo message={registerMutation.error.message} />
-      )}
+      {registerMutation.error && <MutationErrorInfo message={registerMutation.error.message} />}
     </form>
   );
 };
@@ -237,7 +214,7 @@ const Login = () => {
               type="email"
               name="email"
               id="email"
-              className="z-2 relative"
+              className="relative z-2"
               placeholder="person@somemail.com"
             />
             <FieldInfo field={field} />
@@ -245,11 +222,8 @@ const Login = () => {
         )}
       />
       <div className="flex items-baseline justify-between">
-        <h4 className="mb-2 mt-4">Password</h4>
-        <Link
-          className="text-muted-foreground text-sm"
-          to="/auth/forgotpassword"
-        >
+        <h4 className="mt-4 mb-2">Password</h4>
+        <Link className="text-sm text-muted-foreground" to="/auth/forgotpassword">
           Forgot?
         </Link>
       </div>
@@ -272,19 +246,10 @@ const Login = () => {
         )}
       />
 
-      <Button
-        type="submit"
-        size={"lg"}
-        variant="outline"
-        className={cn("mt-6 w-full")}
-      >
-        <MaybeLoading isLoading={form.state.isSubmitting}>
-          Login
-        </MaybeLoading>
+      <Button type="submit" size={"lg"} variant="outline" className={cn("mt-6 w-full")}>
+        <MaybeLoading isLoading={form.state.isSubmitting}>Login</MaybeLoading>
       </Button>
-      {loginMutation.error && (
-        <MutationErrorInfo message={loginMutation.error.message} />
-      )}
+      {loginMutation.error && <MutationErrorInfo message={loginMutation.error.message} />}
     </form>
   );
 };
@@ -312,21 +277,15 @@ const LoginForm = () => {
           <AlertTitle className="flex items-center gap-2">
             This deployment is a preview and not production ready
           </AlertTitle>
-          <AlertDescription>
-            Instability and data loss may occur
-          </AlertDescription>
+          <AlertDescription>Instability and data loss may occur</AlertDescription>
         </Alert>
       )}
 
       <Card className="m-auto mt-4">
         <CardHeader>
-          <CardTitle>
-            {action === "register" ? "Hello" : "Welcome back"}
-          </CardTitle>
+          <CardTitle>{action === "register" ? "Hello" : "Welcome back"}</CardTitle>
           <CardDescription>
-            {action === "register"
-              ? "Let's get to know each other!"
-              : "Glad to see you again!"}
+            {action === "register" ? "Let's get to know each other!" : "Glad to see you again!"}
           </CardDescription>
         </CardHeader>
         <CardContent>

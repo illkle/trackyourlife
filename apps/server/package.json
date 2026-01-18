@@ -1,8 +1,8 @@
 {
   "name": "@tyl/server",
   "private": true,
-  "sideEffects": false,
   "type": "module",
+  "sideEffects": false,
   "scripts": {
     "dev": "pnpm with-env vite dev --port 3000",
     "build": "vite build",
@@ -62,7 +62,6 @@
     "@playwright/test": "^1.56.1",
     "@tailwindcss/container-queries": "^0.1.1",
     "@tanstack/react-query-devtools": "^5.90.2",
-    "@tyl/prettier-config": "workspace:*",
     "@tyl/tsconfig": "workspace:*",
     "@types/node": "^24.10.1",
     "@types/react": "catalog:react",
@@ -71,7 +70,6 @@
     "@vitejs/plugin-react": "^5.1.1",
     "dotenv": "^17.2.3",
     "dotenv-cli": "catalog:",
-    "prettier": "catalog:",
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "7.2.2",

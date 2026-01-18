@@ -1,11 +1,6 @@
 import type { QueryClient } from "@tanstack/react-query";
 import * as React from "react";
-import {
-  createRootRouteWithContext,
-  HeadContent,
-  Outlet,
-  Scripts,
-} from "@tanstack/react-router";
+import { createRootRouteWithContext, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 
 import { LazyMotionProvider } from "~/components/Providers/lazyFramerMotionProvider";
 import { ThemeProvider } from "~/components/Providers/next-themes/themes";
@@ -13,8 +8,7 @@ import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo.js";
 import { ensureSessionInfo, UserPreloader } from "~/utils/useSessionInfo";
 
-const iconPrefix = (path: string) =>
-  process.env.SITE === "stage" ? `/stg${path}` : path;
+const iconPrefix = (path: string) => (process.env.SITE === "stage" ? `/stg${path}` : path);
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -81,7 +75,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
 
-      <body className="bg-background text-foreground overscroll-none">
+      <body className="overscroll-none bg-background text-foreground">
         <LazyMotionProvider>
           <ThemeProvider defaultTheme="dark" attribute="class">
             <UserPreloader>{children}</UserPreloader>

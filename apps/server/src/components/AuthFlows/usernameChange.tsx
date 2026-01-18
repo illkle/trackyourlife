@@ -4,13 +4,7 @@ import { z } from "zod/v4";
 
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
 import { Button } from "~/@shad/components/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/@shad/components/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/@shad/components/card";
 import { Input } from "~/@shad/components/input";
 import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 import { authClient } from "~/auth/client";
@@ -42,9 +36,7 @@ export const UsernameChangeForm = ({ className }: { className?: string }) => {
     },
     validators: {
       onChange: z.object({
-        newUsername: z
-          .string()
-          .min(3, "Username must be at least 3 characters"),
+        newUsername: z.string().min(3, "Username must be at least 3 characters"),
       }),
     },
   });
@@ -87,9 +79,7 @@ export const UsernameChangeForm = ({ className }: { className?: string }) => {
           {changeMutation.isSuccess ? (
             <Alert className="mt-4">
               <AlertTitle className="">Username updated</AlertTitle>
-              <AlertDescription>
-                Your username has been changed successfully.
-              </AlertDescription>
+              <AlertDescription>Your username has been changed successfully.</AlertDescription>
             </Alert>
           ) : (
             <Button
@@ -98,15 +88,11 @@ export const UsernameChangeForm = ({ className }: { className?: string }) => {
               className="mt-4 w-full"
               type="submit"
             >
-              <MaybeLoading isLoading={form.state.isSubmitting}>
-                Change username
-              </MaybeLoading>
+              <MaybeLoading isLoading={form.state.isSubmitting}>Change username</MaybeLoading>
             </Button>
           )}
 
-          {changeMutation.error && (
-            <MutationErrorInfo message={changeMutation.error.message} />
-          )}
+          {changeMutation.error && <MutationErrorInfo message={changeMutation.error.message} />}
         </form>
       </CardContent>
     </Card>

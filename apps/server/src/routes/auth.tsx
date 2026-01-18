@@ -1,10 +1,5 @@
 import { cn } from "@shad/lib/utils";
-import {
-  createFileRoute,
-  Link,
-  Navigate,
-  Outlet,
-} from "@tanstack/react-router";
+import { createFileRoute, Link, Navigate, Outlet } from "@tanstack/react-router";
 
 import Header, { HeaderLogo } from "~/components/Layout/Header";
 import { useSessionInfo } from "~/utils/useSessionInfo";

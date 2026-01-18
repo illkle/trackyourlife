@@ -50,9 +50,7 @@
       "uniqueConstraints": {
         "auth_user_email_unique": {
           "name": "auth_user_email_unique",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "nullsNotDistinct": false
         }
       }
@@ -93,13 +91,9 @@
         "trackable_user_id_auth_user_id_fk": {
           "name": "trackable_user_id_auth_user_id_fk",
           "tableFrom": "trackable",
-          "columnsFrom": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
           "tableTo": "auth_user",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         }
@@ -141,26 +135,18 @@
         "trackableRecord_trackableId_trackable_id_fk": {
           "name": "trackableRecord_trackableId_trackable_id_fk",
           "tableFrom": "trackableRecord",
-          "columnsFrom": [
-            "trackableId"
-          ],
+          "columnsFrom": ["trackableId"],
           "tableTo": "trackable",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         },
         "trackableRecord_user_id_auth_user_id_fk": {
           "name": "trackableRecord_user_id_auth_user_id_fk",
           "tableFrom": "trackableRecord",
-          "columnsFrom": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
           "tableTo": "auth_user",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "cascade"
         }
@@ -168,10 +154,7 @@
       "compositePrimaryKeys": {
         "trackableRecord_trackableId_date": {
           "name": "trackableRecord_trackableId_date",
-          "columns": [
-            "trackableId",
-            "date"
-          ]
+          "columns": ["trackableId", "date"]
         }
       },
       "uniqueConstraints": {}
@@ -204,13 +187,9 @@
         "user_session_user_id_auth_user_id_fk": {
           "name": "user_session_user_id_auth_user_id_fk",
           "tableFrom": "user_session",
-          "columnsFrom": [
-            "user_id"
-          ],
+          "columnsFrom": ["user_id"],
           "tableTo": "auth_user",
-          "columnsTo": [
-            "id"
-          ],
+          "columnsTo": ["id"],
           "onUpdate": "no action",
           "onDelete": "no action"
         }
@@ -223,11 +202,7 @@
     "public.type": {
       "name": "type",
       "schema": "public",
-      "values": [
-        "boolean",
-        "number",
-        "range"
-      ]
+      "values": ["boolean", "number", "range"]
     }
   },
   "schemas": {},

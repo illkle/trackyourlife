@@ -1,7 +1,8 @@
 {
   "name": "@tyl/helpers",
-  "private": true,
   "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
@@ -10,10 +11,8 @@
       "default": "./src/*.ts"
     }
   },
-  "license": "MIT",
   "scripts": {
     "clean": "rm -rf .turbo node_modules",
-    "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "oxlint .",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
@@ -29,12 +28,10 @@
   },
   "devDependencies": {
     "@tyl/db": "workspace:*",
-    "@tyl/prettier-config": "workspace:*",
     "@tyl/tsconfig": "workspace:*",
     "@types/chroma-js": "^3.1.2",
     "@types/lodash-es": "^4.17.12",
     "@types/react": "catalog:react",
-    "prettier": "catalog:",
     "react": "catalog:react",
     "typescript": "catalog:",
     "zod": "catalog:"
@@ -42,6 +39,5 @@
   "peerDependencies": {
     "react": "catalog:react",
     "zod": "catalog:"
-  },
-  "prettier": "@tyl/prettier-config"
+  }
 }

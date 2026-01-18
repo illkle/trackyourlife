@@ -14,10 +14,7 @@ import {
 import { Label } from "~/@shad/components/label";
 import { Switch } from "~/@shad/components/switch";
 import { RadioTabItem, RadioTabs } from "~/@shad/custom/radio-tabs";
-import {
-  ControllerPoint,
-  ControllerRoot,
-} from "~/components/Inputs/Colors/dragController";
+import { ControllerPoint, ControllerRoot } from "~/components/Inputs/Colors/dragController";
 import { BetterNumberInput } from "./betterNumberInput";
 
 const hueGradient =
@@ -27,10 +24,7 @@ const hueGradientDynamic = (s: number, l: number) =>
 
 type IKey = "hue" | "saturation" | "lightness" | "red" | "green" | "blue";
 
-const getMaxValue = (
-  color: "rgb" | "hsl",
-  key: "r" | "g" | "b" | "h" | "s" | "l",
-) => {
+const getMaxValue = (color: "rgb" | "hsl", key: "r" | "g" | "b" | "h" | "s" | "l") => {
   if (color === "rgb") return 255;
   if (key === "h") return 360;
   return 100;
@@ -158,8 +152,7 @@ const TripleController = ({
 }) => {
   const dims = keysDimensions[controlKey];
 
-  const { maxX, maxY, valueGetter, valueSetter, gradientGetter } =
-    useXYAttrs(dims);
+  const { maxX, maxY, valueGetter, valueSetter, gradientGetter } = useXYAttrs(dims);
 
   const {
     maxVal,
@@ -185,11 +178,7 @@ const TripleController = ({
           onValueChange={(v) => valueSetter(setRGB, setHSL)(v.x, v.y)}
         />
         {derived.map((d, i) => (
-          <ControllerPoint
-            key={i}
-            id={String(i)}
-            {...valueGetter(d.rgb, d.hsl)}
-          />
+          <ControllerPoint key={i} id={String(i)} {...valueGetter(d.rgb, d.hsl)} />
         ))}
       </ControllerRoot>
 
@@ -236,10 +225,7 @@ export const PickerRGBHSL = ({
 
   const [controlKey, setControlKey] = useState<IKey>("hue");
 
-  const inHSL =
-    controlKey === "hue" ||
-    controlKey === "saturation" ||
-    controlKey === "lightness";
+  const inHSL = controlKey === "hue" || controlKey === "saturation" || controlKey === "lightness";
 
   const bniClasses = "h-7 rounded-none border border-r-0  transition-opacity";
 
@@ -290,11 +276,7 @@ export const PickerRGBHSL = ({
           hardLimits
         />
         <BetterNumberInput
-          className={cn(
-            bniClasses,
-            !inHSL && inactiveClasses,
-            "rounded-tr-md border-r",
-          )}
+          className={cn(bniClasses, !inHSL && inactiveClasses, "rounded-tr-md border-r")}
           value={hsl.l}
           limits={{ min: 0, max: 100 }}
           onChange={(v) => setHSL({ l: v })}
@@ -302,7 +284,7 @@ export const PickerRGBHSL = ({
         />
       </div>
       <RadioTabs
-        className="border-border grid h-8 grid-cols-6 gap-1 rounded-t-none border border-t-0 py-1"
+        className="grid h-8 grid-cols-6 gap-1 rounded-t-none border border-t-0 border-border py-1"
         value={controlKey}
         onValueChange={(v) => setControlKey(v as IKey)}
       >
@@ -363,7 +345,7 @@ export const ColorPicker = ({
     <div className={className}>
       <m.div
         className={cn(
-          "bg-muted mb-2 flex min-h-8 w-fit items-center gap-2 overflow-hidden rounded-lg px-2 text-xs",
+          "mb-2 flex min-h-8 w-fit items-center gap-2 overflow-hidden rounded-lg bg-muted px-2 text-xs",
         )}
       >
         <Switch
@@ -409,17 +391,9 @@ export const ColorPicker = ({
       </m.div>
 
       {automatic ? (
-        <PickerRGBHSL
-          hsl={userSelect}
-          derived={[lightMode, darkMode]}
-          onChange={setBoth}
-        />
+        <PickerRGBHSL hsl={userSelect} derived={[lightMode, darkMode]} onChange={setBoth} />
       ) : mode === "light" ? (
-        <PickerRGBHSL
-          hsl={lightMode}
-          onChange={setLight}
-          derived={[darkMode]}
-        />
+        <PickerRGBHSL hsl={lightMode} onChange={setLight} derived={[darkMode]} />
       ) : (
         <PickerRGBHSL hsl={darkMode} onChange={setDark} derived={[lightMode]} />
       )}

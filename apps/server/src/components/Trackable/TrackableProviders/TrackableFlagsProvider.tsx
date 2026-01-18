@@ -1,23 +1,12 @@
 import type { ReactNode } from "react";
-import {
-  createContext,
-  memo,
-  useCallback,
-  useEffect,
-  useId,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, memo, useCallback, useEffect, useId, useMemo, useState } from "react";
 import { toCompilableQuery } from "@powersync/drizzle-driver";
 import { useQuery } from "@powersync/react";
 import { Store, useStore } from "@tanstack/react-store";
 import { v4 as uuidv4 } from "uuid";
 
 import { usePowersyncDrizzle } from "@tyl/db/client/context";
-import {
-  DbTrackableFlagsSelect,
-  trackable_flags,
-} from "@tyl/db/client/schema-powersync";
+import { DbTrackableFlagsSelect, trackable_flags } from "@tyl/db/client/schema-powersync";
 
 import type {
   ITrackableFlagKey,
@@ -61,8 +50,7 @@ interface ITrackableFlagsContext {
   setFlag: SetFlagFunction;
 }
 
-export const TrackableFlagsContext =
-  createContext<ITrackableFlagsContext | null>(null);
+export const TrackableFlagsContext = createContext<ITrackableFlagsContext | null>(null);
 
 type KeyStorage = Record<string, Partial<ITrackableFlagsKV>>;
 
@@ -114,9 +102,12 @@ const TrackableFlagsProviderNonMemo = ({
 
   // Query all flags (PowerSync will sync only user's data based on sync rules)
   const query = useMemo(
-    () => toCompilableQuery(db.query.trackableFlags.findMany({
-      where: trackableIds ? inArray(trackable_flags.trackable_id, trackableIds) : undefined,
-    })),
+    () =>
+      toCompilableQuery(
+        db.query.trackableFlags.findMany({
+          where: trackableIds ? inArray(trackable_flags.trackable_id, trackableIds) : undefined,
+        }),
+      ),
     [db, trackableIds],
   );
   const { data: allFlags, isLoading } = useQuery(query);
@@ -145,7 +136,11 @@ const TrackableFlagsProviderNonMemo = ({
   }, [allFlags, id, isLoading]);
 
   if (isLoading || !isReady) {
-    return <><Spinner /></>;
+    return (
+      <>
+        <Spinner />
+      </>
+    );
   }
 
   return children;
@@ -160,10 +155,7 @@ export const TrackableFlagsProvider = memo(TrackableFlagsProviderNonMemo);
  * Flag value is reactive and will rerender only on this specific trackableId+flag combination update.
  * Keep in mind that for flags to be available you need to have TrackableFlagsFetcher with trackableId above.
  */
-export const useTrackableFlag = <K extends ITrackableFlagKey>(
-  trackableId: string,
-  key: K,
-) => {
+export const useTrackableFlag = <K extends ITrackableFlagKey>(trackableId: string, key: K) => {
   const v = useStore(FlagStorage, (state) => state[trackableId]?.[key]);
   return v ?? FlagDefaults[key];
 };
@@ -180,24 +172,27 @@ export const useSetTrackableFlag = () => {
       }
 
       // Note that we are not using validated.data here. This is intentional because we do not want zod .transform() to apply here.
-      const r = await db.update(trackable_flags).set({
-        value,
-      }).where(and(
-        eq(trackable_flags.user_id, userID),
-        eq(trackable_flags.trackable_id, trackableId),
-        eq(trackable_flags.key, key),
-      ));
+      const r = await db
+        .update(trackable_flags)
+        .set({
+          value,
+        })
+        .where(
+          and(
+            eq(trackable_flags.user_id, userID),
+            eq(trackable_flags.trackable_id, trackableId),
+            eq(trackable_flags.key, key),
+          ),
+        );
 
       if (r.rowsAffected === 0) {
-        await db
-          .insert(trackable_flags)
-          .values({
-            id: uuidv4(),
-            user_id: userID,
-            trackable_id: trackableId,
-            key,
-            value,
-          })
+        await db.insert(trackable_flags).values({
+          id: uuidv4(),
+          user_id: userID,
+          trackable_id: trackableId,
+          key,
+          value,
+        });
       }
     },
     [db, userID],

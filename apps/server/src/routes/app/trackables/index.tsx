@@ -24,19 +24,13 @@ function RouteComponent() {
         </h2>
 
         <Button variant={"ghost"}>
-          <Link
-            from={Route.fullPath}
-            search={(prev) => ({ ...prev, archived: !params.archived })}
-          >
+          <Link from={Route.fullPath} search={(prev) => ({ ...prev, archived: !params.archived })}>
             {params.archived ? "Trackables" : "Archive"}
           </Link>
         </Button>
       </div>
       <div className="mt-2">
-        <TrackablesList
-          daysToShow={SHOW_DAYS}
-          archived={params.archived ?? false}
-        />
+        <TrackablesList daysToShow={SHOW_DAYS} archived={params.archived ?? false} />
       </div>
     </div>
   );

@@ -2,23 +2,14 @@ import { useEffect, useState } from "react";
 import { cn } from "@shad/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { format } from "date-fns";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ChevronsLeft,
-  ChevronsRight,
-} from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeft, ChevronsRight } from "lucide-react";
 
 import type { TVDateValue } from "~/components/Trackable/TrackableView";
 import { Button } from "~/@shad/components/button";
 import { YearSelector } from "~/components/Trackable/TrackableView/yearSelector";
 import { Route } from "~/routes/app/trackables/$id/view";
 
-const getIncrementedDate = (
-  add: number,
-  year: TVDateValue,
-  month: TVDateValue,
-) => {
+const getIncrementedDate = (add: number, year: TVDateValue, month: TVDateValue) => {
   if (month === "list" && year !== "list") {
     return { year: year + add, month: month };
   }
@@ -41,13 +32,7 @@ const getIncrementedDate = (
   return { year: newYear, month: newMonth };
 };
 
-export const ViewController = ({
-  year,
-  month,
-}: {
-  year: TVDateValue;
-  month: TVDateValue;
-}) => {
+export const ViewController = ({ year, month }: { year: TVDateValue; month: TVDateValue }) => {
   const now = new Date();
   const navigate = Route.useNavigate();
 
@@ -102,7 +87,7 @@ export const ViewController = ({
     <>
       <div
         className={cn(
-          "border-sidebar-border group mb-4 ml-auto flex w-fit items-center rounded-md border",
+          "group mb-4 ml-auto flex w-fit items-center rounded-md border border-sidebar-border",
         )}
       >
         <Button
@@ -113,29 +98,21 @@ export const ViewController = ({
           className="border-0"
           render={
             switchingYears ? (
-              <Link
-                from={Route.fullPath}
-                search={(prev) => ({ ...prev, ...toPrevYear })}
-              >
+              <Link from={Route.fullPath} search={(prev) => ({ ...prev, ...toPrevYear })}>
                 <ChevronsLeft className="h-4 w-4" />
               </Link>
             ) : (
-              <Link
-                from={Route.fullPath}
-                search={(prev) => ({ ...prev, ...toPrev })}
-              >
+              <Link from={Route.fullPath} search={(prev) => ({ ...prev, ...toPrev })}>
                 <ChevronLeftIcon className="h-4 w-4" />
               </Link>
             )
           }
         />
 
-        <div className="flex items-center justify-center h-8">
+        <div className="flex h-8 items-center justify-center">
           <YearSelector
             value={typeof year === "number" ? year : undefined}
-            onChange={(v) =>
-              navigate({ search: (prev) => ({ ...prev, year: v }) })
-            }
+            onChange={(v) => navigate({ search: (prev) => ({ ...prev, year: v }) })}
             className={"opacity-50 focus:opacity-100"}
           />
 
@@ -147,10 +124,7 @@ export const ViewController = ({
                   ...prev,
                   month: "list",
                 })}
-                className={cn(
-                  switchingYears ? "opacity-50" : "opacity-100",
-                  "p-2 leading-none",
-                )}
+                className={cn(switchingYears ? "opacity-50" : "opacity-100", "p-2 leading-none")}
               >
                 <Button
                   name="months"
@@ -172,17 +146,11 @@ export const ViewController = ({
           nativeButton={false}
           render={
             switchingYears ? (
-              <Link
-                from={Route.fullPath}
-                search={(prev) => ({ ...prev, ...toNextYear })}
-              >
+              <Link from={Route.fullPath} search={(prev) => ({ ...prev, ...toNextYear })}>
                 <ChevronsRight className="h-4 w-4" />
               </Link>
             ) : (
-              <Link
-                from={Route.fullPath}
-                search={(prev) => ({ ...prev, ...toNext })}
-              >
+              <Link from={Route.fullPath} search={(prev) => ({ ...prev, ...toNext })}>
                 <ChevronRightIcon className="h-4 w-4" />{" "}
               </Link>
             )
@@ -191,10 +159,8 @@ export const ViewController = ({
 
         <Button
           variant={"ghost"}
-          onClick={() =>
-            navigate({ search: (prev) => ({ ...prev, ...toToday }) })
-          }
-          className="rounded-l-none border-0 border-l border-l-border "
+          onClick={() => navigate({ search: (prev) => ({ ...prev, ...toToday }) })}
+          className="rounded-l-none border-0 border-l border-l-border"
         >
           Today
         </Button>

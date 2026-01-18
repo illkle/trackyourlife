@@ -28,8 +28,7 @@ export const useLinkedValue = <T>({
   throttleTime?: number;
 }) => {
   const [internalValue, setInternalValue] = useState<T>(value);
-  const [internalValueValidated, setInternalValueValidated] =
-    useState<T>(value);
+  const [internalValueValidated, setInternalValueValidated] = useState<T>(value);
 
   const ourTimestamp = useRef(timestamp);
 
@@ -39,10 +38,7 @@ export const useLinkedValue = <T>({
     if (alwaysUpdate) {
       setInternalValue(value);
       setInternalValueValidated(value);
-    } else if (
-      !ourTimestamp.current ||
-      (timestamp && timestamp > ourTimestamp.current)
-    ) {
+    } else if (!ourTimestamp.current || (timestamp && timestamp > ourTimestamp.current)) {
       setInternalValue(value);
       setInternalValueValidated(value);
       ourTimestamp.current = timestamp;
@@ -102,10 +98,7 @@ export const useLinkedBinding = <T>({
   useEffect(() => {
     if (alwaysUpdate) {
       setInternalValue(dbState);
-    } else if (
-      !ourTimestamp.current ||
-      (dbTimestamp && dbTimestamp > ourTimestamp.current)
-    ) {
+    } else if (!ourTimestamp.current || (dbTimestamp && dbTimestamp > ourTimestamp.current)) {
       setInternalValue(dbState);
       ourTimestamp.current = dbTimestamp;
     }

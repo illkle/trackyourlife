@@ -3,11 +3,9 @@ import path from "path";
 
 import { migrateDb } from "@tyl/db/server/index";
 
-const dir =
-  process.env.MIGRATE === "DEV" ? "../../packages/db/drizzle" : "./drizzle";
+const dir = process.env.MIGRATE === "DEV" ? "../../packages/db/drizzle" : "./drizzle";
 
-const replaceName =
-  "$POWERSYNC_PASSWORD_TO_BE_REPLACED_WITH_ENV_BEFORE_APPLYING";
+const replaceName = "$POWERSYNC_PASSWORD_TO_BE_REPLACED_WITH_ENV_BEFORE_APPLYING";
 
 const applyPsyncPassFromEnv = () => {
   const powersyncPassword = process.env.POWERSYNC_PASSWORD ?? "LOL";
@@ -28,9 +26,7 @@ const migrator = async () => {
 
     const drizzleDir = fs.existsSync(dir);
 
-    console.log(
-      drizzleDir ? "+: Drizzle dir found" : "X: Drizzle dir not found",
-    );
+    console.log(drizzleDir ? "+: Drizzle dir found" : "X: Drizzle dir not found");
     return;
   }
 

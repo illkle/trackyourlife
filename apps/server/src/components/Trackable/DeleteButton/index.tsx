@@ -41,16 +41,12 @@ const DeleteButton = ({
         <AlertDialogHeader>
           <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
           <AlertDialogDescription>
-            This action cannot be undone. This will permanently delete this
-            trackale.
+            This action cannot be undone. This will permanently delete this trackale.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction
-            name="confirm delete"
-            onClick={() => void mutation.mutateAsync(id)}
-          >
+          <AlertDialogAction name="confirm delete" onClick={() => void mutation.mutateAsync(id)}>
             Delete
           </AlertDialogAction>
         </AlertDialogFooter>

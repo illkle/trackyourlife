@@ -1,14 +1,6 @@
-import {
-  eachDayOfInterval,
-  isBefore,
-  isSameDay,
-  startOfTomorrow,
-} from "date-fns";
+import { eachDayOfInterval, isBefore, isSameDay, startOfTomorrow } from "date-fns";
 
-import type {
-  INumberColorCoding,
-  INumberProgressBounds,
-} from "@tyl/db/jsonValidators";
+import type { INumberColorCoding, INumberProgressBounds } from "@tyl/db/jsonValidators";
 
 import { range } from "./animation";
 import { presetsMap } from "./colorPresets";
@@ -120,11 +112,7 @@ export class NumberColorCodingMapper {
   }
 
   valueToColor(displayedNumber: number) {
-    if (
-      !this.colorCoding?.enabled ||
-      !this.colorCoding.colors?.length ||
-      displayedNumber === 0
-    ) {
+    if (!this.colorCoding?.enabled || !this.colorCoding.colors?.length || displayedNumber === 0) {
       return presetsMap.neutral;
     }
     return getColorAtPosition({

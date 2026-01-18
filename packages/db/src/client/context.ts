@@ -14,9 +14,7 @@ export const PowersyncDrizzleContext = createContext<{
 export const usePowersyncDrizzle = () => {
   const data = useContext(PowersyncDrizzleContext);
   if (!data) {
-    throw new Error(
-      "usePowersyncDrizzle must be used within PowersyncDrizzleContext.Provider",
-    );
+    throw new Error("usePowersyncDrizzle must be used within PowersyncDrizzleContext.Provider");
   }
   return data;
 };

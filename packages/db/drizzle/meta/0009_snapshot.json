@@ -53,9 +53,7 @@
         "TYL_auth_user_email_unique": {
           "name": "TYL_auth_user_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       }
     },
@@ -110,12 +108,8 @@
           "name": "TYL_trackable_user_id_TYL_auth_user_id_fk",
           "tableFrom": "TYL_trackable",
           "tableTo": "TYL_auth_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -165,12 +159,8 @@
           "name": "TYL_trackableRecord_trackableId_TYL_trackable_id_fk",
           "tableFrom": "TYL_trackableRecord",
           "tableTo": "TYL_trackable",
-          "columnsFrom": [
-            "trackableId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["trackableId"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -178,12 +168,8 @@
           "name": "TYL_trackableRecord_user_id_TYL_auth_user_id_fk",
           "tableFrom": "TYL_trackableRecord",
           "tableTo": "TYL_auth_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -191,20 +177,14 @@
       "compositePrimaryKeys": {
         "TYL_trackableRecord_trackableId_date_pk": {
           "name": "TYL_trackableRecord_trackableId_date_pk",
-          "columns": [
-            "trackableId",
-            "date"
-          ]
+          "columns": ["trackableId", "date"]
         }
       },
       "uniqueConstraints": {
         "TYL_trackableRecord_trackableId_date_unique": {
           "name": "TYL_trackableRecord_trackableId_date_unique",
           "nullsNotDistinct": true,
-          "columns": [
-            "trackableId",
-            "date"
-          ]
+          "columns": ["trackableId", "date"]
         }
       }
     },
@@ -237,12 +217,8 @@
           "name": "TYL_user_session_user_id_TYL_auth_user_id_fk",
           "tableFrom": "TYL_user_session",
           "tableTo": "TYL_auth_user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -255,11 +231,7 @@
     "public.type": {
       "name": "type",
       "schema": "public",
-      "values": [
-        "boolean",
-        "number",
-        "range"
-      ]
+      "values": ["boolean", "number", "range"]
     }
   },
   "schemas": {},

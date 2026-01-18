@@ -6,13 +6,7 @@ import { EmailValidator } from "@tyl/helpers/validators";
 
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
 import { Button } from "~/@shad/components/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/@shad/components/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/@shad/components/card";
 import { Input } from "~/@shad/components/input";
 import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 import { authClient } from "~/auth/client";
@@ -85,7 +79,7 @@ export const EmailChangeForm = ({ className }: { className?: string }) => {
                   type="email"
                   name="newEmail"
                   id="newEmail"
-                  className="z-2 relative"
+                  className="relative z-2"
                   placeholder="person@somemail.com"
                 />
                 <FieldInfo field={field} />
@@ -99,16 +93,13 @@ export const EmailChangeForm = ({ className }: { className?: string }) => {
                 <>
                   <AlertTitle className="">Verification email sent</AlertTitle>
                   <AlertDescription>
-                    After clicking link in sent to your new email, your email
-                    will be changed.
+                    After clicking link in sent to your new email, your email will be changed.
                   </AlertDescription>
                 </>
               ) : (
                 <>
                   <AlertTitle className="">Email changed</AlertTitle>
-                  <AlertDescription>
-                    Please verify your new email.
-                  </AlertDescription>
+                  <AlertDescription>Please verify your new email.</AlertDescription>
                 </>
               )}
             </Alert>
@@ -119,15 +110,11 @@ export const EmailChangeForm = ({ className }: { className?: string }) => {
               className="mt-4 w-full"
               type="submit"
             >
-              <MaybeLoading isLoading={form.state.isSubmitting}>
-                Change email
-              </MaybeLoading>
+              <MaybeLoading isLoading={form.state.isSubmitting}>Change email</MaybeLoading>
             </Button>
           )}
 
-          {changeMutation.error && (
-            <MutationErrorInfo message={changeMutation.error.message} />
-          )}
+          {changeMutation.error && <MutationErrorInfo message={changeMutation.error.message} />}
         </form>
       </CardContent>
     </Card>

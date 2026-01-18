@@ -19,9 +19,7 @@ import MiniTrackable from "./miniTrackable";
 const EmptyList = () => {
   return (
     <div className="flex flex-col items-center justify-center py-20">
-      <h2 className="text-2xl font-light">
-        You do not have any trackables yet.
-      </h2>
+      <h2 className="text-2xl font-light">You do not have any trackables yet.</h2>
 
       <Link className="mt-4" to={"/app/create"}>
         <Button variant="outline">Create Trackable</Button>
@@ -30,13 +28,7 @@ const EmptyList = () => {
   );
 };
 
-const TrackablesList = ({
-  daysToShow,
-  archived,
-}: {
-  daysToShow: number;
-  archived: boolean;
-}) => {
+const TrackablesList = ({ daysToShow, archived }: { daysToShow: number; archived: boolean }) => {
   const now = new Date();
   const lastDay = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
   const firstDay = subDays(lastDay, daysToShow - 1).getTime();
@@ -87,7 +79,7 @@ const TrackablesList = ({
               layout
               layoutId={trackable.id}
               key={trackable.id}
-              className="border-border border-b pb-4 last:border-0"
+              className="border-b border-border pb-4 last:border-0"
             >
               <TrackableProvider trackable={trackable}>
                 <MiniTrackable data={data} trackable={trackable} />
@@ -161,12 +153,8 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
                   )}
 
                   <span className="flex w-full items-baseline gap-2">
-                    <span className="text-xl opacity-30">
-                      {format(date, "EEEE")}
-                    </span>{" "}
-                    <span className="text-xl font-semibold opacity-80">
-                      {format(date, "d")}
-                    </span>
+                    <span className="text-xl opacity-30">{format(date, "EEEE")}</span>{" "}
+                    <span className="text-xl font-semibold opacity-80">{format(date, "d")}</span>
                   </span>
                 </div>
                 <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
@@ -183,26 +171,20 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
                             to={"/app/trackables/$id/view"}
                             params={{ id: tr.trackable.id }}
                             className={cn(
-                              "text-foreground mb-1 block w-full truncate text-xl opacity-20",
+                              "mb-1 block w-full truncate text-xl text-foreground opacity-20",
                             )}
                           >
                             <TrackableNameText trackable={tr.trackable} />
                           </Link>
 
-                          <DayCellRouter
-                            {...day}
-                            labelType="none"
-                            className="h-20"
-                          />
+                          <DayCellRouter {...day} labelType="none" className="h-20" />
                         </TrackableProvider>
                       </div>
                     );
                   })}
                 </div>
               </div>
-              {dateIndex !== days.length - 1 && (
-                <hr className="border-border h-0 border-b" />
-              )}
+              {dateIndex !== days.length - 1 && <hr className="h-0 border-b border-border" />}
             </Fragment>
           );
         })}

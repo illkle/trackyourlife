@@ -1,8 +1,11 @@
 ### TrackYourLife
 
-App to track stuff. It started as a self-hosted habit\mood\stats tracker and I want to evolve it into app aggregating all data about you and your environement to ponder on, analyze and get better. Maybe you can call it OSS self-hosted [Exist](https://exist.io/) alternative.
-
+App to track stuff. I rewrite it once a year to experiment with new tech, but I hope that after current rewrite I will actually develop features 😎🤙
 ![TrackYourLife screenshot](tooling/images/image.png)
+
+Deployed version: https://tyl.illkle.com (unstable, no guarantees)
+
+---
 
 ### Development
 

@@ -111,9 +111,7 @@ export const VerificationEmailTemplate = ({
 }) => {
   return (
     <EmailWrapper>
-      <h1 style={{ fontSize: "24px", fontWeight: "bold" }}>
-        Email verification
-      </h1>
+      <h1 style={{ fontSize: "24px", fontWeight: "bold" }}>Email verification</h1>
       <p style={{ marginTop: "8px" }}>Click below to verify your email</p>
 
       <EmailButton href={url} style={{ marginTop: "16px" }}>
@@ -132,14 +130,10 @@ export const ChangeEmailVerificationEmailTemplate = ({
 }) => {
   return (
     <EmailWrapper>
-      <h1 style={{ fontSize: "24px", fontWeight: "bold" }}>
-        Confirm email change
-      </h1>
+      <h1 style={{ fontSize: "24px", fontWeight: "bold" }}>Confirm email change</h1>
       <p style={{ marginTop: "8px" }}>
         Click below to change your email to{" "}
-        <b style={{ color: COLOR_NEUTRAL_50, textDecoration: "none" }}>
-          {newEmail}
-        </b>
+        <b style={{ color: COLOR_NEUTRAL_50, textDecoration: "none" }}>{newEmail}</b>
       </p>
 
       <EmailButton href={url} style={{ marginTop: "16px" }}>
@@ -167,14 +161,8 @@ export const sendVerificationEmail = async (to: string, url: string) => {
   await sendEmail(to, "TYL — Verify your email", html);
 };
 
-export const sendChangeVerificationEmail = async (
-  to: string,
-  url: string,
-  newEmail: string,
-) => {
-  const html = renderToString(
-    <VerificationEmailTemplate url={url} emailChange={newEmail} />,
-  );
+export const sendChangeVerificationEmail = async (to: string, url: string, newEmail: string) => {
+  const html = renderToString(<VerificationEmailTemplate url={url} emailChange={newEmail} />);
 
   await sendEmail(to, "TYL — Verify your new email", html);
 };

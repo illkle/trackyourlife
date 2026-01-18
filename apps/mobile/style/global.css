@@ -8,9 +8,7 @@
 @layer theme {
   @theme {
     /* Fonts */
-    --font-rounded:
-      "SF Pro Rounded", "Hiragino Maru Gothic ProN", Meiryo, "MS PGothic",
-      sans-serif;
+    --font-rounded: "SF Pro Rounded", "Hiragino Maru Gothic ProN", Meiryo, "MS PGothic", sans-serif;
   }
 }
 

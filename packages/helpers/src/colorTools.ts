@@ -1,11 +1,6 @@
 import chroma from "chroma-js";
 
-import type {
-  IColorCodingValue,
-  IColorHSL,
-  IColorRGB,
-  IColorValue,
-} from "@tyl/db/jsonValidators";
+import type { IColorCodingValue, IColorHSL, IColorRGB, IColorValue } from "@tyl/db/jsonValidators";
 
 import { range } from "./animation";
 import { presetsMap } from "./colorPresets";
@@ -40,8 +35,7 @@ export const makeColorFromChroma = (c: chroma.Color) => {
   };
 };
 
-export const makeColorString = (color: IColorHSL) =>
-  `hsl(${color.h}, ${color.s}%, ${color.l}%)`;
+export const makeColorString = (color: IColorHSL) => `hsl(${color.h}, ${color.s}%, ${color.l}%)`;
 
 export const makeColorStrings = (color: IColorValue) => ({
   lightMode: makeColorString(color.lightMode),
@@ -50,14 +44,8 @@ export const makeColorStrings = (color: IColorValue) => ({
 });
 
 export const getContrastierColorForDay = ({ h, s, l }: IColorHSL) => {
-  const withBlack = chroma.contrast(
-    chroma.hsl(h, s / 100, l / 100),
-    chroma.rgb(0, 0, 0),
-  );
-  const withWhite = chroma.contrast(
-    chroma.hsl(h, s / 100, l / 100),
-    chroma.rgb(255, 255, 255),
-  );
+  const withBlack = chroma.contrast(chroma.hsl(h, s / 100, l / 100), chroma.rgb(0, 0, 0));
+  const withWhite = chroma.contrast(chroma.hsl(h, s / 100, l / 100), chroma.rgb(255, 255, 255));
 
   return withBlack > withWhite ? "black" : "white";
 };
@@ -90,9 +78,7 @@ export const makeCssGradient = (
   return `linear-gradient(in srgb to right, ${values
     .map(
       (v) =>
-        makeColorString(
-          theme === "light" ? v.color.lightMode : v.color.darkMode,
-        ) +
+        makeColorString(theme === "light" ? v.color.lightMode : v.color.darkMode) +
         " " +
         range(min, max, 0, 100, v.point) +
         "%",
@@ -137,11 +123,7 @@ export const getColorAtPosition = ({
 
     proportion,
   );
-  const d = InterpolateColors(
-    leftSide.color.darkMode,
-    rightSide.color.darkMode,
-    proportion,
-  );
+  const d = InterpolateColors(leftSide.color.darkMode, rightSide.color.darkMode, proportion);
 
   return {
     userSelect: l,

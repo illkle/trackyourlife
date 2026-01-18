@@ -12,11 +12,7 @@ const TrackableList = () => {
   return (
     <View>
       {data.data?.map((trackable) => (
-        <Link
-          key={trackable.id}
-          className="py-4"
-          href={`/trackables/${trackable.id}`}
-        >
+        <Link key={trackable.id} className="py-4" href={`/trackables/${trackable.id}`}>
           <Text className="text-primary">{trackable.name}</Text>
         </Link>
       ))}

@@ -1,8 +1,8 @@
 {
   "name": "@tyl/migration",
   "private": true,
-  "sideEffects": false,
   "type": "module",
+  "sideEffects": false,
   "scripts": {
     "start": "node dist/index.cjs",
     "dev": "pnpm with-env tsup --watch --onSuccess \"node dist/index.cjs\"",

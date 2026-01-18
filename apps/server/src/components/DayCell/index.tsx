@@ -36,10 +36,7 @@ export const DayCellContext = createContext<IDayCellContext | null>(null);
 
 export const useDayCellContext = () => {
   const context = useContext(DayCellContext);
-  if (!context)
-    throw new Error(
-      "useDayCellContext must be used within a DayCellContext provider",
-    );
+  if (!context) throw new Error("useDayCellContext must be used within a DayCellContext provider");
   return context;
 };
 
@@ -56,8 +53,7 @@ export const DayCellRouter = ({
   const now = new Date();
   const isToday = isSameDay(timestamp, now);
   const isOutOfRange =
-    isAfter(timestamp, now) ||
-    Boolean(trackingStart && isBefore(timestamp, trackingStart));
+    isAfter(timestamp, now) || Boolean(trackingStart && isBefore(timestamp, trackingStart));
 
   const onChange = useRecordUpdateHandler({
     date: timestamp,
@@ -86,11 +82,7 @@ export const DayCellRouter = ({
   );
 };
 
-export const DayCellTypeRouter = ({
-  type,
-}: {
-  type: DbTrackableSelect["type"] | string;
-}) => {
+export const DayCellTypeRouter = ({ type }: { type: DbTrackableSelect["type"] | string }) => {
   const { isOutOfRange } = useDayCellContext();
 
   if (isOutOfRange) {
@@ -116,9 +108,7 @@ export const OutOfRangeSimple = () => {
   const { labelType } = useDayCellContext();
 
   return (
-    <div
-      className={cn(DayCellBaseClasses, "bg-muted cursor-default opacity-30")}
-    >
+    <div className={cn(DayCellBaseClasses, "cursor-default bg-muted opacity-30")}>
       {labelType === "auto" && <LabelInside />}
     </div>
   );
@@ -130,7 +120,7 @@ const LabelOutside = () => {
   return (
     <div
       className={cn(
-        "text-muted-foreground mr-1 text-right text-xs",
+        "mr-1 text-right text-xs text-muted-foreground",
         isToday ? "font-normal underline" : "font-light",
       )}
     >
@@ -144,7 +134,7 @@ export const LabelInside = () => {
   return (
     <div
       className={cn(
-        "text-muted-foreground absolute left-1 top-0 z-10 select-none text-base",
+        "absolute top-0 left-1 z-10 text-base text-muted-foreground select-none",
         isToday ? "font-normal underline" : "font-light",
         "text-xs sm:text-base",
       )}

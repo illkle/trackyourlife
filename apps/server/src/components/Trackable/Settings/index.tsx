@@ -26,11 +26,7 @@ export const SettingsCommon = () => {
         <DatePicker
           date={trackingStart ? new Date(trackingStart) : undefined}
           onChange={(v) => {
-            void setFlag(
-              id,
-              "AnyTrackingStart",
-              v ? format(v, "yyyy-MM-dd") : "",
-            );
+            void setFlag(id, "AnyTrackingStart", v ? format(v, "yyyy-MM-dd") : "");
           }}
           limits={{
             start: new Date(1990, 0, 1),

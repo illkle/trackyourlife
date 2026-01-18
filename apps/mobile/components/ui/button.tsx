@@ -4,22 +4,18 @@ import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
 
 const buttonVariants = cva(
-  cn(
-    "group shrink-0 flex-row items-center justify-center gap-2 rounded-md shadow-none",
-  ),
+  cn("group shrink-0 flex-row items-center justify-center gap-2 rounded-md shadow-none"),
   {
     variants: {
       variant: {
-        default: cn("bg-primary active:bg-primary/90 shadow-sm shadow-black/5"),
+        default: cn("bg-primary shadow-sm shadow-black/5 active:bg-primary/90"),
         destructive: cn(
-          "bg-destructive active:bg-destructive/90 dark:bg-destructive/60 shadow-sm shadow-black/5",
+          "bg-destructive shadow-sm shadow-black/5 active:bg-destructive/90 dark:bg-destructive/60",
         ),
         outline: cn(
-          "border-border bg-background active:bg-accent dark:bg-input/30 dark:border-input dark:active:bg-input/50 border shadow-sm shadow-black/5",
+          "border border-border bg-background shadow-sm shadow-black/5 active:bg-accent dark:border-input dark:bg-input/30 dark:active:bg-input/50",
         ),
-        secondary: cn(
-          "bg-secondary active:bg-secondary/80 shadow-sm shadow-black/5",
-        ),
+        secondary: cn("bg-secondary shadow-sm shadow-black/5 active:bg-secondary/80"),
         ghost: cn("active:bg-accent dark:active:bg-accent/50"),
         link: cn(""),
       },
@@ -69,17 +65,11 @@ type ButtonProps = React.ComponentProps<typeof Pressable> &
 function Button({ className, variant, size, ...props }: ButtonProps) {
   return (
     <Pressable
-      className={cn(
-        props.disabled && "opacity-50",
-        buttonVariants({ variant, size }),
-        className,
-      )}
+      className={cn(props.disabled && "opacity-50", buttonVariants({ variant, size }), className)}
       role="button"
       {...props}
     >
-      <Text className={cn(buttonTextVariants({ variant, size }))}>
-        {props.text}
-      </Text>
+      <Text className={cn(buttonTextVariants({ variant, size }))}>{props.text}</Text>
     </Pressable>
   );
 }

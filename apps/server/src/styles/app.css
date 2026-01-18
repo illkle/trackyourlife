@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
-@config '../../tailwind.config.ts';
+@config "../../tailwind.config.ts";
 
 button:not(:disabled) {
   cursor: pointer;

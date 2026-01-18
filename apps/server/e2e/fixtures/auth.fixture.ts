@@ -25,12 +25,7 @@ export interface AuthFixtures {
   testUser: TestUser;
   authenticatedPage: Page;
   login: (page: Page, email: string, password: string) => Promise<void>;
-  register: (
-    page: Page,
-    email: string,
-    password: string,
-    name: string,
-  ) => Promise<void>;
+  register: (page: Page, email: string, password: string, name: string) => Promise<void>;
   logout: (page: Page) => Promise<void>;
 }
 
@@ -61,12 +56,7 @@ const login = async (page: Page, email: string, password: string) => {
 /**
  * Register helper function
  */
-const register = async (
-  page: Page,
-  email: string,
-  password: string,
-  name: string,
-) => {
+const register = async (page: Page, email: string, password: string, name: string) => {
   await page.goto("/auth/login");
   await page.waitForLoadState("networkidle");
 
@@ -96,9 +86,7 @@ const logout = async (page: Page) => {
     .first();
 
   // Try to find and click the user menu in sidebar
-  const userMenuButton = page
-    .locator('[data-sidebar="footer"]')
-    .getByRole("button");
+  const userMenuButton = page.locator('[data-sidebar="footer"]').getByRole("button");
 
   if (await userMenuButton.isVisible()) {
     await userMenuButton.click();

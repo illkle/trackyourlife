@@ -1,17 +1,10 @@
 import { useEffect, useRef } from "react";
 import { db, powersyncDB } from "@/db/powersync";
 import { TYL_trackable, TYL_trackableRecord } from "@/db/schema";
-import {
-  GetAllQuery,
-  useWatchedQuerySubscription,
-} from "@powersync/react-native";
+import { GetAllQuery, useWatchedQuerySubscription } from "@powersync/react-native";
 import { eq } from "drizzle-orm";
 
-const trackablesListSQL = db
-  .select()
-  .from(TYL_trackable)
-  .orderBy(TYL_trackable.name)
-  .toSQL().sql;
+const trackablesListSQL = db.select().from(TYL_trackable).orderBy(TYL_trackable.name).toSQL().sql;
 
 type Trackable = typeof TYL_trackable.$inferSelect;
 
@@ -26,17 +19,11 @@ export const useTrackablesList = () => {
   return useWatchedQuerySubscription(queryTrackablesList);
 };
 
-const useTrackableSql = db
-  .select()
-  .from(TYL_trackable)
-  .where(eq(TYL_trackable.id, ""))
-  .toSQL().sql;
+const useTrackableSql = db.select().from(TYL_trackable).where(eq(TYL_trackable.id, "")).toSQL().sql;
 
 export const useTrackable = (id: string) => {
   const q = useRef(
-    powersyncDB
-      .query<Trackable>({ sql: useTrackableSql, parameters: [id] })
-      .watch(),
+    powersyncDB.query<Trackable>({ sql: useTrackableSql, parameters: [id] }).watch(),
   );
 
   useEffect(() => {

@@ -2,12 +2,7 @@ import type { ReactNode } from "react";
 import { createContext, useContext, useMemo } from "react";
 import { cn } from "@shad/lib/utils";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogTrigger,
-} from "~/@shad/components/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTrigger } from "~/@shad/components/dialog";
 import {
   Drawer,
   DrawerContent,
@@ -15,11 +10,7 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "~/@shad/components/drawer";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "~/@shad/components/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "~/@shad/components/popover";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
 interface DynamicModalContext {
@@ -121,30 +112,21 @@ export const DynamicModalTrigger = ({
   if (isDesktop) {
     if (desktopMode === "popover") {
       return (
-        <PopoverTrigger
-          {...popoverProps}
-          className={cn(className, popoverProps?.className)}
-        >
+        <PopoverTrigger {...popoverProps} className={cn(className, popoverProps?.className)}>
           {children}
         </PopoverTrigger>
       );
     }
 
     return (
-      <DialogTrigger
-        {...dialogProps}
-        className={cn(className, dialogProps?.className)}
-      >
+      <DialogTrigger {...dialogProps} className={cn(className, dialogProps?.className)}>
         {children}
       </DialogTrigger>
     );
   }
 
   return (
-    <DrawerTrigger
-      {...drawerProps}
-      className={cn(className, drawerProps?.className)}
-    >
+    <DrawerTrigger {...drawerProps} className={cn(className, drawerProps?.className)}>
       {children}
     </DrawerTrigger>
   );
@@ -172,40 +154,27 @@ export const DynamicModalContent = ({
   if (isDesktop) {
     if (desktopMode === "popover") {
       return (
-        <PopoverContent
-          {...popoverProps}
-          className={cn(className, popoverProps?.className)}
-        >
+        <PopoverContent {...popoverProps} className={cn(className, popoverProps?.className)}>
           {children}
         </PopoverContent>
       );
     }
 
     return (
-      <DialogContent
-        {...dialogProps}
-        className={cn(className, dialogProps?.className)}
-      >
+      <DialogContent {...dialogProps} className={cn(className, dialogProps?.className)}>
         {children}
       </DialogContent>
     );
   }
 
   return (
-    <DrawerContent
-      {...drawerProps}
-      className={cn(className, drawerProps?.className)}
-    >
+    <DrawerContent {...drawerProps} className={cn(className, drawerProps?.className)}>
       {children}
     </DrawerContent>
   );
 };
 
-export const DynamicModalDescription = ({
-  children,
-}: {
-  children: ReactNode;
-}) => {
+export const DynamicModalDescription = ({ children }: { children: ReactNode }) => {
   const { desktopMode, isDesktop } = useContext(DynamicModalContext);
 
   if (isDesktop) {
@@ -215,9 +184,7 @@ export const DynamicModalDescription = ({
     return <></>;
   }
 
-  return (
-    <DrawerDescription className="text-center">{children}</DrawerDescription>
-  );
+  return <DrawerDescription className="text-center">{children}</DrawerDescription>;
 };
 
 export const DynamicModalDrawerTitle = ({

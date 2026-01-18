@@ -5,16 +5,13 @@ import { LayoutGroup, m } from "motion/react";
 
 import { cn } from "~/@shad/lib/utils";
 
-function RadioTabs({
-  className,
-  ...props
-}: React.ComponentProps<typeof RadioGroupPrimitive>) {
+function RadioTabs({ className, ...props }: React.ComponentProps<typeof RadioGroupPrimitive>) {
   const id = React.useId();
   return (
     <LayoutGroup id={id}>
       <RadioGroupPrimitive
         className={cn(
-          "bg-muted text-muted-foreground flex h-11 items-stretch justify-center rounded-lg p-1",
+          "flex h-11 items-stretch justify-center rounded-lg bg-muted p-1 text-muted-foreground",
           className,
         )}
         {...props}
@@ -32,8 +29,8 @@ function RadioTabItem({
     <RadioPrimitive.Root
       className={cn(
         "relative inline-flex items-center justify-center rounded-md px-3 text-sm",
-        "whitespace-nowrap font-medium transition-all",
-        "focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+        "font-medium whitespace-nowrap transition-all",
+        "focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-50",
         "data-[state=checked]:text-foreground data-[state=checked]:shadow-sm",
         className,
       )}
@@ -48,7 +45,7 @@ function RadioTabItem({
             initial={false}
             transition={{ duration: 0.2, ease: "easeInOut" }}
             layoutId={`indicator-tabs`}
-            className="bg-background z-1 absolute size-full rounded-md"
+            className="absolute z-1 size-full rounded-md bg-background"
           />
         }
       ></RadioPrimitive.Indicator>

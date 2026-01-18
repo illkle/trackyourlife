@@ -67,11 +67,9 @@
     "tailwind-merge": "catalog:",
     "tailwindcss-animate": "^1.0.7"
   },
-  "prettier": "@tyl/prettier-config",
   "devDependencies": {
     "@babel/plugin-transform-async-generator-functions": "^7.28.0",
     "@tailwindcss/postcss": "catalog:",
-    "@tyl/prettier-config": "workspace:*",
     "@tyl/tsconfig": "workspace:*",
     "@types/react": "catalog:react",
     "drizzle-kit": "catalog:",

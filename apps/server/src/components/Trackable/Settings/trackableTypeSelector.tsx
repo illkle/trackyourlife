@@ -3,11 +3,7 @@ import { cn } from "@shad/lib/utils";
 
 import { DbTrackableSelect } from "@tyl/db/client/schema-powersync";
 
-import {
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "~/@shad/components/card";
+import { CardDescription, CardHeader, CardTitle } from "~/@shad/components/card";
 import { RadioGroup } from "~/@shad/components/radio-group";
 import { CardPressable as Card } from "~/@shad/custom/card-pressable";
 import { RenderTrackableIcon } from "~/utils/trackableIcons";
@@ -54,8 +50,8 @@ export const TrackableTypeSelector = ({
               <RenderTrackableIcon size={20} type="number" />
               <CardTitle>Number</CardTitle>
               <CardDescription>
-                Can represent count like steps walked, measurement like weight,
-                or rating like mood on 1-10 scale.
+                Can represent count like steps walked, measurement like weight, or rating like mood
+                on 1-10 scale.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -71,8 +67,7 @@ export const TrackableTypeSelector = ({
               <RenderTrackableIcon size={20} type="text" />
               <CardTitle>Text</CardTitle>
               <CardDescription>
-                Simple block of text for each day. You can use it as a note or a
-                gratitude journal.
+                Simple block of text for each day. You can use it as a note or a gratitude journal.
               </CardDescription>
             </CardHeader>
           </Card>

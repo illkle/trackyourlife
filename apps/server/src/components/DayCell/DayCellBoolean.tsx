@@ -22,15 +22,18 @@ export const DayCellBoolean = () => {
   const { labelType, onChange, values } = useDayCellContext();
   const { value, recordId } = values[0] ?? {};
 
-  const { lightMode: themeActiveLight, darkMode: themeActiveDark } =
-    useTrackableFlag(id, "BooleanCheckedColor");
-  const { lightMode: themeInactiveLight, darkMode: themeInactiveDark } =
-    useTrackableFlag(id, "BooleanUncheckedColor");
+  const { lightMode: themeActiveLight, darkMode: themeActiveDark } = useTrackableFlag(
+    id,
+    "BooleanCheckedColor",
+  );
+  const { lightMode: themeInactiveLight, darkMode: themeInactiveDark } = useTrackableFlag(
+    id,
+    "BooleanUncheckedColor",
+  );
 
   // Even though we're not using any values from context it's useful to check whether it's provided
 
-  const { animationMultiplier, runAnimation } =
-    useAllowAnimation(ANIMATION_TIME);
+  const { animationMultiplier, runAnimation } = useAllowAnimation(ANIMATION_TIME);
 
   const isActive = value === "true";
 

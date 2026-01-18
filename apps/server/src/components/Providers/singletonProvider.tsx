@@ -15,35 +15,28 @@ export const useSingleton = () => {
   return context;
 };
 
-export const SingletonProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const SingletonProvider = ({ children }: { children: React.ReactNode }) => {
   const currentIdRef = useRef<string | null>(null);
   const onUnregisterRef = useRef<(() => void) | null>(null);
 
-  const registerSingleton = useCallback(
-    (id: string, onUnregister: () => void) => {
-      if (currentIdRef.current !== id) {
-        // Call previous onUnregister if exists
+  const registerSingleton = useCallback((id: string, onUnregister: () => void) => {
+    if (currentIdRef.current !== id) {
+      // Call previous onUnregister if exists
 
-        let noPrevious = true;
+      let noPrevious = true;
 
-        if (onUnregisterRef.current) {
-          onUnregisterRef.current();
-          noPrevious = false;
-        }
-
-        // Update refs with new values
-        currentIdRef.current = id;
-        onUnregisterRef.current = onUnregister;
-        return noPrevious;
+      if (onUnregisterRef.current) {
+        onUnregisterRef.current();
+        noPrevious = false;
       }
-      return false;
-    },
-    [],
-  );
+
+      // Update refs with new values
+      currentIdRef.current = id;
+      onUnregisterRef.current = onUnregister;
+      return noPrevious;
+    }
+    return false;
+  }, []);
 
   const clear = useCallback((id: string) => {
     if (currentIdRef.current === id) {

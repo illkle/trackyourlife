@@ -49,15 +49,10 @@ function RouteComponent() {
 
   return (
     <div className="content-container flex flex-col gap-2 pb-6">
-      <h3 className="w-full bg-inherit text-2xl font-semibold lg:text-3xl">
-        Create new Trackable
-      </h3>
+      <h3 className="w-full bg-inherit text-2xl font-semibold lg:text-3xl">Create new Trackable</h3>
 
       <div className="h-2"></div>
-      <Input
-        placeholder="Unnamed Trackable"
-        onChange={(e) => (nameRef.current = e.target.value)}
-      />
+      <Input placeholder="Unnamed Trackable" onChange={(e) => (nameRef.current = e.target.value)} />
 
       <div className="h-2"></div>
       <TrackableTypeSelector type={newOne.type} setType={setType} />

@@ -18,9 +18,7 @@ test.describe("Authentication", () => {
       await page.goto("/auth/login");
       await page.waitForLoadState("networkidle");
 
-      await page
-        .getByPlaceholder("person@somemail.com")
-        .fill("invalid@test.com");
+      await page.getByPlaceholder("person@somemail.com").fill("invalid@test.com");
       await page.locator('input[type="password"]').fill("wrongpassword");
       await page.getByRole("button", { name: "Login" }).click();
 
@@ -69,19 +67,12 @@ test.describe("Authentication", () => {
 
       // Verify registration form elements
       await expect(page.getByText("Hello")).toBeVisible();
-      await expect(
-        page.getByText("Let's get to know each other!"),
-      ).toBeVisible();
+      await expect(page.getByText("Let's get to know each other!")).toBeVisible();
       await expect(page.getByPlaceholder("John Doe")).toBeVisible();
-      await expect(
-        page.getByRole("button", { name: "Create Account" }),
-      ).toBeVisible();
+      await expect(page.getByRole("button", { name: "Create Account" })).toBeVisible();
     });
 
-    test("should create account and redirect to app", async ({
-      page,
-      testUser,
-    }) => {
+    test("should create account and redirect to app", async ({ page, testUser }) => {
       await page.goto("/auth/login");
       await page.waitForLoadState("networkidle");
 
@@ -100,9 +91,7 @@ test.describe("Authentication", () => {
       await expect(page).toHaveURL(/\/app/, { timeout: 10000 });
     });
 
-    test("should show validation errors for invalid input", async ({
-      page,
-    }) => {
+    test("should show validation errors for invalid input", async ({ page }) => {
       await page.goto("/auth/login");
       await page.waitForLoadState("networkidle");
 
@@ -133,9 +122,7 @@ test.describe("Authentication", () => {
   });
 
   test.describe("Protected Routes", () => {
-    test("should redirect unauthenticated users from /app to login", async ({
-      page,
-    }) => {
+    test("should redirect unauthenticated users from /app to login", async ({ page }) => {
       await page.goto("/app");
 
       // Should redirect to login
@@ -150,9 +137,7 @@ test.describe("Authentication", () => {
       await expect(page).toHaveURL(/\/auth\/login/, { timeout: 10000 });
     });
 
-    test("should redirect unauthenticated users from /app/settings to login", async ({
-      page,
-    }) => {
+    test("should redirect unauthenticated users from /app/settings to login", async ({ page }) => {
       await page.goto("/app/settings");
 
       await expect(page).toHaveURL(/\/auth\/login/, { timeout: 10000 });
@@ -160,10 +145,7 @@ test.describe("Authentication", () => {
   });
 
   test.describe("Sign Out", () => {
-    test("should sign out and redirect to login", async ({
-      authenticatedPage,
-      logout,
-    }) => {
+    test("should sign out and redirect to login", async ({ authenticatedPage, logout }) => {
       // User is already authenticated via fixture
       await expect(authenticatedPage).toHaveURL(/\/app/);
 

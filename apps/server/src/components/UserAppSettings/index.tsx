@@ -2,12 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { KeyRound, MailCheck, MailQuestionIcon, UserIcon } from "lucide-react";
 
 import { Button } from "~/@shad/components/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "~/@shad/components/card";
+import { Card, CardContent, CardHeader, CardTitle } from "~/@shad/components/card";
 import { authClient } from "~/auth/client";
 import { EmailChangeForm } from "~/components/AuthFlows/emailChange";
 import { PasswordChangeForm } from "~/components/AuthFlows/passwordChange";

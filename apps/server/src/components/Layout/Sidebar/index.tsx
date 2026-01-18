@@ -1,13 +1,7 @@
 import { Spinner } from "@shad/components/spinner";
 import { useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation } from "@tanstack/react-router";
-import {
-  ChevronUp,
-  HeartIcon,
-  PanelLeftClose,
-  PanelLeftOpen,
-  User2,
-} from "lucide-react";
+import { ChevronUp, HeartIcon, PanelLeftClose, PanelLeftOpen, User2 } from "lucide-react";
 
 import { useTrackablesList } from "@tyl/helpers/dbHooks";
 
@@ -56,10 +50,7 @@ const TrackablesMiniList = () => {
   }
 
   if (q.data.length === 0) {
-    return (
-      <div className="text-muted-foreground text-xs py-16 text-center ">
-      </div>
-    );
+    return <div className="py-16 text-center text-xs text-muted-foreground"></div>;
   }
 
   return (
@@ -81,7 +72,7 @@ const TrackablesMiniList = () => {
                       })}
                     >
                       <div className="flex w-full items-center justify-between gap-2">
-                        <div className="justify-baseline flex items-center gap-2 truncate">
+                        <div className="flex items-center justify-baseline gap-2 truncate">
                           <div className="opacity-70">
                             <RenderTrackableIcon
                               size={16}

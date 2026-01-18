@@ -1,10 +1,7 @@
 import { cn } from "@shad/lib/utils";
 
 import type { PopupEditorProps } from "~/components/PopupEditor";
-import {
-  NumberInput,
-  NumberInputWrapper,
-} from "~/components/DayCell/DayCellNumber";
+import { NumberInput, NumberInputWrapper } from "~/components/DayCell/DayCellNumber";
 import { closeDayEditor } from "~/components/Modal/EditorModalV2";
 
 export const NumberPopupEditor = ({ data, onChange }: PopupEditorProps) => {

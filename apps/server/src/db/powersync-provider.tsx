@@ -7,11 +7,7 @@ import type { ReactNode } from "react";
 import { useLayoutEffect, useState } from "react";
 import { wrapPowerSyncWithDrizzle } from "@powersync/drizzle-driver";
 import { PowerSyncContext } from "@powersync/react";
-import {
-  PowerSyncDatabase,
-  WASQLiteOpenFactory,
-  WASQLiteVFS,
-} from "@powersync/web";
+import { PowerSyncDatabase, WASQLiteOpenFactory, WASQLiteVFS } from "@powersync/web";
 
 import { PowersyncDrizzleContext } from "@tyl/db/client/context";
 import {
@@ -51,10 +47,7 @@ interface PowerSyncProviderProps {
   userId: string;
 }
 
-export const PowerSyncProvider = ({
-  children,
-  userId,
-}: PowerSyncProviderProps) => {
+export const PowerSyncProvider = ({ children, userId }: PowerSyncProviderProps) => {
   const [databases, setDatabases] = useState<{
     powersyncDb: PowerSyncDatabase;
     drizzleDb: TPowersyncDrizzleDB;

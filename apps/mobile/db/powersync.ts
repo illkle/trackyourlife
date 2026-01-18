@@ -1,16 +1,9 @@
 import { Connector } from "@/db/connector";
 import { wrapPowerSyncWithDrizzle } from "@powersync/drizzle-driver";
 import { OPSqliteOpenFactory } from "@powersync/op-sqlite"; // Add this import
-import {
-  createBaseLogger,
-  LogLevel,
-  PowerSyncDatabase,
-} from "@powersync/react-native";
+import { createBaseLogger, LogLevel, PowerSyncDatabase } from "@powersync/react-native";
 
-import {
-  PowersyncDrizzleSchema,
-  PowersyncSchema,
-} from "@tyl/db/client/schema-powersync";
+import { PowersyncDrizzleSchema, PowersyncSchema } from "@tyl/db/client/schema-powersync";
 
 // Create the factory
 const opSqlite = new OPSqliteOpenFactory({

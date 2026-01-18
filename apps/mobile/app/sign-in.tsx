@@ -11,7 +11,7 @@ export default function Screen() {
     <SafeAreaView>
       <KASV className="bg-background px-4 py-10">
         <View>
-          <Text className="text-primary mx-auto text-5xl font-black">TYL</Text>
+          <Text className="mx-auto text-5xl font-black text-primary">TYL</Text>
         </View>
         <Text className={"font-black"} style={{ fontWeight: "600" }}>
           asdasd

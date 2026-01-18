@@ -1,10 +1,7 @@
 import { HeartIcon } from "lucide-react";
 import { m } from "motion/react";
 
-import {
-  DbTrackableGroupSelect,
-  DbTrackableSelect,
-} from "@tyl/db/client/schema-powersync";
+import { DbTrackableGroupSelect, DbTrackableSelect } from "@tyl/db/client/schema-powersync";
 
 import { buttonVariants } from "~/@shad/components/button";
 import { Button } from "~/@shad/components/button";
@@ -37,7 +34,6 @@ export const FavoriteButton = ({
       });
     }
   };
-
 
   return (
     <Button

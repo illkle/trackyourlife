@@ -12,13 +12,9 @@ export default function TabTwoScreen() {
   return (
     <KASV className="bg-background px-4">
       <View>
-        <Text className="text-primary text-2xl font-bold">User:</Text>
-        <Text className="text-primary mt-2 font-mono">
-          {session.data?.user?.name}
-        </Text>
-        <Text className="text-primary mt-1 font-mono">
-          {session.data?.user?.email}
-        </Text>
+        <Text className="text-2xl font-bold text-primary">User:</Text>
+        <Text className="mt-2 font-mono text-primary">{session.data?.user?.name}</Text>
+        <Text className="mt-1 font-mono text-primary">{session.data?.user?.email}</Text>
 
         <Button
           variant={"outline"}

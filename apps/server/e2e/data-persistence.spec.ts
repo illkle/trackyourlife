@@ -2,17 +2,13 @@ import { expect, test } from "./fixtures/auth.fixture";
 
 test.describe("Data Persistence", () => {
   test.describe("Trackable Data Persistence", () => {
-    test("should persist boolean data after page reload", async ({
-      authenticatedPage,
-    }) => {
+    test("should persist boolean data after page reload", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       // Create boolean trackable
       await page.goto("/app/create");
 
-      await page
-        .getByPlaceholder("Unnamed Trackable")
-        .fill(`E2E Persist Bool ${Date.now()}`);
+      await page.getByPlaceholder("Unnamed Trackable").fill(`E2E Persist Bool ${Date.now()}`);
       // Boolean type is selected by default, no need to click
       await page.getByRole("button", { name: "Create" }).click();
 
@@ -33,17 +29,13 @@ test.describe("Data Persistence", () => {
       await expect(reloadedCell).toBeVisible({ timeout: 10000 });
     });
 
-    test("should persist number data after page reload", async ({
-      authenticatedPage,
-    }) => {
+    test("should persist number data after page reload", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       // Create number trackable
       await page.goto("/app/create");
 
-      await page
-        .getByPlaceholder("Unnamed Trackable")
-        .fill(`E2E Persist Num ${Date.now()}`);
+      await page.getByPlaceholder("Unnamed Trackable").fill(`E2E Persist Num ${Date.now()}`);
       await page.getByRole("radio", { name: /Number/i }).click();
       await page.getByRole("button", { name: "Create" }).click();
 
@@ -72,18 +64,14 @@ test.describe("Data Persistence", () => {
       await expect(reloadedCell).toBeVisible({ timeout: 10000 });
     });
 
-    test("should persist text data after page reload", async ({
-      authenticatedPage,
-    }) => {
+    test("should persist text data after page reload", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
       const testText = `Persistence test ${Date.now()}`;
 
       // Create text trackable
       await page.goto("/app/create");
 
-      await page
-        .getByPlaceholder("Unnamed Trackable")
-        .fill(`E2E Persist Text ${Date.now()}`);
+      await page.getByPlaceholder("Unnamed Trackable").fill(`E2E Persist Text ${Date.now()}`);
       await page.getByRole("radio", { name: /Text/i }).click();
       await page.getByRole("button", { name: "Create" }).click();
 
@@ -114,17 +102,13 @@ test.describe("Data Persistence", () => {
   });
 
   test.describe("Data Across Multiple Days", () => {
-    test("should persist data for multiple days", async ({
-      authenticatedPage,
-    }) => {
+    test("should persist data for multiple days", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       // Create boolean trackable
       await page.goto("/app/create");
 
-      await page
-        .getByPlaceholder("Unnamed Trackable")
-        .fill(`E2E Multi Day ${Date.now()}`);
+      await page.getByPlaceholder("Unnamed Trackable").fill(`E2E Multi Day ${Date.now()}`);
       // Boolean type is selected by default, no need to click
       await page.getByRole("button", { name: "Create" }).click();
 
@@ -161,17 +145,13 @@ test.describe("Data Persistence", () => {
   });
 
   test.describe("Loading States", () => {
-    test("should show loading state while data is fetching", async ({
-      authenticatedPage,
-    }) => {
+    test("should show loading state while data is fetching", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       // Create a trackable first
       await page.goto("/app/create");
 
-      await page
-        .getByPlaceholder("Unnamed Trackable")
-        .fill(`E2E Loading ${Date.now()}`);
+      await page.getByPlaceholder("Unnamed Trackable").fill(`E2E Loading ${Date.now()}`);
       await page.getByRole("button", { name: "Create" }).click();
 
       // Navigate with slow network simulation
@@ -188,31 +168,25 @@ test.describe("Data Persistence", () => {
       });
     });
 
-    test("should show empty state when user has no trackables", async ({
-      authenticatedPage,
-    }) => {
+    test("should show empty state when user has no trackables", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       // Fresh user should have no trackables
       await page.goto("/app/trackables");
 
       // Should show empty state
-      await expect(
-        page.getByText("You do not have any trackables yet"),
-      ).toBeVisible({ timeout: 10000 });
+      await expect(page.getByText("You do not have any trackables yet")).toBeVisible({
+        timeout: 10000,
+      });
     });
 
-    test("should show spinner while data loads on home page", async ({
-      authenticatedPage,
-    }) => {
+    test("should show spinner while data loads on home page", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       // Create a trackable
       await page.goto("/app/create");
 
-      await page
-        .getByPlaceholder("Unnamed Trackable")
-        .fill(`E2E Spinner ${Date.now()}`);
+      await page.getByPlaceholder("Unnamed Trackable").fill(`E2E Spinner ${Date.now()}`);
       await page.getByRole("button", { name: "Create" }).click();
 
       // Go to home and check for spinner or content
@@ -234,9 +208,7 @@ test.describe("Data Persistence", () => {
   });
 
   test.describe("Data Consistency", () => {
-    test("should show same data in list view and detail view", async ({
-      authenticatedPage,
-    }) => {
+    test("should show same data in list view and detail view", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
       const trackableName = `E2E Consistency ${Date.now()}`;
 
@@ -265,15 +237,11 @@ test.describe("Data Persistence", () => {
       });
 
       // Find the mini row and verify it has checked cells
-      const miniRowCheckedCell = page
-        .locator("button[data-value='true']")
-        .last();
+      const miniRowCheckedCell = page.locator("button[data-value='true']").last();
       await expect(miniRowCheckedCell).toBeVisible({ timeout: 5000 });
     });
 
-    test("should show same data in home view and detail view", async ({
-      authenticatedPage,
-    }) => {
+    test("should show same data in home view and detail view", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
       const trackableName = `E2E Home Consistency ${Date.now()}`;
 
@@ -308,23 +276,19 @@ test.describe("Data Persistence", () => {
   });
 
   test.describe("Session Persistence", () => {
-    test("should maintain data after navigating away and back", async ({
-      authenticatedPage,
-    }) => {
+    test("should maintain data after navigating away and back", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       // Create boolean trackable
       await page.goto("/app/create");
 
-      await page
-        .getByPlaceholder("Unnamed Trackable")
-        .fill(`E2E Navigate ${Date.now()}`);
+      await page.getByPlaceholder("Unnamed Trackable").fill(`E2E Navigate ${Date.now()}`);
       // Boolean type is selected by default, no need to click
       await page.getByRole("button", { name: "Create" }).click();
 
       // Set data
       await page.getByRole("button", { name: "View" }).click();
-      
+
       // Extract trackableId from URL for later navigation
       const url = page.url();
       const trackableId = url.match(/trackables\/([^/]+)/)?.[1];
@@ -357,9 +321,7 @@ test.describe("Data Persistence", () => {
       // Create boolean trackable
       await page.goto("/app/create");
 
-      await page
-        .getByPlaceholder("Unnamed Trackable")
-        .fill(`E2E BackForward ${Date.now()}`);
+      await page.getByPlaceholder("Unnamed Trackable").fill(`E2E BackForward ${Date.now()}`);
       // Boolean type is selected by default, no need to click
       await page.getByRole("button", { name: "Create" }).click();
 
@@ -387,17 +349,13 @@ test.describe("Data Persistence", () => {
   });
 
   test.describe("Real-time Updates", () => {
-    test("should update UI immediately after data change", async ({
-      authenticatedPage,
-    }) => {
+    test("should update UI immediately after data change", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       // Create boolean trackable
       await page.goto("/app/create");
 
-      await page
-        .getByPlaceholder("Unnamed Trackable")
-        .fill(`E2E Realtime ${Date.now()}`);
+      await page.getByPlaceholder("Unnamed Trackable").fill(`E2E Realtime ${Date.now()}`);
       // Boolean type is selected by default, no need to click
       await page.getByRole("button", { name: "Create" }).click();
 

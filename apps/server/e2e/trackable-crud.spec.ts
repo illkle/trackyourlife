@@ -8,7 +8,6 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Navigate to create page
       await page.goto("/app/create");
-      
 
       // Fill in name
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
@@ -27,7 +26,6 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Navigate to trackables list
       await page.goto("/app/trackables");
-      
 
       // Verify trackable appears in list
       await expect(page.getByText(trackableName).first()).toBeVisible({
@@ -40,7 +38,6 @@ test.describe("Trackable CRUD Operations", () => {
       const trackableName = `E2E Number ${Date.now()}`;
 
       await page.goto("/app/create");
-      
 
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
 
@@ -54,7 +51,6 @@ test.describe("Trackable CRUD Operations", () => {
       });
 
       await page.goto("/app/trackables");
-      
 
       await expect(page.getByText(trackableName).first()).toBeVisible({
         timeout: 10000,
@@ -66,7 +62,6 @@ test.describe("Trackable CRUD Operations", () => {
       const trackableName = `E2E Text ${Date.now()}`;
 
       await page.goto("/app/create");
-      
 
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
 
@@ -80,20 +75,16 @@ test.describe("Trackable CRUD Operations", () => {
       });
 
       await page.goto("/app/trackables");
-      
 
       await expect(page.getByText(trackableName).first()).toBeVisible({
         timeout: 10000,
       });
     });
 
-    test("should create trackable with empty name as 'Unnamed'", async ({
-      authenticatedPage,
-    }) => {
+    test("should create trackable with empty name as 'Unnamed'", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       await page.goto("/app/create");
-      
 
       // Don't fill in name, just create
       await page.getByRole("button", { name: "Create" }).click();
@@ -104,7 +95,6 @@ test.describe("Trackable CRUD Operations", () => {
 
       // The trackable should exist (even without a name)
       await page.goto("/app/trackables");
-      
 
       // Look for "Unnamed" in the sidebar or list
       await expect(page.getByText("Unnamed").first()).toBeVisible({
@@ -114,15 +104,13 @@ test.describe("Trackable CRUD Operations", () => {
   });
 
   test.describe("Delete Trackable", () => {
-    test("should delete trackable with confirmation", async ({
-      authenticatedPage,
-    }) => {
+    test("should delete trackable with confirmation", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
       const trackableName = `E2E Delete Test ${Date.now()}`;
 
       // First create a trackable
       await page.goto("/app/create");
-      
+
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
       await page.getByRole("button", { name: "Create" }).click();
       await expect(page).toHaveURL(/\/app\/trackables\/.*\/settings/, {
@@ -154,21 +142,19 @@ test.describe("Trackable CRUD Operations", () => {
       await expect(page).toHaveURL(/\/app\/trackables(\/?(?:\?|#|$)|$)/, { timeout: 10000 });
 
       // Verify trackable no longer appears
-      
+
       await expect(page.getByText(trackableName)).not.toBeVisible({
         timeout: 5000,
       });
     });
 
-    test("should cancel deletion when clicking cancel", async ({
-      authenticatedPage,
-    }) => {
+    test("should cancel deletion when clicking cancel", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
       const trackableName = `E2E Cancel Delete ${Date.now()}`;
 
       // Create a trackable
       await page.goto("/app/create");
-      
+
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
       await page.getByRole("button", { name: "Create" }).click();
       await expect(page).toHaveURL(/\/app\/trackables\/.*\/settings/, {
@@ -211,7 +197,7 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Create a trackable
       await page.goto("/app/create");
-      
+
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
       await page.getByRole("button", { name: "Create" }).click();
       await expect(page).toHaveURL(/\/app\/trackables\/.*\/settings/, {
@@ -232,7 +218,6 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Go to trackables list - should not appear in main list
       await page.goto("/app/trackables");
-      
 
       // The trackable should not be in the main list
       await expect(page.getByText(trackableName)).not.toBeVisible({
@@ -241,7 +226,6 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Click "Archive" link/button to view archived trackables
       await page.getByRole("button", { name: "Archive" }).click();
-      
 
       // Should appear in archived list
       await expect(page.getByText(trackableName).first()).toBeVisible({
@@ -251,15 +235,13 @@ test.describe("Trackable CRUD Operations", () => {
   });
 
   test.describe("Favorite Trackable", () => {
-    test("should favorite and unfavorite trackable", async ({
-      authenticatedPage,
-    }) => {
+    test("should favorite and unfavorite trackable", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
       const trackableName = `E2E Favorite Test ${Date.now()}`;
 
       // Create a trackable
       await page.goto("/app/create");
-      
+
       await page.getByPlaceholder("Unnamed Trackable").fill(trackableName);
       await page.getByRole("button", { name: "Create" }).click();
       await expect(page).toHaveURL(/\/app\/trackables\/.*\/settings/, {
@@ -276,64 +258,50 @@ test.describe("Trackable CRUD Operations", () => {
       await favoriteButton.click();
 
       // Wait for the state to update - button should now say "Unfavorite"
-      await expect(
-        page.getByRole("button", { name: /Unfavorite/i }),
-      ).toBeVisible({ timeout: 5000 });
+      await expect(page.getByRole("button", { name: /Unfavorite/i })).toBeVisible({
+        timeout: 5000,
+      });
 
       // Unfavorite
       await page.getByRole("button", { name: /Unfavorite/i }).click();
 
       // Should be back to "Favorite"
-      await expect(
-        page.getByRole("button", { name: "Favorite", exact: true }),
-      ).toBeVisible({
+      await expect(page.getByRole("button", { name: "Favorite", exact: true })).toBeVisible({
         timeout: 5000,
       });
     });
   });
 
   test.describe("Trackables List", () => {
-    test("should display empty state when no trackables", async ({
-      authenticatedPage,
-    }) => {
+    test("should display empty state when no trackables", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       // Fresh user should have empty state
       await page.goto("/app/trackables");
-      
 
-      await expect(
-        page.getByText("You do not have any trackables yet"),
-      ).toBeVisible({ timeout: 10000 });
-      await expect(
-        page.getByRole("button", { name: "Create Trackable" }),
-      ).toBeVisible();
+      await expect(page.getByText("You do not have any trackables yet")).toBeVisible({
+        timeout: 10000,
+      });
+      await expect(page.getByRole("button", { name: "Create Trackable" })).toBeVisible();
     });
 
-    test("should navigate to create page from empty state", async ({
-      authenticatedPage,
-    }) => {
+    test("should navigate to create page from empty state", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       await page.goto("/app/trackables");
-      
 
       await page.getByRole("button", { name: "Create Trackable" }).click();
 
       await expect(page).toHaveURL(/\/app\/create/);
     });
 
-    test("should toggle between trackables and archive views", async ({
-      authenticatedPage,
-    }) => {
+    test("should toggle between trackables and archive views", async ({ authenticatedPage }) => {
       const page = authenticatedPage;
 
       // Create a trackable first
       await page.goto("/app/create");
-      
-      await page
-        .getByPlaceholder("Unnamed Trackable")
-        .fill(`E2E Toggle ${Date.now()}`);
+
+      await page.getByPlaceholder("Unnamed Trackable").fill(`E2E Toggle ${Date.now()}`);
       await page.getByRole("button", { name: "Create" }).click();
       await expect(page).toHaveURL(/\/app\/trackables\/.*\/settings/, {
         timeout: 10000,
@@ -341,7 +309,6 @@ test.describe("Trackable CRUD Operations", () => {
 
       // Go to trackables list
       await page.goto("/app/trackables");
-      
 
       // Should show "Your Trackables" heading
       await expect(page.getByText("Your Trackables")).toBeVisible();
