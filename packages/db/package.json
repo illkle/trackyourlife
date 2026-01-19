@@ -47,10 +47,10 @@
   },
   "devDependencies": {
     "@tyl/tsconfig": "workspace:*",
-    "@types/pg": "^8.15.6",
+    "@types/pg": "^8.16.0",
     "dotenv-cli": "catalog:",
     "drizzle-kit": "catalog:",
-    "pg": "^8.16.3",
+    "pg": "^8.17.1",
     "typescript": "catalog:"
   }
 }
