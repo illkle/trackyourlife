@@ -21,7 +21,7 @@ import {
   TPowersyncDrizzleDB,
 } from "@tyl/db/client/schema-powersync";
 
-import { useSessionAuthed } from "~/utils/useSessionInfo";
+import { useAuthAuthed } from "~/utils/useSessionInfo";
 import { Connector } from "./connector";
 
 // Create PowerSync database instance
@@ -47,12 +47,9 @@ const createPowersyncWeb = () => {
   return { powersyncDb, drizzleDb };
 };
 
-interface PowerSyncProviderProps {
-  children: ReactNode;
-  userId: string;
-}
+export const PowerSyncProvider = ({ children }: { children: ReactNode }) => {
+  const { user } = useAuthAuthed();
 
-export const PowerSyncProvider = ({ children, userId }: PowerSyncProviderProps) => {
   const [databases, setDatabases] = useState<{
     powersyncDb: PowerSyncDatabase;
     drizzleDb: TPowersyncDrizzleDB;
@@ -78,9 +75,7 @@ export const PowerSyncProvider = ({ children, userId }: PowerSyncProviderProps) 
     return () => {
       void powersyncDb.disconnect();
     };
-  }, [userId]);
-
-  const { sessionInfo } = useSessionAuthed();
+  }, [user.id]);
 
   if (!databases) {
     return null;
@@ -88,9 +83,7 @@ export const PowerSyncProvider = ({ children, userId }: PowerSyncProviderProps) 
 
   return (
     <PowerSyncContext.Provider value={databases.powersyncDb}>
-      <PowersyncDrizzleContext.Provider
-        value={{ db: databases.drizzleDb, userID: sessionInfo.user.id }}
-      >
+      <PowersyncDrizzleContext.Provider value={{ db: databases.drizzleDb, userID: user.id }}>
         {children}
       </PowersyncDrizzleContext.Provider>
     </PowerSyncContext.Provider>

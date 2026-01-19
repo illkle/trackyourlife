@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { z } from "zod/v4";
 
 import { EmailValidator } from "@tyl/helpers/validators";
@@ -10,13 +10,13 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/@sh
 import { Input } from "~/@shad/components/input";
 import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 import { authClient } from "~/auth/client";
-import { invalidateSession, useSessionAuthed } from "~/utils/useSessionInfo";
+import { useAuthAuthed } from "~/utils/useSessionInfo";
 import { FieldInfo, MutationErrorInfo } from ".";
 
 export const EmailChangeForm = ({ className }: { className?: string }) => {
-  const { sessionInfo } = useSessionAuthed();
+  const { user } = useAuthAuthed();
 
-  const isVerified = sessionInfo.user.emailVerified;
+  const isVerified = user.emailVerified;
 
   const changeMutation = useMutation({
     mutationFn: async (v: typeof form.state.values) => {
@@ -25,14 +25,8 @@ export const EmailChangeForm = ({ className }: { className?: string }) => {
         throw new Error(error.message ?? error.statusText);
       }
     },
-    onSuccess: async () => {
-      if (!isVerified) {
-        await invalidateSession(qc);
-      }
-    },
+    onSuccess: async () => {},
   });
-
-  const qc = useQueryClient();
 
   const form = useForm({
     defaultValues: {

@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as HealthRouteImport } from './routes/health'
-import { Route as ConvertersRouteImport } from './routes/converters'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
@@ -33,11 +32,6 @@ import { Route as AppTrackablesIdSettingsRouteImport } from './routes/app/tracka
 const HealthRoute = HealthRouteImport.update({
   id: '/health',
   path: '/health',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ConvertersRoute = ConvertersRouteImport.update({
-  id: '/converters',
-  path: '/converters',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -135,7 +129,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
-  '/converters': typeof ConvertersRoute
   '/health': typeof HealthRoute
   '/app/create': typeof AppCreateRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
@@ -156,7 +149,6 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRouteWithChildren
-  '/converters': typeof ConvertersRoute
   '/health': typeof HealthRoute
   '/app/create': typeof AppCreateRoute
   '/app/testing': typeof AppTestingRoute
@@ -177,7 +169,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/auth': typeof AuthRouteWithChildren
-  '/converters': typeof ConvertersRoute
   '/health': typeof HealthRoute
   '/app/create': typeof AppCreateRoute
   '/app/settings': typeof AppSettingsRouteWithChildren
@@ -201,7 +192,6 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
-    | '/converters'
     | '/health'
     | '/app/create'
     | '/app/settings'
@@ -222,7 +212,6 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
-    | '/converters'
     | '/health'
     | '/app/create'
     | '/app/testing'
@@ -242,7 +231,6 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/auth'
-    | '/converters'
     | '/health'
     | '/app/create'
     | '/app/settings'
@@ -265,7 +253,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   AuthRoute: typeof AuthRouteWithChildren
-  ConvertersRoute: typeof ConvertersRoute
   HealthRoute: typeof HealthRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiPowersyncSyncbatchRoute: typeof ApiPowersyncSyncbatchRoute
@@ -278,13 +265,6 @@ declare module '@tanstack/react-router' {
       path: '/health'
       fullPath: '/health'
       preLoaderRoute: typeof HealthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/converters': {
-      id: '/converters'
-      path: '/converters'
-      fullPath: '/converters'
-      preLoaderRoute: typeof ConvertersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -482,7 +462,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   AuthRoute: AuthRouteWithChildren,
-  ConvertersRoute: ConvertersRoute,
   HealthRoute: HealthRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiPowersyncSyncbatchRoute: ApiPowersyncSyncbatchRoute,

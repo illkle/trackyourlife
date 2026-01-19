@@ -1,69 +1,27 @@
-import type { QueryClient } from "@tanstack/react-query";
-import { useQuery } from "@tanstack/react-query";
-import { createServerFn } from "@tanstack/react-start";
-import { getRequest } from "@tanstack/react-start/server";
+import { Navigate } from "@tanstack/react-router";
+import { createContext, useContext } from "react";
 
 import { Spinner } from "~/@shad/components/spinner";
-import { auth } from "~/auth/server";
+import { authClient } from "~/auth/client";
 
-const getSessionServerFn = createServerFn({ method: "GET" }).handler(async () => {
-  try {
-    const r = getRequest();
-
-    const [sessionInfo, { token }] = await Promise.all([
-      auth.api.getSession({
-        headers: r.headers,
-      }),
-      auth.api.getToken({
-        headers: r.headers,
-      }),
-    ]);
-
-    return { sessionInfo, token };
-  } catch (e) {
-    console.error(e);
-    return { sessionInfo: null, token: null };
-  }
+const AuthContext = createContext<{
+  session: ReturnType<typeof authClient.useSession>["data"] | null;
+}>({
+  session: null,
 });
 
-const q = {
-  queryKey: ["session"],
-  queryFn: async () => await getSessionServerFn(),
-  refetchOnMount: false,
-  refetchOnWindowFocus: false,
-  refetchOnReconnect: true,
-};
+export const UserPreloader = ({
+  children,
+  redirectOnNoAuth,
+  redirectOnAuth,
+}: {
+  children: React.ReactNode;
+  redirectOnNoAuth?: boolean;
+  redirectOnAuth?: boolean;
+}) => {
+  const auth = authClient.useSession();
 
-export const invalidateSession = async (qc: QueryClient) => {
-  await qc.invalidateQueries({ queryKey: ["session"] });
-};
-
-export const ensureSessionInfo = async (qc: QueryClient) => {
-  await qc.ensureQueryData(q);
-};
-
-export const useSessionInfo = () => {
-  return useQuery(q);
-};
-
-export const UnauthorizedError = "Error: Unauthorized. Redirecting...";
-
-export const useSessionAuthed = () => {
-  const { data } = useSessionInfo();
-
-  if (!data || !data.sessionInfo || !data.token) {
-    throw new Error(UnauthorizedError);
-  }
-
-  const { sessionInfo, token } = data;
-
-  return { sessionInfo, token };
-};
-
-export const UserPreloader = ({ children }: { children: React.ReactNode }) => {
-  const { isPending } = useSessionInfo();
-
-  if (isPending) {
+  if (auth.isPending) {
     return (
       <div className="flex h-svh w-full items-center justify-center">
         <Spinner />
@@ -71,5 +29,24 @@ export const UserPreloader = ({ children }: { children: React.ReactNode }) => {
     );
   }
 
-  return <>{children}</>;
+  if (redirectOnNoAuth && !auth.data) {
+    return <Navigate to="/auth/login" />;
+  }
+  if (redirectOnAuth && auth.data) {
+    return <Navigate to="/app" />;
+  }
+
+  return <AuthContext.Provider value={{ session: auth.data }}>{children}</AuthContext.Provider>;
+};
+
+export const useAuth = () => {
+  return useContext(AuthContext);
+};
+
+export const useAuthAuthed = () => {
+  const { session } = useAuth();
+  if (!session) {
+    throw new Error("No auth, this should never happen");
+  }
+  return session;
 };

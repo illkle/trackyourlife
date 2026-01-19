@@ -2,7 +2,7 @@ import type { AnyFieldApi } from "@tanstack/react-form";
 import { useState } from "react";
 import { cn } from "@shad/lib/utils";
 import { useForm } from "@tanstack/react-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { Link, useRouter } from "@tanstack/react-router";
 import { XIcon } from "lucide-react";
 import { AnimatePresence, m } from "motion/react";
@@ -17,7 +17,6 @@ import { Input } from "~/@shad/components/input";
 import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 import { RadioTabItem, RadioTabs } from "~/@shad/custom/radio-tabs";
 import { authClient } from "~/auth/client";
-import { invalidateSession } from "~/utils/useSessionInfo";
 
 type ActionState = "login" | "register";
 
@@ -55,8 +54,6 @@ export const MutationErrorInfo = ({ message }: { message: string }) => {
 const Register = () => {
   const router = useRouter();
 
-  const qc = useQueryClient();
-
   const registerMutation = useMutation({
     mutationFn: async (v: typeof form.state.values) => {
       await authClient.signUp.email(v, {
@@ -66,7 +63,6 @@ const Register = () => {
       });
     },
     onSuccess: async () => {
-      await invalidateSession(qc);
       await router.navigate({ to: "/" });
     },
   });
@@ -167,7 +163,6 @@ const Register = () => {
 
 const Login = () => {
   const router = useRouter();
-  const qc = useQueryClient();
 
   const loginMutation = useMutation({
     mutationFn: async (v: typeof form.state.values) => {
@@ -178,7 +173,6 @@ const Login = () => {
       });
     },
     onSuccess: async () => {
-      await invalidateSession(qc);
       await router.navigate({ to: "/" });
     },
   });
