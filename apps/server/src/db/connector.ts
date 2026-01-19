@@ -13,6 +13,7 @@ export class Connector implements PowerSyncBackendConnector {
     const jwtToken = data.token;
     console.log("JWT TOKEN", jwtToken);
     console.log("POWERSYNC DOMAIN", import.meta.env.VITE_POWERSYNC_DOMAIN);
+    console.log("NITRO DOMAIN", import.meta.env.NITRO_POWERSYNC_DOMAIN);
 
     return {
       endpoint: import.meta.env.VITE_POWERSYNC_DOMAIN,

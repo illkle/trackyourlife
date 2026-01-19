@@ -2,7 +2,7 @@
   "name": "trackyourlife",
   "private": true,
   "scripts": {
-    "build": "turbo run build",
+    "build": "turbo run build --force",
     "clean": "git clean -xdf node_modules",
     "clean:workspaces": "turbo run clean",
     "db:studio": "turbo run studio -F @tyl/db",
