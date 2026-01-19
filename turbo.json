@@ -3,20 +3,37 @@
   "ui": "tui",
   "tasks": {
     "topo": {
-      "dependsOn": ["^topo"]
+      "dependsOn": [
+        "^topo"
+      ]
     },
     "build": {
-      "dependsOn": ["^build"],
-      "outputs": [".expo/**", ".output/**", "dist/**"],
-      "env": ["VITE_ZERO_DOMAIN"]
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        ".expo/**",
+        ".output/**",
+        "dist/**"
+      ],
+      "env": [
+        "VITE_DEPLOY_DOMAIN",
+        "VITE_POWERSYNC_DOMAIN",
+        "VITE_PREVIEW_WARNING"
+      ]
     },
     "dev": {
       "persistent": true,
       "cache": false
     },
     "typecheck": {
-      "dependsOn": ["^topo", "^build"],
-      "outputs": ["node_modules/.cache/tsbuildinfo.json"]
+      "dependsOn": [
+        "^topo",
+        "^build"
+      ],
+      "outputs": [
+        "node_modules/.cache/tsbuildinfo.json"
+      ]
     },
     "clean": {
       "cache": false
@@ -44,11 +61,6 @@
     "TEST_URL",
     "SITE",
     "BETTER_AUTH_SECRET",
-    "ZERO_UPSTREAM_DB",
-    "ZERO_CVR_DB",
-    "ZERO_CHANGE_DB",
-    "ZERO_AUTH_SECRET",
-    "ZERO_REPLICA_FILE",
     "RESEND_API_KEY",
     "RESEND_FROM_EMAIL"
   ]
