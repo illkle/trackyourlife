@@ -34,11 +34,11 @@
     "@date-fns/tz": "catalog:",
     "@fluentui/react-context-selector": "^9.2.13",
     "@powersync/drizzle-driver": "catalog:",
-    "chroma-js": "^3.1.2",
+    "chroma-js": "^3.2.0",
     "date-fns": "catalog:",
     "drizzle-orm": "catalog:",
     "fuzzysort": "^3.1.0",
-    "lodash-es": "^4.17.21",
+    "lodash-es": "^4.17.22",
     "uuid": "catalog:"
   },
   "devDependencies": {

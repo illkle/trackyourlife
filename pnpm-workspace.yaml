@@ -4,26 +4,26 @@ packages:
   - tooling/*
 
 catalog:
-  "@better-auth/expo": 1.4.4
+  "@better-auth/expo": 1.4.15
   "@date-fns/tz": 1.4.1
   "@powersync/common": 1.45.0
-  "@powersync/drizzle-driver": 0.7.0
+  "@powersync/drizzle-driver": 0.7.1
   "@tailwindcss/postcss": 4.1.17
-  "@tailwindcss/vite": 4.1.17
-  "@tanstack/react-form": 1.26.0
-  "@tanstack/react-query": 5.90.8
-  better-auth: 1.4.4
+  "@tailwindcss/vite": 4.1.18
+  "@tanstack/react-form": 1.27.7
+  "@tanstack/react-query": 5.90.19
+  better-auth: 1.4.15
   class-variance-authority: 0.7.1
   clsx: 2.1.1
   date-fns: 4.1.0
   dotenv-cli: 11.0.0
-  drizzle-kit: 0.31.7
-  drizzle-orm: 0.44.7
+  drizzle-kit: 0.31.8
+  drizzle-orm: 0.45.1
   tailwind-merge: 3.4.0
-  tailwindcss: 4.1.17
+  tailwindcss: 4.1.18
   typescript: 5.9.3
   uuid: 13.0.0
-  zod: 4.1.12
+  zod: 4.3.5
 
 catalogs:
   react:

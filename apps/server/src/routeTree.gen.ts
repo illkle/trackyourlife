@@ -141,7 +141,7 @@ export interface FileRoutesByFullPath {
   '/api/powersync/syncbatch': typeof ApiPowersyncSyncbatchRoute
   '/app/trackables/$id': typeof AppTrackablesIdRouteWithChildren
   '/app/settings/': typeof AppSettingsIndexRoute
-  '/app/trackables': typeof AppTrackablesIndexRoute
+  '/app/trackables/': typeof AppTrackablesIndexRoute
   '/app/trackables/$id/settings': typeof AppTrackablesIdSettingsRoute
   '/app/trackables/$id/view': typeof AppTrackablesIdViewRoute
   '/app/trackables/$id/': typeof AppTrackablesIdIndexRoute
@@ -204,7 +204,7 @@ export interface FileRouteTypes {
     | '/api/powersync/syncbatch'
     | '/app/trackables/$id'
     | '/app/settings/'
-    | '/app/trackables'
+    | '/app/trackables/'
     | '/app/trackables/$id/settings'
     | '/app/trackables/$id/view'
     | '/app/trackables/$id/'
@@ -340,7 +340,7 @@ declare module '@tanstack/react-router' {
     '/app/trackables/': {
       id: '/app/trackables/'
       path: '/trackables'
-      fullPath: '/app/trackables'
+      fullPath: '/app/trackables/'
       preLoaderRoute: typeof AppTrackablesIndexRouteImport
       parentRoute: typeof AppRoute
     }

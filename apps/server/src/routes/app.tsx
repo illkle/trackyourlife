@@ -10,6 +10,7 @@ import { UserPreloader } from "~/utils/useSessionInfo";
 
 export const Route = createFileRoute("/app")({
   component: AppComponent,
+  ssr: false,
 });
 
 function AppComponent() {
