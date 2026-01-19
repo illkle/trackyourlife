@@ -39,10 +39,6 @@ RUN VITE_DEPLOY_DOMAIN=$VITE_DEPLOY_DOMAIN \
 FROM base AS runner
 WORKDIR /app
 
-# Install curl for healthcheck
-RUN apt-get update && apt-get install -y --no-install-recommends curl \
-    && rm -rf /var/lib/apt/lists/*
-
 # Create non-root user
 RUN groupadd --system --gid 1001 nodejs && \
     useradd --system --uid 1001 --gid nodejs tylrunner

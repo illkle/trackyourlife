@@ -72,11 +72,17 @@ services:
       DATABASE_URL: ${DATABASE_URL}
       BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:80/"]
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:80/').then(r => r.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))",
+        ]
       interval: 5s
       timeout: 5s
-      retries: 3
-      start_period: 30s
+      retries: 10
+      start_period: 5s
     depends_on:
       init:
         condition: service_completed_successfully
