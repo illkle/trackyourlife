@@ -1,4 +1,4 @@
-import { useQueryClient } from "@tanstack/react-query";
+import { redirect } from "@tanstack/react-router";
 import { KeyRound, MailCheck, MailQuestionIcon, UserIcon } from "lucide-react";
 
 import { Button } from "~/@shad/components/button";
@@ -8,13 +8,12 @@ import { EmailChangeForm } from "~/components/AuthFlows/emailChange";
 import { PasswordChangeForm } from "~/components/AuthFlows/passwordChange";
 import { SendVerificationEmailButton } from "~/components/AuthFlows/sendVerificationEmail";
 import { UsernameChangeForm } from "~/components/AuthFlows/usernameChange";
-import { invalidateSession, useSessionAuthed } from "~/utils/useSessionInfo";
+import { useAuthAuthed } from "~/utils/useSessionInfo";
 
 export const UserSettings = () => {
-  const { sessionInfo } = useSessionAuthed();
+  const { user } = useAuthAuthed();
 
-  const qc = useQueryClient();
-  const emailVerified = sessionInfo.user.emailVerified;
+  const emailVerified = user.emailVerified;
 
   return (
     <div>
@@ -27,7 +26,7 @@ export const UserSettings = () => {
             <div className="flex w-fit flex-col gap-2">
               <div className="flex flex-row items-center gap-2">
                 <UserIcon className="h-4 w-4" />
-                <div>{sessionInfo.user.name}</div>
+                <div>{user.name}</div>
               </div>
 
               <div className="flex flex-row items-center gap-2">
@@ -36,7 +35,7 @@ export const UserSettings = () => {
                 ) : (
                   <MailQuestionIcon className="h-4 w-4" />
                 )}
-                <div>{sessionInfo.user.email}</div>
+                <div>{user.email}</div>
               </div>
 
               <div className="flex flex-row items-center gap-2">
@@ -54,7 +53,7 @@ export const UserSettings = () => {
                 await authClient.signOut({
                   fetchOptions: {
                     onSuccess: async () => {
-                      await invalidateSession(qc);
+                      redirect({ to: "/auth/login" });
                     },
                   },
                 });

@@ -1,15 +1,14 @@
 import { createFileRoute, Navigate } from "@tanstack/react-router";
-
-import { useSessionAuthed } from "~/utils/useSessionInfo";
+import { useAuth } from "~/utils/useSessionInfo";
 
 export const Route = createFileRoute("/")({
   component: Home,
 });
 
 function Home() {
-  const s = useSessionAuthed();
+  const { session } = useAuth();
 
-  if (s.sessionInfo.user.id) {
+  if (!session?.session.userId) {
     return <Navigate to="/app" />;
   }
 

@@ -1,5 +1,5 @@
 import { useForm } from "@tanstack/react-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { z } from "zod/v4";
 
 import { Alert, AlertDescription, AlertTitle } from "~/@shad/components/alert";
@@ -8,11 +8,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "~/@sh
 import { Input } from "~/@shad/components/input";
 import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 import { authClient } from "~/auth/client";
-import { invalidateSession } from "~/utils/useSessionInfo";
 import { FieldInfo, MutationErrorInfo } from ".";
 
 export const UsernameChangeForm = ({ className }: { className?: string }) => {
-  const qc = useQueryClient();
   const changeMutation = useMutation({
     mutationFn: async (v: typeof form.state.values) => {
       const { error } = await authClient.updateUser({
@@ -22,9 +20,7 @@ export const UsernameChangeForm = ({ className }: { className?: string }) => {
         throw new Error(error.message ?? error.statusText);
       }
     },
-    onSuccess: async () => {
-      await invalidateSession(qc);
-    },
+    onSuccess: async () => {},
   });
 
   const form = useForm({

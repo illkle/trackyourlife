@@ -2,6 +2,7 @@ import { expo } from "@better-auth/expo";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { apiKey, jwt } from "better-auth/plugins";
+import { tanstackStartCookies } from "better-auth/tanstack-start";
 
 import { db } from "@tyl/db/server";
 
@@ -40,5 +41,5 @@ export const auth = betterAuth({
   },
 
   secret: process.env.BETTER_AUTH_SECRET,
-  plugins: [jwt({}), expo(), apiKey()],
+  plugins: [jwt({}), expo(), apiKey(), tanstackStartCookies()],
 });

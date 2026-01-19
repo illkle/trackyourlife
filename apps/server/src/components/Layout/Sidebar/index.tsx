@@ -1,6 +1,5 @@
 import { Spinner } from "@shad/components/spinner";
-import { useQueryClient } from "@tanstack/react-query";
-import { Link, useLocation } from "@tanstack/react-router";
+import { Link, redirect, useLocation } from "@tanstack/react-router";
 import { ChevronUp, HeartIcon, PanelLeftClose, PanelLeftOpen, User2 } from "lucide-react";
 
 import { useTrackablesList } from "@tyl/helpers/data/dbHooks";
@@ -30,7 +29,7 @@ import { CoreLinks } from "~/components/Layout/Header";
 import { QueryError } from "~/components/QueryError";
 import { ThemeSwitcher } from "~/components/UserAppSettings/themeSwitcher";
 import { RenderTrackableIcon } from "~/utils/trackableIcons";
-import { invalidateSession, useSessionAuthed } from "~/utils/useSessionInfo";
+import { useAuthAuthed } from "~/utils/useSessionInfo";
 
 const TrackablesMiniList = () => {
   const q = useTrackablesList();
@@ -103,9 +102,8 @@ const TrackablesMiniList = () => {
 
 export const AppSidebar = () => {
   const loc = useLocation();
-  const qc = useQueryClient();
 
-  const { sessionInfo } = useSessionAuthed();
+  const { user } = useAuthAuthed();
 
   return (
     <Sidebar variant="floating">
@@ -133,7 +131,7 @@ export const AppSidebar = () => {
               <DropdownMenuTrigger
                 render={
                   <SidebarMenuButton className="w-full">
-                    <User2 /> {sessionInfo.user.name}
+                    <User2 /> {user.name}
                     <ChevronUp className="ml-auto" />
                   </SidebarMenuButton>
                 }
@@ -145,7 +143,7 @@ export const AppSidebar = () => {
                     await authClient.signOut({
                       fetchOptions: {
                         onSuccess: async () => {
-                          await invalidateSession(qc);
+                          redirect({ to: "/auth/login" });
                         },
                       },
                     });

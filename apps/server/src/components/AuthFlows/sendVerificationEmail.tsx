@@ -3,16 +3,16 @@ import { useMutation } from "@tanstack/react-query";
 import { Button } from "~/@shad/components/button";
 import { MaybeLoading } from "~/@shad/custom/maybe-loading";
 import { authClient } from "~/auth/client";
-import { useSessionAuthed } from "~/utils/useSessionInfo";
+import { useAuthAuthed } from "~/utils/useSessionInfo";
 import { MutationErrorInfo } from ".";
 
 export const SendVerificationEmailButton = () => {
-  const { sessionInfo } = useSessionAuthed();
+  const { user } = useAuthAuthed();
 
   const sendMutation = useMutation({
     mutationFn: async () => {
       const { error } = await authClient.sendVerificationEmail({
-        email: sessionInfo.user.email,
+        email: user.email,
         callbackURL: "/app/settings",
       });
       if (error) {
@@ -21,7 +21,7 @@ export const SendVerificationEmailButton = () => {
     },
   });
 
-  const emailVerified = sessionInfo.user.emailVerified;
+  const emailVerified = user.emailVerified;
 
   if (emailVerified) {
     return null;

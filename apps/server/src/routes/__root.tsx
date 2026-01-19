@@ -6,7 +6,6 @@ import { LazyMotionProvider } from "~/components/Providers/lazyFramerMotionProvi
 import { ThemeProvider } from "~/components/Providers/next-themes/themes";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo.js";
-import { ensureSessionInfo, UserPreloader } from "~/utils/useSessionInfo";
 
 const iconPrefix = (path: string) => (process.env.SITE === "stage" ? `/stg${path}` : path);
 
@@ -53,11 +52,7 @@ export const Route = createRootRouteWithContext<{
     ],
   }),
 
-  ssr: true,
   component: RootComponent,
-  loader: async ({ context }) => {
-    await ensureSessionInfo(context.queryClient);
-  },
 });
 
 function RootComponent() {
@@ -78,7 +73,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body className="overscroll-none bg-background text-foreground">
         <LazyMotionProvider>
           <ThemeProvider defaultTheme="dark" attribute="class">
-            <UserPreloader>{children}</UserPreloader>
+            {children}
             <Scripts />
           </ThemeProvider>
         </LazyMotionProvider>
