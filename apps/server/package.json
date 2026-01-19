@@ -5,7 +5,7 @@
   "sideEffects": false,
   "scripts": {
     "dev": "pnpm with-env vite dev --port 3000",
-    "build": "vite build",
+    "build": "pnpm with-env vite build",
     "start": "pnpm with-env node .output/server/index.mjs",
     "lint": "oxlint .",
     "with-env": "dotenv -e ../../.env --",
