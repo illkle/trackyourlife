@@ -1,7 +1,7 @@
 import { useContext } from "react";
 
 import type { IColorValue } from "@tyl/db/jsonValidators";
-import { presetsMap } from "@tyl/helpers/colorPresets";
+import { presetsMap } from "@tyl/helpers/color/colorPresets";
 
 import {
   Drawer,

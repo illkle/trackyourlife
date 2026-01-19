@@ -5,7 +5,7 @@ import { DbTrackableGroupSelect, DbTrackableSelect } from "@tyl/db/client/schema
 
 import { buttonVariants } from "~/@shad/components/button";
 import { Button } from "~/@shad/components/button";
-import { useGroupHandlers } from "@tyl/helpers/dbHooks";
+import { useGroupHandlers } from "@tyl/helpers/data/dbHooks";
 import { VariantProps } from "class-variance-authority";
 
 export const FavoriteButton = ({

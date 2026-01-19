@@ -2,9 +2,9 @@ import { eachDayOfInterval, isBefore, isSameDay, startOfTomorrow } from "date-fn
 
 import type { INumberColorCoding, INumberProgressBounds } from "@tyl/db/jsonValidators";
 
-import { range } from "./animation";
-import { presetsMap } from "./colorPresets";
-import { getColorAtPosition } from "./colorTools";
+import { range } from "../animation";
+import { presetsMap } from "../color/colorPresets";
+import { getColorAtPosition } from "../color/colorTools";
 
 // Comes from db
 export interface DataRecord {

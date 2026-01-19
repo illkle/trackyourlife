@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
-import { createContext, memo, useCallback, useEffect, useId, useMemo, useState } from "react";
+import { useCallback, useMemo } from "react";
 import { toCompilableQuery } from "@powersync/drizzle-driver";
 import { useQuery } from "@powersync/react";
-import { Store, useStore } from "@tanstack/react-store";
 import { v4 as uuidv4 } from "uuid";
 
 import { usePowersyncDrizzle } from "@tyl/db/client/context";
@@ -13,13 +12,10 @@ import type {
   ITrackableFlagsKV,
   ITrackableFlagValue,
   ITrackableFlagValueInput,
-} from "~/components/Trackable/TrackableProviders/trackableFlags";
-import {
-  FlagDefaults,
-  FlagsValidators,
-} from "~/components/Trackable/TrackableProviders/trackableFlags";
+} from "./trackableFlags";
+import { FlagDefaults, FlagsValidators } from "./trackableFlags";
 import { and, eq, inArray } from "drizzle-orm";
-import { Spinner } from "~/@shad/components/spinner";
+import { createContext, useContextSelector } from "@fluentui/react-context-selector";
 
 /*
  * This provides a kv store that is used for trackable settings.
@@ -86,19 +82,18 @@ export const createFlagsObject = (flags: readonly DbTrackableFlagsSelect[]) => {
   return flagMap;
 };
 
-const FlagStorage = new Store<KeyStorage>({});
+const FlagStorageContext = createContext<KeyStorage | null>(null);
 
-let flagStorageLock: string | null = null;
-
-const TrackableFlagsProviderNonMemo = ({
+export const TrackableFlagsProvider = ({
   children,
   trackableIds,
+  loadingComponent,
 }: {
   children: ReactNode;
   trackableIds?: string[];
+  loadingComponent?: ReactNode;
 }) => {
   const { db } = usePowersyncDrizzle();
-  const id = useId();
 
   // Query all flags (PowerSync will sync only user's data based on sync rules)
   const query = useMemo(
@@ -112,41 +107,14 @@ const TrackableFlagsProviderNonMemo = ({
   );
   const { data: allFlags, isLoading } = useQuery(query);
 
-  const [isReady, setIsReady] = useState(false);
+  const flagStorage = useMemo(() => createFlagsObject(allFlags), [allFlags]);
 
-  useEffect(() => {
-    if (flagStorageLock === null) {
-      flagStorageLock = id;
-    } else if (flagStorageLock !== id) {
-      throw new Error("TrackableFlagsProvider can only be used once");
-    }
-
-    FlagStorage.setState(() => createFlagsObject(allFlags));
-
-    // Kinda crude hack, ideally we need a better way to provide flags
-    if (!isLoading) {
-      setIsReady(true);
-    }
-
-    return () => {
-      if (flagStorageLock === id) {
-        flagStorageLock = null;
-      }
-    };
-  }, [allFlags, id, isLoading]);
-
-  if (isLoading || !isReady) {
-    return (
-      <>
-        <Spinner />
-      </>
-    );
+  if (isLoading) {
+    return loadingComponent;
   }
 
-  return children;
+  return <FlagStorageContext.Provider value={flagStorage}>{children}</FlagStorageContext.Provider>;
 };
-
-export const TrackableFlagsProvider = memo(TrackableFlagsProviderNonMemo);
 
 /** CONSUMER API BELOW */
 
@@ -156,7 +124,7 @@ export const TrackableFlagsProvider = memo(TrackableFlagsProviderNonMemo);
  * Keep in mind that for flags to be available you need to have TrackableFlagsFetcher with trackableId above.
  */
 export const useTrackableFlag = <K extends ITrackableFlagKey>(trackableId: string, key: K) => {
-  const v = useStore(FlagStorage, (state) => state[trackableId]?.[key]);
+  const v = useContextSelector(FlagStorageContext, (state) => state?.[trackableId]?.[key]);
   return v ?? FlagDefaults[key];
 };
 

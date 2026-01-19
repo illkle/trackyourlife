@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import { createContext, forwardRef, useContext, useMemo, useRef } from "react";
 import { cn } from "@shad/lib/utils";
 
-import { makeColorString } from "@tyl/helpers/colorTools";
+import { makeColorString } from "@tyl/helpers/color/colorTools";
 
 import {
   DayCellBaseClasses,
@@ -12,7 +12,7 @@ import {
   useDayCellContext,
 } from "~/components/DayCell";
 import { openDayEditor } from "~/components/Modal/EditorModalV2";
-import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { useLinkedValue } from "~/utils/useDbLinkedValue";
 import { useIsMobile } from "~/utils/useIsDesktop";

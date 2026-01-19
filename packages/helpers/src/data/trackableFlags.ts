@@ -1,10 +1,10 @@
 import { parse } from "date-fns";
-import { z } from "zod/v4";
+import { z } from "zod";
 
 import { ZColorValue, ZNumberColorCoding, ZNumberProgressBounds } from "@tyl/db/jsonValidators";
-import { presetsMap } from "@tyl/helpers/colorPresets";
-import { makeColorStrings } from "@tyl/helpers/colorTools";
-import { NumberColorCodingMapper, NumberProgressMapper } from "@tyl/helpers/trackables";
+import { presetsMap } from "@tyl/helpers/color/colorPresets";
+import { makeColorStrings } from "@tyl/helpers/color/colorTools";
+import { NumberColorCodingMapper, NumberProgressMapper } from "@tyl/helpers/data/trackables";
 
 /**
  * Flags that are stored in db and are accessed by trackable components.
@@ -72,12 +72,6 @@ export type ITrackableFlagValue<K extends ITrackableFlagKey> = z.infer<(typeof F
 export type ITrackableFlagValueInput<K extends ITrackableFlagKey> = z.input<
   (typeof FlagsValidators)[K]
 >;
-
-export type FlagSet = <K extends ITrackableFlagKey>(
-  trackableId: string,
-  key: K,
-  value: ITrackableFlagValueInput<K>,
-) => Promise<void>;
 
 export type ITrackableFlagsKV = {
   [K in ITrackableFlagKey]: ITrackableFlagValue<K>;

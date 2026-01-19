@@ -10,9 +10,9 @@ import {
 } from "lucide-react";
 import { z } from "zod/v4";
 
-import { useGroupHandlers, useTrackable } from "@tyl/helpers/dbHooks";
+import { useGroupHandlers, useTrackable } from "@tyl/helpers/data/dbHooks";
 
-import type { ITrackableFlagType } from "~/components/Trackable/TrackableProviders/trackableFlags";
+import type { ITrackableFlagType } from "@tyl/helpers/data/trackableFlags";
 import { AlertDialogTrigger } from "~/@shad/components/alert-dialog";
 import { Button } from "~/@shad/components/button";
 import {
@@ -36,7 +36,7 @@ import {
   TrackableFlagsProvider,
   useSetTrackableFlag,
   useTrackableFlag,
-} from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+} from "@tyl/helpers/data/TrackableFlagsProvider";
 import TrackableProvider, {
   useTrackableMeta,
 } from "~/components/Trackable/TrackableProviders/TrackableProvider";

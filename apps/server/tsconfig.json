@@ -11,6 +11,6 @@
     "checkJs": false,
     "types": ["vite/client"]
   },
-  "include": ["**/*.ts", "**/*.tsx", "../../packages/helpers/src/dbHooks.ts"],
+  "include": ["**/*.ts", "**/*.tsx", "../../packages/helpers/src/data/dbHooks.ts", "../../packages/helpers/src/data/TrackableFlagsProvider.tsx", "../../packages/helpers/src/data/trackableFlags.ts"],
   "exclude": ["node_modules"]
 }

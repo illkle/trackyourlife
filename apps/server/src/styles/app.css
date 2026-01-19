@@ -56,19 +56,6 @@ button:not(:disabled) {
   background: var(--gradDark);
 }
 
-.booleanTransitionAnimation {
-  animation: booleanTransitionAnimation var(--animation-time) ease-in-out;
-}
-
-@keyframes booleanTransitionAnimation {
-  from {
-    transform: scale(0);
-  }
-  to {
-    transform: scale(1.2);
-  }
-}
-
 /**
  * On iOS when modal with autofocused input animates in while keyboard is also opening the css parts animate fine,
  * but native ios cursor make a janky jump instead of moving smoothly.

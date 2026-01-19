@@ -9,15 +9,30 @@
     "./*": {
       "types": "./dist/*.d.ts",
       "default": "./src/*.ts"
+    },
+    "./color/*": {
+      "types": "./dist/color/*.d.ts",
+      "default": "./src/color/*.ts"
+    },
+    "./data/*": {
+      "types": "./dist/data/*.d.ts",
+      "default": "./src/data/*.ts"
+    },
+    "./data/TrackableFlagsProvider": {
+      "types": "./dist/data/TrackableFlagsProvider.d.ts",
+      "default": "./src/data/TrackableFlagsProvider.tsx"
     }
   },
   "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
     "clean": "rm -rf .turbo node_modules",
     "lint": "oxlint .",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
     "@date-fns/tz": "catalog:",
+    "@fluentui/react-context-selector": "^9.2.13",
     "@powersync/drizzle-driver": "catalog:",
     "chroma-js": "^3.1.2",
     "date-fns": "catalog:",

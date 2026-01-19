@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Link, useLocation } from "@tanstack/react-router";
 import { ChevronUp, HeartIcon, PanelLeftClose, PanelLeftOpen, User2 } from "lucide-react";
 
-import { useTrackablesList } from "@tyl/helpers/dbHooks";
+import { useTrackablesList } from "@tyl/helpers/data/dbHooks";
 
 import { Button } from "~/@shad/components/button";
 import {

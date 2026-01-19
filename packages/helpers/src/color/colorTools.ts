@@ -2,7 +2,7 @@ import chroma from "chroma-js";
 
 import type { IColorCodingValue, IColorHSL, IColorRGB, IColorValue } from "@tyl/db/jsonValidators";
 
-import { range } from "./animation";
+import { range } from "../animation";
 import { presetsMap } from "./colorPresets";
 
 export { chroma };

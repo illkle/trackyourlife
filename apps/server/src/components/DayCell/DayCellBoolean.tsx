@@ -10,11 +10,8 @@ import {
   LabelInside,
   useDayCellContext,
 } from "~/components/DayCell";
-import { useTrackableFlag } from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
-import { useAllowAnimation } from "~/utils/useAllowAnimation";
-
-const ANIMATION_TIME = 0.3;
 
 export const DayCellBoolean = () => {
   const { id } = useTrackableMeta();
@@ -33,8 +30,6 @@ export const DayCellBoolean = () => {
 
   // Even though we're not using any values from context it's useful to check whether it's provided
 
-  const { animationMultiplier, runAnimation } = useAllowAnimation(ANIMATION_TIME);
-
   const isActive = value === "true";
 
   const mainRef = useRef<HTMLButtonElement>(null);
@@ -48,7 +43,6 @@ export const DayCellBoolean = () => {
     e.stopPropagation();
 
     if (mainRef.current) {
-      runAnimation();
       const t = mainRef.current;
       const rect = t.getBoundingClientRect();
       if (e.clientX === 0 && e.clientY === 0) {
@@ -79,13 +73,12 @@ export const DayCellBoolean = () => {
         className={cn(
           DayCellBaseClasses,
           DayCellBaseClassesFocus,
-          "transition-all duration-200 ease-in-out",
           isActive
-            ? "border-[var(--themeActiveLight)] hover:border-[var(--themeInactiveLight)] dark:border-[var(--themeActiveDark)] dark:hover:border-[var(--themeInactiveDark)]"
-            : "border-[var(--themeInactiveLight)] hover:border-[var(--themeActiveLight)] dark:border-[var(--themeInactiveDark)] dark:hover:border-[var(--themeActiveDark)]",
+            ? "border-(--themeActiveLight) hover:border-(--themeInactiveLight) dark:border-(--themeActiveDark) dark:hover:border-(--themeInactiveDark)"
+            : "border-(--themeInactiveLight) hover:border-(--themeActiveLight) dark:border-(--themeInactiveDark) dark:hover:border-(--themeActiveDark)",
           isActive
-            ? "bg-[var(--themeActiveLight)] dark:bg-[var(--themeActiveDark)]"
-            : "bg-[var(--themeInactiveLight)] dark:bg-[var(--themeInactiveDark)]",
+            ? "bg-(--themeActiveLight) dark:bg-(--themeActiveDark)"
+            : "bg-(--themeInactiveLight) dark:bg-(--themeInactiveDark)",
         )}
         style={
           {
@@ -93,7 +86,6 @@ export const DayCellBoolean = () => {
             "--themeActiveDark": themeActiveDark,
             "--themeInactiveLight": themeInactiveLight,
             "--themeInactiveDark": themeInactiveDark,
-            "--animation-time": `${ANIMATION_TIME * animationMultiplier}s`,
           } as CSSProperties
         }
         onClick={(e) => void handleClick(e)}

@@ -10,7 +10,11 @@ import type {
   IColorValue,
 } from "@tyl/db/jsonValidators";
 import { clamp, cloneDeep } from "@tyl/helpers";
-import { getColorAtPosition, makeColorString, makeCssGradient } from "@tyl/helpers/colorTools";
+import {
+  getColorAtPosition,
+  makeColorString,
+  makeCssGradient,
+} from "@tyl/helpers/color/colorTools";
 
 import { Button } from "~/@shad/components/button";
 import {

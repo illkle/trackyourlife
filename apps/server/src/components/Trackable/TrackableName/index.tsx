@@ -13,15 +13,11 @@ import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "~/@shad/compo
 import { Input } from "~/@shad/components/input";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
-import { useTrackable, useTrackableHandlers } from "@tyl/helpers/dbHooks";
+import { useTrackableHandlers } from "@tyl/helpers/data/dbHooks";
+import { Button } from "~/@shad/components/button";
 
 export const TrackableNameEditable = () => {
-  const { id } = useTrackableMeta();
-
-  const q = useTrackable({ id: id });
-  const {
-    data: [trackable],
-  } = q;
+  const { id, name, type } = useTrackableMeta();
 
   const [isEditing, setIsEditing] = useState(false);
   const [internalValue, setInternalValue] = useState("");
@@ -36,13 +32,13 @@ export const TrackableNameEditable = () => {
 
   const display = (
     <h2 className="w-full truncate bg-inherit text-left text-xl font-semibold md:text-2xl">
-      {trackable?.name ? trackable.name : `Unnamed ${trackable?.type ?? ""}`}
+      {name ? name : `Unnamed ${type ?? ""}`}
     </h2>
   );
 
   const openChangeHandler = (v: boolean) => {
     if (v === true) {
-      setInternalValue(trackable?.name ?? "");
+      setInternalValue(name ?? "");
     }
     setIsEditing(v);
   };
@@ -65,6 +61,9 @@ export const TrackableNameEditable = () => {
             }
           }}
         />
+        <Button variant={"outline"} onClick={saveHandler}>
+          Save
+        </Button>
       </DialogContent>
     </Dialog>
   ) : (

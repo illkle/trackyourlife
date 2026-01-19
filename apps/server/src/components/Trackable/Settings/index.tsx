@@ -7,10 +7,7 @@ import ColorInput from "~/components/Inputs/Colors/colorInput";
 import NumberColorSelector from "~/components/Inputs/Colors/numberColorSelector";
 import DatePicker from "~/components/Inputs/DatePicker";
 import { SettingsTitle } from "~/components/Trackable/Settings/settingsTitle";
-import {
-  useSetTrackableFlag,
-  useTrackableFlag,
-} from "~/components/Trackable/TrackableProviders/TrackableFlagsProvider";
+import { useSetTrackableFlag, useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import NumberLimitsSelector from "./numberLimitsSelector";
 

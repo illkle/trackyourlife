@@ -2,7 +2,7 @@ import { cn } from "@shad/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { format } from "date-fns";
 
-import type { PureDataRecord } from "@tyl/helpers/trackables";
+import type { PureDataRecord } from "@tyl/helpers/data/trackables";
 import { DbTrackableGroupSelect, DbTrackableSelect } from "@tyl/db/client/schema-powersync";
 
 import DayCellRouter from "~/components/DayCell";

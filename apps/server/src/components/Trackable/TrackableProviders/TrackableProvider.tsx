@@ -14,7 +14,6 @@ const TrackableProvider = ({
   trackable: Pick<DbTrackableSelect, "id" | "type" | "name">;
   children: ReactNode;
 }) => {
-  // Todo: memo
   return (
     <TrackableContext.Provider
       key={trackable.id}
