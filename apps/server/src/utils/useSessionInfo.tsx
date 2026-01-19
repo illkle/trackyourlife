@@ -6,7 +6,7 @@ import { getRequest } from "@tanstack/react-start/server";
 import { Spinner } from "~/@shad/components/spinner";
 import { auth } from "~/auth/server";
 
-const getSession = createServerFn({ method: "GET" }).handler(async () => {
+const getSessionServerFn = createServerFn({ method: "GET" }).handler(async () => {
   try {
     const r = getRequest();
 
@@ -28,7 +28,7 @@ const getSession = createServerFn({ method: "GET" }).handler(async () => {
 
 const q = {
   queryKey: ["session"],
-  queryFn: async () => await getSession(),
+  queryFn: async () => await getSessionServerFn(),
   refetchOnMount: false,
   refetchOnWindowFocus: false,
   refetchOnReconnect: true,

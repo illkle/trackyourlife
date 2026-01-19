@@ -43,10 +43,10 @@ WORKDIR /app
 RUN groupadd --system --gid 1001 nodejs && \
     useradd --system --uid 1001 --gid nodejs tylrunner
 
-COPY --from=installer --chown=tylrunner:nodejs /app/apps/server/.output ./output
+COPY --from=installer --chown=tylrunner:nodejs /app/apps/server/dist ./dist
 
 USER tylrunner
 
 EXPOSE 3000
 
-CMD ["node", "./output/server/index.mjs"]
+CMD ["node", "./dist/server/server.js"]
