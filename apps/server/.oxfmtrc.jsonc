@@ -6,6 +6,6 @@
     "attributes": ["class", "className"],
     "functions": ["clsx", "cn"],
     "preserveDuplicates": false,
-    "preserveWhitespace": false,
-  },
+    "preserveWhitespace": false
+  }
 }

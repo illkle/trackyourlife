@@ -68,6 +68,7 @@
     "@types/react-dom": "catalog:react",
     "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^5.1.1",
+    "babel-plugin-react-compiler": "catalog:react",
     "dotenv": "^17.2.3",
     "dotenv-cli": "catalog:",
     "tailwindcss": "catalog:",

@@ -1,0 +1,29 @@
+# Dependencies
+node_modules
+**/node_modules
+
+# Build outputs
+out
+**/dist
+**/.output
+**/.expo
+
+# Git
+.git
+.gitignore
+
+# IDE
+.vscode
+.idea
+.cursor
+
+# Docker
+Dockerfile*
+docker-compose*
+
+# Misc
+*.log
+.env*
+.DS_Store
+test-results
+playwright-report

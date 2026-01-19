@@ -28,7 +28,11 @@ export default defineConfig({
         enabled: true,
       },
     }),
-    viteReact(),
+    viteReact({
+      babel: {
+        plugins: ["babel-plugin-react-compiler"],
+      },
+    }),
     nitroV2Plugin({ preset: "node-server", compatibilityDate: "2025-11-13" }),
   ],
 });
