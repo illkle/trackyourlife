@@ -33,7 +33,7 @@ import DeleteButton from "~/components/Trackable/DeleteButton";
 import { FavoriteButton } from "~/components/Trackable/FavoriteButton";
 import { TrackableNameEditable } from "~/components/Trackable/TrackableName";
 import {
-  TrackableFlagsProvider,
+  TrackableFlagsProviderExternal,
   useSetTrackableFlag,
   useTrackableFlag,
 } from "@tyl/helpers/data/TrackableFlagsProvider";
@@ -80,7 +80,7 @@ const RouteComponent = () => {
   const isArchived = trackable.groups.some((tg) => tg.group === "archived");
 
   return (
-    <TrackableFlagsProvider trackableIds={[params.id]}>
+    <TrackableFlagsProviderExternal flagsSelect={trackable.flags}>
       <TrackableProvider trackable={trackable}>
         <div className="content-container flex h-full max-h-full w-full flex-col pb-6">
           <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
@@ -113,7 +113,7 @@ const RouteComponent = () => {
           <Outlet />
         </div>
       </TrackableProvider>
-    </TrackableFlagsProvider>
+    </TrackableFlagsProviderExternal>
   );
 };
 

@@ -11,7 +11,7 @@ export const ThemeSwitcher = ({ className }: { className?: string }) => {
 
   return (
     <RadioTabs
-      value={isClient ? theme || "system" : undefined}
+      value={isClient ? theme || "system" : null}
       defaultValue={theme || "system"}
       onValueChange={setTheme}
       className={cn("h-8 w-fit p-0.5", className)}

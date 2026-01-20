@@ -69,6 +69,7 @@ export const useTrackablesList = ({
 
           with: {
             groups: true,
+            flags: true,
             data: withData
               ? {
                   where: and(
@@ -100,7 +101,7 @@ export const useTrackable = ({ id }: { id: string }) => {
       toCompilableQuery(
         db.query.trackable.findFirst({
           where: eq(trackable.id, id),
-          with: { groups: true },
+          with: { groups: true, flags: true },
         }),
       ),
     [db, id],

@@ -12,7 +12,7 @@ import { Button } from "~/@shad/components/button";
 import DayCellRouter from "~/components/DayCell";
 import { QueryError } from "~/components/QueryError";
 import { TrackableNameText } from "~/components/Trackable/TrackableName";
-import { TrackableFlagsProvider } from "@tyl/helpers/data/TrackableFlagsProvider";
+import { TrackableFlagsProviderExternal } from "@tyl/helpers/data/TrackableFlagsProvider";
 import TrackableProvider from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import MiniTrackable from "./miniTrackable";
 
@@ -72,7 +72,7 @@ const TrackablesList = ({ daysToShow, archived }: { daysToShow: number; archived
   return (
     <>
       <div className="mt-3 grid gap-5">
-        <TrackableFlagsProvider>
+        <TrackableFlagsProviderExternal trackablesSelect={q.data}>
           {mappedData.map(({ trackable, data }) => (
             <m.div
               transition={{ duration: 0.2, ease: "circInOut" }}
@@ -86,7 +86,7 @@ const TrackablesList = ({ daysToShow, archived }: { daysToShow: number; archived
               </TrackableProvider>
             </m.div>
           ))}
-        </TrackableFlagsProvider>
+        </TrackableFlagsProviderExternal>
       </div>
     </>
   );
@@ -140,7 +140,7 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
 
   return (
     <div className="flex flex-col gap-6">
-      <TrackableFlagsProvider>
+      <TrackableFlagsProviderExternal trackablesSelect={q.data}>
         {days.map((date, dateIndex) => {
           return (
             <Fragment key={dateIndex}>
@@ -188,7 +188,7 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
             </Fragment>
           );
         })}
-      </TrackableFlagsProvider>
+      </TrackableFlagsProviderExternal>
     </div>
   );
 };

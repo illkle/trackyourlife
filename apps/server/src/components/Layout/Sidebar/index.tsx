@@ -30,6 +30,9 @@ import { QueryError } from "~/components/QueryError";
 import { ThemeSwitcher } from "~/components/UserAppSettings/themeSwitcher";
 import { RenderTrackableIcon } from "~/utils/trackableIcons";
 import { useAuthAuthed } from "~/utils/useSessionInfo";
+import { usePowerSync } from "@powersync/react";
+import { useEffect, useState } from "react";
+import { cn } from "~/@shad/lib/utils";
 
 const TrackablesMiniList = () => {
   const q = useTrackablesList();
@@ -100,6 +103,31 @@ const TrackablesMiniList = () => {
   );
 };
 
+const PowersyncStatus = () => {
+  const powersync = usePowerSync();
+  const [connected, setConnected] = useState(powersync.connected);
+
+  useEffect(() => {
+    return powersync.registerListener({
+      statusChanged: (status) => {
+        setConnected(status.connected);
+      },
+    });
+  }, [powersync]);
+
+  return (
+    <div className="flex items-center gap-2 px-1 py-1 text-xs text-muted-foreground">
+      <div
+        className={cn(
+          "h-2 w-2 rounded-full",
+          connected ? "border border-green-400 bg-green-600" : "border border-red-400 bg-red-600",
+        )}
+      ></div>
+      {connected ? "Connected to Sync service" : "No connection to Sync service"}
+    </div>
+  );
+};
+
 export const AppSidebar = () => {
   const loc = useLocation();
 
@@ -129,6 +157,7 @@ export const AppSidebar = () => {
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger
+                nativeButton={false}
                 render={
                   <SidebarMenuButton className="w-full">
                     <User2 /> {user.name}
@@ -136,9 +165,19 @@ export const AppSidebar = () => {
                   </SidebarMenuButton>
                 }
               />
-              <DropdownMenuContent side="top">
-                <ThemeSwitcher className="mb-2 w-full" />
+              <DropdownMenuContent side="top" className="px-1">
+                <SidebarMenuItem>
+                  <PowersyncStatus />
+                </SidebarMenuItem>
+
+                <ThemeSwitcher className="my-1 w-full" />
+
                 <DropdownMenuItem
+                  render={
+                    <Button className="w-full" variant="ghost">
+                      Sign out
+                    </Button>
+                  }
                   onClick={async () => {
                     await authClient.signOut({
                       fetchOptions: {
@@ -148,9 +187,7 @@ export const AppSidebar = () => {
                       },
                     });
                   }}
-                >
-                  <span>Sign out</span>
-                </DropdownMenuItem>
+                />
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>

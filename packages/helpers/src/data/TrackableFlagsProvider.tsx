@@ -1,7 +1,5 @@
 import type { ReactNode } from "react";
 import { useCallback, useMemo } from "react";
-import { toCompilableQuery } from "@powersync/drizzle-driver";
-import { useQuery } from "@powersync/react";
 import { v4 as uuidv4 } from "uuid";
 
 import { usePowersyncDrizzle } from "@tyl/db/client/context";
@@ -14,7 +12,7 @@ import type {
   ITrackableFlagValueInput,
 } from "./trackableFlags";
 import { FlagDefaults, FlagsValidators } from "./trackableFlags";
-import { and, eq, inArray } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { createContext, useContextSelector } from "@fluentui/react-context-selector";
 
 /*
@@ -84,34 +82,29 @@ export const createFlagsObject = (flags: readonly DbTrackableFlagsSelect[]) => {
 
 const FlagStorageContext = createContext<KeyStorage | null>(null);
 
-export const TrackableFlagsProvider = ({
+type FLagsProviderProps =
+  | {
+      children: ReactNode;
+      trackablesSelect: { flags: DbTrackableFlagsSelect[] }[];
+      flagsSelect?: never;
+    }
+  | {
+      children: ReactNode;
+      flagsSelect: DbTrackableFlagsSelect[];
+      trackablesSelect?: never;
+    };
+
+export const TrackableFlagsProviderExternal = ({
   children,
-  trackableIds,
-  loadingComponent,
-}: {
-  children: ReactNode;
-  trackableIds?: string[];
-  loadingComponent?: ReactNode;
-}) => {
-  const { db } = usePowersyncDrizzle();
-
-  // Query all flags (PowerSync will sync only user's data based on sync rules)
-  const query = useMemo(
-    () =>
-      toCompilableQuery(
-        db.query.trackableFlags.findMany({
-          where: trackableIds ? inArray(trackable_flags.trackable_id, trackableIds) : undefined,
-        }),
-      ),
-    [db, trackableIds],
-  );
-  const { data: allFlags, isLoading } = useQuery(query);
-
-  const flagStorage = useMemo(() => createFlagsObject(allFlags), [allFlags]);
-
-  if (isLoading) {
-    return loadingComponent;
-  }
+  flagsSelect,
+  trackablesSelect,
+}: FLagsProviderProps) => {
+  const flagStorage = useMemo(() => {
+    if (flagsSelect) {
+      return createFlagsObject(flagsSelect);
+    }
+    return createFlagsObject(trackablesSelect!.map((f) => f.flags).flat());
+  }, [flagsSelect, trackablesSelect]);
 
   return <FlagStorageContext.Provider value={flagStorage}>{children}</FlagStorageContext.Provider>;
 };

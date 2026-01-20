@@ -16,7 +16,7 @@ import type { PureDataRecord } from "@tyl/helpers/data/trackables";
 import { useTrackableData } from "@tyl/helpers/data/dbHooks";
 import { mapDataToRange } from "@tyl/helpers/data/trackables";
 
-import type { ITrackableFlagType } from "~/components/Trackable/TrackableProviders/trackableFlags";
+import type { ITrackableFlagType } from "@tyl/helpers/data/trackableFlags";
 import { Button } from "~/@shad/components/button";
 import DayCellRouter from "~/components/DayCell";
 import { QueryError } from "~/components/QueryError";
