@@ -7,7 +7,9 @@ import { ThemeProvider } from "~/components/Providers/next-themes/themes";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo.js";
 
-const iconPrefix = (path: string) => (process.env.SITE === "stage" ? `/stg${path}` : path);
+const IS_STG = false;
+
+const iconPrefix = (path: string) => (IS_STG ? `/stg${path}` : path);
 
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient;
@@ -37,6 +39,14 @@ export const Route = createRootRouteWithContext<{
         href: iconPrefix("/favicon.ico"),
       },
     ],
+    scripts: IS_STG
+      ? [
+          {
+            crossOrigin: "anonymous",
+            src: "//unpkg.com/react-scan/dist/auto.global.js",
+          },
+        ]
+      : [],
     meta: [
       {
         charSet: "utf-8",

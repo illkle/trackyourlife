@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
 import { Spinner } from "@shad/components/spinner";
 import { cn } from "@shad/lib/utils";
 import { Link } from "@tanstack/react-router";
@@ -29,15 +29,16 @@ const EmptyList = () => {
 };
 
 const TrackablesList = ({ daysToShow, archived }: { daysToShow: number; archived: boolean }) => {
-  const now = new Date();
-  const lastDay = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
-  const firstDay = subDays(lastDay, daysToShow - 1).getTime();
+  const range = useMemo(() => {
+    const lastDay = new Date();
+    return {
+      firstDay: subDays(lastDay, daysToShow - 1),
+      lastDay,
+    };
+  }, [daysToShow]);
 
   const q = useTrackablesList({
-    withData: {
-      firstDay,
-      lastDay,
-    },
+    withData: range,
     showArchived: archived,
   });
 
@@ -65,7 +66,7 @@ const TrackablesList = ({ daysToShow, archived }: { daysToShow: number; archived
     }));
     return {
       trackable: v,
-      data: mapDataToRange(firstDay, lastDay, dataRecords),
+      data: mapDataToRange(range.firstDay, range.lastDay, dataRecords),
     };
   });
 
@@ -79,7 +80,7 @@ const TrackablesList = ({ daysToShow, archived }: { daysToShow: number; archived
               layout
               layoutId={trackable.id}
               key={trackable.id}
-              className="border-b border-border pb-4 last:border-0"
+              className="border-b border-border pb-4 last:border-0 last:pb-0"
             >
               <TrackableProvider trackable={trackable}>
                 <MiniTrackable data={data} trackable={trackable} />
@@ -93,15 +94,16 @@ const TrackablesList = ({ daysToShow, archived }: { daysToShow: number; archived
 };
 
 export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
-  const now = new Date();
-  const lastDay = Date.UTC(now.getFullYear(), now.getMonth(), now.getDate());
-  const firstDay = subDays(lastDay, daysToShow).getTime();
+  const range = useMemo(() => {
+    const lastDay = new Date();
+    return {
+      firstDay: subDays(lastDay, daysToShow),
+      lastDay,
+    };
+  }, [daysToShow]);
 
   const q = useTrackablesList({
-    withData: {
-      firstDay,
-      lastDay,
-    },
+    withData: range,
   });
 
   if (q.isLoading) {
@@ -130,7 +132,7 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
     }));
     return {
       trackable: v,
-      data: mapDataToRange(firstDay, lastDay, dataRecords, "desc"),
+      data: mapDataToRange(range.firstDay, range.lastDay, dataRecords, "desc"),
     };
   });
 

@@ -17,15 +17,19 @@ const dateToSQLiteString = (date: Date | number): string => {
   return format(date, "yyyy-MM-dd'T'HH:mm:ss.SSS");
 };
 
+// Time from dates is ignored. Values from start of firstDay to end of lastDay are included.
 interface TrackableRangeParams {
-  firstDay: number;
-  lastDay: number;
+  firstDay: Date;
+  lastDay: Date;
 }
 
 export const useTrackablesList = ({
   withData,
   showArchived,
-}: { withData?: TrackableRangeParams; showArchived?: boolean } = {}) => {
+}: {
+  withData?: TrackableRangeParams;
+  showArchived?: boolean;
+} = {}) => {
   const { db } = usePowersyncDrizzle();
 
   const trackablesQuery = useMemo(
@@ -73,8 +77,11 @@ export const useTrackablesList = ({
             data: withData
               ? {
                   where: and(
-                    gte(trackable_record.timestamp, dateToSQLiteString(withData.firstDay)),
-                    lte(trackable_record.timestamp, dateToSQLiteString(withData.lastDay)),
+                    gte(
+                      trackable_record.timestamp,
+                      dateToSQLiteString(startOfDay(withData.firstDay)),
+                    ),
+                    lte(trackable_record.timestamp, dateToSQLiteString(endOfDay(withData.lastDay))),
                   ),
                   orderBy: [asc(trackable_record.timestamp)],
                 }
@@ -89,8 +96,8 @@ export const useTrackablesList = ({
 };
 
 interface TrackableRangeParams {
-  firstDay: number;
-  lastDay: number;
+  firstDay: Date;
+  lastDay: Date;
 }
 
 export const useTrackable = ({ id }: { id: string }) => {
