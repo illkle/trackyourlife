@@ -1,10 +1,7 @@
 import { Text, View } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { useLocalSearchParams } from "expo-router";
-import { styled } from "nativewind";
 import { useTrackable } from "@tyl/helpers/data/dbHooks";
-
-const KASV = styled(KeyboardAwareScrollView, { className: "style" });
+import { DefaultWrapper } from "@/lib/styledComponents";
 
 const TrackableView = () => {
   const { id } = useLocalSearchParams();
@@ -19,8 +16,8 @@ const TrackableView = () => {
 
 export default function HomeScreen() {
   return (
-    <KASV className="bg-background px-4">
+    <DefaultWrapper>
       <TrackableView />
-    </KASV>
+    </DefaultWrapper>
   );
 }

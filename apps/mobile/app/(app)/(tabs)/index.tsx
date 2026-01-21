@@ -5,7 +5,7 @@ export default function HomeScreen() {
   return (
     <DefaultWrapper>
       <View className="h-100 flex-1 items-center justify-center bg-red-500">
-        <Text>Hello</Text>
+        <Text className="bg-blue-400">Hello</Text>
       </View>
       <View className="h-100 flex-1 items-center justify-center bg-yellow-500">
         <Text>Hello</Text>

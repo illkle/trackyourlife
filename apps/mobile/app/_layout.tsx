@@ -5,17 +5,21 @@ import { StatusBar } from "expo-status-bar";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 
 import "react-native-reanimated";
-import "@/style/global.css";
+import "../global.css";
 
 import { KeyboardProvider } from "react-native-keyboard-controller";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaListener, SafeAreaProvider } from "react-native-safe-area-context";
 import { SplashScreenController } from "@/components/splash";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 import { AuthClientProvider, useAuthClient } from "@/lib/authClient";
 import { PortalHost } from "@rn-primitives/portal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ServerURLProvider, useServerURL } from "@/lib/ServerURLContext";
+import { Uniwind } from "uniwind";
+
 import * as SplashScreen from "expo-splash-screen";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -31,18 +35,28 @@ export default function RootLayout() {
   return (
     <ServerURLProvider>
       <AuthClientProvider>
-        <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-          <QueryClientProvider client={qc}>
-            <SafeAreaProvider>
-              <KeyboardProvider>
-                <RootNavigator />
-                <SplashScreenController />
-                <StatusBar style="auto" />
-                <PortalHost />
-              </KeyboardProvider>
-            </SafeAreaProvider>
-          </QueryClientProvider>
-        </ThemeProvider>
+        <GestureHandlerRootView>
+          <BottomSheetModalProvider>
+            <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+              <QueryClientProvider client={qc}>
+                <SafeAreaProvider>
+                  <SafeAreaListener
+                    onChange={({ insets }) => {
+                      Uniwind.updateInsets(insets);
+                    }}
+                  >
+                    <KeyboardProvider>
+                      <RootNavigator />
+                      <SplashScreenController />
+                      <StatusBar style="auto" />
+                      <PortalHost />
+                    </KeyboardProvider>
+                  </SafeAreaListener>
+                </SafeAreaProvider>
+              </QueryClientProvider>
+            </ThemeProvider>
+          </BottomSheetModalProvider>
+        </GestureHandlerRootView>
       </AuthClientProvider>
     </ServerURLProvider>
   );

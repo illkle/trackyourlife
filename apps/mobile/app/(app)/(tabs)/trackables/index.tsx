@@ -1,12 +1,10 @@
 import { Text, View } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { Link } from "expo-router";
-import { styled } from "nativewind";
 import { useTrackablesList } from "@tyl/helpers/data/dbHooks";
 import { CellBoolean } from "@/components/cells/Boolean";
 import { useState } from "react";
-
-const KASV = styled(KeyboardAwareScrollView, { className: "style" });
+import { DefaultWrapper } from "@/lib/styledComponents";
+import { CellNumber } from "@/components/cells/Number";
 
 const TrackableList = () => {
   const { data } = useTrackablesList();
@@ -24,6 +22,7 @@ const TrackableList = () => {
 
 const TestingComponent = () => {
   const [value, setValue] = useState(false);
+  const [numberValue, setNumberValue] = useState(0);
 
   return (
     <View>
@@ -35,16 +34,18 @@ const TestingComponent = () => {
         themeInactiveLight="blue"
         themeInactiveDark="blue"
       />
+
+      <CellNumber value={numberValue} onChange={setNumberValue} />
     </View>
   );
 };
 
 export default function HomeScreen() {
   return (
-    <KASV className="bg-background px-4">
+    <DefaultWrapper>
       <TestingComponent />
 
       <TrackableList />
-    </KASV>
+    </DefaultWrapper>
   );
 }
