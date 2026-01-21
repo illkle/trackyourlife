@@ -1,12 +1,12 @@
-import { SplashScreen } from "expo-router";
-import { authClient } from "@/lib/authClient";
+import * as SplashScreen from "expo-splash-screen";
 
-SplashScreen.preventAutoHideAsync();
+import { useAuthClient } from "@/lib/authClient";
 
 export function SplashScreenController() {
+  const { authClient, serverURL } = useAuthClient();
   const { isPending } = authClient.useSession();
 
-  if (!isPending) {
+  if (!isPending || !serverURL) {
     SplashScreen.hide();
   }
 

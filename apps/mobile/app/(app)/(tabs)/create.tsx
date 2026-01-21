@@ -1,8 +1,9 @@
+import { DefaultWrapper } from "@/lib/styledComponents";
 import { Text, View } from "react-native";
 
 export default function TabTwoScreen() {
   return (
-    <View className="pt-safe bg-background">
+    <DefaultWrapper>
       <View>
         <Text className="text-test">Access as a theme value</Text>
         <Text className="text-[--color-rgb]">Or the variable directly</Text>
@@ -13,6 +14,6 @@ export default function TabTwoScreen() {
           <Text className="text-[--color-rgb]">I am now blue!</Text>
         </View>
       </View>
-    </View>
+    </DefaultWrapper>
   );
 }

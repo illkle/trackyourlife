@@ -1,14 +1,18 @@
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
-import { Button } from "@/components/ui/button";
-import { setupPowerSync } from "@/db/powersync";
-import { styled } from "nativewind";
-
-const KASV = styled(KeyboardAwareScrollView, { className: "style" });
+import { View, Text } from "react-native";
+import { DefaultWrapper } from "@/lib/styledComponents";
 
 export default function HomeScreen() {
   return (
-    <KASV className="bg-background px-4">
-      <Button text="setup" onPress={() => void setupPowerSync()}></Button>
-    </KASV>
+    <DefaultWrapper>
+      <View className="h-100 flex-1 items-center justify-center bg-red-500">
+        <Text>Hello</Text>
+      </View>
+      <View className="h-100 flex-1 items-center justify-center bg-yellow-500">
+        <Text>Hello</Text>
+      </View>
+      <View className="h-100 flex-1 items-center justify-center bg-blue-500">
+        <Text>Hello</Text>
+      </View>
+    </DefaultWrapper>
   );
 }

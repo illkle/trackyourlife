@@ -3,17 +3,21 @@ import { View } from "react-native";
 import { MutationError } from "@/components/form/mutationError";
 import { FormTextField } from "@/components/form/textField";
 import { Button } from "@/components/ui/button";
+import { Text } from "react-native";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { authClient } from "@/lib/authClient";
+import { useAuthClient } from "@/lib/authClient";
 import { createFormHookContexts, useForm } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 
 import { EmailValidator, NameValidator, PasswordValidator } from "@tyl/helpers/validators";
+import { useServerURL } from "@/lib/ServerURLContext";
 
 export const { fieldContext, formContext, useFieldContext } = createFormHookContexts();
 
 const Login = () => {
+  const { authClient } = useAuthClient();
+  const { powersyncURL, serverURL } = useServerURL();
   const form = useForm({
     defaultValues: {
       email: "",
@@ -39,6 +43,8 @@ const Login = () => {
 
   return (
     <View className="flex flex-col">
+      <Text className="text-primary">Server URL: {serverURL}</Text>
+      <Text className="text-primary">Powersync URL: {powersyncURL}</Text>
       <form.Field
         name="email"
         children={(field) => (
@@ -69,6 +75,7 @@ const Login = () => {
 };
 
 const Register = () => {
+  const { authClient } = useAuthClient();
   const mutation = useMutation({
     mutationFn: async (v: typeof form.state.values) => {
       await authClient.signUp.email(v, {

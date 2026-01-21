@@ -1,82 +1,58 @@
 import type { CSSProperties, MouseEvent } from "react";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { cn } from "@shad/lib/utils";
-
-import { clamp } from "@tyl/helpers";
 
 import {
   DayCellBaseClasses,
   DayCellBaseClassesFocus,
+  IDayCellLabelType,
   LabelInside,
   useDayCellContext,
 } from "~/components/DayCell";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
-export const DayCellBoolean = () => {
-  const { id } = useTrackableMeta();
-
-  const { labelType, onChange, values } = useDayCellContext();
-  const { value, recordId } = values[0] ?? {};
-
-  const { lightMode: themeActiveLight, darkMode: themeActiveDark } = useTrackableFlag(
-    id,
-    "BooleanCheckedColor",
-  );
-  const { lightMode: themeInactiveLight, darkMode: themeInactiveDark } = useTrackableFlag(
-    id,
-    "BooleanUncheckedColor",
-  );
-
-  // Even though we're not using any values from context it's useful to check whether it's provided
-
-  const isActive = value === "true";
-
+const BooleanUI = ({
+  value,
+  onChange,
+  themeActiveLight,
+  themeActiveDark,
+  themeInactiveLight,
+  themeInactiveDark,
+  labelType = "auto",
+}: {
+  value: boolean;
+  onChange: (value: boolean) => void;
+  themeActiveLight: string;
+  themeActiveDark: string;
+  themeInactiveLight: string;
+  themeInactiveDark: string;
+  labelType?: IDayCellLabelType;
+}) => {
   const mainRef = useRef<HTMLButtonElement>(null);
   // Point where click happened in % relative to button box. Used for animation
-  const [_, setClickPoint] = useState([50, 50]);
-  // Ration between width and height of the box.
-  const [_whRatio, setWhRatio] = useState(1);
 
   const handleClick = async (e: MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (mainRef.current) {
-      const t = mainRef.current;
-      const rect = t.getBoundingClientRect();
-      if (e.clientX === 0 && e.clientY === 0) {
-        // keyboard click
-        setClickPoint([50, 50]);
-      } else {
-        const x = clamp((e.clientX - rect.left) / rect.width, 0, 1);
-        const y = clamp((e.clientY - rect.top) / rect.height, 0, 1);
-        setClickPoint([x * 100, y * 100]);
-      }
-      setWhRatio(rect.height / rect.width);
-    } else {
-      console.warn("DayCellBoolean animation error");
-    }
-
-    const newVal = isActive ? "false" : "true";
-
-    await onChange({ value: newVal, recordId });
+    await onChange(!value);
   };
 
   return (
     <>
       <button
         data-boolean-cell
-        data-value={isActive}
+        data-value={value}
         ref={mainRef}
         tabIndex={0}
         className={cn(
           DayCellBaseClasses,
           DayCellBaseClassesFocus,
-          isActive
+          value
             ? "border-(--themeActiveLight) hover:border-(--themeInactiveLight) dark:border-(--themeActiveDark) dark:hover:border-(--themeInactiveDark)"
             : "border-(--themeInactiveLight) hover:border-(--themeActiveLight) dark:border-(--themeInactiveDark) dark:hover:border-(--themeActiveDark)",
-          isActive
+          value
             ? "bg-(--themeActiveLight) dark:bg-(--themeActiveDark)"
             : "bg-(--themeInactiveLight) dark:bg-(--themeInactiveDark)",
         )}
@@ -93,5 +69,33 @@ export const DayCellBoolean = () => {
         {labelType === "auto" && <LabelInside />}
       </button>
     </>
+  );
+};
+
+export const DayCellBoolean = () => {
+  const { id } = useTrackableMeta();
+
+  const { labelType, onChange, values } = useDayCellContext();
+  const { value, recordId } = values[0] ?? {};
+
+  const { lightMode: themeActiveLight, darkMode: themeActiveDark } = useTrackableFlag(
+    id,
+    "BooleanCheckedColor",
+  );
+  const { lightMode: themeInactiveLight, darkMode: themeInactiveDark } = useTrackableFlag(
+    id,
+    "BooleanUncheckedColor",
+  );
+
+  return (
+    <BooleanUI
+      value={value === "true"}
+      onChange={(v) => void onChange({ value: v ? "true" : "false", recordId })}
+      themeActiveLight={themeActiveLight}
+      themeActiveDark={themeActiveDark}
+      themeInactiveLight={themeInactiveLight}
+      themeInactiveDark={themeInactiveDark}
+      labelType={labelType}
+    />
   );
 };

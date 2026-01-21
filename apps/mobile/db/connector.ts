@@ -1,50 +1,66 @@
-import { authClient } from "@/lib/authClient";
-import {
-  AbstractPowerSyncDatabase,
-  PowerSyncBackendConnector,
-  UpdateType,
-} from "@powersync/react-native";
+import { AuthClient } from "@/lib/authClient";
+import { AbstractPowerSyncDatabase, PowerSyncBackendConnector } from "@powersync/react-native";
+import { SyncEntry } from "@tyl/db/server/powersync-apply";
 
 export class Connector implements PowerSyncBackendConnector {
+  private powersyncURL: string;
+  private authClient: AuthClient;
+  private serverURL: string;
+
+  constructor({
+    powersyncURL,
+    serverURL,
+    authClient,
+  }: {
+    powersyncURL: string;
+    serverURL: string;
+    authClient: AuthClient;
+  }) {
+    this.serverURL = serverURL;
+    this.powersyncURL = powersyncURL;
+    this.authClient = authClient;
+  }
+
   async fetchCredentials() {
-    const { data, error } = await authClient.token();
+    const { data, error } = await this.authClient.token();
     if (error) {
       throw new Error("no auth");
     }
     const jwtToken = data.token;
 
     return {
-      endpoint: "https://tyl-dev.illkle.com/powersync",
+      endpoint: this.powersyncURL,
       token: jwtToken,
     };
   }
 
-  // TODO
   async uploadData(database: AbstractPowerSyncDatabase) {
-    // batched crud transactions, use data.getCrudBatch(n);
-    const transaction = await database.getNextCrudTransaction();
+    const transaction = await database.getCrudBatch(25);
 
     if (!transaction) {
       return;
     }
 
-    for (const op of transaction.crud) {
-      // The data that needs to be changed in the remote db
-      const _record = { ...op.opData, id: op.id };
-      switch (op.op) {
-        case UpdateType.PUT:
-          // TODO: Instruct your backend API to CREATE a record
-          break;
-        case UpdateType.PATCH:
-          // TODO: Instruct your backend API to PATCH a record
-          break;
-        case UpdateType.DELETE:
-          //TODO: Instruct your backend API to DELETE a record
-          break;
-      }
-    }
+    const mapped = transaction.crud.map(
+      (op) =>
+        ({
+          op: op.op,
+          opData: op.opData,
+          table: op.table,
+          id: op.id,
+        }) satisfies SyncEntry,
+    );
 
-    // Completes the transaction and moves onto the next one
+    console.log("UPLOAD DATA", mapped);
+
+    await fetch(`${this.serverURL}/api/powersync/syncbatch`, {
+      method: "POST",
+      body: JSON.stringify(mapped),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
     await transaction.complete();
   }
 }

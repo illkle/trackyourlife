@@ -28,8 +28,6 @@ export class Connector implements PowerSyncBackendConnector {
       return;
     }
 
-    console.log(transaction);
-
     const mapped = transaction.crud.map(
       (op) =>
         ({
