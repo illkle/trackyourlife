@@ -1,4 +1,3 @@
-import { Spinner } from "@shad/components/spinner";
 import { formatDate, isSameDay, isToday } from "date-fns";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
@@ -17,24 +16,15 @@ import { NumberPopupEditor } from "~/components/PopupEditor/NumberPopup";
 import { TextPopupEditor } from "~/components/PopupEditor/TextPopup";
 import { QueryError } from "~/components/QueryError";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
-import TrackableProvider, {
-  useTrackableMeta,
-} from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
-export const PopupEditor = ({ date, trackableId }: { date: Date; trackableId: string }) => {
-  const q = useTrackableDay({ date, trackableId });
+export const PopupEditor = ({ date }: { date: Date }) => {
+  const { id, type } = useTrackableMeta();
+  const q = useTrackableDay({ date, trackableId: id });
 
   const {
     data: [trackable],
   } = q;
-
-  if (q.isLoading) {
-    return (
-      <div className="flex justify-center py-8">
-        <Spinner />
-      </div>
-    );
-  }
 
   if (q.error) {
     return <QueryError error={q.error} onRetry={q.refresh} />;
@@ -42,16 +32,14 @@ export const PopupEditor = ({ date, trackableId }: { date: Date; trackableId: st
 
   const onChange = useRecordUpdateHandler({
     date,
-    trackableId,
+    trackableId: id,
     type: trackable?.type ?? "",
   });
 
   const onDelete = useRecordDeleteHandler();
 
-  if (!trackable) return null;
-
   // Convert TrackableRecordRow[] to DataRecord[] by converting ISO string dates to timestamps
-  const dataRecords = trackable.data.map((record) => ({
+  const dataRecords = (trackable?.data ?? []).map((record) => ({
     id: record.id,
     value: record.value,
     timestamp: new Date(record.timestamp).getTime(),
@@ -60,21 +48,13 @@ export const PopupEditor = ({ date, trackableId }: { date: Date; trackableId: st
 
   const mapped = mapDataToRange(date, date, dataRecords);
 
-  if (mapped.length !== 1) {
-    throw new Error("Error, mapDataToRange popup editor returned zero, or multiple days");
-  }
-
-  const mapDay = mapped[0];
-
-  if (!mapDay) {
-    throw new Error("Error, mapDataToRange returned invalid value");
-  }
+  const mapDay = mapped[0] ?? { values: [], timestamp: new Date(1970, 0, 1), disabled: true };
 
   return (
-    <TrackableProvider trackable={trackable}>
+    <>
       <EditorTitle date={date} />
-      <EditorFactory type={trackable.type} data={mapDay} onChange={onChange} onDelete={onDelete} />
-    </TrackableProvider>
+      <EditorFactory type={type} data={mapDay} onChange={onChange} onDelete={onDelete} />
+    </>
   );
 };
 

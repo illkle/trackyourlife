@@ -11,6 +11,8 @@ import { useOnClickOutside } from "usehooks-ts";
 import { useSidebar } from "~/@shad/components/sidebar";
 import { PopupEditor } from "~/components/PopupEditor";
 import { useIsMobile } from "~/utils/useIsDesktop";
+import { DbTrackableSelect } from "@tyl/db/client/schema-powersync";
+import TrackableProvider from "~/components/Trackable/TrackableProviders/TrackableProvider";
 
 /**
  * I much prefer the composition style modals where content is declared inside component that opens the modal
@@ -27,7 +29,7 @@ import { useIsMobile } from "~/utils/useIsDesktop";
  */
 
 interface EditorModalRegisterInput {
-  trackableId: string;
+  trackable: Omit<DbTrackableSelect, "user_id">;
   date: Date;
 }
 
@@ -51,9 +53,9 @@ export const useAmIOpenInStore = (me: EditorModalRegisterInput) => {
         return;
       }
 
-      const { date, trackableId } = v.currentVal.data ?? {};
+      const { date, trackable: trackableId } = v.currentVal.data ?? {};
 
-      const isMe = date && trackableId ? me.trackableId === trackableId && me.date === date : false;
+      const isMe = date && trackableId ? me.trackable === trackableId && me.date === date : false;
 
       setIsOpen(isMe);
     };
@@ -63,7 +65,7 @@ export const useAmIOpenInStore = (me: EditorModalRegisterInput) => {
     return () => {
       editorModalStore.listeners.delete(listener);
     };
-  }, [me.date, me.trackableId]);
+  }, [me.date, me.trackable]);
 
   return isOpen;
 };
@@ -100,7 +102,7 @@ export const editorModalPreviousDay = () => {
     ...state,
     data: state.data
       ? {
-          trackableId: state.data.trackableId,
+          trackable: state.data.trackable,
           date: subDays(state.data.date, 1),
         }
       : null,
@@ -112,7 +114,7 @@ export const editorModalNextDay = () => {
     ...state,
     data: state.data
       ? {
-          trackableId: state.data.trackableId,
+          trackable: state.data.trackable,
           date: addDays(state.data.date, 1),
         }
       : null,
@@ -181,11 +183,12 @@ export const EditorModalV2 = () => {
         <AnimatePresence>
           {dayData && (
             <m.div exit={{ opacity: 0 }} className="flex max-h-[200px] flex-col">
-              <PopupEditor
-                date={dayData.date}
-                trackableId={dayData.trackableId}
-                key={dayData.date.toISOString() + dayData.trackableId}
-              />
+              <TrackableProvider trackable={dayData.trackable}>
+                <PopupEditor
+                  date={dayData.date}
+                  key={dayData.date.toISOString() + dayData.trackable}
+                />
+              </TrackableProvider>
             </m.div>
           )}
         </AnimatePresence>
@@ -271,7 +274,7 @@ export const MiniDrawer = React.forwardRef<
           "left-1/2 z-50",
           "data-[state=closed]:translate-y-full data-[state=closed]:opacity-0",
           "data-[state=collapsed]:translate-y-[calc(100%-24px)]",
-          "fixed bottom-[var(--bottom-position)] translate-y-[100vh]",
+          "fixed bottom-(--bottom-position) translate-y-[100vh]",
           "data-[sidebar-offset=false]:-translate-x-1/2 data-[sidebar-offset=true]:translate-x-[calc(-50%+var(--sidebar-offset,0px)/2)]",
           "transition-all duration-350",
           "data-[hidden=true]:pointer-events-none data-[hidden=true]:opacity-0",
