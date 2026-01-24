@@ -33,7 +33,7 @@
         "^build"
       ],
       "outputs": [
-        "node_modules/.cache/tsbuildinfo.json"
+        "**/*.tsbuildinfo"
       ]
     },
     "clean": {
@@ -48,11 +48,9 @@
       "persistent": true
     },
     "generate": {
-      "cache": false,
-      "persistent": true
+      "cache": false
     },
     "test": {
-      "persistent": true,
       "cache": false
     }
   },
