@@ -12,10 +12,10 @@ import DayCellRouter from "~/components/DayCell";
 import { QueryError } from "~/components/QueryError";
 import { TrackableNameText } from "~/components/Trackable/TrackableName";
 import { TrackableFlagsProviderExternal } from "@tyl/helpers/data/TrackableFlagsProvider";
-import TrackableProvider from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import MiniTrackable from "./miniTrackable";
 import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
 import { TrackableGroupsProvider } from "@tyl/helpers/data/TrackableGroupsProvider";
+import { TrackableMetaProvider } from "@tyl/helpers/data/TrackableMetaProvider";
 
 const EmptyList = () => {
   return (
@@ -73,9 +73,9 @@ const TrackablesList = ({ daysToShow, archived }: { daysToShow: number; archived
                   key={trackable.id}
                   className="border-b border-border pb-4 last:border-0 last:pb-0"
                 >
-                  <TrackableProvider trackable={trackable}>
+                  <TrackableMetaProvider trackable={trackable}>
                     <MiniTrackable firstDay={range.firstDay} lastDay={range.lastDay} />
-                  </TrackableProvider>
+                  </TrackableMetaProvider>
                 </m.div>
               ))}
             </TrackableFlagsProviderExternal>
@@ -147,7 +147,7 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
                       {q.data.map((trackable) => {
                         return (
                           <div className="" key={trackable.id}>
-                            <TrackableProvider trackable={trackable}>
+                            <TrackableMetaProvider trackable={trackable}>
                               <Link
                                 to={"/app/trackables/$id/view"}
                                 params={{ id: trackable.id }}
@@ -159,7 +159,7 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
                               </Link>
 
                               <DayCellRouter timestamp={date} labelType="none" className="h-20" />
-                            </TrackableProvider>
+                            </TrackableMetaProvider>
                           </div>
                         );
                       })}

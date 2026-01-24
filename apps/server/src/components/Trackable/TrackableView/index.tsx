@@ -20,7 +20,7 @@ import { Button } from "~/@shad/components/button";
 import DayCellRouter from "~/components/DayCell";
 import { QueryError } from "~/components/QueryError";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
-import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { ViewController } from "~/components/Trackable/TrackableView/viewController";
 import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
 import { useMemo } from "react";

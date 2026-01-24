@@ -12,7 +12,7 @@ import { useSidebar } from "~/@shad/components/sidebar";
 import { PopupEditor } from "~/components/PopupEditor";
 import { useIsMobile } from "~/utils/useIsDesktop";
 import { DbTrackableSelect } from "@tyl/db/client/schema-powersync";
-import TrackableProvider from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { TrackableMetaProvider } from "@tyl/helpers/data/TrackableMetaProvider";
 
 /**
  * I much prefer the composition style modals where content is declared inside component that opens the modal
@@ -183,12 +183,12 @@ export const EditorModalV2 = () => {
         <AnimatePresence>
           {dayData && (
             <m.div exit={{ opacity: 0 }} className="flex max-h-[200px] flex-col">
-              <TrackableProvider trackable={dayData.trackable}>
+              <TrackableMetaProvider trackable={dayData.trackable}>
                 <PopupEditor
                   date={dayData.date}
                   key={dayData.date.toISOString() + dayData.trackable}
                 />
-              </TrackableProvider>
+              </TrackableMetaProvider>
             </m.div>
           )}
         </AnimatePresence>

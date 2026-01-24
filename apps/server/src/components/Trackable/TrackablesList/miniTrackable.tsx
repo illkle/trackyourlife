@@ -6,7 +6,7 @@ import DayCellRouter from "~/components/DayCell";
 import { FavoriteButton } from "~/components/Trackable/FavoriteButton";
 import { TrackableNameText } from "~/components/Trackable/TrackableName";
 import { useMemo } from "react";
-import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 
 const MiniTrackable = ({
   className,

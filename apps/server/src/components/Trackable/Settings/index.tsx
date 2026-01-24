@@ -8,7 +8,7 @@ import NumberColorSelector from "~/components/Inputs/Colors/numberColorSelector"
 import DatePicker from "~/components/Inputs/DatePicker";
 import { SettingsTitle } from "~/components/Trackable/Settings/settingsTitle";
 import { useSetTrackableFlag, useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
-import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import NumberLimitsSelector from "./numberLimitsSelector";
 
 export const SettingsCommon = () => {

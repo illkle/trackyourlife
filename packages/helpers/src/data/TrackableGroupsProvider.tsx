@@ -1,27 +1,18 @@
 import { DbTrackableGroupSelect } from "@tyl/db/client/schema-powersync";
-import { createContext, ReactNode, useContext, useId, useLayoutEffect, useMemo } from "react";
-import { Store, useStore } from "@tanstack/react-store";
+import type { ReactNode } from "react";
+import { useMemo, useRef } from "react";
+import { createContext, useContextSelector } from "@fluentui/react-context-selector";
 
 export type ITrackableGroupsContext = Record<string, boolean>;
 
-const DataCache = new Store<Record<string, ITrackableGroupsContext>>({});
-
-const IdContext = createContext<string | null>(null);
+const GroupStorageContext = createContext<ITrackableGroupsContext | null>(null);
 
 const makeKey = (trackableId: string, group: string) => `${trackableId}-${group}`;
 
 export const useIsTrackableInGroup = (trackableId: string, group: string) => {
-  const id = useContext(IdContext);
-
-  if (!id) {
-    throw new Error("useIsTrackableInGroup: idContext not found");
-  }
-
   const key = useMemo(() => makeKey(trackableId, group), [trackableId, group]);
-
-  const data = useStore(DataCache, (state) => state?.[id]?.[key] ?? false, {});
-
-  return data;
+  const data = useContextSelector(GroupStorageContext, (state) => state?.[key]);
+  return data ?? false;
 };
 
 type DataProviderProps =
@@ -33,27 +24,35 @@ type DataProviderProps =
   | {
       children: ReactNode;
       groupsSelect?: never;
-      trackablesSelect: { groups: DbTrackableGroupSelect[] }[];
+      trackablesSelect: { id: string; groups: DbTrackableGroupSelect[] }[];
     };
 export const TrackableGroupsProvider = ({
   children,
   groupsSelect,
   trackablesSelect,
 }: DataProviderProps) => {
-  const id = useId();
+  const parsedCacheRef = useRef<ITrackableGroupsContext>({});
+  const groupStorage = useMemo(() => {
+    const nextCache: ITrackableGroupsContext = {};
+    const prevCache = parsedCacheRef.current;
 
-  useLayoutEffect(() => {
-    const remapped = groupsSelect ? groupsSelect : trackablesSelect?.map((t) => t.groups).flat();
+    if (groupsSelect) {
+      groupsSelect.forEach((group) => {
+        const key = makeKey(group.trackable_id, group.group);
+        nextCache[key] = prevCache[key] ?? true;
+      });
+    } else if (trackablesSelect) {
+      trackablesSelect.forEach((trackable) => {
+        trackable.groups.forEach((group) => {
+          const key = makeKey(trackable.id, group.group);
+          nextCache[key] = prevCache[key] ?? true;
+        });
+      });
+    }
 
-    DataCache.setState((state) => {
-      const dd = remapped.reduce((acc, group) => {
-        acc[makeKey(group.trackable_id, group.group)] = true;
-        return acc;
-      }, {} as ITrackableGroupsContext);
+    parsedCacheRef.current = nextCache;
+    return nextCache;
+  }, [groupsSelect, trackablesSelect]);
 
-      return { ...state, [id]: dd };
-    });
-  }, [id, groupsSelect, trackablesSelect]);
-
-  return <IdContext.Provider value={id}>{children}</IdContext.Provider>;
+  return <GroupStorageContext.Provider value={groupStorage}>{children}</GroupStorageContext.Provider>;
 };

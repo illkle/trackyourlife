@@ -2,7 +2,7 @@ import { cn } from "@shad/lib/utils";
 
 import { DayCellBaseClasses, IDayCellProps, LabelInside } from "~/components/DayCell";
 import { openDayEditor, useAmIOpenInStore } from "~/components/Modal/EditorModalV2";
-import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 
 export const DayCellTextPopup = (props: IDayCellProps) => {
   const { id, name, type } = useTrackableMeta();

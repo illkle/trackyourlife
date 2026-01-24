@@ -13,7 +13,7 @@ import {
 } from "~/components/DayCell";
 import { openDayEditor } from "~/components/Modal/EditorModalV2";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
-import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useLinkedValue } from "~/utils/useDbLinkedValue";
 import { useIsMobile } from "~/utils/useIsDesktop";
 

@@ -7,7 +7,7 @@ type ITrackableContext = Pick<DbTrackableSelect, "id" | "type" | "name">;
 
 export const TrackableContext = createContext<ITrackableContext | null>(null);
 
-const TrackableProvider = memo(
+export const TrackableMetaProvider = memo(
   ({
     trackable,
     children,
@@ -44,5 +44,3 @@ export const useTrackableMeta = () => {
   }
   return context;
 };
-
-export default TrackableProvider;

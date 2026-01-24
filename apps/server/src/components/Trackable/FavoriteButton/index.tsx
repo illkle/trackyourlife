@@ -5,7 +5,7 @@ import { buttonVariants } from "~/@shad/components/button";
 import { Button } from "~/@shad/components/button";
 import { useGroupHandlers } from "@tyl/helpers/data/dbHooks";
 import { VariantProps } from "class-variance-authority";
-import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useIsTrackableInGroup } from "@tyl/helpers/data/TrackableGroupsProvider";
 
 export const FavoriteButton = ({

@@ -4,7 +4,7 @@ import { format, isAfter, isBefore, isSameDay } from "date-fns";
 
 import { DayCellTextPopup } from "~/components/DayCell/DayCellTextPopup";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
-import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useRecordDeleteHandler, useRecordUpdateHandler } from "@tyl/helpers/data/dbHooks";
 import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";

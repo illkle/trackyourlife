@@ -9,7 +9,7 @@ import {
 } from "~/@shad/components/dialog";
 import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "~/@shad/components/drawer";
 import { Input } from "~/@shad/components/input";
-import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 import { useTrackableHandlers } from "@tyl/helpers/data/dbHooks";
 import { Button } from "~/@shad/components/button";

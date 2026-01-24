@@ -6,5 +6,5 @@
     "functions": ["clsx", "cn"],
     "preserveDuplicates": false,
     "preserveWhitespace": false,
-  },
+  }
 }

@@ -14,7 +14,7 @@ import { NumberPopupEditor } from "~/components/PopupEditor/NumberPopup";
 import { TextPopupEditor } from "~/components/PopupEditor/TextPopup";
 import { QueryError } from "~/components/QueryError";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
-import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 
 export const PopupEditor = ({ date }: { date: Date }) => {
   const { id, type } = useTrackableMeta();

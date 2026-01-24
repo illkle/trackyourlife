@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { usePowersyncDrizzle } from "@tyl/db/client/context";
@@ -23,11 +23,6 @@ import { createContext, useContextSelector } from "@fluentui/react-context-selec
  * I think it can be optimized further by caching some calculations that are the same in each daycell
  */
 
-/*
-  Note that those functions are not typically used by components themselves.
-  There is a TrackableProvider(nearby file) that wraps getFlag and setFlag and closes over id.
-*/
-
 type GetFlagFunction = <K extends ITrackableFlagKey>(
   trackableId: string,
   key: K,
@@ -47,38 +42,7 @@ interface ITrackableFlagsContext {
 export const TrackableFlagsContext = createContext<ITrackableFlagsContext | null>(null);
 
 type KeyStorage = Record<string, Partial<ITrackableFlagsKV>>;
-
-/*
- * Takes a list of flags and returns an object of flags
- */
-export const createFlagsObject = (flags: readonly DbTrackableFlagsSelect[]) => {
-  const flagMap: KeyStorage = {};
-
-  flags.forEach((flag) => {
-    if (!(flag.key in FlagsValidators)) {
-      return;
-    }
-    const key = flag.key as ITrackableFlagKey;
-    const validator = FlagsValidators[key];
-    // PowerSync stores values as JSON strings, parse them
-    let valueToValidate: unknown;
-    try {
-      valueToValidate = JSON.parse(flag.value as string);
-    } catch {
-      valueToValidate = flag.value;
-    }
-    const parsed = validator.safeParse(valueToValidate);
-    if (parsed.success) {
-      flagMap[flag.trackable_id] ??= {};
-      // @ts-expect-error - parsed.data is correctly typed for key, but TS can't verify
-      flagMap[flag.trackable_id][key] = parsed.data;
-    } else {
-      console.log("parsed failed", parsed.error, valueToValidate);
-    }
-  });
-
-  return flagMap;
-};
+type RawKeyStorage = Record<string, Partial<Record<ITrackableFlagKey, string>>>;
 
 const FlagStorageContext = createContext<KeyStorage | null>(null);
 
@@ -99,11 +63,57 @@ export const TrackableFlagsProviderExternal = ({
   flagsSelect,
   trackablesSelect,
 }: FLagsProviderProps) => {
+  const rawCacheRef = useRef<RawKeyStorage>({});
+  const parsedCacheRef = useRef<KeyStorage>({});
   const flagStorage = useMemo(() => {
-    if (flagsSelect) {
-      return createFlagsObject(flagsSelect);
-    }
-    return createFlagsObject(trackablesSelect!.map((f) => f.flags).flat());
+    const flags = flagsSelect ?? trackablesSelect!.map((f) => f.flags).flat();
+    const nextRawCache: RawKeyStorage = {};
+    const nextParsedCache: KeyStorage = {};
+
+    flags.forEach((flag) => {
+      if (!(flag.key in FlagsValidators)) {
+        return;
+      }
+      const key = flag.key as ITrackableFlagKey;
+      const trackableId = flag.trackable_id;
+      const rawValue =
+        typeof flag.value === "string" ? (flag.value as string) : JSON.stringify(flag.value);
+
+      const prevRawValue = rawCacheRef.current[trackableId]?.[key];
+      const prevParsedValue = parsedCacheRef.current[trackableId]?.[key];
+
+      if (prevRawValue === rawValue && prevParsedValue !== undefined) {
+        nextRawCache[trackableId] ??= {};
+        nextParsedCache[trackableId] ??= {};
+        nextRawCache[trackableId][key] = rawValue;
+        // @ts-expect-error - prevParsedValue is correctly typed for key, but TS can't verify
+        nextParsedCache[trackableId][key] = prevParsedValue;
+        return;
+      }
+
+      const validator = FlagsValidators[key];
+      let valueToValidate: unknown;
+      try {
+        valueToValidate = JSON.parse(rawValue);
+      } catch {
+        valueToValidate = rawValue;
+      }
+      const parsed = validator.safeParse(valueToValidate);
+      if (parsed.success) {
+        nextRawCache[trackableId] ??= {};
+        nextParsedCache[trackableId] ??= {};
+        nextRawCache[trackableId][key] = rawValue;
+        // @ts-expect-error - parsed.data is correctly typed for key, but TS can't verify
+        nextParsedCache[trackableId][key] = parsed.data;
+      } else {
+        console.log("parsed failed", parsed.error, valueToValidate);
+      }
+    });
+
+    rawCacheRef.current = nextRawCache;
+    parsedCacheRef.current = nextParsedCache;
+
+    return nextParsedCache;
   }, [flagsSelect, trackablesSelect]);
 
   return <FlagStorageContext.Provider value={flagStorage}>{children}</FlagStorageContext.Provider>;
@@ -135,9 +145,7 @@ export const useSetTrackableFlag = () => {
       // Note that we are not using validated.data here. This is intentional because we do not want zod .transform() to apply here.
       const r = await db
         .update(trackable_flags)
-        .set({
-          value,
-        })
+        .set({ value })
         .where(
           and(
             eq(trackable_flags.user_id, userID),

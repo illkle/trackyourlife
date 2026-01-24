@@ -37,13 +37,11 @@ import {
   useSetTrackableFlag,
   useTrackableFlag,
 } from "@tyl/helpers/data/TrackableFlagsProvider";
-import TrackableProvider, {
-  useTrackableMeta,
-} from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import {
   TrackableGroupsProvider,
   useIsTrackableInGroup,
 } from "@tyl/helpers/data/TrackableGroupsProvider";
+import { TrackableMetaProvider, useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 
 const paramsSchema = z.object({
   month: z.number().min(0).max(11).or(z.literal("list")).optional().default(new Date().getMonth()),
@@ -84,7 +82,7 @@ const RouteComponent = () => {
   return (
     <TrackableFlagsProviderExternal flagsSelect={trackable.flags}>
       <TrackableGroupsProvider groupsSelect={trackable.groups}>
-        <TrackableProvider trackable={trackable}>
+        <TrackableMetaProvider trackable={trackable}>
           <div className="content-container flex h-full max-h-full w-full flex-col pb-6">
             <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
               <TrackableNameEditable />
@@ -115,7 +113,7 @@ const RouteComponent = () => {
             <hr className="my-4 h-px border-none bg-foreground opacity-10 outline-hidden" />
             <Outlet />
           </div>
-        </TrackableProvider>
+        </TrackableMetaProvider>
       </TrackableGroupsProvider>
     </TrackableFlagsProviderExternal>
   );

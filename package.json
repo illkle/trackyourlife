@@ -12,9 +12,11 @@
     "lint": "oxlint .",
     "lint:fix": "oxlint . --fix",
     "lint:ws": "pnpm dlx sherif@latest",
+    "lint:ws:fix": "pnpm dlx sherif@latest --fix",
     "postinstall": "pnpm lint:ws",
     "test": "turbo run test",
-    "test:ui": "turbo run test -- --ui",
+    "test:e2e": "turbo run test:e2e",
+    "test:e2e:ui": "turbo run test:e2e -- --ui",
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {

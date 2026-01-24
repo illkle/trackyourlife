@@ -9,7 +9,7 @@ import {
   IDayCellProps,
 } from "~/components/DayCell";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
-import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 
 const BooleanUI = ({
   value,

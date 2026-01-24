@@ -8,6 +8,8 @@ catalog:
   "@date-fns/tz": 1.4.1
   "@powersync/common": 1.45.0
   "@powersync/drizzle-driver": 0.7.1
+  "@testing-library/jest-dom": 6.9.1
+  "@testing-library/react": 16.3.2
   "@tailwindcss/postcss": 4.1.17
   "@tailwindcss/vite": 4.1.18
   "@tanstack/react-form": 1.27.7
@@ -19,10 +21,12 @@ catalog:
   dotenv-cli: 11.0.0
   drizzle-kit: 0.31.8
   drizzle-orm: 0.45.1
+  jsdom: 27.4.0
   tailwind-merge: 3.4.0
   tailwindcss: 4.1.18
   typescript: 5.9.3
   uuid: 13.0.0
+  vitest: 4.0.18
   zod: 4.3.5
 
 catalogs:
