@@ -7,7 +7,7 @@ import { ThemeProvider } from "~/components/Providers/next-themes/themes";
 import appCss from "~/styles/app.css?url";
 import { seo } from "~/utils/seo.js";
 
-const IS_STG = false;
+const IS_STG = import.meta.env.VITE_ENABLE_DEVTOOLS === "true";
 
 const iconPrefix = (path: string) => (IS_STG ? `/stg${path}` : path);
 

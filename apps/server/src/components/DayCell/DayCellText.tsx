@@ -1,12 +1,12 @@
 import { useCallback } from "react";
 
 import { Textarea } from "~/@shad/components/textarea";
-import { useDayCellContext } from "~/components/DayCell";
+import { IDayCellProps } from "~/components/DayCell";
 import { useLinkedValue } from "~/utils/useDbLinkedValue";
 
-export const DayCellText = () => {
-  const { values, onChange } = useDayCellContext();
-  const { value, recordId, updatedAt } = values[0] ?? {};
+export const DayCellText = (props: IDayCellProps) => {
+  const { values, onChange } = props.cellData;
+  const { value, id: recordId, updated_at: updatedAt } = values[0] ?? {};
 
   const changeHandler = useCallback(
     (v: string, ts: number) => {

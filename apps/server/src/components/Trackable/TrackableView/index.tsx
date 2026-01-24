@@ -2,6 +2,7 @@ import { Fragment } from "react/jsx-runtime";
 import { Spinner } from "@shad/components/spinner";
 import { cn } from "@shad/lib/utils";
 import {
+  eachDayOfInterval,
   eachMonthOfInterval,
   endOfMonth,
   endOfYear,
@@ -12,9 +13,7 @@ import {
   startOfYear,
 } from "date-fns";
 
-import type { PureDataRecord } from "@tyl/helpers/data/trackables";
 import { useTrackableData } from "@tyl/helpers/data/dbHooks";
-import { mapDataToRange } from "@tyl/helpers/data/trackables";
 
 import type { ITrackableFlagType } from "@tyl/helpers/data/trackableFlags";
 import { Button } from "~/@shad/components/button";
@@ -23,9 +22,22 @@ import { QueryError } from "~/components/QueryError";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import { ViewController } from "~/components/Trackable/TrackableView/viewController";
+import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
+import { useMemo } from "react";
 
-const MonthVisualCalendar = ({ data, mini }: { data: PureDataRecord[]; mini?: boolean }) => {
-  const prefaceWith = data[0] ? getISODay(data[0].timestamp) - 1 : 0;
+const MonthVisualCalendar = ({ dateFirstDay, mini }: { dateFirstDay: Date; mini?: boolean }) => {
+  const prefaceWith = dateFirstDay ? getISODay(dateFirstDay) - 1 : 0;
+
+  const days = useMemo(
+    () =>
+      eachDayOfInterval({
+        start: dateFirstDay,
+        end: endOfMonth(dateFirstDay),
+      }),
+    [dateFirstDay],
+  );
+
+  console.log("monthVisual calendar renders");
 
   return (
     <div
@@ -35,28 +47,40 @@ const MonthVisualCalendar = ({ data, mini }: { data: PureDataRecord[]; mini?: bo
       )}
     >
       <div style={{ gridColumn: `span ${prefaceWith}` }}></div>
-      {data.map((el, i) => {
-        return <DayCellRouter key={i} {...el} labelType={mini ? "outside" : "auto"} />;
+      {days.map((el, i) => {
+        return (
+          <DayCellRouter
+            key={i}
+            timestamp={el}
+            disabled={false} // todo
+            labelType={mini ? "outside" : "auto"}
+          />
+        );
       })}
     </div>
   );
 };
 
-const MonthVisualList = ({ data }: { data: PureDataRecord[] }) => {
+const MonthVisualList = ({ dateFirstDay }: { dateFirstDay: Date }) => {
+  const days = eachDayOfInterval({
+    start: dateFirstDay,
+    end: endOfMonth(dateFirstDay),
+  });
+
   return (
     <div className={cn("grid auto-rows-[64px] grid-cols-[max-content_1fr] gap-3")}>
-      {data.map((el, i) => {
+      {days.map((el, i) => {
         return (
           <Fragment key={i}>
             <h5
               className={cn(
                 "-translate-y-0.5 font-mono text-3xl leading-[100%] font-extralight select-none",
-                isToday(el.timestamp) ? "text-foreground" : "text-muted-foreground/40",
+                isToday(el) ? "text-foreground" : "text-muted-foreground/40",
               )}
             >
-              {format(el.timestamp, "dd")}
+              {format(el, "dd")}
             </h5>
-            <DayCellRouter key={i} {...el} labelType={"none"} />
+            <DayCellRouter key={i} timestamp={el} labelType={"none"} />
           </Fragment>
         );
       })}
@@ -77,8 +101,8 @@ export const MonthFetcher = ({
 
   const vt = useTrackableFlag(id, "AnyMonthViewType");
   const viewType = forceViewType ?? vt;
-  const firstDayDate = startOfMonth(date).getTime();
-  const lastDayDate = endOfMonth(date).getTime();
+  const firstDayDate = useMemo(() => startOfMonth(date), [date]);
+  const lastDayDate = useMemo(() => endOfMonth(date), [date]);
 
   const q = useTrackableData({
     id,
@@ -98,27 +122,15 @@ export const MonthFetcher = ({
     return <QueryError error={q.error} onRetry={q.refresh} />;
   }
 
-  // Convert TrackableRecordRow[] to DataRecord[] by converting ISO string dates to timestamps
-  const dataRecords = (q.data ?? []).map((record) => ({
-    id: record.id,
-    value: record.value,
-    timestamp: new Date(record.timestamp).getTime(),
-    updated_at: record.updated_at,
-  }));
-
-  const mappedData = mapDataToRange(firstDayDate, lastDayDate, dataRecords);
-
-  if (viewType === "list") {
-    return (
-      <div key={`${firstDayDate}-${lastDayDate}`}>
-        <MonthVisualList data={mappedData} />
-      </div>
-    );
-  }
-
   return (
     <div key={`${firstDayDate}-${lastDayDate}`}>
-      <MonthVisualCalendar data={mappedData} mini={mini} />
+      <TrackableDataProvider recordsSelect={q.data}>
+        {viewType === "list" ? (
+          <MonthVisualList dateFirstDay={firstDayDate} />
+        ) : (
+          <MonthVisualCalendar dateFirstDay={firstDayDate} mini={mini} />
+        )}
+      </TrackableDataProvider>
     </div>
   );
 };

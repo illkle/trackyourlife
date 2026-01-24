@@ -1,7 +1,5 @@
 import { useState } from "react";
 
-import { DbTrackableSelect } from "@tyl/db/client/schema-powersync";
-
 import {
   Dialog,
   DialogContent,
@@ -86,6 +84,7 @@ export const TrackableNameEditable = () => {
   );
 };
 
-export const TrackableNameText = ({ trackable }: { trackable: DbTrackableSelect }) => {
-  return <>{trackable.name.length ? trackable.name : `Unnamed ${trackable.type}`}</>;
+export const TrackableNameText = () => {
+  const { name, type } = useTrackableMeta();
+  return <>{name.length ? name : `Unnamed ${type}`}</>;
 };

@@ -1,14 +1,12 @@
 import { formatDate, isSameDay, isToday } from "date-fns";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
-import type { PureDataRecord } from "@tyl/helpers/data/trackables";
-import { DbTrackableSelect } from "@tyl/db/client/schema-powersync";
+import { DbTrackableRecordSelect, DbTrackableSelect } from "@tyl/db/client/schema-powersync";
 import {
   useRecordDeleteHandler,
   useRecordUpdateHandler,
   useTrackableDay,
 } from "@tyl/helpers/data/dbHooks";
-import { mapDataToRange } from "@tyl/helpers/data/trackables";
 
 import { Button } from "~/@shad/components/button";
 import { editorModalNextDay, editorModalPreviousDay } from "~/components/Modal/EditorModalV2";
@@ -38,22 +36,15 @@ export const PopupEditor = ({ date }: { date: Date }) => {
 
   const onDelete = useRecordDeleteHandler();
 
-  // Convert TrackableRecordRow[] to DataRecord[] by converting ISO string dates to timestamps
-  const dataRecords = (trackable?.data ?? []).map((record) => ({
-    id: record.id,
-    value: record.value,
-    timestamp: new Date(record.timestamp).getTime(),
-    updated_at: record.updated_at,
-  }));
-
-  const mapped = mapDataToRange(date, date, dataRecords);
-
-  const mapDay = mapped[0] ?? { values: [], timestamp: new Date(1970, 0, 1), disabled: true };
-
   return (
     <>
       <EditorTitle date={date} />
-      <EditorFactory type={type} data={mapDay} onChange={onChange} onDelete={onDelete} />
+      <EditorFactory
+        type={type}
+        data={trackable?.data ?? []}
+        onChange={onChange}
+        onDelete={onDelete}
+      />
     </>
   );
 };
@@ -110,7 +101,7 @@ const EditorFactory = ({
 };
 
 export interface PopupEditorProps {
-  data: PureDataRecord;
+  data: DbTrackableRecordSelect[];
   onDelete: ReturnType<typeof useRecordDeleteHandler>;
   onChange: ReturnType<typeof useRecordUpdateHandler>;
 }

@@ -2,11 +2,10 @@ import { Fragment, useMemo } from "react";
 import { Spinner } from "@shad/components/spinner";
 import { cn } from "@shad/lib/utils";
 import { Link } from "@tanstack/react-router";
-import { format, isLastDayOfMonth, subDays } from "date-fns";
-import { m } from "motion/react";
+import { eachDayOfInterval, format, isLastDayOfMonth, subDays } from "date-fns";
+import { m, Transition } from "motion/react";
 
 import { useTrackablesList } from "@tyl/helpers/data/dbHooks";
-import { mapDataToRange } from "@tyl/helpers/data/trackables";
 
 import { Button } from "~/@shad/components/button";
 import DayCellRouter from "~/components/DayCell";
@@ -15,6 +14,8 @@ import { TrackableNameText } from "~/components/Trackable/TrackableName";
 import { TrackableFlagsProviderExternal } from "@tyl/helpers/data/TrackableFlagsProvider";
 import TrackableProvider from "~/components/Trackable/TrackableProviders/TrackableProvider";
 import MiniTrackable from "./miniTrackable";
+import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
+import { TrackableGroupsProvider } from "@tyl/helpers/data/TrackableGroupsProvider";
 
 const EmptyList = () => {
   return (
@@ -27,6 +28,8 @@ const EmptyList = () => {
     </div>
   );
 };
+
+const list_transition: Transition = { duration: 0.2, ease: "circInOut" };
 
 const TrackablesList = ({ daysToShow, archived }: { daysToShow: number; archived: boolean }) => {
   const range = useMemo(() => {
@@ -56,38 +59,28 @@ const TrackablesList = ({ daysToShow, archived }: { daysToShow: number; archived
 
   if (q.data.length === 0) return <EmptyList />;
 
-  // Convert TrackableRecordRow[] to DataRecord[] by converting ISO string dates to timestamps
-  const mappedData = q.data.map((v) => {
-    const dataRecords = v.data.map((record) => ({
-      id: record.id,
-      value: record.value,
-      timestamp: new Date(record.timestamp).getTime(),
-      updated_at: record.updated_at,
-    }));
-    return {
-      trackable: v,
-      data: mapDataToRange(range.firstDay, range.lastDay, dataRecords),
-    };
-  });
-
   return (
     <>
       <div className="mt-3 grid gap-5">
-        <TrackableFlagsProviderExternal trackablesSelect={q.data}>
-          {mappedData.map(({ trackable, data }) => (
-            <m.div
-              transition={{ duration: 0.2, ease: "circInOut" }}
-              layout
-              layoutId={trackable.id}
-              key={trackable.id}
-              className="border-b border-border pb-4 last:border-0 last:pb-0"
-            >
-              <TrackableProvider trackable={trackable}>
-                <MiniTrackable data={data} trackable={trackable} />
-              </TrackableProvider>
-            </m.div>
-          ))}
-        </TrackableFlagsProviderExternal>
+        <TrackableDataProvider trackablesSelect={q.data}>
+          <TrackableGroupsProvider trackablesSelect={q.data}>
+            <TrackableFlagsProviderExternal trackablesSelect={q.data}>
+              {q.data.map((trackable) => (
+                <m.div
+                  transition={list_transition}
+                  layout
+                  layoutId={trackable.id}
+                  key={trackable.id}
+                  className="border-b border-border pb-4 last:border-0 last:pb-0"
+                >
+                  <TrackableProvider trackable={trackable}>
+                    <MiniTrackable firstDay={range.firstDay} lastDay={range.lastDay} />
+                  </TrackableProvider>
+                </m.div>
+              ))}
+            </TrackableFlagsProviderExternal>
+          </TrackableGroupsProvider>
+        </TrackableDataProvider>
       </div>
     </>
   );
@@ -106,6 +99,11 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
     withData: range,
   });
 
+  const days = eachDayOfInterval({
+    start: range.firstDay,
+    end: range.lastDay,
+  });
+
   if (q.isLoading) {
     return (
       <div className="flex justify-center py-20">
@@ -122,74 +120,57 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
     return <EmptyList />;
   }
 
-  // Convert TrackableRecordRow[] to DataRecord[] by converting ISO string dates to timestamps
-  const mappedData = q.data.map((v) => {
-    const dataRecords = v.data.map((record) => ({
-      id: record.id,
-      value: record.value,
-      timestamp: new Date(record.timestamp).getTime(),
-      updated_at: record.updated_at,
-    }));
-    return {
-      trackable: v,
-      data: mapDataToRange(range.firstDay, range.lastDay, dataRecords, "desc"),
-    };
-  });
-
-  const days = mappedData[0]?.data.map((v) => v.timestamp) ?? [];
-
-  const trackables = mappedData.map((_, i) => i);
-
   return (
     <div className="flex flex-col gap-6">
       <TrackableFlagsProviderExternal trackablesSelect={q.data}>
-        {days.map((date, dateIndex) => {
-          return (
-            <Fragment key={dateIndex}>
-              <div className="relative flex h-fit flex-col">
-                <div className="flex w-full flex-col justify-between gap-2">
-                  {(isLastDayOfMonth(date) || dateIndex === 0) && (
-                    <div className="mb-2 text-2xl font-semibold lg:text-3xl">
-                      {format(date, "MMMM")}
+        <TrackableDataProvider trackablesSelect={q.data}>
+          <TrackableGroupsProvider trackablesSelect={q.data}>
+            {days.map((date, dateIndex) => {
+              return (
+                <Fragment key={dateIndex}>
+                  <div className="relative flex h-fit flex-col">
+                    <div className="flex w-full flex-col justify-between gap-2">
+                      {(isLastDayOfMonth(date) || dateIndex === 0) && (
+                        <div className="mb-2 text-2xl font-semibold lg:text-3xl">
+                          {format(date, "MMMM")}
+                        </div>
+                      )}
+
+                      <span className="flex w-full items-baseline gap-2">
+                        <span className="text-xl opacity-30">{format(date, "EEEE")}</span>{" "}
+                        <span className="text-xl font-semibold opacity-80">
+                          {format(date, "d")}
+                        </span>
+                      </span>
                     </div>
-                  )}
+                    <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                      {q.data.map((trackable) => {
+                        return (
+                          <div className="" key={trackable.id}>
+                            <TrackableProvider trackable={trackable}>
+                              <Link
+                                to={"/app/trackables/$id/view"}
+                                params={{ id: trackable.id }}
+                                className={cn(
+                                  "mb-1 block w-full truncate text-xl text-foreground opacity-20",
+                                )}
+                              >
+                                <TrackableNameText />
+                              </Link>
 
-                  <span className="flex w-full items-baseline gap-2">
-                    <span className="text-xl opacity-30">{format(date, "EEEE")}</span>{" "}
-                    <span className="text-xl font-semibold opacity-80">{format(date, "d")}</span>
-                  </span>
-                </div>
-                <div className="mt-2 grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  {trackables.map((index) => {
-                    const tr = mappedData[index];
-                    if (!tr) return null;
-                    const day = tr.data[dateIndex];
-                    if (!day) return null;
-
-                    return (
-                      <div className="" key={index}>
-                        <TrackableProvider trackable={tr.trackable}>
-                          <Link
-                            to={"/app/trackables/$id/view"}
-                            params={{ id: tr.trackable.id }}
-                            className={cn(
-                              "mb-1 block w-full truncate text-xl text-foreground opacity-20",
-                            )}
-                          >
-                            <TrackableNameText trackable={tr.trackable} />
-                          </Link>
-
-                          <DayCellRouter {...day} labelType="none" className="h-20" />
-                        </TrackableProvider>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-              {dateIndex !== days.length - 1 && <hr className="h-0 border-b border-border" />}
-            </Fragment>
-          );
-        })}
+                              <DayCellRouter timestamp={date} labelType="none" className="h-20" />
+                            </TrackableProvider>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                  {dateIndex !== days.length - 1 && <hr className="h-0 border-b border-border" />}
+                </Fragment>
+              );
+            })}
+          </TrackableGroupsProvider>
+        </TrackableDataProvider>
       </TrackableFlagsProviderExternal>
     </div>
   );

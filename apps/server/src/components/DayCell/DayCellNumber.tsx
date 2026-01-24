@@ -9,7 +9,7 @@ import {
   DayCellBaseClasses,
   DayCellBaseClassesFocus,
   LabelInside,
-  useDayCellContext,
+  IDayCellProps,
 } from "~/components/DayCell";
 import { openDayEditor } from "~/components/Modal/EditorModalV2";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
@@ -28,11 +28,11 @@ export const NumberFormatter = new Intl.NumberFormat("en-US", {
   notation: "compact",
 });
 
-export const DayCellNumber = () => {
+export const DayCellNumber = (props: IDayCellProps) => {
   const { id, type, name } = useTrackableMeta();
 
-  const { onChange, labelType, values, timestamp } = useDayCellContext();
-  const { value, recordId, updatedAt } = values[0] ?? {};
+  const { onChange, labelType, values, timestamp } = props.cellData;
+  const { value, id: recordId, updated_at: updatedAt } = values[0] ?? {};
 
   const isMobile = useIsMobile();
 
@@ -63,7 +63,7 @@ export const DayCellNumber = () => {
         "focus-within:border-ring dark:data-[empty=false]:focus-within:border-ring",
       )}
     >
-      {labelType === "auto" && <LabelInside />}
+      {labelType === "auto" && <LabelInside cellData={props.cellData} />}
       {!isMobile && (
         <NumberInput
           className={cn(...classes, "peer opacity-0 group-hover:opacity-100 focus:opacity-100")}

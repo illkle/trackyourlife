@@ -170,6 +170,8 @@ export const applyCrudTrackableRecord = async (entry: SyncEntry, user_id: string
     case UpdateType.PATCH: {
       const verified = trackable_record_update_schema.parse(opData);
 
+      console.log("patch trackable record", verified, opData);
+
       await db
         .update(trackable_record)
         .set(verified)

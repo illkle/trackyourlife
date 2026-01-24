@@ -33,7 +33,7 @@ export const trackable_record = sqliteTable("TYL_trackableRecord", {
   trackable_id: text("trackable_id").notNull(),
   value: text("value").notNull(),
   external_key: text("external_key").notNull(),
-  updated_at: integer("update_at"),
+  updated_at: integer("updated_at"),
 });
 
 export const trackable_group = sqliteTable("TYL_trackableGroup", {

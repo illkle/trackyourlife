@@ -3,11 +3,17 @@ import chroma from "chroma-js";
 import type { IColorCodingValue, IColorHSL, IColorRGB, IColorValue } from "@tyl/db/jsonValidators";
 
 import { range } from "../animation";
-import { presetsMap } from "./colorPresets";
 
 export { chroma };
 
+const black_c = chroma("#fafafa");
+const white_c = chroma("#0a0a0a");
+
 // It is probably possible to write this without using a library, especially because we only need a few transforms.
+
+export function makeChroma({ h, s, l }: IColorHSL) {
+  return chroma.hsl(h, s / 100, l / 100);
+}
 
 export const InterpolateColors = (
   first: IColorHSL,
@@ -20,10 +26,6 @@ export const InterpolateColors = (
   const c = chroma.mix(makeChroma(first), makeChroma(second), ratio, "rgb");
 
   return makeColorFromChroma(c);
-};
-
-export const makeChroma = ({ h, s, l }: IColorHSL) => {
-  return chroma.hsl(h, s / 100, l / 100);
 };
 
 export const makeColorFromChroma = (c: chroma.Color) => {
@@ -132,9 +134,6 @@ export const getColorAtPosition = ({
   };
 };
 
-const black_c = chroma("#fafafa");
-const white_c = chroma("#0a0a0a");
-
 export const findClosestDarkmode = (c: IColorHSL): IColorHSL => {
   const color = { ...c };
   let tries = 100;
@@ -159,7 +158,7 @@ export const findClosestLightmode = (c: IColorHSL): IColorHSL => {
   return color;
 };
 
-export const findModeColorsFromUserSelect = (c: IColorHSL) => {
+export function findModeColorsFromUserSelect(c: IColorHSL) {
   const cc = makeChroma(c);
   const baseLight = chroma.contrast(white_c, cc) > chroma.contrast(black_c, cc);
 
@@ -181,7 +180,7 @@ export const findModeColorsFromUserSelect = (c: IColorHSL) => {
     lightMode,
     darkMode,
   };
-};
+}
 
 export const stringToColorHSL = (input: string): IColorHSL => {
   input = input.toLowerCase();
@@ -203,3 +202,91 @@ export const stringToColorHSL = (input: string): IColorHSL => {
     l: l,
   };
 };
+
+const neutral_base = {
+  h: 0,
+  s: 0,
+  l: 80,
+};
+
+const neutral = {
+  ...findModeColorsFromUserSelect(neutral_base),
+  userSelect: neutral_base,
+};
+
+const red_base = {
+  h: 352,
+  s: 79,
+  l: 41,
+};
+
+const red = {
+  ...findModeColorsFromUserSelect(red_base),
+  userSelect: red_base,
+};
+
+const orange_base = {
+  h: 30,
+  s: 99,
+  l: 53,
+};
+
+const orange = {
+  ...findModeColorsFromUserSelect(orange_base),
+  userSelect: orange_base,
+};
+
+const blue_base = {
+  h: 185,
+  s: 59,
+  l: 59,
+};
+
+const blue = {
+  ...findModeColorsFromUserSelect(blue_base),
+  userSelect: blue_base,
+};
+
+const green_base = {
+  h: 73,
+  s: 73,
+  l: 53,
+};
+
+const green = {
+  ...findModeColorsFromUserSelect(green_base),
+  userSelect: green_base,
+};
+
+const purple_base = {
+  h: 289,
+  s: 33,
+  l: 39,
+};
+
+const purple = {
+  ...findModeColorsFromUserSelect(purple_base),
+  userSelect: purple_base,
+};
+
+const pink_base = {
+  h: 335,
+  s: 59,
+  l: 73,
+};
+
+const pink = {
+  ...findModeColorsFromUserSelect(pink_base),
+  userSelect: pink_base,
+};
+
+export const presetsMap = {
+  red,
+  orange,
+  green,
+  blue,
+  purple,
+  pink,
+  neutral,
+};
+export const presetsArray: IColorValue[] = [neutral, red, orange, green, purple, pink];

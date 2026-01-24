@@ -5,7 +5,7 @@ import { NumberInput, NumberInputWrapper } from "~/components/DayCell/DayCellNum
 import { closeDayEditor } from "~/components/Modal/EditorModalV2";
 
 export const NumberPopupEditor = ({ data, onChange }: PopupEditorProps) => {
-  const { value, recordId, updatedAt } = data.values[0] ?? {};
+  const { value, id: recordId, updated_at: updatedAt } = data[0] ?? {};
 
   return (
     <div className="flex items-stretch gap-2">

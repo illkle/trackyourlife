@@ -1,35 +1,34 @@
 import { HeartIcon } from "lucide-react";
 import { m } from "motion/react";
 
-import { DbTrackableGroupSelect, DbTrackableSelect } from "@tyl/db/client/schema-powersync";
-
 import { buttonVariants } from "~/@shad/components/button";
 import { Button } from "~/@shad/components/button";
 import { useGroupHandlers } from "@tyl/helpers/data/dbHooks";
 import { VariantProps } from "class-variance-authority";
+import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import { useIsTrackableInGroup } from "@tyl/helpers/data/TrackableGroupsProvider";
 
 export const FavoriteButton = ({
   variant = "ghost",
   onlyIcon = false,
-  trackable,
 }: {
   variant?: VariantProps<typeof buttonVariants>["variant"];
   onlyIcon?: boolean;
-  trackable: DbTrackableSelect & { groups: DbTrackableGroupSelect[] };
 }) => {
+  const { id } = useTrackableMeta();
   const { removeFromGroup, addToGroup } = useGroupHandlers();
 
-  const inFavs = trackable.groups.some((tg) => tg.group === "favorites");
+  const inFavs = useIsTrackableInGroup(id, "favorites");
 
   const favHandler = async () => {
     if (inFavs) {
       await removeFromGroup({
-        trackableId: trackable.id,
+        trackableId: id,
         group: "favorites",
       });
     } else {
       await addToGroup({
-        trackableId: trackable.id,
+        trackableId: id,
         group: "favorites",
       });
     }

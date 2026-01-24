@@ -1,9 +1,6 @@
-import { createContext, useContext } from "react";
+import { useMemo } from "react";
 import { cn } from "@shad/lib/utils";
 import { format, isAfter, isBefore, isSameDay } from "date-fns";
-
-import type { DbTrackableSelect } from "@tyl/db/server/schema";
-import type { PureDataRecord } from "@tyl/helpers/data/trackables";
 
 import { DayCellTextPopup } from "~/components/DayCell/DayCellTextPopup";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
@@ -11,49 +8,46 @@ import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/Trac
 import { useRecordDeleteHandler, useRecordUpdateHandler } from "@tyl/helpers/data/dbHooks";
 import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
+import { useTrackableDataFromContext } from "@tyl/helpers/data/TrackableDataProvider";
+import { DbTrackableRecordSelect } from "@tyl/db/client/schema-powersync";
 
 export const DayCellBaseClasses =
   "@container w-full h-full relative select-none overflow-hidden border-transparent border-2 rounded-xs";
 
 export const DayCellBaseClassesFocus = "outline-hidden focus:outline-ring";
 
-interface DayCellRouterProps extends PureDataRecord {
+interface DayCellRouterProps {
   className?: string;
   labelType: IDayCellLabelType;
+  disabled?: boolean;
+  timestamp: Date;
 }
 
 export type IDayCellLabelType = "auto" | "outside" | "none";
 
-export interface IDayCellContext extends Omit<PureDataRecord, "disabled"> {
+export interface IDayCellData {
+  type: string;
+  timestamp: Date;
   isToday: boolean;
   isOutOfRange: boolean;
   onChange: ReturnType<typeof useRecordUpdateHandler>;
   onDelete: ReturnType<typeof useRecordDeleteHandler>;
   labelType?: IDayCellLabelType;
+  values: DbTrackableRecordSelect[];
 }
 
-export const DayCellContext = createContext<IDayCellContext | null>(null);
+export type IDayCellProps = { cellData: IDayCellData };
 
-export const useDayCellContext = () => {
-  const context = useContext(DayCellContext);
-  if (!context) throw new Error("useDayCellContext must be used within a DayCellContext provider");
-  return context;
-};
-
-export const DayCellRouter = ({
-  timestamp,
-  values,
-  labelType = "auto",
-  className,
-}: DayCellRouterProps) => {
-  // TODO: memo?
+export const DayCellRouter = ({ timestamp, labelType = "auto", className }: DayCellRouterProps) => {
   const { id, type } = useTrackableMeta();
   const trackingStart = useTrackableFlag(id, "AnyTrackingStart");
 
-  const now = new Date();
-  const isToday = isSameDay(timestamp, now);
-  const isOutOfRange =
-    isAfter(timestamp, now) || Boolean(trackingStart && isBefore(timestamp, trackingStart));
+  const now = useMemo(() => new Date(), []);
+  const isToday = useMemo(() => isSameDay(timestamp, now), [timestamp, now]);
+  const isOutOfRange = useMemo(
+    () => isAfter(timestamp, now) || Boolean(trackingStart && isBefore(timestamp, trackingStart)),
+    [timestamp, now, trackingStart],
+  );
 
   const onChange = useRecordUpdateHandler({
     date: timestamp,
@@ -62,84 +56,78 @@ export const DayCellRouter = ({
   });
   const onDelete = useRecordDeleteHandler();
 
+  const values = useTrackableDataFromContext(id, timestamp);
+
+  const cellData = {
+    type,
+    isOutOfRange,
+    values,
+    onChange,
+    onDelete,
+    labelType,
+    timestamp,
+    isToday,
+  };
+
   return (
-    <DayCellContext.Provider
-      value={{
-        timestamp,
-        isToday,
-        isOutOfRange,
-        values,
-        onChange,
-        onDelete,
-        labelType,
-      }}
-    >
-      <div className={cn("relative flex flex-1 flex-col", className)}>
-        {labelType === "outside" && <LabelOutside />}
-        <DayCellTypeRouter type={type}></DayCellTypeRouter>
-      </div>
-    </DayCellContext.Provider>
+    <div className={cn("relative flex flex-1 flex-col", className)}>
+      {labelType === "outside" && <LabelOutside cellData={cellData} />}
+      <DayCellTypeRouter cellData={cellData}></DayCellTypeRouter>
+    </div>
   );
 };
 
-export const DayCellTypeRouter = ({ type }: { type: DbTrackableSelect["type"] | string }) => {
-  const { isOutOfRange } = useDayCellContext();
-
-  if (isOutOfRange) {
-    return <OutOfRangeSimple />;
+export const DayCellTypeRouter = (props: IDayCellProps) => {
+  if (props.cellData.isOutOfRange) {
+    return <OutOfRangeSimple {...props} />;
   }
 
-  if (type === "boolean") {
-    return <DayCellBoolean />;
+  if (props.cellData.type === "boolean") {
+    return <DayCellBoolean cellData={props.cellData} />;
   }
 
-  if (type === "number") {
-    return <DayCellNumber />;
+  if (props.cellData.type === "number") {
+    return <DayCellNumber cellData={props.cellData} />;
   }
 
-  if (type === "text") {
-    return <DayCellTextPopup />;
+  if (props.cellData.type === "text") {
+    return <DayCellTextPopup cellData={props.cellData} />;
   }
 
   throw new Error("Unsupported trackable type");
 };
 
-export const OutOfRangeSimple = () => {
-  const { labelType } = useDayCellContext();
-
+export const OutOfRangeSimple = (props: IDayCellProps) => {
   return (
     <div className={cn(DayCellBaseClasses, "cursor-default bg-muted opacity-30")}>
-      {labelType === "auto" && <LabelInside />}
+      {props.cellData.labelType === "auto" && <LabelInside {...props} />}
     </div>
   );
 };
 
-const LabelOutside = () => {
-  const { timestamp, isToday } = useDayCellContext();
-
+const LabelOutside = (props: IDayCellProps) => {
   return (
     <div
       className={cn(
         "mr-1 text-right text-xs text-muted-foreground",
-        isToday ? "font-normal underline" : "font-light",
+        props.cellData.isToday ? "font-normal underline" : "font-light",
       )}
     >
-      {format(timestamp, "d")}
+      {format(props.cellData.timestamp, "d")}
     </div>
   );
 };
 
-export const LabelInside = () => {
-  const { timestamp, isToday } = useDayCellContext();
+export const LabelInside = (props: IDayCellProps) => {
   return (
     <div
       className={cn(
         "absolute top-0 left-1 z-10 text-base text-muted-foreground select-none",
-        isToday ? "font-normal underline" : "font-light",
+        props.cellData.isToday ? "font-normal underline" : "font-light",
         "text-xs sm:text-base",
       )}
     >
-      {format(timestamp, "d")}
+      {format(props.cellData.timestamp, "d")}
     </div>
   );
 };

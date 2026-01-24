@@ -5,9 +5,8 @@ import { cn } from "@shad/lib/utils";
 import {
   DayCellBaseClasses,
   DayCellBaseClassesFocus,
-  IDayCellLabelType,
   LabelInside,
-  useDayCellContext,
+  IDayCellProps,
 } from "~/components/DayCell";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "~/components/Trackable/TrackableProviders/TrackableProvider";
@@ -19,7 +18,7 @@ const BooleanUI = ({
   themeActiveDark,
   themeInactiveLight,
   themeInactiveDark,
-  labelType = "auto",
+  children,
 }: {
   value: boolean;
   onChange: (value: boolean) => void;
@@ -27,7 +26,7 @@ const BooleanUI = ({
   themeActiveDark: string;
   themeInactiveLight: string;
   themeInactiveDark: string;
-  labelType?: IDayCellLabelType;
+  children: React.ReactNode;
 }) => {
   const mainRef = useRef<HTMLButtonElement>(null);
   // Point where click happened in % relative to button box. Used for animation
@@ -40,43 +39,41 @@ const BooleanUI = ({
   };
 
   return (
-    <>
-      <button
-        data-boolean-cell
-        data-value={value}
-        ref={mainRef}
-        tabIndex={0}
-        className={cn(
-          DayCellBaseClasses,
-          DayCellBaseClassesFocus,
-          value
-            ? "border-(--themeActiveLight) hover:border-(--themeInactiveLight) dark:border-(--themeActiveDark) dark:hover:border-(--themeInactiveDark)"
-            : "border-(--themeInactiveLight) hover:border-(--themeActiveLight) dark:border-(--themeInactiveDark) dark:hover:border-(--themeActiveDark)",
-          value
-            ? "bg-(--themeActiveLight) dark:bg-(--themeActiveDark)"
-            : "bg-(--themeInactiveLight) dark:bg-(--themeInactiveDark)",
-        )}
-        style={
-          {
-            "--themeActiveLight": themeActiveLight,
-            "--themeActiveDark": themeActiveDark,
-            "--themeInactiveLight": themeInactiveLight,
-            "--themeInactiveDark": themeInactiveDark,
-          } as CSSProperties
-        }
-        onClick={(e) => void handleClick(e)}
-      >
-        {labelType === "auto" && <LabelInside />}
-      </button>
-    </>
+    <button
+      data-boolean-cell
+      data-value={value}
+      ref={mainRef}
+      tabIndex={0}
+      className={cn(
+        DayCellBaseClasses,
+        DayCellBaseClassesFocus,
+        value
+          ? "border-(--themeActiveLight) hover:border-(--themeInactiveLight) dark:border-(--themeActiveDark) dark:hover:border-(--themeInactiveDark)"
+          : "border-(--themeInactiveLight) hover:border-(--themeActiveLight) dark:border-(--themeInactiveDark) dark:hover:border-(--themeActiveDark)",
+        value
+          ? "bg-(--themeActiveLight) dark:bg-(--themeActiveDark)"
+          : "bg-(--themeInactiveLight) dark:bg-(--themeInactiveDark)",
+      )}
+      style={
+        {
+          "--themeActiveLight": themeActiveLight,
+          "--themeActiveDark": themeActiveDark,
+          "--themeInactiveLight": themeInactiveLight,
+          "--themeInactiveDark": themeInactiveDark,
+        } as CSSProperties
+      }
+      onClick={(e) => void handleClick(e)}
+    >
+      {children}
+    </button>
   );
 };
 
-export const DayCellBoolean = () => {
+export const DayCellBoolean = (props: IDayCellProps) => {
   const { id } = useTrackableMeta();
 
-  const { labelType, onChange, values } = useDayCellContext();
-  const { value, recordId } = values[0] ?? {};
+  const { labelType, onChange, values } = props.cellData;
+  const { value, id: recordId } = values[0] ?? {};
 
   const { lightMode: themeActiveLight, darkMode: themeActiveDark } = useTrackableFlag(
     id,
@@ -95,7 +92,8 @@ export const DayCellBoolean = () => {
       themeActiveDark={themeActiveDark}
       themeInactiveLight={themeInactiveLight}
       themeInactiveDark={themeInactiveDark}
-      labelType={labelType}
-    />
+    >
+      {labelType === "auto" && <LabelInside cellData={props.cellData} />}
+    </BooleanUI>
   );
 };

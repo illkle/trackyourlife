@@ -40,6 +40,10 @@ import {
 import TrackableProvider, {
   useTrackableMeta,
 } from "~/components/Trackable/TrackableProviders/TrackableProvider";
+import {
+  TrackableGroupsProvider,
+  useIsTrackableInGroup,
+} from "@tyl/helpers/data/TrackableGroupsProvider";
 
 const paramsSchema = z.object({
   month: z.number().min(0).max(11).or(z.literal("list")).optional().default(new Date().getMonth()),
@@ -77,51 +81,54 @@ const RouteComponent = () => {
     );
   }
 
-  const isArchived = trackable.groups.some((tg) => tg.group === "archived");
-
   return (
     <TrackableFlagsProviderExternal flagsSelect={trackable.flags}>
-      <TrackableProvider trackable={trackable}>
-        <div className="content-container flex h-full max-h-full w-full flex-col pb-6">
-          <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
-            <TrackableNameEditable />
-            <div className="flex gap-2 justify-self-end">
-              <FavoriteButton variant={"outline"} trackable={trackable} />
-              {isView ? (
-                <>
-                  <Link to={"/app/trackables/$id/settings"} params={{ id: params.id }}>
-                    <Button name="settings" variant="outline">
-                      <SettingsIcon className="h-4 w-4" />
-                      <span className="max-md:hidden">Settings</span>
-                    </Button>
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link to={"/app/trackables/$id/view"} params={{ id: params.id }}>
-                    <Button variant="outline">
-                      <CalendarDaysIcon className="h-4 w-4" />
-                      <span className="max-md:hidden">View</span>
-                    </Button>
-                  </Link>
-                </>
-              )}
-              <TrackableDropdown isArchived={isArchived} />
+      <TrackableGroupsProvider groupsSelect={trackable.groups}>
+        <TrackableProvider trackable={trackable}>
+          <div className="content-container flex h-full max-h-full w-full flex-col pb-6">
+            <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
+              <TrackableNameEditable />
+              <div className="flex gap-2 justify-self-end">
+                <FavoriteButton variant={"outline"} />
+                {isView ? (
+                  <>
+                    <Link to={"/app/trackables/$id/settings"} params={{ id: params.id }}>
+                      <Button name="settings" variant="outline">
+                        <SettingsIcon className="h-4 w-4" />
+                        <span className="max-md:hidden">Settings</span>
+                      </Button>
+                    </Link>
+                  </>
+                ) : (
+                  <>
+                    <Link to={"/app/trackables/$id/view"} params={{ id: params.id }}>
+                      <Button variant="outline">
+                        <CalendarDaysIcon className="h-4 w-4" />
+                        <span className="max-md:hidden">View</span>
+                      </Button>
+                    </Link>
+                  </>
+                )}
+                <TrackableDropdown />
+              </div>
             </div>
+            <hr className="my-4 h-px border-none bg-foreground opacity-10 outline-hidden" />
+            <Outlet />
           </div>
-          <hr className="my-4 h-px border-none bg-foreground opacity-10 outline-hidden" />
-          <Outlet />
-        </div>
-      </TrackableProvider>
+        </TrackableProvider>
+      </TrackableGroupsProvider>
     </TrackableFlagsProviderExternal>
   );
 };
 
-const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
+const TrackableDropdown = () => {
   const { id } = useTrackableMeta();
   const setFlag = useSetTrackableFlag();
 
+  const isArchived = useIsTrackableInGroup(id, "archived");
   const monthViewStyle = useTrackableFlag(id, "AnyMonthViewType");
+
+  console.log("monthViewStyle", monthViewStyle);
 
   const { removeFromGroup, addToGroup } = useGroupHandlers();
 
@@ -189,6 +196,7 @@ const TrackableDropdown = ({ isArchived }: { isArchived: boolean }) => {
 
           <AlertDialogTrigger
             name="delete"
+            nativeButton={false}
             render={
               <DropdownMenuItem className="cursor-pointer">
                 <TrashIcon className="mr-1" /> Delete

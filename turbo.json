@@ -19,7 +19,8 @@
       "env": [
         "VITE_DEPLOY_DOMAIN",
         "VITE_POWERSYNC_DOMAIN",
-        "VITE_PREVIEW_WARNING"
+        "VITE_PREVIEW_WARNING",
+        "VITE_ENABLE_DEVTOOLS"
       ]
     },
     "dev": {
