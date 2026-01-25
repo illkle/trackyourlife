@@ -5,8 +5,5 @@ globs: *.tsx, *.ts
 - For handling dates always use "dateFns"
 - Use Zod for validation where applicable
 - If you need animations use framer-motion. You can import it like this: import { AnimatePresence, m } from "motion/react";
-- You can use lodash if that will significantly reduce complexity. I will import it myself.
-- Always use arrow functions
 - Always export react components like `export const SomeComponent = () => {}` even in single component files.
-- Use shadcn components, they are located in `"@shad/components"`
 - For icons always use Lucide. Prefer imports suffixed with icon. I.e. `import { CalendarIcon } from "lucide-react"

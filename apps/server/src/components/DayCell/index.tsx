@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { cn } from "@shad/lib/utils";
 import { format, isAfter, isBefore, isSameDay } from "date-fns";
 
@@ -38,44 +38,46 @@ export interface IDayCellData {
 
 export type IDayCellProps = { cellData: IDayCellData };
 
-export const DayCellRouter = ({ timestamp, labelType = "auto", className }: DayCellRouterProps) => {
-  const { id, type } = useTrackableMeta();
-  const trackingStart = useTrackableFlag(id, "AnyTrackingStart");
+export const DayCellRouter = memo(
+  ({ timestamp, labelType = "auto", className }: DayCellRouterProps) => {
+    const { id, type } = useTrackableMeta();
+    const trackingStart = useTrackableFlag(id, "AnyTrackingStart");
 
-  const now = useMemo(() => new Date(), []);
-  const isToday = useMemo(() => isSameDay(timestamp, now), [timestamp, now]);
-  const isOutOfRange = useMemo(
-    () => isAfter(timestamp, now) || Boolean(trackingStart && isBefore(timestamp, trackingStart)),
-    [timestamp, now, trackingStart],
-  );
+    const now = useMemo(() => new Date(), []);
+    const isToday = useMemo(() => isSameDay(timestamp, now), [timestamp, now]);
+    const isOutOfRange = useMemo(
+      () => isAfter(timestamp, now) || Boolean(trackingStart && isBefore(timestamp, trackingStart)),
+      [timestamp, now, trackingStart],
+    );
 
-  const onChange = useRecordUpdateHandler({
-    date: timestamp,
-    trackableId: id,
-    type,
-  });
-  const onDelete = useRecordDeleteHandler();
+    const onChange = useRecordUpdateHandler({
+      date: timestamp,
+      trackableId: id,
+      type,
+    });
+    const onDelete = useRecordDeleteHandler();
 
-  const values = useTrackableDataFromContext(id, timestamp);
+    const values = useTrackableDataFromContext(id, timestamp);
 
-  const cellData = {
-    type,
-    isOutOfRange,
-    values,
-    onChange,
-    onDelete,
-    labelType,
-    timestamp,
-    isToday,
-  };
+    const cellData = {
+      type,
+      isOutOfRange,
+      values,
+      onChange,
+      onDelete,
+      labelType,
+      timestamp,
+      isToday,
+    };
 
-  return (
-    <div className={cn("relative flex flex-1 flex-col", className)}>
-      {labelType === "outside" && <LabelOutside cellData={cellData} />}
-      <DayCellTypeRouter cellData={cellData}></DayCellTypeRouter>
-    </div>
-  );
-};
+    return (
+      <div className={cn("relative flex flex-1 flex-col", className)}>
+        {labelType === "outside" && <LabelOutside cellData={cellData} />}
+        <DayCellTypeRouter cellData={cellData}></DayCellTypeRouter>
+      </div>
+    );
+  },
+);
 
 export const DayCellTypeRouter = (props: IDayCellProps) => {
   if (props.cellData.isOutOfRange) {

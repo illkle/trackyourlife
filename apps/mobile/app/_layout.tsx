@@ -1,11 +1,11 @@
-import "@azure/core-asynciterator-polyfill";
+import "@azure/core-asynciterator-polyfill"; // required for powersync
+import "react-native-get-random-values"; // required for uuidv4
+import "react-native-reanimated";
+import "../global.css";
 
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
-
-import "react-native-reanimated";
-import "../global.css";
 
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaListener, SafeAreaProvider } from "react-native-safe-area-context";

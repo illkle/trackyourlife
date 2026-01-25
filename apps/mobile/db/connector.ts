@@ -35,6 +35,8 @@ export class Connector implements PowerSyncBackendConnector {
   }
 
   async uploadData(database: AbstractPowerSyncDatabase) {
+    const cookies = this.authClient.getCookie();
+
     const transaction = await database.getCrudBatch(25);
 
     if (!transaction) {
@@ -56,8 +58,10 @@ export class Connector implements PowerSyncBackendConnector {
     await fetch(`${this.serverURL}/api/powersync/syncbatch`, {
       method: "POST",
       body: JSON.stringify(mapped),
+      credentials: "omit",
       headers: {
         "Content-Type": "application/json",
+        Cookie: cookies,
       },
     });
 

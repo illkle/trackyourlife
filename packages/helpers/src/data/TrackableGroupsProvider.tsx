@@ -1,7 +1,7 @@
 import { DbTrackableGroupSelect } from "@tyl/db/client/schema-powersync";
 import type { ReactNode } from "react";
 import { useMemo, useRef } from "react";
-import { createContext, useContextSelector } from "@fluentui/react-context-selector";
+import { createContext, useContextSelector } from "use-context-selector";
 
 export type ITrackableGroupsContext = Record<string, boolean>;
 

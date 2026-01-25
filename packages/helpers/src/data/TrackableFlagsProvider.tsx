@@ -13,7 +13,7 @@ import type {
 } from "./trackableFlags";
 import { FlagDefaults, FlagsValidators } from "./trackableFlags";
 import { and, eq } from "drizzle-orm";
-import { createContext, useContextSelector } from "@fluentui/react-context-selector";
+import { createContext, useContextSelector } from "use-context-selector";
 
 /*
  * This provides a kv store that is used for trackable settings.

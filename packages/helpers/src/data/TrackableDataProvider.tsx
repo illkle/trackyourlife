@@ -2,11 +2,11 @@ import { format } from "date-fns";
 import type { ReactNode } from "react";
 import { useMemo, useRef } from "react";
 import { DbTrackableRecordSelect } from "@tyl/db/client/schema-powersync";
-import { createContext, useContextSelector } from "@fluentui/react-context-selector";
+import { createContext, useContextSelector } from "use-context-selector";
 
 export type ITrackableDataContext = Record<string, DbTrackableRecordSelect[]>;
 
-const DataStorageContext = createContext<ITrackableDataContext | null>(null);
+const DataStorageContext = createContext<ITrackableDataContext>({});
 
 const makeKey = (trackableId: string, date: Date) => `${trackableId}-${format(date, "yyyy-MM-dd")}`;
 
@@ -25,7 +25,7 @@ const areRecordsEqual = (left: DbTrackableRecordSelect[], right: DbTrackableReco
 
 export const useTrackableDataFromContext = (trackableId: string, date: Date) => {
   const key = useMemo(() => makeKey(trackableId, date), [trackableId, date]);
-  const data = useContextSelector(DataStorageContext, (state) => state?.[key]);
+  const data = useContextSelector(DataStorageContext, (state) => state[key]);
   return data ?? [];
 };
 
