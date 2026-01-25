@@ -10,11 +10,7 @@ import type {
   IColorValue,
 } from "@tyl/db/jsonValidators";
 import { clamp, cloneDeep } from "@tyl/helpers";
-import {
-  getColorAtPosition,
-  makeColorString,
-  makeCssGradient,
-} from "@tyl/helpers/color/colorTools";
+import { getColorAtPosition, makeColorString, makeCssGradient } from "@tyl/helpers/colorTools";
 
 import { Button } from "~/@shad/components/button";
 import {
@@ -29,7 +25,7 @@ import { BetterNumberInput } from "~/components/Inputs/Colors/betterNumberInput"
 import { ColorDisplay } from "~/components/Inputs/Colors/colorDisplay";
 import ColorPicker from "~/components/Inputs/Colors/colorPicker";
 import { ControllerPoint, ControllerRoot } from "~/components/Inputs/Colors/dragController";
-import { useLinkedValue } from "~/utils/useDbLinkedValue";
+import { useLinkedValue } from "@tyl/helpers/useDbLinkedValue";
 import { useIsMobile } from "~/utils/useIsDesktop";
 
 const getActualMin = (firstVal: number | undefined, minInput: number | null) => {
@@ -176,7 +172,7 @@ const ControllerGradient = ({
                     "--dark": makeColorString(v.color.darkMode),
                   } as CSSProperties
                 }
-                className="bg-[var(--light)] dark:bg-[var(--dark)]"
+                className="bg-(--light) dark:bg-(--dark)"
                 onValueChange={(p) => setById(v.id, p.x)}
               />
             );

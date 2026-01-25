@@ -2,7 +2,7 @@ import { useCallback } from "react";
 
 import { Textarea } from "~/@shad/components/textarea";
 import { IDayCellProps } from "~/components/DayCell";
-import { useLinkedValue } from "~/utils/useDbLinkedValue";
+import { useLinkedValue } from "@tyl/helpers/useDbLinkedValue";
 
 export const DayCellText = (props: IDayCellProps) => {
   const { values, onChange } = props.cellData;

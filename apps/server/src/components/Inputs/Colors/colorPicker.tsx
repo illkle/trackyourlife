@@ -9,7 +9,7 @@ import {
   HSLToRGB,
   makeColorString,
   RGBToHSL,
-} from "@tyl/helpers/color/colorTools";
+} from "@tyl/helpers/colorTools";
 
 import { Label } from "~/@shad/components/label";
 import { Switch } from "~/@shad/components/switch";

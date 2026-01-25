@@ -3,8 +3,8 @@ import { cn } from "@shad/lib/utils";
 import { MoonIcon, SunIcon } from "lucide-react";
 
 import type { IColorValue } from "@tyl/db/jsonValidators";
-import { presetsArray } from "@tyl/helpers/color/colorTools";
-import { makeColorString } from "@tyl/helpers/color/colorTools";
+import { presetsArray } from "@tyl/helpers/colorTools";
+import { makeColorString } from "@tyl/helpers/colorTools";
 
 export const ColorDisplay = ({
   color,

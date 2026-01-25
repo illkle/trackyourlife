@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useDebounceCallback, useUnmount } from "usehooks-ts";
 
 /**
- * Hook that allows efficient bidirectionall link between a controlled input and a db record.
+ * Hook that allows efficient bidirectional link between a controlled input and a db record.
  * It will update internal state and propagate changes to the parent onChange function.
  * However if a parent's value changes from somewhere else the value will update.
  * It uses a change timestamp stored somewhere inside value to determine why parent changed and how fresh the update is.

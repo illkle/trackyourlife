@@ -2,8 +2,8 @@ import { parse } from "date-fns";
 import { z } from "zod";
 
 import { ZColorValue, ZNumberColorCoding, ZNumberProgressBounds } from "@tyl/db/jsonValidators";
-import { presetsMap } from "@tyl/helpers/color/colorTools";
-import { makeColorStrings } from "@tyl/helpers/color/colorTools";
+import { presetsMap } from "../colorTools";
+import { makeColorStrings } from "../colorTools";
 import { NumberColorCodingMapper, NumberProgressMapper } from "@tyl/helpers/data/trackables";
 
 /**

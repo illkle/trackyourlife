@@ -14,10 +14,6 @@
   },
   "include": [
     "**/*.ts",
-    "**/*.tsx",
-    "../../packages/helpers/src/data/dbHooks.ts",
-    "../../packages/helpers/src/data/TrackableFlagsProvider.tsx",
-    "../../packages/helpers/src/data/trackableFlags.ts"
-  ],
+    "**/*.tsx" ],
   "exclude": ["node_modules"]
 }

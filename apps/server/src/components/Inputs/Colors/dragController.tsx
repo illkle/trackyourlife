@@ -436,7 +436,7 @@ export const ControllerPoint = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
             className={cn(
-              "absolute -top-2 left-1/2 h-5 w-5 -translate-x-1/2 -translate-y-[100%] rounded-md",
+              "absolute -top-2 left-1/2 h-5 w-5 -translate-x-1/2 -translate-y-full rounded-md",
               "border border-foreground ring-1 ring-ring",
               className,
             )}

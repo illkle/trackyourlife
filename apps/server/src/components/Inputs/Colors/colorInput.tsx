@@ -1,7 +1,7 @@
 import { useContext } from "react";
 
 import type { IColorValue } from "@tyl/db/jsonValidators";
-import { presetsMap } from "@tyl/helpers/color/colorTools";
+import { presetsMap } from "@tyl/helpers/colorTools";
 
 import {
   Drawer,
@@ -14,7 +14,7 @@ import {
 import { Popover, PopoverContent, PopoverTrigger } from "~/@shad/components/popover";
 import { ColorDisplay } from "~/components/Inputs/Colors/colorDisplay";
 import ColorPicker from "~/components/Inputs/Colors/colorPicker";
-import { useLinkedValue } from "~/utils/useDbLinkedValue";
+import { useLinkedValue } from "@tyl/helpers/useDbLinkedValue";
 import { useIsDesktop } from "~/utils/useIsDesktop";
 
 const ColorInput = ({

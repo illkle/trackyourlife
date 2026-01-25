@@ -3,7 +3,7 @@ import type { CSSProperties } from "react";
 import { createContext, forwardRef, useContext, useMemo, useRef } from "react";
 import { cn } from "@shad/lib/utils";
 
-import { makeColorString } from "@tyl/helpers/color/colorTools";
+import { makeColorString } from "@tyl/helpers/colorTools";
 
 import {
   DayCellBaseClasses,
@@ -14,19 +14,9 @@ import {
 import { openDayEditor } from "~/components/Modal/EditorModalV2";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
-import { useLinkedValue } from "~/utils/useDbLinkedValue";
+import { useLinkedValue } from "@tyl/helpers/useDbLinkedValue";
 import { useIsMobile } from "~/utils/useIsDesktop";
-
-const getNumberSafe = (v: string | undefined) => {
-  if (!v) return 0;
-  const n = Number(v);
-  return Number.isNaN(n) ? 0 : n;
-};
-
-export const NumberFormatter = new Intl.NumberFormat("en-US", {
-  compactDisplay: "short",
-  notation: "compact",
-});
+import { getNumberSafe, NumberFormatter } from "@tyl/helpers/numberTools";
 
 export const DayCellNumber = (props: IDayCellProps) => {
   const { id, type, name } = useTrackableMeta();

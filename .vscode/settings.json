@@ -8,5 +8,11 @@
   "typescript.updateImportsOnFileMove.enabled": "always",
   "javascript.updateImportsOnFileMove.enabled": "always",
   "markdown.updateLinksOnFileMove.enabled": "always",
-  "cSpell.words": ["Coolify", "powersync", "Pressable", "VITE"]
+  "cSpell.words": [
+    "Coolify",
+    "powersync",
+    "Pressable",
+    "Uniwind",
+    "VITE"
+  ]
 }

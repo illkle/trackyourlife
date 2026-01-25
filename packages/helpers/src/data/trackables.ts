@@ -1,8 +1,8 @@
 import type { INumberColorCoding, INumberProgressBounds } from "@tyl/db/jsonValidators";
 
 import { range } from "../animation";
-import { presetsMap } from "../color/colorTools";
-import { getColorAtPosition } from "../color/colorTools";
+import { presetsMap } from "../colorTools";
+import { getColorAtPosition } from "../colorTools";
 
 export class NumberColorCodingMapper {
   colorCoding?: INumberColorCoding;
