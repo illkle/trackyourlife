@@ -1,6 +1,6 @@
 import { Pressable, Text } from "react-native";
 import { useEffect, useMemo } from "react";
-import { useUniwind } from "uniwind";
+import { useResolveClassNames, useUniwind } from "uniwind";
 
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
@@ -41,6 +41,10 @@ export const NumberUI = ({
   const borderColorTo = useSharedValue(progressColor);
   const borderColorProgress = useSharedValue(1);
 
+  const emptyBorder = useResolveClassNames("border-border/40");
+
+  const isEmpty = internalNumber === 0;
+
   useEffect(() => {
     if (borderColorTo.value === progressColor) return;
     borderColorFrom.value = borderColorTo.value;
@@ -52,11 +56,14 @@ export const NumberUI = ({
   const animatedBorderStyle = useAnimatedStyle(() => {
     return {
       borderWidth: 2,
-      borderColor: interpolateColor(
-        borderColorProgress.value,
-        [0, 1],
-        [borderColorFrom.value, borderColorTo.value],
-      ),
+      borderColor: isEmpty
+        ? emptyBorder.borderColor
+        : interpolateColor(
+            borderColorProgress.value,
+            [0, 1],
+            [borderColorFrom.value, borderColorTo.value],
+          ),
+      opacity: isEmpty ? 0.5 : 1,
     };
   });
 

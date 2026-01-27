@@ -164,7 +164,6 @@ export const TrackableFetcher = () => {
 
   useLayoutEffect(() => {
     if (trackable?.name) {
-      console.log("setting title", trackable.name);
       navigation.setOptions({
         title: trackable.name,
       });

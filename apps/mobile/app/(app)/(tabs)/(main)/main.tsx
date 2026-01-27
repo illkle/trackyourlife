@@ -1,5 +1,5 @@
 import { Fragment, useMemo } from "react";
-import { Text, View } from "react-native";
+import { Dimensions, Text, View } from "react-native";
 import { Link } from "expo-router";
 import { eachDayOfInterval, format, isLastDayOfMonth, subDays } from "date-fns";
 
@@ -10,13 +10,16 @@ import { TrackableGroupsProvider } from "@tyl/helpers/data/TrackableGroupsProvid
 import { TrackableMetaProvider } from "@tyl/helpers/data/TrackableMetaProvider";
 import { DefaultWrapper } from "@/lib/styledComponents";
 import { Button } from "@/components/ui/button";
+import DayCellRouter from "@/components/cells";
 
 const SHOW_DAYS = 7;
 
 const EmptyList = () => {
   return (
     <View className="items-center justify-center py-12">
-      <Text className="text-xl font-light text-foreground">You do not have any trackables yet.</Text>
+      <Text className="text-xl font-light text-foreground">
+        You do not have any trackables yet.
+      </Text>
       <Link href="/create" asChild className="mt-4">
         <Button variant="outline" text="Create Trackable" />
       </Link>
@@ -38,8 +41,8 @@ const TodayList = () => {
   const days = useMemo(
     () =>
       eachDayOfInterval({
-        start: range.firstDay,
-        end: range.lastDay,
+        start: range.lastDay,
+        end: range.firstDay,
       }),
     [range],
   );
@@ -64,6 +67,9 @@ const TodayList = () => {
     return <EmptyList />;
   }
 
+  const screenWidth = Dimensions.get("window").width - 32; // sub side padding
+  const cellWidth = (screenWidth - 8) / 2; // sub gap between cells
+
   return (
     <TrackableFlagsProviderExternal trackablesSelect={q.data}>
       <TrackableDataProvider trackablesSelect={q.data}>
@@ -80,16 +86,24 @@ const TodayList = () => {
                     )}
                     <View className="flex flex-row items-baseline gap-2">
                       <Text className="text-lg text-muted-foreground">{format(date, "EEEE")}</Text>
-                      <Text className="text-lg font-semibold text-foreground">{format(date, "d")}</Text>
+                      <Text className="text-lg font-semibold text-foreground">
+                        {format(date, "d")}
+                      </Text>
                     </View>
                   </View>
 
-                  <View className="flex flex-col gap-2">
+                  <View className="flex flex-row flex-wrap gap-2">
                     {q.data.map((trackable) => (
                       <TrackableMetaProvider key={trackable.id} trackable={trackable}>
-                        <Link href={`/trackables/${trackable.id}`} className="py-1">
-                          <Text className="text-base text-primary">{trackable.name}</Text>
-                        </Link>
+                        <View style={{ width: cellWidth }}>
+                          <Link href={`/trackable/${trackable.id}`} className="py-1">
+                            <Text className="text-base text-muted">{trackable.name}</Text>
+                          </Link>
+
+                          <View>
+                            <DayCellRouter timestamp={date} labelType={"none"} />
+                          </View>
+                        </View>
                       </TrackableMetaProvider>
                     ))}
                   </View>

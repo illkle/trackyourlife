@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
-import { Text, View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import { Link } from "expo-router";
-import { format, subDays } from "date-fns";
+import { eachDayOfInterval, subDays } from "date-fns";
 
 import { useTrackablesList } from "@tyl/helpers/data/dbHooks";
 import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
@@ -10,6 +10,7 @@ import { TrackableGroupsProvider } from "@tyl/helpers/data/TrackableGroupsProvid
 import { TrackableMetaProvider } from "@tyl/helpers/data/TrackableMetaProvider";
 import { DefaultWrapper } from "@/lib/styledComponents";
 import { Button } from "@/components/ui/button";
+import DayCellRouter from "@/components/cells";
 
 const SHOW_DAYS = 6;
 
@@ -23,6 +24,15 @@ const TrackableList = ({ archived }: { archived: boolean }) => {
   }, []);
 
   const q = useTrackablesList({ withData: range, showArchived: archived });
+
+  const days = useMemo(
+    () =>
+      eachDayOfInterval({
+        start: range.lastDay,
+        end: range.firstDay,
+      }),
+    [range],
+  );
 
   if (q.isLoading) {
     return (
@@ -61,17 +71,21 @@ const TrackableList = ({ archived }: { archived: boolean }) => {
         <TrackableGroupsProvider trackablesSelect={q.data}>
           <View className="flex flex-col gap-4 pb-6">
             {q.data.map((trackable) => {
-              const recordCount = trackable.data?.length ?? 0;
               return (
                 <TrackableMetaProvider key={trackable.id} trackable={trackable}>
-                  <View className="border-b border-border pb-4">
-                    <Link href={`/trackables/${trackable.id}`} className="py-1">
+                  <View className="border-b border-border">
+                    <Link href={`/trackable/${trackable.id}`} className="px-4 py-1">
                       <Text className="text-lg font-semibold text-primary">{trackable.name}</Text>
                     </Link>
-                    <Text className="text-sm text-muted-foreground">
-                      {recordCount} entries from {format(range.firstDay, "MMM d")} -{" "}
-                      {format(range.lastDay, "MMM d")}
-                    </Text>
+                    <FlatList
+                      data={days}
+                      renderItem={({ item }) => (
+                        <DayCellRouter timestamp={item} labelType={"outside"} className="w-24" />
+                      )}
+                      horizontal
+                      inverted
+                      contentContainerStyle={{ gap: 8, paddingHorizontal: 16, paddingBottom: 16 }}
+                    />
                   </View>
                 </TrackableMetaProvider>
               );
@@ -87,8 +101,8 @@ export const TrackablesScreen = () => {
   const [archived, setArchived] = useState(false);
 
   return (
-    <DefaultWrapper>
-      <View className="flex flex-row items-center justify-between pb-4">
+    <DefaultWrapper noPadding>
+      <View className="flex flex-row items-center justify-between px-4 pb-4">
         <Text className="text-2xl font-semibold text-foreground">
           {archived ? "Archive" : "Your Trackables"}
         </Text>

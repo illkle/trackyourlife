@@ -100,8 +100,8 @@ export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
   });
 
   const days = eachDayOfInterval({
-    start: range.firstDay,
-    end: range.lastDay,
+    start: range.lastDay,
+    end: range.firstDay,
   });
 
   if (q.isLoading) {

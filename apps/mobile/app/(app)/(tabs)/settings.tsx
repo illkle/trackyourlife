@@ -42,6 +42,9 @@ export default function TabTwoScreen() {
         <Text className="text-2xl font-bold text-primary">User:</Text>
         <Text className="mt-2 font-mono text-primary">{session.data?.user?.name}</Text>
         <Text className="mt-1 font-mono text-primary">{session.data?.user?.email}</Text>
+        <Text className="mt-1 font-mono text-primary">
+          {session.data?.session?.expiresAt.toISOString()}
+        </Text>
 
         <PowersyncStatus />
         <Button

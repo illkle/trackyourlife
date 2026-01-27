@@ -14,7 +14,6 @@ export default function AppLayout() {
             headerShown: false,
           }}
         />
-        <Stack.Screen name="modal" options={{ presentation: "modal", title: "Modal" }} />
       </Stack>
       <BottomSheetModalProvider>
         <EditorSheet />

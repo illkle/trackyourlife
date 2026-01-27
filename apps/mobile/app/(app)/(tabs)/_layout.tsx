@@ -6,14 +6,14 @@ import { MaterialIcons } from "@expo/vector-icons";
 export default function TabLayout() {
   return (
     <NativeTabs>
-      <NativeTabs.Trigger name="index">
+      <NativeTabs.Trigger name="(main)">
         {Platform.select({
           ios: <Icon sf="calendar" />,
           android: <Icon src={<VectorIcon family={MaterialIcons} name="calendar-today" />} />,
         })}
         <Label>Today</Label>
       </NativeTabs.Trigger>
-      <NativeTabs.Trigger name="trackables">
+      <NativeTabs.Trigger name="(trackables)">
         {Platform.select({
           ios: <Icon sf="list.bullet" />,
           android: <Icon src={<VectorIcon family={MaterialIcons} name="list" />} />,

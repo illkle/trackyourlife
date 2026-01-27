@@ -76,7 +76,7 @@ export const CreateScreen = () => {
       });
     },
     onSuccess: (id) => {
-      router.push({ pathname: "/trackables/[id]", params: { id } });
+      router.push({ pathname: "/trackable/[id]", params: { id } });
       console.log("id", id);
     },
   });
