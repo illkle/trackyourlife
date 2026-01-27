@@ -16,5 +16,6 @@ export const usePowersyncDrizzle = () => {
   if (!data) {
     throw new Error("usePowersyncDrizzle must be used within PowersyncDrizzleContext.Provider");
   }
+
   return data;
 };

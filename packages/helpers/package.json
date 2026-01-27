@@ -45,14 +45,13 @@
   },
   "dependencies": {
     "@date-fns/tz": "catalog:",
-    "@powersync/drizzle-driver": "catalog:",
+    "@tanstack/react-db": "catalog:tanstack",
     "chroma-js": "^3.2.0",
     "date-fns": "catalog:",
     "drizzle-orm": "catalog:",
-    "fuzzysort": "^3.1.0",
-    "lodash-es": "^4.17.22",
+    "lodash-es": "^4.17.23",
     "millify": "^6.1.0",
-    "use-context-selector": "^1.4.4",
+    "use-context-selector": "^2.0.0",
     "uuid": "catalog:"
   },
   "devDependencies": {

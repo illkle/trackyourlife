@@ -20,10 +20,10 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "@turbo/gen": "2.7.5",
-    "oxfmt": "^0.25.0",
-    "oxlint": "^1.40.0",
-    "turbo": "2.7.5",
+    "@turbo/gen": "2.7.6",
+    "oxfmt": "^0.27.0",
+    "oxlint": "^1.42.0",
+    "turbo": "2.7.6",
     "typescript": "catalog:"
   },
   "engines": {
@@ -32,10 +32,12 @@
   "packageManager": "pnpm@10.28.0",
   "pnpm": {
     "onlyBuiltDependencies": [
+      "@journeyapps/wa-sqlite",
       "@parcel/watcher",
       "@tailwindcss/oxide",
       "core-js-pure",
-      "esbuild"
+      "esbuild",
+      "unrs-resolver"
     ]
   }
 }

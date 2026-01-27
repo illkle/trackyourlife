@@ -24,28 +24,23 @@ import {
 import { useAuthAuthed } from "~/utils/useSessionInfo";
 import { Connector } from "./connector";
 
-// Create PowerSync database instance
-const createPowersyncWeb = () => {
-  const powersyncDb = new PowerSyncDatabase({
-    schema: PowersyncSchema,
-    database: new WASQLiteOpenFactory({
-      dbFilename: "powersync.db",
-      vfs: WASQLiteVFS.OPFSCoopSyncVFS,
-      flags: {
-        enableMultiTabs: typeof SharedWorker !== "undefined",
-      },
-    }),
+const powersyncDb = new PowerSyncDatabase({
+  schema: PowersyncSchema,
+  database: new WASQLiteOpenFactory({
+    dbFilename: "powersync.db",
+    vfs: WASQLiteVFS.OPFSCoopSyncVFS,
     flags: {
       enableMultiTabs: typeof SharedWorker !== "undefined",
     },
-  });
+  }),
+  flags: {
+    enableMultiTabs: typeof SharedWorker !== "undefined",
+  },
+});
 
-  const drizzleDb = wrapPowerSyncWithDrizzle(powersyncDb, {
-    schema: PowersyncDrizzleSchema,
-  });
-
-  return { powersyncDb, drizzleDb };
-};
+const drizzleDb = wrapPowerSyncWithDrizzle(powersyncDb, {
+  schema: PowersyncDrizzleSchema,
+});
 
 export const PowerSyncProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuthAuthed();
@@ -67,7 +62,6 @@ export const PowerSyncProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useLayoutEffect(() => {
-    const { powersyncDb, drizzleDb } = createPowersyncWeb();
     const connector = new Connector();
     asyncConnect(powersyncDb, connector);
     setDatabases({ powersyncDb, drizzleDb });

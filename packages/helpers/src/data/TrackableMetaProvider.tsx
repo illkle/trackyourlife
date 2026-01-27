@@ -3,7 +3,7 @@ import { createContext, useContext, memo } from "react";
 
 import { DbTrackableSelect } from "@tyl/db/client/schema-powersync";
 
-type ITrackableContext = Pick<DbTrackableSelect, "id" | "type" | "name">;
+export type ITrackableContext = Pick<DbTrackableSelect, "id" | "type" | "name">;
 
 export const TrackableContext = createContext<ITrackableContext | null>(null);
 

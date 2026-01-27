@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useLayoutEffect, useMemo } from "react";
 import { Dimensions, Pressable, Text, View } from "react-native";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { eachDayOfInterval, endOfMonth, format, getISODay, startOfMonth } from "date-fns";
@@ -108,7 +108,11 @@ const MonthVisualCalendar = ({ dateFirstDay }: { dateFirstDay: Date }) => {
 
   return (
     <TrackableDataProvider recordsSelect={q.data}>
-      <View className={cn("flex flex-row flex-wrap")} style={{ gap: SPACE_BETWEEN_CELLS }}>
+      <View
+        key={dateFirstDay.toISOString()}
+        className={cn("flex flex-row flex-wrap")}
+        style={{ gap: SPACE_BETWEEN_CELLS }}
+      >
         {Array.from({ length: prefaceWith }).map((_, i) => (
           <View key={i} style={{ width: cellWidth }} className=""></View>
         ))}
@@ -158,17 +162,14 @@ export const TrackableFetcher = () => {
 
   const trackable = Array.isArray(q.data) ? q.data[0] : q.data;
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (trackable?.name) {
+      console.log("setting title", trackable.name);
       navigation.setOptions({
         title: trackable.name,
       });
     }
   }, [navigation, trackable?.name]);
-
-  useEffect(() => {
-    console.log("q data changed");
-  }, [q.data]);
 
   if (q.isLoading) {
     return (

@@ -19,7 +19,6 @@ import { Uniwind } from "uniwind";
 
 import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 export const unstable_settings = {
   anchor: "(tabs)",
@@ -36,26 +35,24 @@ export default function RootLayout() {
     <ServerURLProvider>
       <AuthClientProvider>
         <GestureHandlerRootView>
-          <BottomSheetModalProvider>
-            <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-              <QueryClientProvider client={qc}>
-                <SafeAreaProvider>
-                  <SafeAreaListener
-                    onChange={({ insets }) => {
-                      Uniwind.updateInsets(insets);
-                    }}
-                  >
-                    <KeyboardProvider>
-                      <RootNavigator />
-                      <SplashScreenController />
-                      <StatusBar style="auto" />
-                      <PortalHost />
-                    </KeyboardProvider>
-                  </SafeAreaListener>
-                </SafeAreaProvider>
-              </QueryClientProvider>
-            </ThemeProvider>
-          </BottomSheetModalProvider>
+          <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+            <QueryClientProvider client={qc}>
+              <SafeAreaProvider>
+                <SafeAreaListener
+                  onChange={({ insets }) => {
+                    Uniwind.updateInsets(insets);
+                  }}
+                >
+                  <KeyboardProvider>
+                    <RootNavigator />
+                    <SplashScreenController />
+                    <StatusBar style="auto" />
+                    <PortalHost />
+                  </KeyboardProvider>
+                </SafeAreaListener>
+              </SafeAreaProvider>
+            </QueryClientProvider>
+          </ThemeProvider>
         </GestureHandlerRootView>
       </AuthClientProvider>
     </ServerURLProvider>

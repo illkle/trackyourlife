@@ -42,7 +42,7 @@ export const BooleanUI = ({
   const animatedStyle = useAnimatedStyle(() => {
     return {
       backgroundColor: interpolateColor(sv.value, [0, 1], [inactiveColor, activeColor]),
-      borderColor: interpolateColor(sv.value, [0, 1], [activeColor, inactiveColor]),
+      borderColor: interpolateColor(sv.value, [0, 1], [inactiveColor, activeColor]),
     };
   });
 

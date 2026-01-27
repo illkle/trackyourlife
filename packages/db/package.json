@@ -38,8 +38,10 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@powersync/common": "catalog:",
-    "@powersync/drizzle-driver": "catalog:",
+    "@powersync/common": "catalog:powersync",
+    "@powersync/drizzle-driver": "catalog:powersync",
+    "@tanstack/powersync-db-collection": "catalog:tanstack",
+    "@tanstack/react-db": "catalog:tanstack",
     "drizzle-orm": "catalog:",
     "drizzle-zod": "^0.8.3",
     "uuid": "catalog:",
@@ -50,7 +52,7 @@
     "@types/pg": "^8.16.0",
     "dotenv-cli": "catalog:",
     "drizzle-kit": "catalog:",
-    "pg": "^8.17.1",
+    "pg": "^8.17.2",
     "typescript": "catalog:"
   }
 }

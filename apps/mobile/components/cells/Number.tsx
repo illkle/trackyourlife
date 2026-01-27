@@ -1,11 +1,10 @@
 import { Pressable, Text } from "react-native";
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import { useResolveClassNames, useUniwind } from "uniwind";
-import { BottomSheetModal, BottomSheetTextInput, BottomSheetView } from "@gorhom/bottom-sheet";
+import { useEffect, useMemo } from "react";
+import { useUniwind } from "uniwind";
+
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { DayCellBaseClasses, IDayCellProps, LabelInside } from "@/components/cells";
-import { useLinkedValue } from "@tyl/helpers/useDbLinkedValue";
 import { formatNumberShort, getNumberSafe } from "@tyl/helpers/numberTools";
 import { cn } from "@/lib/utils";
 import { makeColorString } from "@tyl/helpers/colorTools";
@@ -15,46 +14,21 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
+import { useOpenDayEditor } from "@/components/edtorSheet";
 
 export const NumberUI = ({
   value,
-  onChange,
-  timestamp,
+  onPress,
   children,
 }: {
   value?: string;
-  onChange: (value: string) => void;
-  timestamp: number;
+  onPress: () => void;
   children: React.ReactNode;
 }) => {
-  const styles = useResolveClassNames("bg-card");
-
-  const bottomSheetModalRef = useRef<BottomSheetModal>(null);
-
-  const handlePresentModalPress = useCallback(() => {
-    bottomSheetModalRef.current?.present();
-  }, []);
-
-  const { internalValue, internalValueValidated, updateHandler, reset } = useLinkedValue({
-    value: String(getNumberSafe(value)),
-    onChange,
-    timestamp: timestamp,
-    validate: (v) => {
-      return !Number.isNaN(Number(v));
-    },
-  });
-
-  const internalNumber = getNumberSafe(internalValueValidated);
+  const internalNumber = getNumberSafe(value);
   const { id } = useTrackableMeta();
   const { theme } = useUniwind();
   const colorCoding = useTrackableFlag(id, "NumberColorCoding");
-
-  const handleInputBlur = () => {
-    if (internalValue !== internalValueValidated) {
-      reset();
-    }
-    bottomSheetModalRef.current?.close();
-  };
 
   const isBigNumber = internalNumber >= 10000;
 
@@ -89,7 +63,7 @@ export const NumberUI = ({
   return (
     <>
       <AnimatedPressable
-        onPress={handlePresentModalPress}
+        onPress={onPress}
         className={cn(DayCellBaseClasses, "flex items-center justify-center")}
         style={animatedBorderStyle}
       >
@@ -97,31 +71,18 @@ export const NumberUI = ({
         <Text className="text-center text-white">{displayedValue}</Text>
         {children}
       </AnimatedPressable>
-      <BottomSheetModal ref={bottomSheetModalRef} backgroundStyle={styles}>
-        <BottomSheetView className="px-4 py-5">
-          <BottomSheetTextInput
-            autoFocus
-            className="rounded-md border-2 border-secondary py-2 text-center text-2xl font-bold text-primary"
-            value={String(internalNumber)}
-            onChangeText={(v) => updateHandler(v)}
-            onBlur={handleInputBlur}
-          />
-        </BottomSheetView>
-      </BottomSheetModal>
     </>
   );
 };
 
 export const DayCellNumber = (props: IDayCellProps) => {
-  const { onChange, labelType, values } = props.cellData;
+  const { onChange, labelType, values, timestamp } = props.cellData;
   const { value, id: recordId, updated_at: updatedAt } = values[0] ?? {};
 
+  const { openDayEditor } = useOpenDayEditor(timestamp);
+
   return (
-    <NumberUI
-      value={value}
-      onChange={(v) => void onChange({ value: v, recordId, updatedAt: new Date().getTime() })}
-      timestamp={updatedAt ?? 0}
-    >
+    <NumberUI value={value} onPress={openDayEditor}>
       {labelType === "auto" && <LabelInside cellData={props.cellData} />}
     </NumberUI>
   );

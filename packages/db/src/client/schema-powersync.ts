@@ -70,31 +70,6 @@ export const trackable_flags_relations = relations(trackable_flags, ({ one }) =>
   }),
 }));
 
-/*** testing */
-
-export const lists = sqliteTable("lists", {
-  id: text("id"),
-  name: text("name"),
-});
-
-export const todos = sqliteTable("todos", {
-  id: text("id"),
-  description: text("description"),
-  list_id: text("list_id"),
-  created_at: text("created_at"),
-});
-
-export const listsRelations = relations(lists, ({ many }) => ({
-  todos: many(todos),
-}));
-
-export const todosRelations = relations(todos, ({ one }) => ({
-  list: one(lists, {
-    fields: [todos.list_id],
-    references: [lists.id],
-  }),
-}));
-
 export const PowersyncDrizzleSchema = {
   trackable: trackable,
   trackableFlags: trackable_flags,
@@ -105,11 +80,6 @@ export const PowersyncDrizzleSchema = {
   trackable_group_relations,
   trackable_relations,
   record_relations,
-  // *
-  lists,
-  todos,
-  listsRelations,
-  todosRelations,
 };
 
 export const PowersyncSchema = new DrizzleAppSchema(PowersyncDrizzleSchema);

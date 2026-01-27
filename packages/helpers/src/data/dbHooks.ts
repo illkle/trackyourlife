@@ -30,7 +30,7 @@ export const useTrackablesList = ({
   withData?: TrackableRangeParams;
   showArchived?: boolean;
 } = {}) => {
-  const { db } = usePowersyncDrizzle();
+  const { db, userID } = usePowersyncDrizzle();
 
   const trackablesQuery = useMemo(
     () =>
@@ -44,21 +44,11 @@ export const useTrackablesList = ({
             ) THEN 0 ELSE 1 END`,
             asc(trackable.name),
           ],
-          where: (trackable, { exists, eq, not }) =>
-            showArchived
-              ? exists(
-                  db
-                    .select()
-                    .from(trackable_group)
-                    .where(
-                      and(
-                        eq(trackable_group.trackable_id, trackable.id),
-                        eq(trackable_group.group, "archived"),
-                      ),
-                    ),
-                )
-              : not(
-                  exists(
+          where: (trackable, { exists, eq, not, and }) =>
+            and(
+              eq(trackable.user_id, userID),
+              showArchived
+                ? exists(
                     db
                       .select()
                       .from(trackable_group)
@@ -68,9 +58,21 @@ export const useTrackablesList = ({
                           eq(trackable_group.group, "archived"),
                         ),
                       ),
+                  )
+                : not(
+                    exists(
+                      db
+                        .select()
+                        .from(trackable_group)
+                        .where(
+                          and(
+                            eq(trackable_group.trackable_id, trackable.id),
+                            eq(trackable_group.group, "archived"),
+                          ),
+                        ),
+                    ),
                   ),
-                ),
-
+            ),
           with: {
             groups: true,
             flags: true,
@@ -101,13 +103,13 @@ interface TrackableRangeParams {
 }
 
 export const useTrackable = ({ id, withData }: { id: string; withData?: TrackableRangeParams }) => {
-  const { db } = usePowersyncDrizzle();
+  const { db, userID } = usePowersyncDrizzle();
 
   const trackableQuery = useMemo(
     () =>
       toCompilableQuery(
         db.query.trackable.findMany({
-          where: eq(trackable.id, id),
+          where: and(eq(trackable.id, id), eq(trackable.user_id, userID)),
           with: {
             groups: true,
             flags: true,
@@ -137,7 +139,7 @@ interface ByIdParams extends TrackableRangeParams {
 }
 
 export const useTrackableData = ({ id, firstDay, lastDay }: ByIdParams) => {
-  const { db } = usePowersyncDrizzle();
+  const { db, userID } = usePowersyncDrizzle();
   const startDate = dateToSQLiteString(startOfDay(firstDay));
   const endDate = dateToSQLiteString(endOfDay(lastDay));
 
@@ -146,6 +148,7 @@ export const useTrackableData = ({ id, firstDay, lastDay }: ByIdParams) => {
       toCompilableQuery(
         db.query.trackableRecord.findMany({
           where: and(
+            eq(trackable_record.user_id, userID),
             eq(trackable_record.trackable_id, id),
             gte(trackable_record.timestamp, startDate),
             lte(trackable_record.timestamp, endDate),
@@ -160,7 +163,7 @@ export const useTrackableData = ({ id, firstDay, lastDay }: ByIdParams) => {
 };
 
 export const useTrackableDay = ({ date, trackableId }: { date: Date; trackableId: string }) => {
-  const { db } = usePowersyncDrizzle();
+  const { db, userID } = usePowersyncDrizzle();
   const startDate = dateToSQLiteString(startOfDay(date));
   const endDate = dateToSQLiteString(endOfDay(date));
 
@@ -172,6 +175,7 @@ export const useTrackableDay = ({ date, trackableId }: { date: Date; trackableId
           with: {
             data: {
               where: and(
+                eq(trackable_record.user_id, userID),
                 eq(trackable_record.trackable_id, trackableId),
                 gte(trackable_record.timestamp, startDate),
                 lte(trackable_record.timestamp, endDate),
