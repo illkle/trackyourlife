@@ -25,7 +25,11 @@ const areRecordsEqual = (left: DbTrackableRecordSelect[], right: DbTrackableReco
 
 export const useTrackableDataFromContext = (trackableId: string, date: Date) => {
   const key = useMemo(() => makeKey(trackableId, date), [trackableId, date]);
+
   const data = useContextSelector(DataStorageContext, (state) => state[key]);
+  if (date.getDate() === 13) {
+    console.log("useTrackableDataFromContext", key, data);
+  }
   return data ?? [];
 };
 
@@ -78,6 +82,7 @@ export const TrackableDataProvider = ({
   recordsSelect,
   trackablesSelect,
 }: DataProviderProps) => {
+  console.log("TrackableDataProvider memo");
   const parsedCacheRef = useRef<ITrackableDataContext>({});
   const dataStorage = useMemo(() => {
     const nextCache: ITrackableDataContext = {};

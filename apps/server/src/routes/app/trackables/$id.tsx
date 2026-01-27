@@ -42,11 +42,29 @@ import {
   useIsTrackableInGroup,
 } from "@tyl/helpers/data/TrackableGroupsProvider";
 import { TrackableMetaProvider, useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
+import { endOfMonth, endOfYear, startOfMonth, startOfYear } from "date-fns";
 
 const paramsSchema = z.object({
   month: z.number().min(0).max(11).or(z.literal("list")).optional().default(new Date().getMonth()),
   year: z.number().min(1970).or(z.literal("list")).optional().default(new Date().getFullYear()),
 });
+
+export const useMonthYear = () => {
+  const { month, year } = Route.useSearch();
+
+  if (typeof year === "number" && typeof month === "number") {
+    const d = new Date(year, month, 1);
+    return { mode: "month", from: startOfMonth(d), to: endOfMonth(d) };
+  } else if (typeof year === "number") {
+    return {
+      mode: "year",
+      from: startOfYear(new Date(year, 0, 1)),
+      to: endOfYear(new Date(year, 0, 1)),
+    };
+  }
+
+  return { mode: "month", from: startOfMonth(new Date()), to: endOfMonth(new Date()) };
+};
 
 const RouteComponent = () => {
   const params = Route.useParams();
@@ -54,7 +72,9 @@ const RouteComponent = () => {
 
   const isView = loc.pathname === `/app/trackables/${params.id}/view`;
 
-  const q = useTrackable({ id: params.id });
+  const { from, to } = useMonthYear();
+
+  const q = useTrackable({ id: params.id, withData: { firstDay: from, lastDay: to } });
   const {
     data: [trackable],
   } = q;
@@ -125,8 +145,6 @@ const TrackableDropdown = () => {
 
   const isArchived = useIsTrackableInGroup(id, "archived");
   const monthViewStyle = useTrackableFlag(id, "AnyMonthViewType");
-
-  console.log("monthViewStyle", monthViewStyle);
 
   const { removeFromGroup, addToGroup } = useGroupHandlers();
 

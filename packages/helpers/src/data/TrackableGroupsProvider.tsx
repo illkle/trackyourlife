@@ -54,5 +54,7 @@ export const TrackableGroupsProvider = ({
     return nextCache;
   }, [groupsSelect, trackablesSelect]);
 
-  return <GroupStorageContext.Provider value={groupStorage}>{children}</GroupStorageContext.Provider>;
+  return (
+    <GroupStorageContext.Provider value={groupStorage}>{children}</GroupStorageContext.Provider>
+  );
 };

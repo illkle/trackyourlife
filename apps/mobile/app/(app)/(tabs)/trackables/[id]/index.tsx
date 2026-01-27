@@ -1,12 +1,18 @@
-import { useMemo } from "react";
-import { Pressable, Text, View } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { format } from "date-fns";
+import { useEffect, useMemo } from "react";
+import { Dimensions, Pressable, Text, View } from "react-native";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import { eachDayOfInterval, endOfMonth, format, getISODay, startOfMonth } from "date-fns";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react-native";
 
-import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
-import { DefaultWrapper } from "@/lib/styledComponents";
 import { Button } from "@/components/ui/button";
+import DayCellRouter from "@/components/cells";
+import { cn } from "@/lib/utils";
+import { DefaultWrapper } from "@/lib/styledComponents";
+import { useTrackable, useTrackableData } from "@tyl/helpers/data/dbHooks";
+import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
+import { TrackableFlagsProviderExternal } from "@tyl/helpers/data/TrackableFlagsProvider";
+import { TrackableGroupsProvider } from "@tyl/helpers/data/TrackableGroupsProvider";
+import { TrackableMetaProvider, useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 
 const getIncrementedDate = (add: number, year: number, month: number) => {
   let newMonth = month + add;
@@ -70,10 +76,54 @@ const ViewController = ({ year, month }: { year: number; month: number }) => {
 };
 
 const TrackableView = () => {
+  const { month, year, startOfMonthDate } = useYearMonth();
+
+  return (
+    <View className="flex flex-col gap-4 pt-4 pb-6">
+      <ViewController year={year} month={month} />
+      <MonthVisualCalendar key={`${year}-${month}`} dateFirstDay={startOfMonthDate} />
+    </View>
+  );
+};
+
+const SPACE_BETWEEN_CELLS = 4;
+
+const MonthVisualCalendar = ({ dateFirstDay }: { dateFirstDay: Date }) => {
+  const prefaceWith = dateFirstDay ? getISODay(dateFirstDay) - 1 : 0;
+
+  const days = useMemo(
+    () => eachDayOfInterval({ start: dateFirstDay, end: endOfMonth(dateFirstDay) }),
+    [dateFirstDay],
+  );
+
+  const { id } = useTrackableMeta();
+  const q = useTrackableData({
+    id,
+    firstDay: dateFirstDay,
+    lastDay: endOfMonth(dateFirstDay),
+  });
+
+  const screenWidth = Dimensions.get("window").width - 32; // sub side padding
+  const cellWidth = (screenWidth - SPACE_BETWEEN_CELLS * 6) / 7; // sub gap between cells
+
+  return (
+    <TrackableDataProvider recordsSelect={q.data}>
+      <View className={cn("flex flex-row flex-wrap")} style={{ gap: SPACE_BETWEEN_CELLS }}>
+        {Array.from({ length: prefaceWith }).map((_, i) => (
+          <View key={i} style={{ width: cellWidth }} className=""></View>
+        ))}
+        {days.map((el, i) => (
+          <DayCellRouter key={i} timestamp={el} labelType={"auto"} style={{ width: cellWidth }} />
+        ))}
+      </View>
+    </TrackableDataProvider>
+  );
+};
+
+export const useYearMonth = () => {
   const params = useLocalSearchParams();
   const monthParam = Array.isArray(params.month) ? params.month[0] : params.month;
   const yearParam = Array.isArray(params.year) ? params.year[0] : params.year;
-  const trackable = useTrackableMeta();
 
   const month = useMemo(() => {
     const parsed = Number(monthParam);
@@ -85,29 +135,82 @@ const TrackableView = () => {
     return Number.isInteger(parsed) && parsed > 1900 ? parsed : new Date().getFullYear();
   }, [yearParam]);
 
-  const monthDate = useMemo(() => new Date(year, month, 1), [month, year]);
+  const startOfMonthDate = useMemo(() => startOfMonth(new Date(year, month, 1)), [year, month]);
+  const endOfMonthDate = useMemo(() => endOfMonth(new Date(year, month, 1)), [year, month]);
 
-  return (
-    <View className="flex flex-col gap-4 pt-4 pb-6">
-      <ViewController year={year} month={month} />
-
-      <View className="rounded-md border border-border bg-card p-4">
-        <Text className="text-sm text-muted-foreground">
-          Month view is not implemented yet.
-          {trackable.id}
-          {monthDate.toLocaleDateString()}
-        </Text>
-      </View>
-    </View>
-  );
+  return {
+    month,
+    year,
+    startOfMonthDate,
+    endOfMonthDate,
+  };
 };
 
-export const TrackableScreen = () => {
+export const TrackableFetcher = () => {
+  const params = useLocalSearchParams();
+  const id = params.id as string;
+
+  const q = useTrackable({
+    id,
+  });
+
+  const navigation = useNavigation();
+
+  const trackable = Array.isArray(q.data) ? q.data[0] : q.data;
+
+  useEffect(() => {
+    if (trackable?.name) {
+      navigation.setOptions({
+        title: trackable.name,
+      });
+    }
+  }, [navigation, trackable?.name]);
+
+  useEffect(() => {
+    console.log("q data changed");
+  }, [q.data]);
+
+  if (q.isLoading) {
+    return (
+      <DefaultWrapper>
+        <View className="items-center justify-center py-12">
+          <Text className="text-muted-foreground">Loading trackable...</Text>
+        </View>
+      </DefaultWrapper>
+    );
+  }
+
+  if (q.error || !q.data) {
+    return (
+      <DefaultWrapper>
+        <View className="items-center justify-center py-12">
+          <Text className="text-destructive">Trackable not found.</Text>
+        </View>
+      </DefaultWrapper>
+    );
+  }
+
+  if (!trackable) {
+    return (
+      <DefaultWrapper>
+        <View className="items-center justify-center py-12">
+          <Text className="text-destructive">Trackable not found.</Text>
+        </View>
+      </DefaultWrapper>
+    );
+  }
+
   return (
     <DefaultWrapper>
-      <TrackableView />
+      <TrackableMetaProvider trackable={trackable}>
+        <TrackableFlagsProviderExternal trackablesSelect={q.data}>
+          <TrackableGroupsProvider trackablesSelect={q.data}>
+            <TrackableView />
+          </TrackableGroupsProvider>
+        </TrackableFlagsProviderExternal>
+      </TrackableMetaProvider>
     </DefaultWrapper>
   );
 };
 
-export default TrackableScreen;
+export default TrackableFetcher;

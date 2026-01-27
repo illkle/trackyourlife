@@ -16,7 +16,7 @@ import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useLinkedValue } from "@tyl/helpers/useDbLinkedValue";
 import { useIsMobile } from "~/utils/useIsDesktop";
-import { getNumberSafe, NumberFormatter } from "@tyl/helpers/numberTools";
+import { formatNumberShort, getNumberSafe } from "@tyl/helpers/numberTools";
 
 export const DayCellNumber = (props: IDayCellProps) => {
   const { id, type, name } = useTrackableMeta();
@@ -103,7 +103,7 @@ const FormatterFader = ({ className, ...props }: React.ComponentProps<"div">) =>
 
   const isBigNumber = internalNumber >= 10000;
 
-  const displayedValue = isBigNumber ? NumberFormatter.format(internalNumber) : internalNumber;
+  const displayedValue = isBigNumber ? formatNumberShort(internalNumber) : internalNumber;
 
   return (
     <div data-empty={internalNumber === 0} {...props} className={cn(className)}>

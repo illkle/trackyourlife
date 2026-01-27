@@ -100,18 +100,33 @@ interface TrackableRangeParams {
   lastDay: Date;
 }
 
-export const useTrackable = ({ id }: { id: string }) => {
+export const useTrackable = ({ id, withData }: { id: string; withData?: TrackableRangeParams }) => {
   const { db } = usePowersyncDrizzle();
 
   const trackableQuery = useMemo(
     () =>
       toCompilableQuery(
-        db.query.trackable.findFirst({
+        db.query.trackable.findMany({
           where: eq(trackable.id, id),
-          with: { groups: true, flags: true },
+          with: {
+            groups: true,
+            flags: true,
+            data: withData
+              ? {
+                  where: and(
+                    gte(
+                      trackable_record.timestamp,
+                      dateToSQLiteString(startOfDay(withData.firstDay)),
+                    ),
+                    lte(trackable_record.timestamp, dateToSQLiteString(endOfDay(withData.lastDay))),
+                  ),
+                  orderBy: [asc(trackable_record.timestamp)],
+                }
+              : undefined,
+          },
         }),
       ),
-    [db, id],
+    [db, id, withData?.firstDay, withData?.lastDay],
   );
 
   return useQuery(trackableQuery);

@@ -1,11 +1,20 @@
 import { Pressable, Text } from "react-native";
-import { useCallback, useRef } from "react";
-import { useResolveClassNames } from "uniwind";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+import { useResolveClassNames, useUniwind } from "uniwind";
 import { BottomSheetModal, BottomSheetTextInput, BottomSheetView } from "@gorhom/bottom-sheet";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
-import { IDayCellProps, LabelInside } from "@/components/cells";
+import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
+import { DayCellBaseClasses, IDayCellProps, LabelInside } from "@/components/cells";
 import { useLinkedValue } from "@tyl/helpers/useDbLinkedValue";
-import { getNumberSafe } from "@tyl/helpers/numberTools";
+import { formatNumberShort, getNumberSafe } from "@tyl/helpers/numberTools";
+import { cn } from "@/lib/utils";
+import { makeColorString } from "@tyl/helpers/colorTools";
+import Animated, {
+  interpolateColor,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 export const NumberUI = ({
   value,
@@ -18,7 +27,7 @@ export const NumberUI = ({
   timestamp: number;
   children: React.ReactNode;
 }) => {
-  const styles = useResolveClassNames("bg-background");
+  const styles = useResolveClassNames("bg-card");
 
   const bottomSheetModalRef = useRef<BottomSheetModal>(null);
 
@@ -36,6 +45,9 @@ export const NumberUI = ({
   });
 
   const internalNumber = getNumberSafe(internalValueValidated);
+  const { id } = useTrackableMeta();
+  const { theme } = useUniwind();
+  const colorCoding = useTrackableFlag(id, "NumberColorCoding");
 
   const handleInputBlur = () => {
     if (internalValue !== internalValueValidated) {
@@ -44,17 +56,52 @@ export const NumberUI = ({
     bottomSheetModalRef.current?.close();
   };
 
+  const isBigNumber = internalNumber >= 10000;
+
+  const displayedValue = isBigNumber ? formatNumberShort(internalNumber, 0) : internalNumber;
+  const progressColor = useMemo(() => {
+    const color = colorCoding.valueToColor(internalNumber);
+    return makeColorString(theme === "light" ? color.lightMode : color.darkMode);
+  }, [colorCoding, internalNumber, theme]);
+  const borderColorFrom = useSharedValue(progressColor);
+  const borderColorTo = useSharedValue(progressColor);
+  const borderColorProgress = useSharedValue(1);
+
+  useEffect(() => {
+    if (borderColorTo.value === progressColor) return;
+    borderColorFrom.value = borderColorTo.value;
+    borderColorTo.value = progressColor;
+    borderColorProgress.value = 0;
+    borderColorProgress.value = withTiming(1, { duration: 150 });
+  }, [borderColorFrom, borderColorProgress, borderColorTo, progressColor]);
+
+  const animatedBorderStyle = useAnimatedStyle(() => {
+    return {
+      borderWidth: 2,
+      borderColor: interpolateColor(
+        borderColorProgress.value,
+        [0, 1],
+        [borderColorFrom.value, borderColorTo.value],
+      ),
+    };
+  });
+
   return (
     <>
-      <Pressable onPress={handlePresentModalPress} className="rounded-md border-2 border-white p-4">
-        <Text className="text-center text-3xl text-white">{value}</Text>
+      <AnimatedPressable
+        onPress={handlePresentModalPress}
+        className={cn(DayCellBaseClasses, "flex items-center justify-center")}
+        style={animatedBorderStyle}
+      >
+        <ProgressBar internalNumber={internalNumber} color={progressColor} />
+        <Text className="text-center text-white">{displayedValue}</Text>
         {children}
-      </Pressable>
+      </AnimatedPressable>
       <BottomSheetModal ref={bottomSheetModalRef} backgroundStyle={styles}>
-        <BottomSheetView className="h-30">
+        <BottomSheetView className="px-4 py-5">
           <BottomSheetTextInput
             autoFocus
-            className="text-white"
+            className="rounded-md border-2 border-secondary py-2 text-center text-2xl font-bold text-primary"
             value={String(internalNumber)}
             onChangeText={(v) => updateHandler(v)}
             onBlur={handleInputBlur}
@@ -66,9 +113,7 @@ export const NumberUI = ({
 };
 
 export const DayCellNumber = (props: IDayCellProps) => {
-  const { id } = useTrackableMeta();
-
-  const { onChange, labelType, values, timestamp } = props.cellData;
+  const { onChange, labelType, values } = props.cellData;
   const { value, id: recordId, updated_at: updatedAt } = values[0] ?? {};
 
   return (
@@ -81,3 +126,50 @@ export const DayCellNumber = (props: IDayCellProps) => {
     </NumberUI>
   );
 };
+
+const ProgressBar = ({ internalNumber, color }: { internalNumber: number; color: string }) => {
+  const { id } = useTrackableMeta();
+  const progressBounds = useTrackableFlag(id, "NumberProgessBounds");
+
+  const progress = progressBounds.map(internalNumber);
+
+  const progressValue = useSharedValue(progress ?? 0);
+  const colorFrom = useSharedValue(color);
+  const colorTo = useSharedValue(color);
+  const colorProgress = useSharedValue(1);
+
+  useEffect(() => {
+    progressValue.value = withTiming(progress ?? 0, { duration: 150 });
+  }, [progress, progressValue]);
+
+  useEffect(() => {
+    if (colorTo.value === color) return;
+    colorFrom.value = colorTo.value;
+    colorTo.value = color;
+    colorProgress.value = 0;
+    colorProgress.value = withTiming(1, { duration: 150 });
+  }, [color, colorFrom, colorProgress, colorTo]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      height: `${progressValue.value}%`,
+      backgroundColor: interpolateColor(
+        colorProgress.value,
+        [0, 1],
+        [colorFrom.value, colorTo.value],
+      ),
+    };
+  });
+
+  if (progress === null) return null;
+
+  return (
+    <Animated.View
+      pointerEvents="none"
+      className={cn("absolute bottom-0 left-0 w-full")}
+      style={animatedStyle}
+    />
+  );
+};
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);

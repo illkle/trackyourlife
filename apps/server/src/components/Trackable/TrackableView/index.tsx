@@ -21,7 +21,6 @@ import DayCellRouter from "~/components/DayCell";
 import { QueryError } from "~/components/QueryError";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
-import { ViewController } from "~/components/Trackable/TrackableView/viewController";
 import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
 import { useMemo } from "react";
 
@@ -29,15 +28,9 @@ const MonthVisualCalendar = ({ dateFirstDay, mini }: { dateFirstDay: Date; mini?
   const prefaceWith = dateFirstDay ? getISODay(dateFirstDay) - 1 : 0;
 
   const days = useMemo(
-    () =>
-      eachDayOfInterval({
-        start: dateFirstDay,
-        end: endOfMonth(dateFirstDay),
-      }),
+    () => eachDayOfInterval({ start: dateFirstDay, end: endOfMonth(dateFirstDay) }),
     [dateFirstDay],
   );
-
-  console.log("monthVisual calendar renders");
 
   return (
     <div
@@ -47,16 +40,9 @@ const MonthVisualCalendar = ({ dateFirstDay, mini }: { dateFirstDay: Date; mini?
       )}
     >
       <div style={{ gridColumn: `span ${prefaceWith}` }}></div>
-      {days.map((el, i) => {
-        return (
-          <DayCellRouter
-            key={i}
-            timestamp={el}
-            disabled={false} // todo
-            labelType={mini ? "outside" : "auto"}
-          />
-        );
-      })}
+      {days.map((el, i) => (
+        <DayCellRouter key={i} timestamp={el} labelType={mini ? "outside" : "auto"} />
+      ))}
     </div>
   );
 };
@@ -88,7 +74,7 @@ const MonthVisualList = ({ dateFirstDay }: { dateFirstDay: Date }) => {
   );
 };
 
-export const MonthFetcher = ({
+export const MonthView = ({
   date,
   mini,
   forceViewType,
@@ -135,7 +121,7 @@ export const MonthFetcher = ({
   );
 };
 
-const YearFetcher = ({ date, openMonth }: { date: Date; openMonth: (n: number) => void }) => {
+export const YearView = ({ date, openMonth }: { date: Date; openMonth: (n: number) => void }) => {
   const firstDayDate = startOfYear(date);
   const lastDayDate = endOfYear(firstDayDate);
 
@@ -157,7 +143,7 @@ const YearFetcher = ({ date, openMonth }: { date: Date; openMonth: (n: number) =
               {format(el, "MMMM")}
             </Button>
 
-            <MonthFetcher mini={true} date={el} />
+            <MonthView mini={true} date={el} />
           </div>
         );
       })}
@@ -166,34 +152,3 @@ const YearFetcher = ({ date, openMonth }: { date: Date; openMonth: (n: number) =
 };
 
 export type TVDateValue = number | "list";
-
-const TrackableView = ({
-  year,
-  month,
-  setDates,
-}: {
-  year: TVDateValue;
-  month: TVDateValue;
-  setDates: (year: TVDateValue, month: TVDateValue) => void;
-}) => {
-  const view = typeof month !== "number" && typeof year === "number" ? "months" : "days";
-
-  const openMonth = (m: number) => {
-    setDates(year, m);
-  };
-
-  return (
-    <>
-      <ViewController year={year} month={month} />
-
-      {view === "days" && <MonthFetcher date={new Date(year as number, month as number, 1)} />}
-      {view === "months" && (
-        <YearFetcher date={new Date(year as number, 0, 1)} openMonth={openMonth} />
-      )}
-
-      <hr className="my-4 h-px border-none bg-muted-foreground opacity-10 outline-hidden" />
-    </>
-  );
-};
-
-export default TrackableView;

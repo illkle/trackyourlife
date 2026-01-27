@@ -10,16 +10,16 @@ import { DayCellNumber } from "./Number";
 import { useTrackableDataFromContext } from "@tyl/helpers/data/TrackableDataProvider";
 import { DbTrackableRecordSelect } from "@tyl/db/client/schema-powersync";
 import { cn } from "@/lib/utils";
-import { View } from "react-native";
+import { StyleProp, Text, View, ViewStyle } from "react-native";
 
-export const DayCellBaseClasses =
-  "w-full h-full relative overflow-hidden border-transparent border-2 rounded-xs";
+export const DayCellBaseClasses = "w-full h-20 relative overflow-hidden  border-2 rounded-xs";
 
 interface DayCellRouterProps {
   className?: string;
   labelType: IDayCellLabelType;
   disabled?: boolean;
   timestamp: Date;
+  style?: StyleProp<ViewStyle>;
 }
 
 export type IDayCellLabelType = "auto" | "outside" | "none";
@@ -37,7 +37,12 @@ export interface IDayCellData {
 
 export type IDayCellProps = { cellData: IDayCellData };
 
-export const DayCellRouter = ({ timestamp, labelType = "auto", className }: DayCellRouterProps) => {
+export const DayCellRouter = ({
+  timestamp,
+  labelType = "auto",
+  className,
+  style,
+}: DayCellRouterProps) => {
   const { id, type } = useTrackableMeta();
   const trackingStart = useTrackableFlag(id, "AnyTrackingStart");
 
@@ -69,10 +74,10 @@ export const DayCellRouter = ({ timestamp, labelType = "auto", className }: DayC
   };
 
   return (
-    <div className={cn("relative flex flex-1 flex-col", className)}>
+    <View className={cn("relative", className)} style={style}>
       {labelType === "outside" && <LabelOutside cellData={cellData} />}
       <DayCellTypeRouter cellData={cellData}></DayCellTypeRouter>
-    </div>
+    </View>
   );
 };
 
@@ -106,28 +111,28 @@ export const OutOfRangeSimple = (props: IDayCellProps) => {
 
 const LabelOutside = (props: IDayCellProps) => {
   return (
-    <View
+    <Text
       className={cn(
         "mr-1 text-right text-xs text-muted-foreground",
         props.cellData.isToday ? "font-normal underline" : "font-light",
       )}
     >
       {format(props.cellData.timestamp, "d")}
-    </View>
+    </Text>
   );
 };
 
 export const LabelInside = (props: IDayCellProps) => {
   return (
-    <View
+    <Text
       className={cn(
         "absolute top-0 left-1 z-10 text-base text-muted-foreground select-none",
-        props.cellData.isToday ? "font-normal underline" : "font-light",
-        "text-xs sm:text-base",
+        props.cellData.isToday ? "font-bold underline" : "",
+        "text-sm sm:text-base",
       )}
     >
       {format(props.cellData.timestamp, "d")}
-    </View>
+    </Text>
   );
 };
 

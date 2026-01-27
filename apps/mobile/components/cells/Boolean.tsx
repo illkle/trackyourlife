@@ -9,7 +9,8 @@ import Animated, {
 import { useUniwind } from "uniwind";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
-import { IDayCellProps, LabelInside } from "@/components/cells";
+import { DayCellBaseClasses, IDayCellProps, LabelInside } from "@/components/cells";
+import { cn } from "@/lib/utils";
 
 export const BooleanUI = ({
   value,
@@ -47,7 +48,7 @@ export const BooleanUI = ({
 
   return (
     <Pressable onPress={() => onChange(!value)}>
-      <Animated.View className="h-40 w-full rounded-xs border-2" style={animatedStyle}>
+      <Animated.View className={cn(DayCellBaseClasses, "")} style={animatedStyle}>
         {children}
       </Animated.View>
     </Pressable>
