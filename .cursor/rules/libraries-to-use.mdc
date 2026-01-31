@@ -1,9 +1,0 @@
----
-description: What packages and libraries to use for specific tasks inside of codebase
-globs: *.tsx, *.ts
----
-- For handling dates always use "dateFns"
-- Use Zod for validation where applicable
-- If you need animations use framer-motion. You can import it like this: import { AnimatePresence, m } from "motion/react";
-- Always export react components like `export const SomeComponent = () => {}` even in single component files.
-- For icons always use Lucide. Prefer imports suffixed with icon. I.e. `import { CalendarIcon } from "lucide-react"
