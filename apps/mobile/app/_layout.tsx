@@ -9,9 +9,9 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native
 
 import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaListener, SafeAreaProvider } from "react-native-safe-area-context";
-import { SplashScreenController } from "@/components/splash";
+
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { AuthClientProvider, useAuthClient } from "@/lib/authClient";
+import { AuthClientProvider, useSessionCached } from "@/lib/authClient";
 import { PortalHost } from "@rn-primitives/portal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ServerURLProvider, useServerURL } from "@/lib/ServerURLContext";
@@ -45,7 +45,6 @@ export default function RootLayout() {
                 >
                   <KeyboardProvider>
                     <RootNavigator />
-                    <SplashScreenController />
                     <StatusBar style="auto" />
                     <PortalHost />
                   </KeyboardProvider>
@@ -61,10 +60,9 @@ export default function RootLayout() {
 
 const RootNavigator = () => {
   const { serverURL, powersyncURL } = useServerURL();
-  const { authClient } = useAuthClient();
-  const session = authClient.useSession();
+  const session = useSessionCached();
 
-  const needsToLogin = !session.data?.user || !serverURL || !powersyncURL;
+  const needsToLogin = !session?.data?.user || !serverURL || !powersyncURL;
 
   return (
     <Stack>

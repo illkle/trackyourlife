@@ -1,6 +1,6 @@
 
 import { connectPowerSync, db, powersyncDB } from "@/db/powersync";
-import { useAuthClient } from "@/lib/authClient";
+import { useAuthClient, useSessionCached } from "@/lib/authClient";
 import { useServerURL } from "@/lib/ServerURLContext";
 import { PowerSyncContext } from "@powersync/react-native";
 import { PowersyncDrizzleContext } from "@tyl/db/client/context";
@@ -10,7 +10,7 @@ export const PowerSyncProvider = ({ children }: { children: ReactNode }) => {
   const { authClient } = useAuthClient();
   const { powersyncURL, serverURL } = useServerURL();
 
-  const session = authClient.useSession();
+  const session = useSessionCached();
 
   if (!session.data?.user) {
     console.error("User not found");
