@@ -2,9 +2,10 @@ import * as SecureStore from "expo-secure-store";
 import { expoClient } from "@better-auth/expo/client";
 import { jwtClient } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from "react";
+import { createContext, ReactNode, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useState,  } from "react";
 import { useServerURL } from "@/lib/ServerURLContext";
 import { z } from "zod";
+import {  useQueryClient } from "@tanstack/react-query";
 
 const createBetterAuth = (serverURL: string) => {
   return createAuthClient({
@@ -133,28 +134,78 @@ function keepAlphanumeric(str: string) {
   return str.replace(/[^a-z0-9]/gi, "");
 }
 
+
+export const sessionCachedProvider = createContext<{
+  sessionInStore: AuthData | null;
+  invalidate: () => Promise<void>;
+}>({
+  sessionInStore: null,
+  invalidate: async () => {},
+});
+
+export const SessionCachedProvider = ({ children }: { children: ReactNode }) => {
+  const [sessionInStore, setSessionInStore] = useState<AuthData | null>(null);
+  const { serverURL } = useServerURL();
+
+
+  const refreshSession = useCallback(async (serverURL: string | null) => {
+    if (!serverURL) {
+      setSessionInStore(null);
+      return;
+    }
+    const s = await getSessionFromStore(serverURL);
+    setSessionInStore(s);
+  }, []);
+
+  const invalidate = useCallback(async () => {
+    refreshSession(serverURL);
+  }, [serverURL]);
+
+  useLayoutEffect(() => {
+    void refreshSession(serverURL);
+
+  }, [refreshSession, serverURL]);
+
+  return <sessionCachedProvider.Provider value={{ sessionInStore, invalidate }}>{children}</sessionCachedProvider.Provider>;
+};
+
+
+// TODO: warning when no real session. If session in store is expired ask for relogin.
 export const useSessionCached = () => {
   const { serverURL } = useServerURL();
 
   const { authClient } = useAuthClient();
   const session = authClient.useSession();
 
-  const [sessionInStore, setSessionInStore] = useState<
-    ReturnType<AuthClient["useSession"]>["data"] | null
-  >(getSessionFromStore(serverURL));
+  const sessionInStore = useContext(sessionCachedProvider);
+  
+  const qc = useQueryClient()
 
-  useEffect(() => {
-    setSessionInStore(getSessionFromStore(serverURL));
+  const signOut = useCallback(async () => {
+    await authClient.signOut();
+    await removeSessionFromStore(serverURL);
+    await sessionInStore.invalidate();
+  }, [serverURL, authClient, qc]);
+
+  const updateStores = useCallback(async ( session: ReturnType<AuthClient["useSession"]>) => {
+    if (session.data) {
+      await writeSessionToStore(serverURL, session.data);
+      await sessionInStore.invalidate();
+    }
   }, [serverURL]);
 
   useEffect(() => {
-    if (session.data) {
-      writeSessionToStore(serverURL, session.data);
-      setSessionInStore(session.data);
-    }
-  }, [session.data, serverURL]);
+    updateStores(session);
+  }, [updateStores, session]);
 
   const hasReadySession = session.data?.user && !session.isPending;
 
-  return { ...session, data: hasReadySession ? session.data : sessionInStore };
+  const s: AuthData | null = hasReadySession ? session.data : sessionInStore.sessionInStore;
+
+  const isExpired = s && s.session.expiresAt < new Date();
+  const isNotReal = !hasReadySession;
+
+  console.log("s", s);
+
+  return { realSession: session, data: s, isExpired, isNotReal, signOut };
 };

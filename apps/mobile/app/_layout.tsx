@@ -11,20 +11,20 @@ import { KeyboardProvider } from "react-native-keyboard-controller";
 import { SafeAreaListener, SafeAreaProvider } from "react-native-safe-area-context";
 
 import { useColorScheme } from "@/hooks/use-color-scheme";
-import { AuthClientProvider, useSessionCached } from "@/lib/authClient";
+import { AuthClientProvider, SessionCachedProvider, useSessionCached } from "@/lib/authClient";
 import { PortalHost } from "@rn-primitives/portal";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ServerURLProvider, useServerURL } from "@/lib/ServerURLContext";
 import { Uniwind } from "uniwind";
 
-import * as SplashScreen from "expo-splash-screen";
+//import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export const unstable_settings = {
   anchor: "(tabs)",
 };
 
-SplashScreen.preventAutoHideAsync();
+//SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const colorScheme = useColorScheme();
@@ -34,6 +34,7 @@ export default function RootLayout() {
   return (
     <ServerURLProvider>
       <AuthClientProvider>
+        <SessionCachedProvider>
         <GestureHandlerRootView>
           <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
             <QueryClientProvider client={qc}>
@@ -53,6 +54,7 @@ export default function RootLayout() {
             </QueryClientProvider>
           </ThemeProvider>
         </GestureHandlerRootView>
+        </SessionCachedProvider>
       </AuthClientProvider>
     </ServerURLProvider>
   );
@@ -62,7 +64,7 @@ const RootNavigator = () => {
   const { serverURL, powersyncURL } = useServerURL();
   const session = useSessionCached();
 
-  const needsToLogin = !session?.data?.user || !serverURL || !powersyncURL;
+  const needsToLogin = !session?.data || !serverURL || !powersyncURL;
 
   return (
     <Stack>

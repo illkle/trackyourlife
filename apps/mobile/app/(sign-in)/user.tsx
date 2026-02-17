@@ -5,10 +5,12 @@ import { DefaultWrapper } from "@/lib/styledComponents";
 export default function Screen() {
   return (
     <DefaultWrapper>
-      <View>
-        <Text className="mx-auto text-5xl font-black text-primary">TYL USER</Text>
+      <View className="p-safe">
+        <View>
+          <Text className="mx-auto text-5xl font-black text-primary">TYL</Text>
+        </View>
+        <AuthForm />
       </View>
-      <AuthForm />
     </DefaultWrapper>
   );
 }

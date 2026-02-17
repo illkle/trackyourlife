@@ -1,11 +1,10 @@
 import { Text, View } from "react-native";
 import { Button } from "@/components/ui/button";
-import { removeSessionFromStore, useAuthClient, useSessionCached } from "@/lib/authClient";
+import {  useSessionCached } from "@/lib/authClient";
 import { powersyncDB } from "@/db/powersync";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { DefaultWrapper } from "@/lib/styledComponents";
-import { useServerURL } from "@/lib/ServerURLContext";
 
 const PowersyncStatus = () => {
   const [connected, setConnected] = useState(powersyncDB.connected);
@@ -35,8 +34,6 @@ const PowersyncStatus = () => {
 
 export default function TabTwoScreen() {
   const session = useSessionCached();
-  const { authClient } = useAuthClient();
-  const { serverURL } = useServerURL();
   return (
     <DefaultWrapper>
       <View>
@@ -48,7 +45,7 @@ export default function TabTwoScreen() {
         </Text>
 
         <Text className="mt-1 font-mono text-primary">
-          {JSON.stringify(session.sessionInStore, null, 2)}
+          {JSON.stringify(session.data, null, 2)}
         </Text>
 
         <PowersyncStatus />
@@ -57,8 +54,7 @@ export default function TabTwoScreen() {
           className="mt-4"
           text="Sign out"
           onPress={() => {
-            void removeSessionFromStore(serverURL);
-            void authClient.signOut();
+            void session.signOut()
           }}
         />
       </View>
