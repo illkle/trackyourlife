@@ -41,7 +41,6 @@
     "@powersync/common": "catalog:powersync",
     "@powersync/drizzle-driver": "catalog:powersync",
     "@tanstack/powersync-db-collection": "catalog:tanstack",
-    "@tanstack/react-db": "catalog:tanstack",
     "drizzle-orm": "catalog:",
     "drizzle-zod": "^0.8.3",
     "uuid": "catalog:",
