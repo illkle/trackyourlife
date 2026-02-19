@@ -13,7 +13,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { useOpenDayEditor } from "@/components/edtorSheet";
+import { useOpenDayEditor } from "@/components/editorModal";
 import { DayCellBaseClasses, IDayCellProps, LabelInside } from "@/components/cells/common";
 
 export const NumberUI = ({

@@ -7,6 +7,12 @@ export default function AppLayout() {
     <PowerSyncProvider>
       <Stack>
         <Stack.Screen
+          name="(tabs)"
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
           name="editor"
           options={{
             presentation: "transparentModal",
@@ -15,12 +21,6 @@ export default function AppLayout() {
             contentStyle: { backgroundColor: "rgba(0,0,0,0.5)" },
           }}
         ></Stack.Screen>
-        <Stack.Screen
-          name="(tabs)"
-          options={{
-            headerShown: false,
-          }}
-        />
       </Stack>
     </PowerSyncProvider>
   );

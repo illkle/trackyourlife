@@ -2,10 +2,14 @@ import React from "react";
 import { Platform } from "react-native";
 import { Icon, Label, NativeTabs, VectorIcon } from "expo-router/unstable-native-tabs";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useCSSVariable } from "uniwind";
 
 export default function TabLayout() {
+  const c = useCSSVariable("--color-primary");
+  const activeColor = typeof c === "string" ? c : undefined;
+
   return (
-    <NativeTabs>
+    <NativeTabs iconColor={{ selected: activeColor }}>
       <NativeTabs.Trigger name="(main)">
         {Platform.select({
           ios: <Icon sf="calendar" />,
