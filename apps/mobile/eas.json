@@ -6,19 +6,23 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "development"
     },
     "preview": {
-      "distribution": "internal"
+      "distribution": "internal",
+      "channel": "preview"
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "channel": "production"
     },
     "ios-simulator": {
       "extends": "development",
       "ios": {
         "simulator": true
-      }
+      },
+      "channel": "ios-simulator"
     }
   },
   "submit": {

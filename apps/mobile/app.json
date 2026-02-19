@@ -61,6 +61,12 @@
         "projectId": "ed114763-11b1-40ff-b68f-629cf2b5ebd5"
       }
     },
-    "owner": "ze_kel"
+    "owner": "ze_kel",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/ed114763-11b1-40ff-b68f-629cf2b5ebd5"
+    }
   }
 }
