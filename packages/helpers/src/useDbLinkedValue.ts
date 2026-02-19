@@ -38,7 +38,10 @@ export const useLinkedValue = <T>({
     if (alwaysUpdate) {
       setInternalValue(value);
       setInternalValueValidated(value);
-    } else if (!ourTimestamp.current || (timestamp && timestamp > ourTimestamp.current)) {
+    } else if (
+      (!ourTimestamp.current && timestamp) ||
+      (timestamp && timestamp > (ourTimestamp.current || 0))
+    ) {
       setInternalValue(value);
       setInternalValueValidated(value);
       ourTimestamp.current = timestamp;

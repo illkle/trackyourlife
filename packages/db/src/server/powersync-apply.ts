@@ -77,6 +77,8 @@ const trackableFlagsFromClientId = (id: SyncEntry["id"]) => {
     throw new Error("Invalid trackable flag from client id: " + id);
   }
 
+  console.log("valid flag", id);
+
   return { trackable_id: spl[1]!, key: spl[2]! };
 };
 

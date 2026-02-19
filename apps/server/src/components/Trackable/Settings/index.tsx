@@ -10,6 +10,8 @@ import { SettingsTitle } from "~/components/Trackable/Settings/settingsTitle";
 import { useSetTrackableFlag, useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import NumberLimitsSelector from "./numberLimitsSelector";
+import { useCallback } from "react";
+import { IColorCodingValueInput } from "@tyl/db/jsonValidators";
 
 export const SettingsCommon = () => {
   const { id } = useTrackableMeta();
@@ -69,6 +71,17 @@ export const SettingsNumber = () => {
   const { progress } = useTrackableFlag(id, "NumberProgessBounds");
   const { colorCoding } = useTrackableFlag(id, "NumberColorCoding");
   const setFlag = useSetTrackableFlag();
+
+  const setColorCoding = useCallback(
+    (v: NonNullable<IColorCodingValueInput[]>, ts: number) => {
+      void setFlag(id, "NumberColorCoding", {
+        enabled: true,
+        colors: v,
+        timestamp: ts,
+      });
+    },
+    [setFlag, id],
+  );
   return (
     <>
       <div>
@@ -127,13 +140,7 @@ export const SettingsNumber = () => {
           <NumberColorSelector
             value={colorCoding.colors ?? []}
             timestamp={colorCoding.timestamp}
-            onChange={(v, ts) => {
-              void setFlag(id, "NumberColorCoding", {
-                ...colorCoding,
-                colors: v,
-                timestamp: ts,
-              });
-            }}
+            onChange={setColorCoding}
           />
         )}
       </m.div>

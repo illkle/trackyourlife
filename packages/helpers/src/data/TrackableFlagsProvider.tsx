@@ -142,8 +142,27 @@ export const useSetTrackableFlag = () => {
         throw new Error("Invalid flag value");
       }
 
+      const exists = await db.query.trackableFlags.findFirst({
+        where: and(
+          eq(trackable_flags.user_id, userID),
+          eq(trackable_flags.trackable_id, trackableId),
+          eq(trackable_flags.key, key),
+        ),
+      });
+
+      if (!exists) {
+        await db.insert(trackable_flags).values({
+          id: uuidv4(),
+          user_id: userID,
+          trackable_id: trackableId,
+          key,
+          value,
+        });
+        return;
+      }
+
       // Note that we are not using validated.data here. This is intentional because we do not want zod .transform() to apply here.
-      const r = await db
+      await db
         .update(trackable_flags)
         .set({ value })
         .where(
@@ -153,16 +172,6 @@ export const useSetTrackableFlag = () => {
             eq(trackable_flags.key, key),
           ),
         );
-
-      if (r.rowsAffected === 0) {
-        await db.insert(trackable_flags).values({
-          id: uuidv4(),
-          user_id: userID,
-          trackable_id: trackableId,
-          key,
-          value,
-        });
-      }
     },
     [db, userID],
   );
