@@ -1,4 +1,4 @@
-import { IDayCellProps } from "@/components/cells";
+import { IDayCellProps } from "@/components/cells/common";
 import { Text } from "react-native";
 
 export const DayCellTextPopup = (props: IDayCellProps) => {

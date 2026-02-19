@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { format, isAfter, isBefore, isSameDay } from "date-fns";
+import { isAfter, isBefore, isSameDay } from "date-fns";
 
 import { DayCellTextPopup } from "./Text";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
@@ -8,11 +8,9 @@ import { useRecordDeleteHandler, useRecordUpdateHandler } from "@tyl/helpers/dat
 import { DayCellBoolean } from "./Boolean";
 import { DayCellNumber } from "./Number";
 import { useTrackableDataFromContext } from "@tyl/helpers/data/TrackableDataProvider";
-import { DbTrackableRecordSelect } from "@tyl/db/client/schema-powersync";
 import { cn } from "@/lib/utils";
-import { StyleProp, Text, View, ViewStyle } from "react-native";
-
-export const DayCellBaseClasses = "w-full h-20 relative overflow-hidden  border-2 rounded-xs";
+import { StyleProp, View, ViewStyle } from "react-native";
+import { IDayCellLabelType, IDayCellProps, LabelOutside, OutOfRangeSimple } from "@/components/cells/common";
 
 interface DayCellRouterProps {
   className?: string;
@@ -21,21 +19,6 @@ interface DayCellRouterProps {
   timestamp: Date;
   style?: StyleProp<ViewStyle>;
 }
-
-export type IDayCellLabelType = "auto" | "outside" | "none";
-
-export interface IDayCellData {
-  type: string;
-  timestamp: Date;
-  isToday: boolean;
-  isOutOfRange: boolean;
-  onChange: ReturnType<typeof useRecordUpdateHandler>;
-  onDelete: ReturnType<typeof useRecordDeleteHandler>;
-  labelType?: IDayCellLabelType;
-  values: DbTrackableRecordSelect[];
-}
-
-export type IDayCellProps = { cellData: IDayCellData };
 
 export const DayCellRouter = ({
   timestamp,
@@ -99,41 +82,6 @@ export const DayCellTypeRouter = (props: IDayCellProps) => {
   }
 
   throw new Error("Unsupported trackable type");
-};
-
-export const OutOfRangeSimple = (props: IDayCellProps) => {
-  return (
-    <View className={cn(DayCellBaseClasses, "bg-muted opacity-30")}>
-      {props.cellData.labelType === "auto" && <LabelInside {...props} />}
-    </View>
-  );
-};
-
-const LabelOutside = (props: IDayCellProps) => {
-  return (
-    <Text
-      className={cn(
-        "mr-1 text-right text-xs text-muted-foreground",
-        props.cellData.isToday ? "font-normal underline" : "font-light",
-      )}
-    >
-      {format(props.cellData.timestamp, "d")}
-    </Text>
-  );
-};
-
-export const LabelInside = (props: IDayCellProps) => {
-  return (
-    <Text
-      className={cn(
-        "absolute top-0 left-1 z-10 text-base text-muted-foreground select-none",
-        props.cellData.isToday ? "font-bold underline" : "",
-        "text-sm sm:text-base",
-      )}
-    >
-      {format(props.cellData.timestamp, "d")}
-    </Text>
-  );
 };
 
 export default DayCellRouter;

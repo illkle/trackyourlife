@@ -1,6 +1,4 @@
-import { EditorSheet } from "@/components/edtorSheet";
 import { PowerSyncProvider } from "@/db/PowersyncProvider";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { Stack } from "expo-router";
 
 // Auth protected layout
@@ -9,15 +7,21 @@ export default function AppLayout() {
     <PowerSyncProvider>
       <Stack>
         <Stack.Screen
+          name="editor"
+          options={{
+            presentation: "transparentModal",
+            headerShown: false,
+            animation: "fade",
+            contentStyle: { backgroundColor: "rgba(0,0,0,0.5)" },
+          }}
+        ></Stack.Screen>
+        <Stack.Screen
           name="(tabs)"
           options={{
             headerShown: false,
           }}
         />
       </Stack>
-      <BottomSheetModalProvider>
-        <EditorSheet />
-      </BottomSheetModalProvider>
     </PowerSyncProvider>
   );
 }

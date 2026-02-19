@@ -101,7 +101,7 @@ export const TrackablesScreen = () => {
   const [archived, setArchived] = useState(false);
 
   return (
-    <DefaultWrapper noPadding>
+    <DefaultWrapper noHorizontalPadding>
       <View className="flex flex-row items-center justify-between px-4 pb-4">
         <Text className="text-2xl font-semibold text-foreground">
           {archived ? "Archive" : "Your Trackables"}

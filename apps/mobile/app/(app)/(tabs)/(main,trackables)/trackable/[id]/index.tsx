@@ -172,7 +172,7 @@ export const TrackableFetcher = () => {
 
   if (q.isLoading) {
     return (
-      <DefaultWrapper>
+      <DefaultWrapper noTopSafeArea>
         <View className="items-center justify-center py-12">
           <Text className="text-muted-foreground">Loading trackable...</Text>
         </View>
@@ -182,7 +182,7 @@ export const TrackableFetcher = () => {
 
   if (q.error || !q.data) {
     return (
-      <DefaultWrapper>
+      <DefaultWrapper noTopSafeArea>
         <View className="items-center justify-center py-12">
           <Text className="text-destructive">Trackable not found.</Text>
         </View>
@@ -192,7 +192,7 @@ export const TrackableFetcher = () => {
 
   if (!trackable) {
     return (
-      <DefaultWrapper>
+      <DefaultWrapper noTopSafeArea>
         <View className="items-center justify-center py-12">
           <Text className="text-destructive">Trackable not found.</Text>
         </View>
@@ -201,7 +201,7 @@ export const TrackableFetcher = () => {
   }
 
   return (
-    <DefaultWrapper>
+    <DefaultWrapper noTopSafeArea>
       <TrackableMetaProvider trackable={trackable}>
         <TrackableFlagsProviderExternal trackablesSelect={q.data}>
           <TrackableGroupsProvider trackablesSelect={q.data}>

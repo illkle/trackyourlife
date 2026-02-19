@@ -47,7 +47,6 @@ export const SettingsBoolean = () => {
         <ColorInput
           value={checked.raw}
           onChange={(v) => {
-            console.log("SET CHECKED", v);
             void setFlag(id, "BooleanCheckedColor", v);
           }}
         />

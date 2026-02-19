@@ -1,16 +1,24 @@
-import { withUniwind } from "uniwind";
-
-import { KeyboardAwareScrollView } from "react-native-keyboard-controller";
 import { cn } from "@/lib/utils";
-
-export const KASV = withUniwind(KeyboardAwareScrollView);
+import { View } from "react-native";
 
 export const DefaultWrapper = ({
   children,
-  noPadding,
+  noHorizontalPadding,
+  noTopSafeArea,
 }: {
   children: React.ReactNode;
-  noPadding?: boolean;
+  noHorizontalPadding?: boolean;
+  noTopSafeArea?: boolean;
 }) => {
-  return <KASV className={cn("bg-background", noPadding ? "" : "px-4")}>{children}</KASV>;
+  return (
+    <View
+      className={cn(
+        "h-full bg-background",
+        noHorizontalPadding ? "" : "px-4",
+        noTopSafeArea ? "" : "pt-safe",
+      )}
+    >
+      {children}
+    </View>
+  );
 };

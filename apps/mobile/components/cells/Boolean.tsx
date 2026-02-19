@@ -9,7 +9,7 @@ import Animated, {
 import { useUniwind } from "uniwind";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
-import { DayCellBaseClasses, IDayCellProps, LabelInside } from "@/components/cells";
+import { DayCellBaseClasses, IDayCellProps, LabelInside } from "@/components/cells/common";
 import { cn } from "@/lib/utils";
 
 export const BooleanUI = ({

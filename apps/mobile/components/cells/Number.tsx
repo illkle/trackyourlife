@@ -4,7 +4,6 @@ import { useResolveClassNames, useUniwind } from "uniwind";
 
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
-import { DayCellBaseClasses, IDayCellProps, LabelInside } from "@/components/cells";
 import { formatNumberShort, getNumberSafe } from "@tyl/helpers/numberTools";
 import { cn } from "@/lib/utils";
 import { makeColorString } from "@tyl/helpers/colorTools";
@@ -15,6 +14,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { useOpenDayEditor } from "@/components/edtorSheet";
+import { DayCellBaseClasses, IDayCellProps, LabelInside } from "@/components/cells/common";
 
 export const NumberUI = ({
   value,
