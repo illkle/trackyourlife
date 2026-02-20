@@ -13,8 +13,8 @@ import { editorModalNextDay, editorModalPreviousDay } from "~/components/Modal/E
 import { NumberPopupEditor } from "~/components/PopupEditor/NumberPopup";
 import { TextPopupEditor } from "~/components/PopupEditor/TextPopup";
 import { QueryError } from "~/components/QueryError";
-import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
+import { useTrackableFlag } from "@tyl/helpers/data/dbHooksTanstack";
 
 export const PopupEditor = ({ date }: { date: Date }) => {
   const { id, type } = useTrackableMeta();
@@ -51,7 +51,7 @@ export const PopupEditor = ({ date }: { date: Date }) => {
 
 const EditorTitle = ({ date }: { date: Date }) => {
   const { name, id } = useTrackableMeta();
-  const trackingStart = useTrackableFlag(id, "AnyTrackingStart");
+  const { data: trackingStart } = useTrackableFlag(id, "AnyTrackingStart");
   return (
     <div className="flex items-center justify-between gap-2 border-b border-border pr-2 sm:text-sm">
       <div className="flex items-center gap-2">

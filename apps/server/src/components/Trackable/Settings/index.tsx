@@ -7,16 +7,17 @@ import ColorInput from "~/components/Inputs/Colors/colorInput";
 import NumberColorSelector from "~/components/Inputs/Colors/numberColorSelector";
 import DatePicker from "~/components/Inputs/DatePicker";
 import { SettingsTitle } from "~/components/Trackable/Settings/settingsTitle";
-import { useSetTrackableFlag, useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import NumberLimitsSelector from "./numberLimitsSelector";
 import { useCallback } from "react";
 import { IColorCodingValueInput } from "@tyl/db/jsonValidators";
+import { useTrackableFlag } from "@tyl/helpers/data/dbHooksTanstack";
 
 export const SettingsCommon = () => {
   const { id } = useTrackableMeta();
-  const trackingStart = useTrackableFlag(id, "AnyTrackingStart");
-  const setFlag = useSetTrackableFlag();
+  const { data: trackingStart, setFlag } = useTrackableFlag(id, "AnyTrackingStart");
+
+  console.log("SettingsCommon", trackingStart && format(trackingStart, "yyyy-MM-dd"));
 
   return (
     <div>
@@ -25,7 +26,7 @@ export const SettingsCommon = () => {
         <DatePicker
           date={trackingStart ? new Date(trackingStart) : undefined}
           onChange={(v) => {
-            void setFlag(id, "AnyTrackingStart", v ? format(v, "yyyy-MM-dd") : "");
+            void setFlag(v ? format(v, "yyyy-MM-dd") : "");
           }}
           limits={{
             start: new Date(1990, 0, 1),
@@ -39,28 +40,18 @@ export const SettingsCommon = () => {
 
 export const SettingsBoolean = () => {
   const { id } = useTrackableMeta();
-  const checked = useTrackableFlag(id, "BooleanCheckedColor");
-  const unchecked = useTrackableFlag(id, "BooleanUncheckedColor");
-  const setFlag = useSetTrackableFlag();
+  const { data: checked, setFlag: setChecked } = useTrackableFlag(id, "BooleanCheckedColor");
+  const { data: unchecked, setFlag: setUnchecked } = useTrackableFlag(id, "BooleanUncheckedColor");
+
   return (
     <>
       <SettingsTitle>Checked color</SettingsTitle>
       <DrawerMobileTitleProvider title="Checked color">
-        <ColorInput
-          value={checked.raw}
-          onChange={(v) => {
-            void setFlag(id, "BooleanCheckedColor", v);
-          }}
-        />
+        <ColorInput value={checked.raw} onChange={setChecked} />
       </DrawerMobileTitleProvider>
       <SettingsTitle>Unchecked color</SettingsTitle>
       <DrawerMobileTitleProvider title="Unchecked color">
-        <ColorInput
-          value={unchecked.raw}
-          onChange={(v) => {
-            void setFlag(id, "BooleanUncheckedColor", v);
-          }}
-        />
+        <ColorInput value={unchecked.raw} onChange={setUnchecked} />
       </DrawerMobileTitleProvider>
     </>
   );
@@ -68,20 +59,23 @@ export const SettingsBoolean = () => {
 
 export const SettingsNumber = () => {
   const { id } = useTrackableMeta();
-  const { progress } = useTrackableFlag(id, "NumberProgessBounds");
-  const { colorCoding } = useTrackableFlag(id, "NumberColorCoding");
-  const setFlag = useSetTrackableFlag();
+  const { data: progress, setFlag: setNumberBounds } = useTrackableFlag(id, "NumberProgessBounds");
+  const {
+    data: { colorCoding },
+    setFlag: setColorCoding,
+  } = useTrackableFlag(id, "NumberColorCoding");
 
-  const setColorCoding = useCallback(
+  const setColorCodingHandle = useCallback(
     (v: NonNullable<IColorCodingValueInput[]>, ts: number) => {
-      void setFlag(id, "NumberColorCoding", {
+      void setColorCoding({
         enabled: true,
         colors: v,
         timestamp: ts,
       });
     },
-    [setFlag, id],
+    [setColorCoding],
   );
+
   return (
     <>
       <div>
@@ -89,13 +83,13 @@ export const SettingsNumber = () => {
           <label htmlFor="show-progress">Show progress</label>
           <Switch
             id="show-progress"
-            checked={progress?.enabled}
+            checked={progress.progress?.enabled}
             onCheckedChange={(v) => {
-              void setFlag(id, "NumberProgessBounds", {
+              void setNumberBounds({
                 ...progress,
                 enabled: v,
-                min: progress?.min ?? 0,
-                max: progress?.max ?? 100,
+                min: progress.progress?.min ?? 0,
+                max: progress.progress?.max ?? 100,
               });
             }}
           />
@@ -103,11 +97,11 @@ export const SettingsNumber = () => {
 
         <div className="mb-2 flex items-center space-x-2"></div>
 
-        {progress?.enabled && (
+        {progress.progress?.enabled && (
           <NumberLimitsSelector
-            value={progress}
+            value={progress.progress}
             onChange={(v) => {
-              void setFlag(id, "NumberProgessBounds", {
+              void setNumberBounds({
                 ...progress,
                 min: v.min,
                 max: v.max,
@@ -124,7 +118,7 @@ export const SettingsNumber = () => {
             id="color-coding-enabled"
             checked={colorCoding?.enabled}
             onCheckedChange={(v) => {
-              void setFlag(id, "NumberColorCoding", {
+              void setColorCoding({
                 ...colorCoding,
                 colors: colorCoding?.colors ?? [],
                 enabled: v,
@@ -140,7 +134,7 @@ export const SettingsNumber = () => {
           <NumberColorSelector
             value={colorCoding.colors ?? []}
             timestamp={colorCoding.timestamp}
-            onChange={setColorCoding}
+            onChange={setColorCodingHandle}
           />
         )}
       </m.div>
@@ -150,6 +144,7 @@ export const SettingsNumber = () => {
 
 const TrackableSettingsV2 = () => {
   const { type } = useTrackableMeta();
+
   return (
     <div>
       <SettingsCommon />

@@ -38,9 +38,9 @@ export class Connector implements PowerSyncBackendConnector {
         }) satisfies SyncEntry,
     );
 
-    console.log("UPLOAD DATA", mapped);
+    console.log("CALLING /api/powersync/syncbatch", mapped);
 
-    await fetch("/api/powersync/syncbatch", {
+    const res = await fetch("/api/powersync/syncbatch", {
       method: "POST",
       body: JSON.stringify(mapped),
       headers: {
@@ -48,6 +48,10 @@ export class Connector implements PowerSyncBackendConnector {
       },
     });
 
+    console.log("res /api/powersync/syncbatch", res.status);
+
     await transaction.complete();
+
+    console.log("await transaction.complete() finished");
   }
 }

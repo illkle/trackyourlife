@@ -21,7 +21,7 @@ export const FlagsValidators = {
   AnyTrackingStart: z.iso
     .date()
     .or(z.null())
-    .transform((v) => (v ? parse(v, "yyyy-MM-dd", new Date()).getTime() : null)), // converting to number because transtack store can't store reactive dates
+    .transform((v) => (v ? parse(v, "yyyy-MM-dd", new Date()) : null)),
   AnyNote: z.string(),
   AnyMonthViewType: z.enum(["calendar", "list"]),
   AnyLastDedupeStrategy: z.string(),
@@ -79,4 +79,25 @@ export type ITrackableFlagsKV = {
 
 export type ITrackableFlagsInputKV = {
   [K in ITrackableFlagKey]: ITrackableFlagValueInput<K>;
+};
+
+export const flagParser = <K extends ITrackableFlagKey>(rawValue: unknown, key: K) => {
+  const validator = FlagsValidators[key];
+
+  if (!validator) {
+    console.error("flagparser invalid key " + key);
+    return null;
+  }
+
+  let valueToValidate: unknown;
+  try {
+    valueToValidate = JSON.parse(rawValue as string);
+  } catch {
+    valueToValidate = rawValue;
+  }
+  const parsed = validator.safeParse(valueToValidate);
+
+  const val = (parsed.success ? parsed.data : undefined) ?? FlagDefaults[key];
+
+  return val;
 };

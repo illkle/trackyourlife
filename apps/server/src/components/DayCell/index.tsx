@@ -3,13 +3,12 @@ import { cn } from "@shad/lib/utils";
 import { format, isAfter, isBefore, isSameDay } from "date-fns";
 
 import { DayCellTextPopup } from "~/components/DayCell/DayCellTextPopup";
-import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useRecordDeleteHandler, useRecordUpdateHandler } from "@tyl/helpers/data/dbHooks";
 import { DayCellBoolean } from "./DayCellBoolean";
 import { DayCellNumber } from "./DayCellNumber";
-import { useTrackableDataFromContext } from "@tyl/helpers/data/TrackableDataProvider";
 import { DbTrackableRecordSelect } from "@tyl/db/client/schema-powersync";
+import { useTrackableData, useTrackableFlag } from "@tyl/helpers/data/dbHooksTanstack";
 
 export const DayCellBaseClasses =
   "@container w-full h-full relative select-none overflow-hidden border-transparent border-2 rounded-xs";
@@ -41,7 +40,7 @@ export type IDayCellProps = { cellData: IDayCellData };
 export const DayCellRouter = memo(
   ({ timestamp, labelType = "auto", className }: DayCellRouterProps) => {
     const { id, type } = useTrackableMeta();
-    const trackingStart = useTrackableFlag(id, "AnyTrackingStart");
+    const { data: trackingStart } = useTrackableFlag(id, "AnyTrackingStart");
 
     const now = useMemo(() => new Date(), []);
     const isToday = useMemo(() => isSameDay(timestamp, now), [timestamp, now]);
@@ -57,7 +56,7 @@ export const DayCellRouter = memo(
     });
     const onDelete = useRecordDeleteHandler();
 
-    const values = useTrackableDataFromContext(id, timestamp);
+    const { data: values } = useTrackableData({ id, firstDay: timestamp, lastDay: timestamp });
 
     const cellData = {
       type,

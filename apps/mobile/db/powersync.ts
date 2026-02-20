@@ -5,6 +5,7 @@ import { OPSqliteOpenFactory } from "@powersync/op-sqlite"; // Add this import
 import { createBaseLogger, LogLevel, PowerSyncDatabase } from "@powersync/react-native";
 
 import { PowersyncDrizzleSchema, PowersyncSchema } from "@tyl/db/client/schema-powersync";
+import { createTanstackDB } from "@tyl/db/client/tanstack";
 
 const opSqlite = new OPSqliteOpenFactory({
   dbFilename: "powersync.db",
@@ -18,6 +19,8 @@ export const powersyncDB = new PowerSyncDatabase({
 export const db = wrapPowerSyncWithDrizzle(powersyncDB, {
   schema: PowersyncDrizzleSchema,
 });
+
+export const dbT = createTanstackDB(powersyncDB);
 
 export const connectPowerSync = async ({
   powersyncURL,

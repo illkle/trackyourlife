@@ -5,7 +5,7 @@ import { endOfDay, format, startOfDay } from "date-fns";
 import { and, asc, eq, gte, lte, sql } from "drizzle-orm";
 import { v4 as uuidv4 } from "uuid";
 
-import { usePowersyncDrizzle } from "@tyl/db/client/context";
+import { usePowersyncDrizzle } from "./context";
 import {
   DbTrackableInsert,
   trackable,

@@ -6,7 +6,6 @@ import { eachDayOfInterval, subDays } from "date-fns";
 import { useTrackablesList } from "@tyl/helpers/data/dbHooks";
 import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
 import { TrackableFlagsProviderExternal } from "@tyl/helpers/data/TrackableFlagsProvider";
-import { TrackableGroupsProvider } from "@tyl/helpers/data/TrackableGroupsProvider";
 import { TrackableMetaProvider } from "@tyl/helpers/data/TrackableMetaProvider";
 import { DefaultWrapper } from "@/lib/styledComponents";
 import { Button } from "@/components/ui/button";
@@ -68,30 +67,28 @@ const TrackableList = ({ archived }: { archived: boolean }) => {
   return (
     <TrackableFlagsProviderExternal trackablesSelect={q.data}>
       <TrackableDataProvider trackablesSelect={q.data}>
-        <TrackableGroupsProvider trackablesSelect={q.data}>
-          <View className="flex flex-col gap-4 pb-6">
-            {q.data.map((trackable) => {
-              return (
-                <TrackableMetaProvider key={trackable.id} trackable={trackable}>
-                  <View className="border-b border-border">
-                    <Link href={`/trackable/${trackable.id}`} className="px-4 py-1">
-                      <Text className="text-lg font-semibold text-primary">{trackable.name}</Text>
-                    </Link>
-                    <FlatList
-                      data={days}
-                      renderItem={({ item }) => (
-                        <DayCellRouter timestamp={item} labelType={"outside"} className="w-24" />
-                      )}
-                      horizontal
-                      inverted
-                      contentContainerStyle={{ gap: 8, paddingHorizontal: 16, paddingBottom: 16 }}
-                    />
-                  </View>
-                </TrackableMetaProvider>
-              );
-            })}
-          </View>
-        </TrackableGroupsProvider>
+        <View className="flex flex-col gap-4 pb-6">
+          {q.data.map((trackable) => {
+            return (
+              <TrackableMetaProvider key={trackable.id} trackable={trackable}>
+                <View className="border-b border-border">
+                  <Link href={`/trackable/${trackable.id}`} className="px-4 py-1">
+                    <Text className="text-lg font-semibold text-primary">{trackable.name}</Text>
+                  </Link>
+                  <FlatList
+                    data={days}
+                    renderItem={({ item }) => (
+                      <DayCellRouter timestamp={item} labelType={"outside"} className="w-24" />
+                    )}
+                    horizontal
+                    inverted
+                    contentContainerStyle={{ gap: 8, paddingHorizontal: 16, paddingBottom: 16 }}
+                  />
+                </View>
+              </TrackableMetaProvider>
+            );
+          })}
+        </View>
       </TrackableDataProvider>
     </TrackableFlagsProviderExternal>
   );

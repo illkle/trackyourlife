@@ -98,14 +98,13 @@ export const applyCrudTrackableFlags = async (entry: SyncEntry, user_id: string)
 
       const parsed = JSON.parse(verified.value as any);
 
-      await db
+      return db
         .insert(trackable_flags)
         .values(verified)
         .onConflictDoUpdate({
           target: [trackable_flags.user_id, trackable_flags.trackable_id, trackable_flags.key],
           set: { value: parsed },
         });
-      break;
     }
     case UpdateType.PATCH: {
       const verified = trackable_flags_update_schema_only_value.parse(opData);
@@ -114,7 +113,7 @@ export const applyCrudTrackableFlags = async (entry: SyncEntry, user_id: string)
 
       const parsed = JSON.parse(verified.value as any);
 
-      await db
+      return db
         .update(trackable_flags)
         .set({ value: parsed })
         .where(
@@ -124,12 +123,11 @@ export const applyCrudTrackableFlags = async (entry: SyncEntry, user_id: string)
             eq(trackable_flags.key, dataFromId.key),
           ),
         );
-      break;
     }
     case UpdateType.DELETE: {
       const dataFromId = trackableFlagsFromClientId(entry.id);
 
-      await db
+      return db
         .delete(trackable_flags)
         .where(
           and(
@@ -138,7 +136,6 @@ export const applyCrudTrackableFlags = async (entry: SyncEntry, user_id: string)
             eq(trackable_flags.key, dataFromId.key),
           ),
         );
-      break;
     }
   }
 };

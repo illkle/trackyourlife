@@ -1,5 +1,5 @@
 
-import { connectPowerSync, db, powersyncDB } from "@/db/powersync";
+import { connectPowerSync, db, dbT, powersyncDB } from "@/db/powersync";
 import { useAuthClient, useSessionCached } from "@/lib/authClient";
 import { useServerURL } from "@/lib/ServerURLContext";
 import { PowerSyncContext } from "@powersync/react-native";
@@ -28,7 +28,7 @@ export const PowerSyncProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <PowerSyncContext.Provider value={powersyncDB}>
-      <PowersyncDrizzleContext.Provider value={{ db, userID: session.data.user.id }}>
+      <PowersyncDrizzleContext.Provider value={{ db, dbT, userID: session.data.user.id }}>
         {children}
       </PowersyncDrizzleContext.Provider>
     </PowerSyncContext.Provider>

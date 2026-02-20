@@ -12,11 +12,11 @@ import {
   IDayCellProps,
 } from "~/components/DayCell";
 import { openDayEditor } from "~/components/Modal/EditorModalV2";
-import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useLinkedValue } from "@tyl/helpers/useDbLinkedValue";
 import { useIsMobile } from "~/utils/useIsDesktop";
 import { formatNumberShort, getNumberSafe } from "@tyl/helpers/numberTools";
+import { useTrackableFlag } from "@tyl/helpers/data/dbHooksTanstack";
 
 export const DayCellNumber = (props: IDayCellProps) => {
   const { id, type, name } = useTrackableMeta();
@@ -84,7 +84,7 @@ const ProgressBar = () => {
   const { internalNumber } = useNumberInputContext();
 
   const { id } = useTrackableMeta();
-  const progressBounds = useTrackableFlag(id, "NumberProgessBounds");
+  const { data: progressBounds } = useTrackableFlag(id, "NumberProgessBounds");
 
   const progress = progressBounds.map(internalNumber);
 
@@ -179,7 +179,7 @@ export const NumberInputWrapper = forwardRef<
   };
 
   const { id } = useTrackableMeta();
-  const colorCoding = useTrackableFlag(id, "NumberColorCoding");
+  const { data: colorCoding } = useTrackableFlag(id, "NumberColorCoding");
 
   const color = useMemo(() => {
     return colorCoding.valueToColor(internalNumber);

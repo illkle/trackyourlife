@@ -1,27 +1,28 @@
 import { powerSyncCollectionOptions } from "@tanstack/powersync-db-collection";
 import { toPowerSyncTable } from "@powersync/drizzle-driver";
-import { PowersyncDrizzleSchema } from "./schema-powersync";
+import { PowersyncDrizzleSchema } from "@tyl/db/client/schema-powersync";
 import { AbstractPowerSyncDatabase } from "@powersync/common";
-import { createCollection, useLiveQuery } from "@tanstack/react-db";
+import { createCollection } from "@tanstack/react-db";
+import z from "zod";
 
 export const trackableTable = toPowerSyncTable(PowersyncDrizzleSchema.trackable, {
-  viewName: "trackable",
+  viewName: "TYL_trackable",
 });
 
 export const trackableRecordTable = toPowerSyncTable(PowersyncDrizzleSchema.trackableRecord, {
-  viewName: "trackableRecord",
+  viewName: "TYL_trackableRecord",
 });
 
 export const trackableFlagsTable = toPowerSyncTable(PowersyncDrizzleSchema.trackableFlags, {
-  viewName: "trackableFlags",
+  viewName: "TYL_trackableFlags",
 });
 
 export const trackableGroupTable = toPowerSyncTable(PowersyncDrizzleSchema.trackableGroup, {
-  viewName: "trackableGroup",
+  viewName: "TYL_trackableGroup",
 });
 
 export const userFlagsTable = toPowerSyncTable(PowersyncDrizzleSchema.userFlags, {
-  viewName: "userFlags",
+  viewName: "TYL_userFlags",
 });
 
 export const createTanstackDB = (db: AbstractPowerSyncDatabase) => {
@@ -36,6 +37,17 @@ export const createTanstackDB = (db: AbstractPowerSyncDatabase) => {
       powerSyncCollectionOptions({
         database: db,
         table: trackableRecordTable,
+        schema: z.object({
+          id: z.string(),
+          user_id: z.string(),
+          timestamp: z.string(),
+          time_bucket: z.string().nullable().default(null),
+          trackable_id: z.string(),
+          value: z.string(),
+          external_key: z.string().nullable().default(null),
+          updated_at: z.number().nullable().default(null),
+        }),
+        onDeserializationError: () => console.log("des"),
       }),
     ),
     trackableFlags: createCollection(

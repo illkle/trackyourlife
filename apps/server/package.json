@@ -26,6 +26,7 @@
     "@powersync/react": "catalog:powersync",
     "@powersync/web": "catalog:powersync",
     "@tailwindcss/vite": "catalog:",
+    "@tanstack/react-db": "^0.1.71",
     "@tanstack/react-form": "catalog:tanstack",
     "@tanstack/react-query": "catalog:tanstack",
     "@tanstack/react-router": "catalog:tanstack",

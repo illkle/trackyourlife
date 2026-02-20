@@ -11,7 +11,6 @@ import { DefaultWrapper } from "@/lib/styledComponents";
 import { useTrackable, useTrackableData } from "@tyl/helpers/data/dbHooks";
 import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
 import { TrackableFlagsProviderExternal } from "@tyl/helpers/data/TrackableFlagsProvider";
-import { TrackableGroupsProvider } from "@tyl/helpers/data/TrackableGroupsProvider";
 import { TrackableMetaProvider, useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 
 const getIncrementedDate = (add: number, year: number, month: number) => {
@@ -204,9 +203,7 @@ export const TrackableFetcher = () => {
     <DefaultWrapper noTopSafeArea>
       <TrackableMetaProvider trackable={trackable}>
         <TrackableFlagsProviderExternal trackablesSelect={q.data}>
-          <TrackableGroupsProvider trackablesSelect={q.data}>
-            <TrackableView />
-          </TrackableGroupsProvider>
+          <TrackableView />
         </TrackableFlagsProviderExternal>
       </TrackableMetaProvider>
     </DefaultWrapper>

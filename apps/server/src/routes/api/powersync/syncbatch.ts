@@ -45,6 +45,8 @@ export const Route = createFileRoute("/api/powersync/syncbatch")({
           }
         }
 
+        console.log("responding ");
+
         return Response.json({ message: "Success" });
       },
     },

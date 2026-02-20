@@ -6,7 +6,7 @@ import { Button } from "~/@shad/components/button";
 import { useGroupHandlers } from "@tyl/helpers/data/dbHooks";
 import { VariantProps } from "class-variance-authority";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
-import { useIsTrackableInGroup } from "@tyl/helpers/data/TrackableGroupsProvider";
+import { useIsTrackableInGroup } from "@tyl/helpers/data/dbHooksTanstack";
 
 export const FavoriteButton = ({
   variant = "ghost",
@@ -18,7 +18,7 @@ export const FavoriteButton = ({
   const { id } = useTrackableMeta();
   const { removeFromGroup, addToGroup } = useGroupHandlers();
 
-  const inFavs = useIsTrackableInGroup(id, "favorites");
+  const { data: inFavs } = useIsTrackableInGroup(id, "favorites");
 
   const favHandler = async () => {
     if (inFavs) {

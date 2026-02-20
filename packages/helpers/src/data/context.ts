@@ -4,7 +4,7 @@
 
 import { createContext, useContext } from "react";
 
-import type { TPowersyncDrizzleDB } from "./schema-powersync";
+import type { TPowersyncDrizzleDB } from "@tyl/db/client/schema-powersync";
 import { TanstackDBType } from "./tanstack";
 
 export const PowersyncDrizzleContext = createContext<{

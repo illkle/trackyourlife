@@ -8,13 +8,15 @@ import { useLayoutEffect, useState } from "react";
 import { wrapPowerSyncWithDrizzle } from "@powersync/drizzle-driver";
 import { PowerSyncContext } from "@powersync/react";
 import {
+  createBaseLogger,
+  LogLevel,
   PowerSyncBackendConnector,
   PowerSyncDatabase,
   WASQLiteOpenFactory,
   WASQLiteVFS,
 } from "@powersync/web";
 
-import { PowersyncDrizzleContext } from "@tyl/db/client/context";
+import { PowersyncDrizzleContext } from "@tyl/helpers/data/context";
 import {
   PowersyncDrizzleSchema,
   PowersyncSchema,
@@ -23,7 +25,11 @@ import {
 
 import { useAuthAuthed } from "~/utils/useSessionInfo";
 import { Connector } from "./connector";
-import { createTanstackDB, TanstackDBType } from "@tyl/db/client/tanstack";
+import { createTanstackDB, TanstackDBType } from "@tyl/helpers/data/tanstack";
+
+const logger = createBaseLogger();
+logger.useDefaults();
+logger.setLevel(LogLevel.DEBUG);
 
 const powersyncDb = new PowerSyncDatabase({
   schema: PowersyncSchema,
@@ -33,6 +39,7 @@ const powersyncDb = new PowerSyncDatabase({
     flags: {
       enableMultiTabs: typeof SharedWorker !== "undefined",
     },
+    debugMode: true,
   }),
   flags: {
     enableMultiTabs: typeof SharedWorker !== "undefined",
@@ -42,8 +49,6 @@ const powersyncDb = new PowerSyncDatabase({
 const drizzleDb = wrapPowerSyncWithDrizzle(powersyncDb, {
   schema: PowersyncDrizzleSchema,
 });
-
-const tanstackDb = createTanstackDB(powersyncDb);
 
 export const PowerSyncProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuthAuthed();
@@ -68,6 +73,8 @@ export const PowerSyncProvider = ({ children }: { children: ReactNode }) => {
   useLayoutEffect(() => {
     const connector = new Connector();
     asyncConnect(powersyncDb, connector);
+
+    const tanstackDb = createTanstackDB(powersyncDb);
     setDatabases({ powersyncDb, drizzleDb, tanstackDb });
 
     return () => {
@@ -81,7 +88,9 @@ export const PowerSyncProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <PowerSyncContext.Provider value={databases.powersyncDb}>
-      <PowersyncDrizzleContext.Provider value={{ db: databases.drizzleDb, userID: user.id }}>
+      <PowersyncDrizzleContext.Provider
+        value={{ db: databases.drizzleDb, dbT: databases.tanstackDb, userID: user.id }}
+      >
         {children}
       </PowersyncDrizzleContext.Provider>
     </PowerSyncContext.Provider>

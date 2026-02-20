@@ -31,7 +31,6 @@ import {
   DynamicModalDrawerTitle,
   DynamicModalTrigger,
 } from "~/components/Modal/dynamicModal";
-import { useLinkedValue } from "@tyl/helpers/useDbLinkedValue";
 
 const DatePicker = ({
   date,
@@ -54,17 +53,10 @@ const DatePicker = ({
 }) => {
   const dateNow = new Date();
 
-  const { internalValue: innerDate, updateHandler: setInnerDate } = useLinkedValue({
-    value: date,
-    onChange,
-    timestamp: date?.getTime(),
-    alwaysUpdate: true,
-  });
-
   const calRef = useRef<HTMLDivElement>(null);
   const [isOpened, setIsOpened] = useState(false);
 
-  const [cursor, setCursor] = useState(() => startOfMonth(innerDate ?? dateNow));
+  const [cursor, setCursor] = useState(() => startOfMonth(date ?? dateNow));
 
   const wrapRef = useRef<HTMLDivElement>(null);
 
@@ -92,7 +84,6 @@ const DatePicker = ({
   const recordDate = (day: number) => {
     if (!inLimit(day)) return;
     const d = new Date(cursor.getFullYear(), cursor.getMonth(), day);
-    setInnerDate(d);
     onChange(d);
     setIsOpened(false);
   };
@@ -120,7 +111,7 @@ const DatePicker = ({
     return true;
   };
 
-  const highlightSelected = innerDate && isSameMonth(innerDate, cursor) ? innerDate.getDate() : -1;
+  const highlightSelected = date && isSameMonth(date, cursor) ? date.getDate() : -1;
 
   const variants = {
     enter: (d = 0) => {
@@ -243,14 +234,14 @@ const DatePicker = ({
               "min-w-[200px]",
             )}
           >
-            <span className="">{innerDate ? format(innerDate, "d MMMM yyyy") : "No date set"}</span>
+            <span className="">{date ? format(date, "d MMMM yyyy") : "No date set"}</span>
             <CalendarIcon size={16} className="ml-auto" />
           </div>
         </DynamicModalTrigger>
         {!disableClear && (
           <Button
             variant={"outline"}
-            disabled={!innerDate}
+            disabled={!date}
             size={"icon"}
             className="rounded-l-none border-l-0"
           >

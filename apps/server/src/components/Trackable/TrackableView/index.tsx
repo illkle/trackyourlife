@@ -13,16 +13,12 @@ import {
   startOfYear,
 } from "date-fns";
 
-import { useTrackableData } from "@tyl/helpers/data/dbHooks";
-
 import type { ITrackableFlagType } from "@tyl/helpers/data/trackableFlags";
 import { Button } from "~/@shad/components/button";
 import DayCellRouter from "~/components/DayCell";
-import { QueryError } from "~/components/QueryError";
-import { useTrackableFlag } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
-import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
 import { useMemo } from "react";
+import { useTrackableData, useTrackableFlag } from "@tyl/helpers/data/dbHooksTanstack";
 
 const MonthVisualCalendar = ({ dateFirstDay, mini }: { dateFirstDay: Date; mini?: boolean }) => {
   const prefaceWith = dateFirstDay ? getISODay(dateFirstDay) - 1 : 0;
@@ -85,38 +81,18 @@ export const MonthView = ({
 }) => {
   const { id } = useTrackableMeta();
 
-  const vt = useTrackableFlag(id, "AnyMonthViewType");
+  const { data: vt } = useTrackableFlag(id, "AnyMonthViewType");
   const viewType = forceViewType ?? vt;
   const firstDayDate = useMemo(() => startOfMonth(date), [date]);
   const lastDayDate = useMemo(() => endOfMonth(date), [date]);
 
-  const q = useTrackableData({
-    id,
-    firstDay: firstDayDate,
-    lastDay: lastDayDate,
-  });
-
-  if (q.isLoading) {
-    return (
-      <div className="flex justify-center py-8">
-        <Spinner />
-      </div>
-    );
-  }
-
-  if (q.error) {
-    return <QueryError error={q.error} onRetry={q.refresh} />;
-  }
-
   return (
     <div key={`${firstDayDate}-${lastDayDate}`}>
-      <TrackableDataProvider recordsSelect={q.data}>
-        {viewType === "list" ? (
-          <MonthVisualList dateFirstDay={firstDayDate} />
-        ) : (
-          <MonthVisualCalendar dateFirstDay={firstDayDate} mini={mini} />
-        )}
-      </TrackableDataProvider>
+      {viewType === "list" ? (
+        <MonthVisualList dateFirstDay={firstDayDate} />
+      ) : (
+        <MonthVisualCalendar dateFirstDay={firstDayDate} mini={mini} />
+      )}
     </div>
   );
 };

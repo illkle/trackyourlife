@@ -32,17 +32,10 @@ import { QueryError } from "~/components/QueryError";
 import DeleteButton from "~/components/Trackable/DeleteButton";
 import { FavoriteButton } from "~/components/Trackable/FavoriteButton";
 import { TrackableNameEditable } from "~/components/Trackable/TrackableName";
-import {
-  TrackableFlagsProviderExternal,
-  useSetTrackableFlag,
-  useTrackableFlag,
-} from "@tyl/helpers/data/TrackableFlagsProvider";
-import {
-  TrackableGroupsProvider,
-  useIsTrackableInGroup,
-} from "@tyl/helpers/data/TrackableGroupsProvider";
+
 import { TrackableMetaProvider, useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { endOfMonth, endOfYear, startOfMonth, startOfYear } from "date-fns";
+import { useIsTrackableInGroup, useTrackableFlag } from "@tyl/helpers/data/dbHooksTanstack";
 
 const paramsSchema = z.object({
   month: z.number().min(0).max(11).or(z.literal("list")).optional().default(new Date().getMonth()),
@@ -100,57 +93,51 @@ const RouteComponent = () => {
   }
 
   return (
-    <TrackableFlagsProviderExternal flagsSelect={trackable.flags}>
-      <TrackableGroupsProvider groupsSelect={trackable.groups}>
-        <TrackableMetaProvider trackable={trackable}>
-          <div className="content-container flex h-full max-h-full w-full flex-col pb-6">
-            <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
-              <TrackableNameEditable />
-              <div className="flex gap-2 justify-self-end">
-                <FavoriteButton variant={"outline"} />
-                {isView ? (
-                  <>
-                    <Link to={"/app/trackables/$id/settings"} params={{ id: params.id }}>
-                      <Button name="settings" variant="outline">
-                        <SettingsIcon className="h-4 w-4" />
-                        <span className="max-md:hidden">Settings</span>
-                      </Button>
-                    </Link>
-                  </>
-                ) : (
-                  <>
-                    <Link to={"/app/trackables/$id/view"} params={{ id: params.id }}>
-                      <Button variant="outline">
-                        <CalendarDaysIcon className="h-4 w-4" />
-                        <span className="max-md:hidden">View</span>
-                      </Button>
-                    </Link>
-                  </>
-                )}
-                <TrackableDropdown />
-              </div>
-            </div>
-            <hr className="my-4 h-px border-none bg-foreground opacity-10 outline-hidden" />
-            <Outlet />
+    <TrackableMetaProvider trackable={trackable}>
+      <div className="content-container flex h-full max-h-full w-full flex-col pb-6">
+        <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
+          <TrackableNameEditable />
+          <div className="flex gap-2 justify-self-end">
+            <FavoriteButton variant={"outline"} />
+            {isView ? (
+              <>
+                <Link to={"/app/trackables/$id/settings"} params={{ id: params.id }}>
+                  <Button name="settings" variant="outline">
+                    <SettingsIcon className="h-4 w-4" />
+                    <span className="max-md:hidden">Settings</span>
+                  </Button>
+                </Link>
+              </>
+            ) : (
+              <>
+                <Link to={"/app/trackables/$id/view"} params={{ id: params.id }}>
+                  <Button variant="outline">
+                    <CalendarDaysIcon className="h-4 w-4" />
+                    <span className="max-md:hidden">View</span>
+                  </Button>
+                </Link>
+              </>
+            )}
+            <TrackableDropdown />
           </div>
-        </TrackableMetaProvider>
-      </TrackableGroupsProvider>
-    </TrackableFlagsProviderExternal>
+        </div>
+        <hr className="my-4 h-px border-none bg-foreground opacity-10 outline-hidden" />
+        <Outlet />
+      </div>
+    </TrackableMetaProvider>
   );
 };
 
 const TrackableDropdown = () => {
   const { id } = useTrackableMeta();
-  const setFlag = useSetTrackableFlag();
 
-  const isArchived = useIsTrackableInGroup(id, "archived");
-  const monthViewStyle = useTrackableFlag(id, "AnyMonthViewType");
+  const { data: isArchived } = useIsTrackableInGroup(id, "archived");
+  const { data: monthViewStyle, setFlag: setMonthViewStyle } = useTrackableFlag(
+    id,
+    "AnyMonthViewType",
+  );
 
   const { removeFromGroup, addToGroup } = useGroupHandlers();
-
-  const setMonthViewStyle = async (style: ITrackableFlagType<"AnyMonthViewType">) => {
-    await setFlag(id, "AnyMonthViewType", style);
-  };
 
   const handleArchiveToggle = async () => {
     if (isArchived) {
