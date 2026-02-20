@@ -27,17 +27,23 @@ catalog:
 
 catalogs:
   powersync:
+    "@journeyapps/wa-sqlite": 1.5.0
+    "@op-engineering/op-sqlite": 15.2.5
     "@powersync/common": 1.47.0
     "@powersync/drizzle-driver": 0.7.3
     "@powersync/op-sqlite": 0.9.1
-    "@powersync/react-native": 1.30.0
     "@powersync/react": 1.8.3
+    "@powersync/react-native": 1.30.0
     "@powersync/web": 1.33.0
-    "@op-engineering/op-sqlite": 15.2.5
-    "@journeyapps/wa-sqlite": 1.5.0
+  react:
+    "@types/react": ~19.1.10
+    "@types/react-dom": 19.1.7
+    babel-plugin-react-compiler: 1.0.0
+    react: 19.1.0
+    react-dom: 19.1.0
   tanstack:
-    "@tanstack/powersync-db-collection": 0.1.30
-    "@tanstack/react-db": 0.1.70
+    "@tanstack/powersync-db-collection": 0.1.31
+    "@tanstack/react-db": 0.1.71
     "@tanstack/react-form": 1.28.0
     "@tanstack/react-query": 5.90.20
     "@tanstack/react-router": 1.153.1
@@ -45,12 +51,6 @@ catalogs:
     "@tanstack/react-router-ssr-query": 1.153.1
     "@tanstack/react-start": 1.153.1
     "@tanstack/react-store": 0.8.0
-  react:
-    "@types/react": ~19.1.10
-    "@types/react-dom": 19.1.7
-    react: 19.1.0
-    react-dom: 19.1.0
-    "babel-plugin-react-compiler": 1.0.0
 
 onlyBuiltDependencies:
   - "@parcel/watcher"

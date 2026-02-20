@@ -1,0 +1,29 @@
+diff --git a/dist/cjs/index.d.cts b/dist/cjs/index.d.cts
+index c70c6faf96632d6669d8ef3a87b02028b1c70ad3..f90e370d7a59edc30af4c00df78bb769c70627e0 100644
+--- a/dist/cjs/index.d.cts
++++ b/dist/cjs/index.d.cts
+@@ -1,3 +1,4 @@
+ export * from './definitions.cjs';
+ export * from './powersync.cjs';
+ export * from './PowerSyncTransactor.cjs';
++export * from './helpers.cjs'
+\ No newline at end of file
+diff --git a/dist/esm/index.d.ts b/dist/esm/index.d.ts
+index 812abc3cd6bc97a56e640bda7f7102a71ba0d9f5..f8104b019b1811bc6d619c9b4b6ee96325714b92 100644
+--- a/dist/esm/index.d.ts
++++ b/dist/esm/index.d.ts
+@@ -1,3 +1,4 @@
+ export * from './definitions.js';
+ export * from './powersync.js';
+ export * from './PowerSyncTransactor.js';
++export * from './helpers.js'
+\ No newline at end of file
+diff --git a/src/index.ts b/src/index.ts
+index 6879d7a22c96636407cf3fb60137698416339b43..f5d6ed3f988010f2055a9a1bbcdd77dafa0577b1 100644
+--- a/src/index.ts
++++ b/src/index.ts
+@@ -1,3 +1,4 @@
+ export * from './definitions'
+ export * from './powersync'
+ export * from './PowerSyncTransactor'
++export * from './helpers'

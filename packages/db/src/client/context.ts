@@ -5,10 +5,12 @@
 import { createContext, useContext } from "react";
 
 import type { TPowersyncDrizzleDB } from "./schema-powersync";
+import { TanstackDBType } from "./tanstack";
 
 export const PowersyncDrizzleContext = createContext<{
   db: TPowersyncDrizzleDB;
   userID: string;
+  dbT: TanstackDBType;
 } | null>(null);
 
 export const usePowersyncDrizzle = () => {

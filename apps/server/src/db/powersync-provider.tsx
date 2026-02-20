@@ -23,6 +23,7 @@ import {
 
 import { useAuthAuthed } from "~/utils/useSessionInfo";
 import { Connector } from "./connector";
+import { createTanstackDB, TanstackDBType } from "@tyl/db/client/tanstack";
 
 const powersyncDb = new PowerSyncDatabase({
   schema: PowersyncSchema,
@@ -42,12 +43,15 @@ const drizzleDb = wrapPowerSyncWithDrizzle(powersyncDb, {
   schema: PowersyncDrizzleSchema,
 });
 
+const tanstackDb = createTanstackDB(powersyncDb);
+
 export const PowerSyncProvider = ({ children }: { children: ReactNode }) => {
   const { user } = useAuthAuthed();
 
   const [databases, setDatabases] = useState<{
     powersyncDb: PowerSyncDatabase;
     drizzleDb: TPowersyncDrizzleDB;
+    tanstackDb: TanstackDBType;
   } | null>(null);
 
   const asyncConnect = async (db: PowerSyncDatabase, connector: PowerSyncBackendConnector) => {
@@ -64,7 +68,7 @@ export const PowerSyncProvider = ({ children }: { children: ReactNode }) => {
   useLayoutEffect(() => {
     const connector = new Connector();
     asyncConnect(powersyncDb, connector);
-    setDatabases({ powersyncDb, drizzleDb });
+    setDatabases({ powersyncDb, drizzleDb, tanstackDb });
 
     return () => {
       void powersyncDb.disconnect();

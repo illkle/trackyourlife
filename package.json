@@ -22,7 +22,7 @@
   "devDependencies": {
     "@turbo/gen": "2.7.6",
     "oxfmt": "^0.27.0",
-    "oxlint": "^1.42.0",
+    "oxlint": "^1.49.0",
     "turbo": "2.7.6",
     "typescript": "catalog:"
   },
@@ -38,6 +38,9 @@
       "core-js-pure",
       "esbuild",
       "unrs-resolver"
-    ]
+    ],
+    "patchedDependencies": {
+      "@tanstack/powersync-db-collection": "patches/@tanstack__powersync-db-collection.patch"
+    }
   }
 }
