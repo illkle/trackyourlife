@@ -2,8 +2,6 @@ import { Spinner } from "@shad/components/spinner";
 import { Link, redirect, useLocation } from "@tanstack/react-router";
 import { ChevronUp, HeartIcon, PanelLeftClose, PanelLeftOpen, User2 } from "lucide-react";
 
-import { useTrackablesList } from "@tyl/helpers/data/dbHooks";
-
 import { Button } from "~/@shad/components/button";
 import {
   DropdownMenu,
@@ -26,13 +24,13 @@ import {
 } from "~/@shad/components/sidebar";
 import { authClient } from "~/auth/client";
 import { CoreLinks } from "~/components/Layout/Header";
-import { QueryError } from "~/components/QueryError";
 import { ThemeSwitcher } from "~/components/UserAppSettings/themeSwitcher";
 import { RenderTrackableIcon } from "~/utils/trackableIcons";
 import { useAuthAuthed } from "~/utils/useSessionInfo";
 import { usePowerSync } from "@powersync/react";
 import { useEffect, useState } from "react";
 import { cn } from "~/@shad/lib/utils";
+import { useTrackablesList } from "@tyl/helpers/data/dbHooksTanstack";
 
 const TrackablesMiniList = () => {
   const q = useTrackablesList();
@@ -47,10 +45,6 @@ const TrackablesMiniList = () => {
     );
   }
 
-  if (q.error) {
-    return <QueryError error={q.error} onRetry={q.refresh} />;
-  }
-
   if (q.data.length === 0) {
     return <div className="py-16 text-center text-xs text-muted-foreground"></div>;
   }
@@ -60,7 +54,7 @@ const TrackablesMiniList = () => {
       <SidebarGroupLabel>Trackables</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {q.data.map((tr) => {
+          {q.data.map(({ trackable: tr, favoriteGroup }) => {
             return (
               <SidebarMenuItem key={tr.id}>
                 <SidebarMenuButton
@@ -84,7 +78,7 @@ const TrackablesMiniList = () => {
                           <div>{tr.name || "Unnamed"}</div>
                         </div>
 
-                        {tr.groups.some((v) => v.group === "favorites") && (
+                        {favoriteGroup?.group && (
                           <div>
                             <HeartIcon fill="currentColor" size={16} />
                           </div>

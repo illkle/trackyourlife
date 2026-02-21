@@ -1,30 +1,37 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { usePowersyncDrizzle } from "@tyl/db/client/context";
 import { useLiveQuery } from "@tanstack/react-db";
+import { usePowersyncDrizzle } from "@tyl/helpers/data/context";
+import { Button } from "~/@shad/components/button";
+import { useRef } from "react";
 
 export const Route = createFileRoute("/app/testing")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { dbT } = usePowersyncDrizzle();
+  const { dbT } = usePowersyncDrizzle(); // just a helper context that return tanstack db
 
-  const q = useLiveQuery((q) => q.from({ aa: dbT.trackableFlags }));
+  const q = useLiveQuery((q) => q.from({ aa: dbT.trackable }).findOne());
 
-  const ff = async () => {
-    console.log(dbT.trackable);
-    console.log("react-db resolved:", import.meta.resolve("@tanstack/react-db"));
-    console.log(
-      "powersync-db-collection resolved:",
-      import.meta.resolve("@tanstack/powersync-db-collection"),
-    );
+  const counterRef = useRef(0);
+
+  const setName = () => {
+    if (!q.data?.id) return;
+
+    const cc = counterRef.current;
+    counterRef.current++;
+
+    dbT.trackable.update(q.data.id, (v) => {
+      v.name = String(cc);
+    });
   };
 
-  return (
-    <div className="mx-auto max-w-md" onClick={ff}>
-      {q.status}
+  console.log("render with name ", q.data?.name);
 
-      {JSON.stringify(q.data)}
+  return (
+    <div className="mx-auto max-w-md">
+      {q.data?.name}
+      <Button onClick={() => setName()}> Update name</Button>
     </div>
   );
 }
