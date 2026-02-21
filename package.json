@@ -20,10 +20,10 @@
     "typecheck": "turbo run typecheck"
   },
   "devDependencies": {
-    "@turbo/gen": "2.7.6",
+    "@turbo/gen": "2.8.10",
     "oxfmt": "^0.27.0",
     "oxlint": "^1.49.0",
-    "turbo": "2.7.6",
+    "turbo": "2.8.10",
     "typescript": "catalog:"
   },
   "engines": {
