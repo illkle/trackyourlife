@@ -2,11 +2,6 @@
   "$schema": "https://turborepo.org/schema.json",
   "ui": "tui",
   "tasks": {
-    "topo": {
-      "dependsOn": [
-        "^topo"
-      ]
-    },
     "build": {
       "dependsOn": [
         "^build"
@@ -29,11 +24,16 @@
     },
     "typecheck": {
       "dependsOn": [
-        "^topo",
         "^build"
       ],
       "outputs": [
+        "node_modules/.cache/tsbuildinfo.json",
         "**/*.tsbuildinfo"
+      ]
+    },
+    "lint": {
+      "dependsOn": [
+        "^lint"
       ]
     },
     "clean": {
@@ -41,26 +41,50 @@
     },
     "push": {
       "cache": false,
-      "interactive": true
+      "interactive": true,
+      "env": [
+        "DATABASE_URL"
+      ]
     },
     "studio": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "env": [
+        "DATABASE_URL"
+      ]
     },
     "generate": {
-      "cache": false
+      "cache": false,
+      "env": [
+        "DATABASE_URL"
+      ]
+    },
+    "migrate": {
+      "cache": false,
+      "env": [
+        "DATABASE_URL"
+      ]
+    },
+    "up": {
+      "cache": false,
+      "env": [
+        "DATABASE_URL"
+      ]
     },
     "test": {
       "cache": false
+    },
+    "test:e2e": {
+      "cache": false
+    },
+    "migrate:deploy": {
+      "cache": false,
+      "env": [
+        "DATABASE_URL"
+      ]
     }
   },
   "globalEnv": [
-    "NODE_ENV",
-    "DATABASE_URL",
-    "TEST_URL",
-    "SITE",
-    "BETTER_AUTH_SECRET",
-    "RESEND_API_KEY",
-    "RESEND_FROM_EMAIL"
+    "NODE_ENV"
   ]
 }
