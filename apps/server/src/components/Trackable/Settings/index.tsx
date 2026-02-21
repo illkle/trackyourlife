@@ -1,23 +1,32 @@
-import { format } from "date-fns";
-import { m } from "motion/react";
+import { format } from 'date-fns';
+import { m } from 'motion/react';
 
-import { DrawerMobileTitleProvider } from "~/@shad/components/drawer";
-import { Switch } from "~/@shad/components/switch";
-import ColorInput from "~/components/Inputs/Colors/colorInput";
-import NumberColorSelector from "~/components/Inputs/Colors/numberColorSelector";
-import DatePicker from "~/components/Inputs/DatePicker";
-import { SettingsTitle } from "~/components/Trackable/Settings/settingsTitle";
-import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
-import NumberLimitsSelector from "./numberLimitsSelector";
-import { useCallback } from "react";
-import { IColorCodingValueInput } from "@tyl/db/jsonValidators";
-import { useTrackableFlag } from "@tyl/helpers/data/dbHooksTanstack";
+import { DrawerMobileTitleProvider } from '~/@shad/components/drawer';
+import { Switch } from '~/@shad/components/switch';
+import ColorInput from '~/components/Inputs/Colors/colorInput';
+import NumberColorSelector from '~/components/Inputs/Colors/numberColorSelector';
+import DatePicker from '~/components/Inputs/DatePicker';
+import { SettingsTitle } from '~/components/Trackable/Settings/settingsTitle';
+import { useTrackableMeta } from '@tyl/helpers/data/TrackableMetaProvider';
+import NumberLimitsSelector from './numberLimitsSelector';
+import { useCallback } from 'react';
+import { IColorCodingValueInput } from '@tyl/db/jsonValidators';
+import { useTrackableFlag } from '@tyl/helpers/data/dbHooksTanstack';
+import { presetsMap } from '@tyl/helpers/colorTools';
 
 export const SettingsCommon = () => {
   const { id } = useTrackableMeta();
-  const { data: trackingStart, setFlag } = useTrackableFlag(id, "AnyTrackingStart");
+  const {
+    raw,
+    data: trackingStart,
+    setFlag,
+    clearFlag,
+  } = useTrackableFlag(id, 'AnyTrackingStart');
 
-  console.log("SettingsCommon", trackingStart && format(trackingStart, "yyyy-MM-dd"));
+  console.log(
+    'SettingsCommon',
+    trackingStart && format(trackingStart, 'yyyy-MM-dd')
+  );
 
   return (
     <div>
@@ -26,7 +35,11 @@ export const SettingsCommon = () => {
         <DatePicker
           date={trackingStart ? new Date(trackingStart) : undefined}
           onChange={(v) => {
-            void setFlag(v ? format(v, "yyyy-MM-dd") : "");
+            if (v) {
+              void setFlag(format(v, 'yyyy-MM-dd'));
+            } else {
+              void clearFlag();
+            }
           }}
           limits={{
             start: new Date(1990, 0, 1),
@@ -40,8 +53,14 @@ export const SettingsCommon = () => {
 
 export const SettingsBoolean = () => {
   const { id } = useTrackableMeta();
-  const { data: checked, setFlag: setChecked } = useTrackableFlag(id, "BooleanCheckedColor");
-  const { data: unchecked, setFlag: setUnchecked } = useTrackableFlag(id, "BooleanUncheckedColor");
+  const { data: checked, setFlag: setChecked } = useTrackableFlag(
+    id,
+    'BooleanCheckedColor'
+  );
+  const { data: unchecked, setFlag: setUnchecked } = useTrackableFlag(
+    id,
+    'BooleanUncheckedColor'
+  );
 
   return (
     <>
@@ -59,11 +78,14 @@ export const SettingsBoolean = () => {
 
 export const SettingsNumber = () => {
   const { id } = useTrackableMeta();
-  const { data: progress, setFlag: setNumberBounds } = useTrackableFlag(id, "NumberProgessBounds");
+  const { data: progress, setFlag: setNumberBounds } = useTrackableFlag(
+    id,
+    'NumberProgessBounds'
+  );
   const {
     data: { colorCoding },
     setFlag: setColorCoding,
-  } = useTrackableFlag(id, "NumberColorCoding");
+  } = useTrackableFlag(id, 'NumberColorCoding');
 
   const setColorCodingHandle = useCallback(
     (v: NonNullable<IColorCodingValueInput[]>, ts: number) => {
@@ -73,7 +95,7 @@ export const SettingsNumber = () => {
         timestamp: ts,
       });
     },
-    [setColorCoding],
+    [setColorCoding]
   );
 
   return (
@@ -120,7 +142,12 @@ export const SettingsNumber = () => {
             onCheckedChange={(v) => {
               void setColorCoding({
                 ...colorCoding,
-                colors: colorCoding?.colors ?? [],
+                colors: colorCoding?.colors?.length
+                  ? colorCoding.colors
+                  : [
+                      { point: 0, color: presetsMap.orange, id: '' },
+                      { point: 50, color: presetsMap.green, id: '' },
+                    ],
                 enabled: v,
                 timestamp: Date.now(),
               });
@@ -148,8 +175,8 @@ const TrackableSettingsV2 = () => {
   return (
     <div>
       <SettingsCommon />
-      {type === "boolean" && <SettingsBoolean />}
-      {type === "number" && <SettingsNumber />}
+      {type === 'boolean' && <SettingsBoolean />}
+      {type === 'number' && <SettingsNumber />}
     </div>
   );
 };

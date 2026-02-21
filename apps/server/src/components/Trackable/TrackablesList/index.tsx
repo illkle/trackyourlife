@@ -5,14 +5,10 @@ import { Link } from "@tanstack/react-router";
 import { eachDayOfInterval, format, isLastDayOfMonth, subDays } from "date-fns";
 import { m, Transition } from "motion/react";
 
-import { useTrackablesList as useTrackablesListL } from "@tyl/helpers/data/dbHooks";
-
 import { Button } from "~/@shad/components/button";
 import DayCellRouter from "~/components/DayCell";
-import { QueryError } from "~/components/QueryError";
 import { TrackableNameText } from "~/components/Trackable/TrackableName";
 import MiniTrackable from "./miniTrackable";
-import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
 import { TrackableMetaProvider } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useTrackablesList } from "@tyl/helpers/data/dbHooksTanstack";
 

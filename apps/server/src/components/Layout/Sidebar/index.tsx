@@ -1,5 +1,5 @@
 import { Spinner } from "@shad/components/spinner";
-import { Link, redirect, useLocation } from "@tanstack/react-router";
+import { Link, MatchRoute, redirect, useLocation } from "@tanstack/react-router";
 import { ChevronUp, HeartIcon, PanelLeftClose, PanelLeftOpen, User2 } from "lucide-react";
 
 import { Button } from "~/@shad/components/button";
@@ -35,8 +35,6 @@ import { useTrackablesList } from "@tyl/helpers/data/dbHooksTanstack";
 const TrackablesMiniList = () => {
   const q = useTrackablesList();
 
-  const loc = useLocation();
-
   if (q.isLoading) {
     return (
       <div className="flex justify-center py-4">
@@ -54,43 +52,47 @@ const TrackablesMiniList = () => {
       <SidebarGroupLabel>Trackables</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {q.data.map(({ trackable: tr, favoriteGroup }) => {
-            return (
-              <SidebarMenuItem key={tr.id}>
-                <SidebarMenuButton
-                  render={
-                    <Link
-                      key={tr.id}
-                      to={"/app/trackables/$id/view"}
-                      params={{ id: tr.id }}
-                      search={(prev) => ({
-                        ...prev,
-                      })}
-                    >
-                      <div className="flex w-full items-center justify-between gap-2">
-                        <div className="flex items-center justify-baseline gap-2 truncate">
-                          <div className="opacity-70">
-                            <RenderTrackableIcon
-                              size={16}
-                              type={tr.type as "number" | "boolean" | "text"}
-                            />
-                          </div>
-                          <div>{tr.name || "Unnamed"}</div>
-                        </div>
+          <MatchRoute to={"/app/trackables/$id"}>
+            {(v) =>
+              q.data.map(({ trackable: tr, favoriteGroup }) => {
+                return (
+                  <SidebarMenuItem key={tr.id}>
+                    <SidebarMenuButton
+                      render={
+                        <Link
+                          key={tr.id}
+                          to={"/app/trackables/$id/view"}
+                          params={{ id: tr.id }}
+                          search={(prev) => ({
+                            ...prev,
+                          })}
+                        >
+                          <div className="flex w-full items-center justify-between gap-2">
+                            <div className="flex items-center justify-baseline gap-2 truncate">
+                              <div className="opacity-70">
+                                <RenderTrackableIcon
+                                  size={16}
+                                  type={tr.type as "number" | "boolean" | "text"}
+                                />
+                              </div>
+                              <div>{tr.name || "Unnamed"}</div>
+                            </div>
 
-                        {favoriteGroup?.group && (
-                          <div>
-                            <HeartIcon fill="currentColor" size={16} />
+                            {favoriteGroup?.group && (
+                              <div>
+                                <HeartIcon fill="currentColor" size={16} />
+                              </div>
+                            )}
                           </div>
-                        )}
-                      </div>
-                    </Link>
-                  }
-                  isActive={loc.pathname.includes(tr.id)}
-                />
-              </SidebarMenuItem>
-            );
-          })}
+                        </Link>
+                      }
+                      isActive={tr.id === v?.id}
+                    />
+                  </SidebarMenuItem>
+                );
+              })
+            }
+          </MatchRoute>
         </SidebarMenu>
       </SidebarGroupContent>
     </>

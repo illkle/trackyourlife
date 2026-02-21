@@ -3,7 +3,6 @@ import { m } from "motion/react";
 
 import { buttonVariants } from "~/@shad/components/button";
 import { Button } from "~/@shad/components/button";
-import { useGroupHandlers } from "@tyl/helpers/data/dbHooks";
 import { VariantProps } from "class-variance-authority";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useIsTrackableInGroup } from "@tyl/helpers/data/dbHooksTanstack";
@@ -16,23 +15,8 @@ export const FavoriteButton = ({
   onlyIcon?: boolean;
 }) => {
   const { id } = useTrackableMeta();
-  const { removeFromGroup, addToGroup } = useGroupHandlers();
 
-  const { data: inFavs } = useIsTrackableInGroup(id, "favorites");
-
-  const favHandler = async () => {
-    if (inFavs) {
-      await removeFromGroup({
-        trackableId: id,
-        group: "favorites",
-      });
-    } else {
-      await addToGroup({
-        trackableId: id,
-        group: "favorites",
-      });
-    }
-  };
+  const { data: inFavs, toggleGroup } = useIsTrackableInGroup(id, "favorites");
 
   return (
     <Button
@@ -52,7 +36,7 @@ export const FavoriteButton = ({
         </m.button>
       }
       variant={variant}
-      onClick={() => void favHandler()}
+      onClick={() => void toggleGroup()}
     ></Button>
   );
 };

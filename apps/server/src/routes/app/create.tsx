@@ -7,7 +7,7 @@ import { cloneDeep } from "@tyl/helpers";
 import { Button } from "~/@shad/components/button";
 import { Input } from "~/@shad/components/input";
 import { TrackableTypeSelector } from "~/components/Trackable/Settings/trackableTypeSelector";
-import { useTrackableHandlers } from "@tyl/helpers/data/dbHooks";
+import { useTrackableHandlers } from "@tyl/helpers/data/dbHooksTanstack";
 
 export const Route = createFileRoute("/app/create")({
   component: RouteComponent,

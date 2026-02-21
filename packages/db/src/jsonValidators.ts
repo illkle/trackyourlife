@@ -1,4 +1,6 @@
-import { z } from "zod/v4";
+import { z } from 'zod/v4';
+
+import { v4 as uuidv4 } from 'uuid';
 
 /* Colors */
 
@@ -26,7 +28,7 @@ export const ZColorCodingValue = z.object({
   point: z.number(),
   color: ZColorValue,
   // used to key inputs when editing, can be changed voluntarily
-  id: z.string().uuid().default("empty_id"),
+  id: z.uuidv4().catch(() => uuidv4()),
 });
 
 export const ZNumberColorCoding = z.object({

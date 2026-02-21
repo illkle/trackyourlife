@@ -1,19 +1,26 @@
-import { useCallback, useEffect, useMemo, useRef } from "react";
-import { router } from "expo-router";
-import { Text, TextInput, Pressable, View } from "react-native";
+import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { router } from 'expo-router';
+import { Text, TextInput, Pressable, View } from 'react-native';
 
-import { TrackableMetaProvider, useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
-import { useRecordUpdateHandler, useTrackable, useTrackableDay } from "@tyl/helpers/data/dbHooks";
-import { getNumberSafe } from "@tyl/helpers/numberTools";
-import { useLinkedValue } from "@tyl/helpers/useDbLinkedValue";
-import { KeyboardBackgroundView, KeyboardStickyView } from "react-native-keyboard-controller";
+import {
+  TrackableMetaProvider,
+  useTrackableMeta,
+} from '@tyl/helpers/data/TrackableMetaProvider';
+import {
+  useRecordUpdateHandler,
+  useTrackable,
+  useTrackableData,
+} from '@tyl/helpers/data/dbHooksTanstack';
+import { getNumberSafe } from '@tyl/helpers/numberTools';
+import { useLinkedValue } from '@tyl/helpers/useDbLinkedValue';
+import { KeyboardStickyView } from 'react-native-keyboard-controller';
 
 export const useOpenDayEditor = (timestamp: Date) => {
   const trackableMeta = useTrackableMeta();
 
   const openDayEditor = useCallback(() => {
     router.push({
-      pathname: "/editor",
+      pathname: '/editor',
       params: {
         trackableId: trackableMeta.id,
         date: timestamp.toISOString(),
@@ -34,7 +41,10 @@ export const EditorModal = ({
   onClose: () => void;
 }) => {
   const q = useTrackable({ id: trackableId });
-  const trackable = useMemo(() => (Array.isArray(q.data) ? q.data[0] : q.data), [q.data]);
+  const trackable = useMemo(
+    () => (Array.isArray(q.data) ? q.data[0] : q.data),
+    [q.data]
+  );
 
   return (
     <View className="flex-1 justify-end">
@@ -43,11 +53,17 @@ export const EditorModal = ({
       <KeyboardStickyView offset={{ opened: 100 }}>
         <View className="rounded-t-3xl border border-border bg-card px-4 py-8 pb-32">
           {!trackable && (
-            <Text className="text-center text-muted-foreground">Loading editor...</Text>
+            <Text className="text-center text-muted-foreground">
+              Loading editor...
+            </Text>
           )}
           {trackable && (
             <TrackableMetaProvider trackable={trackable}>
-              <PopupEditor trackableId={trackableId} timestamp={timestamp} onClose={onClose} />
+              <PopupEditor
+                trackableId={trackableId}
+                timestamp={timestamp}
+                onClose={onClose}
+              />
             </TrackableMetaProvider>
           )}
         </View>
@@ -66,9 +82,18 @@ const PopupEditor = ({
   onClose: () => void;
 }) => {
   const { type } = useTrackableMeta();
-  const q = useTrackableDay({ date: timestamp, trackableId });
-  const trackable = Array.isArray(q.data) ? q.data[0] : q.data;
-  const data = trackable?.data?.[0] ?? { value: undefined, updated_at: 0, id: undefined };
+
+  const q = useTrackableData({
+    firstDay: timestamp,
+    lastDay: timestamp,
+    id: trackableId,
+  });
+
+  const data = q.data[0] ?? {
+    value: undefined,
+    updated_at: 0,
+    id: undefined,
+  };
 
   const onChange = useRecordUpdateHandler({
     date: timestamp,
@@ -76,11 +101,13 @@ const PopupEditor = ({
     type,
   });
 
-  if (type === "number") {
+  if (type === 'number') {
     return (
       <NumberPopupEditor
         value={data.value}
-        onChange={(v, ts) => onChange({ value: v, recordId: data.id, updatedAt: ts })}
+        onChange={(v, ts) =>
+          onChange({ value: v, recordId: data.id, updatedAt: ts })
+        }
         timestamp={data.updated_at ?? 0}
         onClose={onClose}
       />
@@ -106,12 +133,13 @@ const NumberPopupEditor = ({
   onClose: () => void;
 }) => {
   const inputRef = useRef<TextInput>(null);
-  const { internalValue, internalValueValidated, updateHandler, reset } = useLinkedValue({
-    value: String(getNumberSafe(value)),
-    onChange,
-    timestamp,
-    validate: (v) => !Number.isNaN(Number(v)),
-  });
+  const { internalValue, internalValueValidated, updateHandler, reset } =
+    useLinkedValue({
+      value: String(getNumberSafe(value)),
+      onChange,
+      timestamp,
+      validate: (v) => !Number.isNaN(Number(v)),
+    });
 
   useEffect(() => {
     const focusTimeout = setTimeout(() => {

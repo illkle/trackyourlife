@@ -18,10 +18,6 @@
       "types": "./dist/data/*.d.ts",
       "default": "./src/data/*.ts"
     },
-    "./data/TrackableFlagsProvider": {
-      "types": "./dist/data/TrackableFlagsProvider.d.ts",
-      "default": "./src/data/TrackableFlagsProvider.tsx"
-    },
     "./data/TrackableMetaProvider": {
       "types": "./dist/data/TrackableMetaProvider.d.ts",
       "default": "./src/data/TrackableMetaProvider.tsx"

@@ -2,31 +2,28 @@ import { formatDate, isSameDay, isToday } from "date-fns";
 import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 
 import { DbTrackableRecordSelect, DbTrackableSelect } from "@tyl/db/client/schema-powersync";
-import {
-  useRecordDeleteHandler,
-  useRecordUpdateHandler,
-  useTrackableDay,
-} from "@tyl/helpers/data/dbHooks";
 
 import { Button } from "~/@shad/components/button";
 import { editorModalNextDay, editorModalPreviousDay } from "~/components/Modal/EditorModalV2";
 import { NumberPopupEditor } from "~/components/PopupEditor/NumberPopup";
 import { TextPopupEditor } from "~/components/PopupEditor/TextPopup";
-import { QueryError } from "~/components/QueryError";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
-import { useTrackableFlag } from "@tyl/helpers/data/dbHooksTanstack";
+import {
+  useRecordDeleteHandler,
+  useRecordUpdateHandler,
+  useTrackable,
+  useTrackableData,
+  useTrackableFlag,
+} from "@tyl/helpers/data/dbHooksTanstack";
 
 export const PopupEditor = ({ date }: { date: Date }) => {
   const { id, type } = useTrackableMeta();
-  const q = useTrackableDay({ date, trackableId: id });
+  const q = useTrackable({ id });
+  const { data } = useTrackableData({ id, firstDay: date, lastDay: date });
 
   const {
     data: [trackable],
   } = q;
-
-  if (q.error) {
-    return <QueryError error={q.error} onRetry={q.refresh} />;
-  }
 
   const onChange = useRecordUpdateHandler({
     date,
@@ -39,12 +36,7 @@ export const PopupEditor = ({ date }: { date: Date }) => {
   return (
     <>
       <EditorTitle date={date} />
-      <EditorFactory
-        type={type}
-        data={trackable?.data ?? []}
-        onChange={onChange}
-        onDelete={onDelete}
-      />
+      <EditorFactory data={data} type={type} onChange={onChange} onDelete={onDelete} />
     </>
   );
 };

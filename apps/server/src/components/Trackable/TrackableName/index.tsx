@@ -11,7 +11,7 @@ import { Drawer, DrawerContent, DrawerTitle, DrawerTrigger } from "~/@shad/compo
 import { Input } from "~/@shad/components/input";
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useIsDesktop } from "~/utils/useIsDesktop";
-import { useTrackableHandlers } from "@tyl/helpers/data/dbHooks";
+import { useTrackableHandlers } from "@tyl/helpers/data/dbHooksTanstack";
 import { Button } from "~/@shad/components/button";
 
 export const TrackableNameEditable = () => {

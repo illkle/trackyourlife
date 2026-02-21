@@ -1,10 +1,10 @@
-import { PowerSyncProvider } from "@/db/PowersyncProvider";
-import { Stack } from "expo-router";
+import { MobilePowerSyncProvider } from '@/db/PowersyncProvider';
+import { Stack } from 'expo-router';
 
 // Auth protected layout
 export default function AppLayout() {
   return (
-    <PowerSyncProvider>
+    <MobilePowerSyncProvider>
       <Stack>
         <Stack.Screen
           name="(tabs)"
@@ -15,13 +15,13 @@ export default function AppLayout() {
         <Stack.Screen
           name="editor"
           options={{
-            presentation: "transparentModal",
+            presentation: 'transparentModal',
             headerShown: false,
-            animation: "fade",
-            contentStyle: { backgroundColor: "rgba(0,0,0,0.5)" },
+            animation: 'fade',
+            contentStyle: { backgroundColor: 'rgba(0,0,0,0.5)' },
           }}
         ></Stack.Screen>
       </Stack>
-    </PowerSyncProvider>
+    </MobilePowerSyncProvider>
   );
 }
