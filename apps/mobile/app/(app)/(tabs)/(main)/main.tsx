@@ -85,7 +85,7 @@ const TodayList = () => {
                 <TrackableMetaProvider key={trackable.id} trackable={trackable}>
                   <View style={{ width: cellWidth }}>
                     <Link href={`/trackable/${trackable.id}`} className="py-1">
-                      <Text className="text-base text-muted">
+                      <Text className="text-base text-muted-foreground">
                         {trackable.name}
                       </Text>
                     </Link>

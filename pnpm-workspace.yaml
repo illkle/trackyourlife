@@ -4,13 +4,13 @@ packages:
   - tooling/*
 
 catalog:
-  "@better-auth/expo": 1.4.17
-  "@date-fns/tz": 1.4.1
-  "@tailwindcss/postcss": 4.1.18
-  "@tailwindcss/vite": 4.1.18
-  "@testing-library/jest-dom": 6.9.1
-  "@testing-library/react": 16.3.2
-  better-auth: 1.4.17
+  '@better-auth/expo': 1.4.18
+  '@date-fns/tz': 1.4.1
+  '@tailwindcss/postcss': 4.1.18
+  '@tailwindcss/vite': 4.1.18
+  '@testing-library/jest-dom': 6.9.1
+  '@testing-library/react': 16.3.2
+  better-auth: 1.4.18
   class-variance-authority: 0.7.1
   clsx: 2.1.1
   date-fns: 4.1.0
@@ -27,32 +27,32 @@ catalog:
 
 catalogs:
   powersync:
-    "@journeyapps/wa-sqlite": 1.5.0
-    "@op-engineering/op-sqlite": 15.2.5
-    "@powersync/common": 1.47.0
-    "@powersync/drizzle-driver": 0.7.3
-    "@powersync/op-sqlite": 0.9.1
-    "@powersync/react": 1.8.3
-    "@powersync/react-native": 1.30.0
-    "@powersync/web": 1.33.0
+    '@journeyapps/wa-sqlite': 1.5.0
+    '@op-engineering/op-sqlite': 15.2.5
+    '@powersync/common': 1.47.0
+    '@powersync/drizzle-driver': 0.7.3
+    '@powersync/op-sqlite': 0.9.1
+    '@powersync/react': 1.8.3
+    '@powersync/react-native': 1.30.0
+    '@powersync/web': 1.33.0
   react:
-    "@types/react": ~19.1.10
-    "@types/react-dom": 19.1.7
+    '@types/react': 19.2.14
+    '@types/react-dom': 19.2.3
     babel-plugin-react-compiler: 1.0.0
-    react: 19.1.0
-    react-dom: 19.1.0
+    react: 19.2.0
+    react-dom: 19.2.0
   tanstack:
-    "@tanstack/powersync-db-collection": 0.1.31
-    "@tanstack/react-db": 0.1.71
-    "@tanstack/react-form": 1.28.0
-    "@tanstack/react-query": 5.90.20
-    "@tanstack/react-router": 1.153.1
-    "@tanstack/react-router-devtools": 1.153.1
-    "@tanstack/react-router-ssr-query": 1.153.1
-    "@tanstack/react-start": 1.153.1
-    "@tanstack/react-store": 0.8.0
+    '@tanstack/powersync-db-collection': 0.1.31
+    '@tanstack/react-db': 0.1.71
+    '@tanstack/react-form': 1.28.0
+    '@tanstack/react-query': 5.90.20
+    '@tanstack/react-router': 1.153.1
+    '@tanstack/react-router-devtools': 1.153.1
+    '@tanstack/react-router-ssr-query': 1.153.1
+    '@tanstack/react-start': 1.153.1
+    '@tanstack/react-store': 0.8.0
 
 onlyBuiltDependencies:
-  - "@parcel/watcher"
-  - "@tailwindcss/oxide"
+  - '@parcel/watcher'
+  - '@tailwindcss/oxide'
   - esbuild

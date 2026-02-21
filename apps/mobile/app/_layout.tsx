@@ -27,12 +27,11 @@ import {
 import { PortalHost } from '@rn-primitives/portal';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ServerURLProvider, useServerURL } from '@/lib/ServerURLContext';
-import { Uniwind, useCSSVariable } from 'uniwind';
-import * as SystemUI from 'expo-system-ui';
+import { Uniwind } from 'uniwind';
 
 //import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { useEffect } from 'react';
+import { ReactNode } from 'react';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -41,15 +40,6 @@ export const unstable_settings = {
 //SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const bg = useCSSVariable('--color-background');
-
-  useEffect(() => {
-    if (typeof bg === 'string') {
-      SystemUI.setBackgroundColorAsync(bg);
-    }
-  }, [colorScheme, bg]);
-
   const qc = new QueryClient();
 
   return (
@@ -57,9 +47,7 @@ export default function RootLayout() {
       <AuthClientProvider>
         <SessionCachedProvider>
           <GestureHandlerRootView>
-            <ThemeProvider
-              value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}
-            >
+            <ThemeP>
               <QueryClientProvider client={qc}>
                 <SafeAreaProvider>
                   <SafeAreaListener
@@ -75,13 +63,25 @@ export default function RootLayout() {
                   </SafeAreaListener>
                 </SafeAreaProvider>
               </QueryClientProvider>
-            </ThemeProvider>
+            </ThemeP>
           </GestureHandlerRootView>
         </SessionCachedProvider>
       </AuthClientProvider>
     </ServerURLProvider>
   );
 }
+
+const ThemeP = ({ children }: { children: ReactNode }) => {
+  const colorScheme = useColorScheme();
+
+  return (
+    <>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        {children}
+      </ThemeProvider>
+    </>
+  );
+};
 
 const RootNavigator = () => {
   const { serverURL, powersyncURL } = useServerURL();
@@ -92,7 +92,12 @@ const RootNavigator = () => {
   return (
     <Stack>
       <Stack.Protected guard={!needsToLogin}>
-        <Stack.Screen name="(app)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="(app)"
+          options={{
+            headerShown: false,
+          }}
+        />
       </Stack.Protected>
 
       <Stack.Protected guard={needsToLogin}>
