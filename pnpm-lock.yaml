@@ -111,6 +111,9 @@ catalogs:
     '@tanstack/powersync-db-collection':
       specifier: 0.1.31
       version: 0.1.31
+    '@tanstack/react-db':
+      specifier: 0.1.71
+      version: 0.1.71
     '@tanstack/react-form':
       specifier: 1.28.0
       version: 1.28.0
@@ -609,7 +612,7 @@ importers:
         specifier: 'catalog:'
         version: 1.4.1
       '@tanstack/react-db':
-        specifier: ^0.1.71
+        specifier: catalog:tanstack
         version: 0.1.71(react@19.2.0)(typescript@5.9.3)
       chroma-js:
         specifier: ^3.2.0

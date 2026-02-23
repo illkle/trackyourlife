@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
-import { TrackableDataProvider } from '@tyl/helpers/data/TrackableDataProvider';
 import { sub } from 'date-fns';
 import { z } from 'zod/v4';
 
@@ -38,12 +37,10 @@ function RouteComponent() {
         </Button>
       </div>
       <div>
-        <TrackableDataProvider firstDay={firstShown} lastDay={today}>
-          <TrackablesList
-            daysToShow={SHOW_DAYS}
-            archived={params.archived ?? false}
-          />
-        </TrackableDataProvider>
+        <TrackablesList
+          daysToShow={SHOW_DAYS}
+          archived={params.archived ?? false}
+        />
       </div>
     </div>
   );
