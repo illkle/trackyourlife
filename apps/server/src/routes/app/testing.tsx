@@ -1,37 +1,25 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useLiveQuery } from "@tanstack/react-db";
-import { usePowersyncDrizzle } from "@tyl/helpers/data/context";
-import { Button } from "~/@shad/components/button";
-import { useRef } from "react";
+import { createFileRoute } from '@tanstack/react-router';
+import { useLiveQuery } from '@tanstack/react-db';
+import { usePowersyncDrizzle } from '@tyl/helpers/data/context';
+import { Button } from '~/@shad/components/button';
+import { useMemo, useRef } from 'react';
+import { useTrackableData } from '@tyl/helpers/data/dbHooksTanstack';
+import { sub } from 'date-fns';
 
-export const Route = createFileRoute("/app/testing")({
+export const Route = createFileRoute('/app/testing')({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  const { dbT } = usePowersyncDrizzle(); // just a helper context that return tanstack db
+  const d = new Date();
 
-  const q = useLiveQuery((q) => q.from({ aa: dbT.trackable }).findOne());
+  const last = useMemo(() => sub(d, { months: 2 }), [d]);
 
-  const counterRef = useRef(0);
+  const q = useTrackableData({
+    fromArchive: false,
+    firstDay: last,
+    lastDay: d,
+  });
 
-  const setName = () => {
-    if (!q.data?.id) return;
-
-    const cc = counterRef.current;
-    counterRef.current++;
-
-    dbT.trackable.update(q.data.id, (v) => {
-      v.name = String(cc);
-    });
-  };
-
-  console.log("render with name ", q.data?.name);
-
-  return (
-    <div className="mx-auto max-w-md">
-      {q.data?.name}
-      <Button onClick={() => setName()}> Update name</Button>
-    </div>
-  );
+  return <div className="mx-auto max-w-md">{JSON.stringify(q.data)}</div>;
 }

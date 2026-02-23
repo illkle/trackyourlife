@@ -11,7 +11,7 @@ import {
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react-native';
 
 import { Button } from '@/components/ui/button';
-import DayCellRouter from '@/components/cells';
+import { DayCellRouter } from '@/components/cells';
 import { cn } from '@/lib/utils';
 import { DefaultWrapper } from '@/lib/styledComponents';
 import { TrackableMetaProvider } from '@tyl/helpers/data/TrackableMetaProvider';

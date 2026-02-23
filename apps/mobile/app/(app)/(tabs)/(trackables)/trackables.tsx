@@ -7,7 +7,7 @@ import { useTrackablesList } from '@tyl/helpers/data/dbHooksTanstack';
 import { TrackableMetaProvider } from '@tyl/helpers/data/TrackableMetaProvider';
 import { DefaultWrapper } from '@/lib/styledComponents';
 import { Button } from '@/components/ui/button';
-import DayCellRouter from '@/components/cells';
+import { DayCellRouter } from '@/components/cells';
 
 const SHOW_DAYS = 6;
 

@@ -33,7 +33,7 @@
   },
   "dependencies": {
     "@date-fns/tz": "catalog:",
-    "@tanstack/react-db": "^0.1.71",
+    "@tanstack/react-db": "catalog:tanstack",
     "chroma-js": "^3.2.0",
     "date-fns": "catalog:",
     "drizzle-orm": "catalog:",

@@ -6,9 +6,11 @@ import {
   and,
   eq,
   gte,
+  InitialQueryBuilder,
   isNull,
   isUndefined,
   length,
+  liveQueryCollectionOptions,
   lte,
   not,
   or,
@@ -30,13 +32,15 @@ import {
 } from '@tyl/db/client/clientIds';
 import { v4 as uuidv4 } from 'uuid';
 import { DbTrackableInsert } from '@tyl/db/client/schema-powersync';
+import { TanstackDBType } from './tanstack';
+import { inArray } from 'drizzle-orm';
 
-const dateToSQLiteString = (date: Date | number): string => {
+export const dateToSQLiteString = (date: Date | number): string => {
   return format(date, "yyyy-MM-dd'T'HH:mm:ss.SSS");
 };
 
 // Time from dates is ignored. Values from start of firstDay to end of lastDay are included.
-interface TrackableRangeParams {
+export interface TrackableRangeParams {
   firstDay: Date;
   lastDay: Date;
 }
@@ -110,29 +114,93 @@ export const useTrackable = ({ id }: { id: string }) => {
   );
 };
 
-interface ByIdParams extends TrackableRangeParams {
-  id: string;
+export interface ByIdParams extends TrackableRangeParams {
+  id?: string;
+  fromArchive?: boolean;
 }
 
-export const useTrackableData = ({ id, firstDay, lastDay }: ByIdParams) => {
-  const { dbT, userID } = usePowersyncDrizzle();
-  const startDate = dateToSQLiteString(startOfDay(firstDay));
-  const endDate = dateToSQLiteString(endOfDay(lastDay));
+export const buildTrackableDataQuery = ({
+  q,
+  dbT,
+  userID,
+  id,
+  startDate,
+  endDate,
+  fromArchive,
+}: {
+  q: InitialQueryBuilder;
+  dbT: TanstackDBType;
+  userID: string;
+  id?: string;
+  startDate: string;
+  endDate: string;
+  fromArchive?: boolean;
+}) => {
+  if (id) {
+    return q
+      .from({ records: dbT.trackableRecord })
+      .where(({ records }) =>
+        and(
+          eq(records.user_id, userID),
+          gte(records.timestamp, startDate),
+          lte(records.timestamp, endDate),
+          eq(records.trackable_id, id)
+        )
+      );
+  }
 
-  return useLiveQuery(
-    (q) =>
-      q
-        .from({ records: dbT.trackableRecord })
-        .where(({ records }) =>
-          and(
-            eq(records.user_id, userID),
-            eq(records.trackable_id, id),
-            gte(records.timestamp, startDate),
-            lte(records.timestamp, endDate)
-          )
-        ),
-    [id, startDate, endDate, userID]
+  const archived = q
+    .from({ archivedGroup: dbT.trackableGroup })
+    .where((q) =>
+      and(
+        eq(q.archivedGroup.group, 'archived'),
+        eq(q.archivedGroup.user_id, userID)
+      )
+    );
+
+  return q
+    .from({ records: dbT.trackableRecord })
+    .join(
+      { archived },
+      (v) => eq(v.records.trackable_id, v.archived.trackable_id),
+      'left'
+    )
+    .where(({ records, archived }) =>
+      and(
+        eq(records.user_id, userID),
+        gte(records.timestamp, startDate),
+        lte(records.timestamp, endDate),
+        fromArchive
+          ? eq(archived?.group, 'archived')
+          : isUndefined(archived?.group)
+      )
+    )
+    .select((v) => ({ ...v.records }));
+};
+
+export const useTrackableData = (p: ByIdParams) => {
+  const { dbT, userID } = usePowersyncDrizzle();
+
+  const startDate = dateToSQLiteString(startOfDay(p.firstDay));
+  const endDate = dateToSQLiteString(endOfDay(p.lastDay));
+
+  const q = useLiveQuery(
+    (q) => {
+      console.log('trackable data q');
+      return buildTrackableDataQuery({
+        q,
+        dbT,
+        userID,
+        startDate,
+        endDate,
+        id: p.id,
+        fromArchive: p.fromArchive,
+      });
+    },
+    [p.id, startDate, endDate, p.fromArchive, userID]
   );
+
+  return q;
 };
 
 export const useIsTrackableInGroup = (trackableId: string, group: string) => {
