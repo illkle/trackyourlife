@@ -48,8 +48,6 @@ export const DayCellRouter = ({
 
   const onChange = useRecordUpdateHandler({
     date: timestamp,
-    trackableId: id,
-    type,
   });
   const onDelete = useRecordDeleteHandler();
 

@@ -30,7 +30,7 @@ export const user_flags = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: 'cascade' }),
     key: text('key').notNull(),
-    value: text('value').default(''),
+    value: json('value').default({}),
   },
   (t) => [primaryKey({ columns: [t.user_id, t.key] })]
 );
@@ -66,6 +66,7 @@ export const trackable = pgTable(
       .references(() => user.id, { onDelete: 'cascade' }),
     name: text('name').notNull(),
     type: trackable_type_enum('type').notNull(),
+    bucketing: text('bucketing'),
   },
   (t) => [
     uniqueIndex('user_id_idx').on(t.user_id, t.id),

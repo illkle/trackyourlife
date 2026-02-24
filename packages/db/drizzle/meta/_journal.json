@@ -323,6 +323,13 @@
       "when": 1768498451640,
       "tag": "0046_flippant_grim_reaper",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1771954609855,
+      "tag": "0047_chemical_la_nuit",
+      "breakpoints": true
     }
   ]
 }

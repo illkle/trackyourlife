@@ -97,8 +97,6 @@ const PopupEditor = ({
 
   const onChange = useRecordUpdateHandler({
     date: timestamp,
-    trackableId,
-    type,
   });
 
   if (type === 'number') {

@@ -5,19 +5,21 @@ import { openDayEditor, useAmIOpenInStore } from "~/components/Modal/EditorModal
 import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 
 export const DayCellTextPopup = (props: IDayCellProps) => {
-  const { id, name, type } = useTrackableMeta();
+  const { id, name, type, bucketing } = useTrackableMeta();
   const { labelType, values, timestamp } = props.cellData;
   const { value } = values[0] ?? {};
 
   const isOpen = useAmIOpenInStore({
     date: timestamp,
-    trackable: { id, type, name },
+    trackable: { id, type, name, bucketing: bucketing ?? null },
   });
 
   return (
     <button
       data-text-cell
-      onClick={() => openDayEditor({ date: timestamp, trackable: { id, type, name } })}
+      onClick={() =>
+        openDayEditor({ date: timestamp, trackable: { id, type, name, bucketing: bucketing ?? null } })
+      }
       className={cn(
         "flex-col border-2 p-1 text-left text-ellipsis text-foreground sm:p-2",
         DayCellBaseClasses,

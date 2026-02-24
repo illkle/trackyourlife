@@ -10,7 +10,6 @@ import {
   isNull,
   isUndefined,
   length,
-  liveQueryCollectionOptions,
   lte,
   not,
   or,
@@ -26,17 +25,34 @@ import {
   ITrackableFlagValueInput,
 } from './trackableFlags';
 import { useCallback } from 'react';
+import { useTrackableMeta } from './TrackableMetaProvider';
 import {
   withTrackableFlagsPowersyncID,
   withTrackableGroupPowersyncID,
 } from '@tyl/db/client/clientIds';
 import { v4 as uuidv4 } from 'uuid';
-import { DbTrackableInsert } from '@tyl/db/client/schema-powersync';
+import {
+  DbTrackableInsert,
+  DbTrackableSelect,
+} from '@tyl/db/client/schema-powersync';
 import { TanstackDBType } from './tanstack';
-import { inArray } from 'drizzle-orm';
 
 export const dateToSQLiteString = (date: Date | number): string => {
   return format(date, "yyyy-MM-dd'T'HH:mm:ss.SSS");
+};
+
+const getTimeBucket = ({
+  date,
+  bucketing,
+}: {
+  date: Date;
+  bucketing?: DbTrackableSelect['bucketing'];
+}) => {
+  if (bucketing === 'day') {
+    return dateToSQLiteString(startOfDay(date));
+  }
+
+  return null;
 };
 
 // Time from dates is ignored. Values from start of firstDay to end of lastDay are included.
@@ -344,14 +360,13 @@ export const useTrackableFlag = <K extends ITrackableFlagKey>(
 /** Hook to get a record update/create handler */
 export const useRecordUpdateHandler = ({
   date,
-  trackableId,
 }: {
   date: Date;
-  trackableId: string;
-  type?: string;
 }) => {
+  const { id: trackableId, type: _type, bucketing } = useTrackableMeta();
   const { dbT, userID } = usePowersyncDrizzle();
   const dateString = dateToSQLiteString(date);
+  const timeBucket = getTimeBucket({ date, bucketing });
 
   return useCallback(
     async ({
@@ -378,14 +393,14 @@ export const useRecordUpdateHandler = ({
         user_id: userID,
         trackable_id: trackableId,
         timestamp: dateString,
-        time_bucket: dateString,
+        time_bucket: timeBucket,
         updated_at: updatedAt,
         value,
         external_key: '',
       });
       return id;
     },
-    [dbT, trackableId, dateString, userID]
+    [dbT, trackableId, dateString, userID, timeBucket]
   );
 };
 
@@ -421,7 +436,12 @@ export const useTrackableHandlers = () => {
     data: Omit<DbTrackableInsert, 'user_id' | 'id'>
   ) => {
     const id = uuidv4();
-    await dbT.trackable.insert({ ...data, user_id: userID, id });
+    await dbT.trackable.insert({
+      ...data,
+      bucketing: data.bucketing ?? 'day',
+      user_id: userID,
+      id,
+    });
     return id;
   };
 

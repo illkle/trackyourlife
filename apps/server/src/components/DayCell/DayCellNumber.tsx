@@ -19,7 +19,7 @@ import { formatNumberShort, getNumberSafe } from "@tyl/helpers/numberTools";
 import { useTrackableFlag } from "@tyl/helpers/data/dbHooksTanstack";
 
 export const DayCellNumber = (props: IDayCellProps) => {
-  const { id, type, name } = useTrackableMeta();
+  const { id, type, name, bucketing } = useTrackableMeta();
 
   const { onChange, labelType, values, timestamp } = props.cellData;
   const { value, id: recordId, updated_at: updatedAt } = values[0] ?? {};
@@ -35,7 +35,7 @@ export const DayCellNumber = (props: IDayCellProps) => {
       onClick={() => {
         if (isMobile) {
           openDayEditor({
-            trackable: { id, type, name },
+            trackable: { id, type, name, bucketing },
             date: timestamp,
           });
         }

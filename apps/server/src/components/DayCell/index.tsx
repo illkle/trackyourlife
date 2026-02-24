@@ -57,8 +57,6 @@ export const DayCellRouter = memo(
 
     const onChange = useRecordUpdateHandler({
       date: timestamp,
-      trackableId: id,
-      type,
     });
     const onDelete = useRecordDeleteHandler();
 

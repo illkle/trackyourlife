@@ -18,6 +18,7 @@ export const trackable = sqliteTable('TYL_trackable', {
   user_id: text('user_id').notNull(),
   type: text('type').notNull(),
   name: text('name').notNull(),
+  bucketing: text('bucketing'),
 });
 
 export const trackable_flags = sqliteTable('TYL_trackableFlags', {

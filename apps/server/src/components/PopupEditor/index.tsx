@@ -11,24 +11,16 @@ import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import {
   useRecordDeleteHandler,
   useRecordUpdateHandler,
-  useTrackable,
   useTrackableData,
   useTrackableFlag,
 } from "@tyl/helpers/data/dbHooksTanstack";
 
 export const PopupEditor = ({ date }: { date: Date }) => {
   const { id, type } = useTrackableMeta();
-  const q = useTrackable({ id });
   const { data } = useTrackableData({ id, firstDay: date, lastDay: date });
-
-  const {
-    data: [trackable],
-  } = q;
 
   const onChange = useRecordUpdateHandler({
     date,
-    trackableId: id,
-    type: trackable?.type ?? "",
   });
 
   const onDelete = useRecordDeleteHandler();

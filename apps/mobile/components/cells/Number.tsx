@@ -1,24 +1,20 @@
-import { Pressable, Text } from 'react-native';
-import { useEffect, useMemo } from 'react';
-import { useResolveClassNames, useUniwind } from 'uniwind';
+import { Pressable, Text } from "react-native";
+import { useEffect, useMemo } from "react";
+import { useResolveClassNames, useUniwind } from "uniwind";
 
-import { useTrackableMeta } from '@tyl/helpers/data/TrackableMetaProvider';
-import { formatNumberShort, getNumberSafe } from '@tyl/helpers/numberTools';
-import { cn } from '@/lib/utils';
-import { makeColorString } from '@tyl/helpers/colorTools';
+import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
+import { formatNumberShort, getNumberSafe } from "@tyl/helpers/numberTools";
+import { cn } from "@/lib/utils";
+import { makeColorString } from "@tyl/helpers/colorTools";
 import Animated, {
   interpolateColor,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
-} from 'react-native-reanimated';
-import { useOpenDayEditor } from '@/components/editorModal';
-import {
-  DayCellBaseClasses,
-  IDayCellProps,
-  LabelInside,
-} from '@/components/cells/common';
-import { useTrackableFlag } from '@tyl/helpers/data/dbHooksTanstack';
+} from "react-native-reanimated";
+import { useOpenDayEditor } from "@/components/editorModal";
+import { DayCellBaseClasses, IDayCellProps, LabelInside } from "@/components/cells/common";
+import { useTrackableFlag } from "@tyl/helpers/data/dbHooksTanstack";
 
 export const NumberUI = ({
   value,
@@ -32,24 +28,20 @@ export const NumberUI = ({
   const internalNumber = getNumberSafe(value);
   const { id } = useTrackableMeta();
   const { theme } = useUniwind();
-  const { data: colorCoding } = useTrackableFlag(id, 'NumberColorCoding');
+  const { data: colorCoding } = useTrackableFlag(id, "NumberColorCoding");
 
   const isBigNumber = internalNumber >= 10000;
 
-  const displayedValue = isBigNumber
-    ? formatNumberShort(internalNumber, 0)
-    : internalNumber;
+  const displayedValue = isBigNumber ? formatNumberShort(internalNumber, 0) : internalNumber;
   const progressColor = useMemo(() => {
     const color = colorCoding.valueToColor(internalNumber);
-    return makeColorString(
-      theme === 'light' ? color.lightMode : color.darkMode
-    );
+    return makeColorString(theme === "light" ? color.lightMode : color.darkMode);
   }, [colorCoding, internalNumber, theme]);
   const borderColorFrom = useSharedValue(progressColor);
   const borderColorTo = useSharedValue(progressColor);
   const borderColorProgress = useSharedValue(1);
 
-  const emptyBorder = useResolveClassNames('border-border/40');
+  const emptyBorder = useResolveClassNames("border-border/40");
 
   const isEmpty = internalNumber === 0;
 
@@ -69,7 +61,7 @@ export const NumberUI = ({
         : interpolateColor(
             borderColorProgress.value,
             [0, 1],
-            [borderColorFrom.value, borderColorTo.value]
+            [borderColorFrom.value, borderColorTo.value],
           ),
       opacity: isEmpty ? 0.5 : 1,
     };
@@ -79,7 +71,7 @@ export const NumberUI = ({
     <>
       <AnimatedPressable
         onPress={onPress}
-        className={cn(DayCellBaseClasses, 'flex items-center justify-center')}
+        className={cn(DayCellBaseClasses, "flex items-center justify-center")}
         style={animatedBorderStyle}
       >
         <ProgressBar internalNumber={internalNumber} color={progressColor} />
@@ -91,27 +83,21 @@ export const NumberUI = ({
 };
 
 export const DayCellNumber = (props: IDayCellProps) => {
-  const { onChange, labelType, values, timestamp } = props.cellData;
-  const { value, id: recordId, updated_at: updatedAt } = values[0] ?? {};
+  const { labelType, values, timestamp } = props.cellData;
+  const { value } = values[0] ?? {};
 
   const { openDayEditor } = useOpenDayEditor(timestamp);
 
   return (
     <NumberUI value={value} onPress={openDayEditor}>
-      {labelType === 'auto' && <LabelInside cellData={props.cellData} />}
+      {labelType === "auto" && <LabelInside cellData={props.cellData} />}
     </NumberUI>
   );
 };
 
-const ProgressBar = ({
-  internalNumber,
-  color,
-}: {
-  internalNumber: number;
-  color: string;
-}) => {
+const ProgressBar = ({ internalNumber, color }: { internalNumber: number; color: string }) => {
   const { id } = useTrackableMeta();
-  const { data: progressBounds } = useTrackableFlag(id, 'NumberProgessBounds');
+  const { data: progressBounds } = useTrackableFlag(id, "NumberProgessBounds");
 
   const progress = progressBounds.map(internalNumber);
 
@@ -138,7 +124,7 @@ const ProgressBar = ({
       backgroundColor: interpolateColor(
         colorProgress.value,
         [0, 1],
-        [colorFrom.value, colorTo.value]
+        [colorFrom.value, colorTo.value],
       ),
     };
   });
@@ -148,7 +134,7 @@ const ProgressBar = ({
   return (
     <Animated.View
       pointerEvents="none"
-      className={cn('absolute bottom-0 left-0 w-full')}
+      className={cn("absolute bottom-0 left-0 w-full")}
       style={animatedStyle}
     />
   );
