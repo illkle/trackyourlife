@@ -1,14 +1,16 @@
-import { useMemo, useState } from 'react';
-import { FlatList, Text, View } from 'react-native';
-import { Link } from 'expo-router';
-import { eachDayOfInterval, subDays } from 'date-fns';
+import { useMemo, useState } from "react";
+import { FlatList, Text, View } from "react-native";
+import { Link } from "expo-router";
+import { eachDayOfInterval, subDays } from "date-fns";
 
-import { useTrackablesList } from '@tyl/helpers/data/dbHooksTanstack';
-import { TrackableMetaProvider } from '@tyl/helpers/data/TrackableMetaProvider';
-import { TrackableDataProvider } from '@tyl/helpers/data/TrackableDataProvider';
-import { DefaultWrapper } from '@/lib/styledComponents';
-import { Button } from '@/components/ui/button';
-import { DayCellRouter } from '@/components/cells';
+import { useTrackablesList } from "@tyl/helpers/data/dbHooksTanstack";
+import { TrackableMetaProvider } from "@tyl/helpers/data/TrackableMetaProvider";
+import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
+import { TrackableFlagsProvider } from "@tyl/helpers/data/TrackableFlagsProvider";
+import { DefaultWrapper } from "@/lib/styledComponents";
+import { Button } from "@/components/ui/button";
+import { DayCellRouter } from "@/components/cells";
+import { InstaMount } from "@/lib/FastLoad";
 
 const SHOW_DAYS = 6;
 
@@ -29,85 +31,61 @@ const TrackableList = ({ archived }: { archived: boolean }) => {
         start: range.lastDay,
         end: range.firstDay,
       }),
-    [range]
+    [range],
   );
 
-  if (q.isLoading) {
-    return (
-      <TrackableDataProvider
-        firstDay={range.firstDay}
-        lastDay={range.lastDay}
-        fromArchive={archived ? true : undefined}
-      >
-        <View className="items-center justify-center py-12">
-          <Text className="text-muted-foreground">Loading trackables...</Text>
-        </View>
-      </TrackableDataProvider>
-    );
-  }
-
-  if (!q.data || q.data.length === 0) {
-    return (
-      <TrackableDataProvider
-        firstDay={range.firstDay}
-        lastDay={range.lastDay}
-        fromArchive={archived ? true : undefined}
-      >
-        <View className="items-center justify-center py-12">
-          <Text className="text-xl font-light text-foreground">
-            {archived
-              ? 'Archive is empty.'
-              : 'You do not have any trackables yet.'}
-          </Text>
-          {!archived && (
-            <Link href="/create" asChild className="mt-4">
-              <Button variant="outline" text="Create Trackable" />
-            </Link>
-          )}
-        </View>
-      </TrackableDataProvider>
-    );
-  }
-
   return (
-    <TrackableDataProvider
-      firstDay={range.firstDay}
-      lastDay={range.lastDay}
-      fromArchive={archived ? true : undefined}
-    >
-      <View className="flex flex-col gap-4 pb-6">
-        {q.data.map(({ trackable }) => {
-          return (
-            <TrackableMetaProvider key={trackable.id} trackable={trackable}>
-              <View className="border-b border-border">
-                <Link href={`/trackable/${trackable.id}`} className="px-4 py-1">
-                  <Text className="text-lg font-semibold text-primary">
-                    {trackable.name}
-                  </Text>
-                </Link>
-                <FlatList
-                  data={days}
-                  renderItem={({ item }) => (
-                    <DayCellRouter
-                      timestamp={item}
-                      labelType={'outside'}
-                      className="w-24"
+    <TrackableFlagsProvider fromArchive={archived ? true : undefined}>
+      <TrackableDataProvider
+        firstDay={range.firstDay}
+        lastDay={range.lastDay}
+        fromArchive={archived ? true : undefined}
+      >
+        {q.isLoading ? (
+          <View className="items-center justify-center py-12">
+            <Text className="text-muted-foreground">Loading trackables...</Text>
+          </View>
+        ) : !q.data || q.data.length === 0 ? (
+          <View className="items-center justify-center py-12">
+            <Text className="text-xl font-light text-foreground">
+              {archived ? "Archive is empty." : "You do not have any trackables yet."}
+            </Text>
+            {!archived && (
+              <Link href="/create" asChild className="mt-4">
+                <Button variant="outline" text="Create Trackable" />
+              </Link>
+            )}
+          </View>
+        ) : (
+          <View className="flex flex-col gap-4 pb-6">
+            {q.data.map(({ trackable }) => {
+              return (
+                <TrackableMetaProvider key={trackable.id} trackable={trackable}>
+                  <View className="border-b border-border">
+                    <Link href={`/trackable/${trackable.id}`} className="px-4 py-1">
+                      <Text className="text-lg font-semibold text-primary">{trackable.name}</Text>
+                    </Link>
+                    <FlatList
+                      data={days}
+                      renderItem={({ item }) => (
+                        <DayCellRouter timestamp={item} labelType={"outside"} className="w-24" />
+                      )}
+                      horizontal
+                      inverted
+                      contentContainerStyle={{
+                        gap: 8,
+                        paddingHorizontal: 16,
+                        paddingBottom: 16,
+                      }}
                     />
-                  )}
-                  horizontal
-                  inverted
-                  contentContainerStyle={{
-                    gap: 8,
-                    paddingHorizontal: 16,
-                    paddingBottom: 16,
-                  }}
-                />
-              </View>
-            </TrackableMetaProvider>
-          );
-        })}
-      </View>
-    </TrackableDataProvider>
+                  </View>
+                </TrackableMetaProvider>
+              );
+            })}
+          </View>
+        )}
+      </TrackableDataProvider>
+    </TrackableFlagsProvider>
   );
 };
 
@@ -118,15 +96,17 @@ export const TrackablesScreen = () => {
     <DefaultWrapper noHorizontalPadding>
       <View className="flex flex-row items-center justify-between px-4 pb-4">
         <Text className="text-2xl font-semibold text-foreground">
-          {archived ? 'Archive' : 'Your Trackables'}
+          {archived ? "Archive" : "Your Trackables"}
         </Text>
         <Button
           variant="ghost"
-          text={archived ? 'Trackables' : 'Archive'}
+          text={archived ? "Trackables" : "Archive"}
           onPress={() => setArchived((prev) => !prev)}
         />
       </View>
-      <TrackableList archived={archived} />
+      <InstaMount>
+        <TrackableList archived={archived} />
+      </InstaMount>
     </DefaultWrapper>
   );
 };

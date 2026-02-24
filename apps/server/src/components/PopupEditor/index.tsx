@@ -12,8 +12,8 @@ import {
   useRecordDeleteHandler,
   useRecordUpdateHandler,
   useTrackableData,
-  useTrackableFlag,
 } from "@tyl/helpers/data/dbHooksTanstack";
+import { useTrackableFlagValueCached } from "@tyl/helpers/data/TrackableFlagsProvider";
 
 export const PopupEditor = ({ date }: { date: Date }) => {
   const { id, type } = useTrackableMeta();
@@ -34,8 +34,8 @@ export const PopupEditor = ({ date }: { date: Date }) => {
 };
 
 const EditorTitle = ({ date }: { date: Date }) => {
-  const { name, id } = useTrackableMeta();
-  const { data: trackingStart } = useTrackableFlag(id, "AnyTrackingStart");
+  const { name } = useTrackableMeta();
+  const trackingStart = useTrackableFlagValueCached("AnyTrackingStart");
   return (
     <div className="flex items-center justify-between gap-2 border-b border-border pr-2 sm:text-sm">
       <div className="flex items-center gap-2">

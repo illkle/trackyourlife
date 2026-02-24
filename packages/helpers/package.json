@@ -25,6 +25,10 @@
     "./data/TrackableDataProvider": {
       "types": "./dist/data/TrackableDataProvider.d.ts",
       "default": "./src/data/TrackableDataProvider.tsx"
+    },
+    "./data/TrackableFlagsProvider": {
+      "types": "./dist/data/TrackableFlagsProvider.d.ts",
+      "default": "./src/data/TrackableFlagsProvider.tsx"
     }
   },
   "scripts": {

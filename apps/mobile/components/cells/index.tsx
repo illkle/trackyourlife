@@ -1,24 +1,21 @@
-import { useMemo } from 'react';
-import { isAfter, isBefore, isSameDay } from 'date-fns';
+import { useMemo } from "react";
+import { isAfter, isBefore, isSameDay } from "date-fns";
 
-import { DayCellTextPopup } from './Text';
-import { useTrackableMeta } from '@tyl/helpers/data/TrackableMetaProvider';
-import {
-  useRecordDeleteHandler,
-  useRecordUpdateHandler,
-  useTrackableFlag,
-} from '@tyl/helpers/data/dbHooksTanstack';
-import { useTrackableDataDay } from '@tyl/helpers/data/TrackableDataProvider';
-import { DayCellBoolean } from './Boolean';
-import { DayCellNumber } from './Number';
-import { cn } from '@/lib/utils';
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { DayCellTextPopup } from "./Text";
+import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
+import { useRecordDeleteHandler, useRecordUpdateHandler } from "@tyl/helpers/data/dbHooksTanstack";
+import { useTrackableDataDay } from "@tyl/helpers/data/TrackableDataProvider";
+import { useTrackableFlagValueCached } from "@tyl/helpers/data/TrackableFlagsProvider";
+import { DayCellBoolean } from "./Boolean";
+import { DayCellNumber } from "./Number";
+import { cn } from "@/lib/utils";
+import { StyleProp, View, ViewStyle } from "react-native";
 import {
   IDayCellLabelType,
   IDayCellProps,
   LabelOutside,
   OutOfRangeSimple,
-} from '@/components/cells/common';
+} from "@/components/cells/common";
 
 interface DayCellRouterProps {
   className?: string;
@@ -30,20 +27,18 @@ interface DayCellRouterProps {
 
 export const DayCellRouter = ({
   timestamp,
-  labelType = 'auto',
+  labelType = "auto",
   className,
   style,
 }: DayCellRouterProps) => {
-  const { id, type } = useTrackableMeta();
-  const { data: trackingStart } = useTrackableFlag(id, 'AnyTrackingStart');
+  const { type } = useTrackableMeta();
+  const trackingStart = useTrackableFlagValueCached("AnyTrackingStart");
 
   const now = useMemo(() => new Date(), []);
   const isToday = useMemo(() => isSameDay(timestamp, now), [timestamp, now]);
   const isOutOfRange = useMemo(
-    () =>
-      isAfter(timestamp, now) ||
-      Boolean(trackingStart && isBefore(timestamp, trackingStart)),
-    [timestamp, now, trackingStart]
+    () => isAfter(timestamp, now) || Boolean(trackingStart && isBefore(timestamp, trackingStart)),
+    [timestamp, now, trackingStart],
   );
 
   const onChange = useRecordUpdateHandler({
@@ -65,8 +60,8 @@ export const DayCellRouter = ({
   };
 
   return (
-    <View className={cn('relative', className)} style={style}>
-      {labelType === 'outside' && <LabelOutside cellData={cellData} />}
+    <View className={cn("relative", className)} style={style}>
+      {labelType === "outside" && <LabelOutside cellData={cellData} />}
       <DayCellTypeRouter cellData={cellData}></DayCellTypeRouter>
     </View>
   );
@@ -77,19 +72,19 @@ export const DayCellTypeRouter = (props: IDayCellProps) => {
     return <OutOfRangeSimple {...props} />;
   }
 
-  if (props.cellData.type === 'boolean') {
+  if (props.cellData.type === "boolean") {
     return <DayCellBoolean cellData={props.cellData} />;
   }
 
-  if (props.cellData.type === 'number') {
+  if (props.cellData.type === "number") {
     return <DayCellNumber cellData={props.cellData} />;
   }
 
-  if (props.cellData.type === 'text') {
+  if (props.cellData.type === "text") {
     return <DayCellTextPopup cellData={props.cellData} />;
   }
 
-  throw new Error('Unsupported trackable type');
+  throw new Error("Unsupported trackable type");
 };
 
 export default DayCellRouter;

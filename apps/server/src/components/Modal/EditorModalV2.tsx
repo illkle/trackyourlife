@@ -13,6 +13,7 @@ import { PopupEditor } from "~/components/PopupEditor";
 import { useIsMobile } from "~/utils/useIsDesktop";
 import { DbTrackableSelect } from "@tyl/db/client/schema-powersync";
 import { TrackableMetaProvider } from "@tyl/helpers/data/TrackableMetaProvider";
+import { TrackableFlagsProvider } from "@tyl/helpers/data/TrackableFlagsProvider";
 
 /**
  * I much prefer the composition style modals where content is declared inside component that opens the modal
@@ -184,10 +185,12 @@ export const EditorModalV2 = () => {
           {dayData && (
             <m.div exit={{ opacity: 0 }} className="flex max-h-[200px] flex-col">
               <TrackableMetaProvider trackable={dayData.trackable}>
-                <PopupEditor
-                  date={dayData.date}
-                  key={dayData.date.toISOString() + dayData.trackable}
-                />
+                <TrackableFlagsProvider id={dayData.trackable.id}>
+                  <PopupEditor
+                    date={dayData.date}
+                    key={dayData.date.toISOString() + dayData.trackable}
+                  />
+                </TrackableFlagsProvider>
               </TrackableMetaProvider>
             </m.div>
           )}

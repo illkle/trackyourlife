@@ -16,7 +16,7 @@ import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useLinkedValue } from "@tyl/helpers/useDbLinkedValue";
 import { useIsMobile } from "~/utils/useIsDesktop";
 import { formatNumberShort, getNumberSafe } from "@tyl/helpers/numberTools";
-import { useTrackableFlag } from "@tyl/helpers/data/dbHooksTanstack";
+import { useTrackableFlagValueCached } from "@tyl/helpers/data/TrackableFlagsProvider";
 
 export const DayCellNumber = (props: IDayCellProps) => {
   const { id, type, name, bucketing } = useTrackableMeta();
@@ -82,9 +82,7 @@ const classes = [
 
 const ProgressBar = () => {
   const { internalNumber } = useNumberInputContext();
-
-  const { id } = useTrackableMeta();
-  const { data: progressBounds } = useTrackableFlag(id, "NumberProgessBounds");
+  const progressBounds = useTrackableFlagValueCached("NumberProgessBounds");
 
   const progress = progressBounds.map(internalNumber);
 
@@ -178,8 +176,7 @@ export const NumberInputWrapper = forwardRef<
     }
   };
 
-  const { id } = useTrackableMeta();
-  const { data: colorCoding } = useTrackableFlag(id, "NumberColorCoding");
+  const colorCoding = useTrackableFlagValueCached("NumberColorCoding");
 
   const color = useMemo(() => {
     return colorCoding.valueToColor(internalNumber);

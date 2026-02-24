@@ -135,6 +135,11 @@ export interface ByIdParams extends TrackableRangeParams {
   fromArchive?: boolean;
 }
 
+export interface TrackableFlagsParams {
+  id?: string;
+  fromArchive?: boolean;
+}
+
 export const buildTrackableDataQuery = ({
   q,
   dbT,
@@ -192,6 +197,54 @@ export const buildTrackableDataQuery = ({
       )
     )
     .select((v) => ({ ...v.records }));
+};
+
+export const buildTrackableFlagsQuery = ({
+  q,
+  dbT,
+  userID,
+  id,
+  fromArchive,
+}: {
+  q: InitialQueryBuilder;
+  dbT: TanstackDBType;
+  userID: string;
+  id?: string;
+  fromArchive?: boolean;
+}) => {
+  if (id) {
+    return q
+      .from({ flags: dbT.trackableFlags })
+      .where(({ flags }) =>
+        and(eq(flags.user_id, userID), eq(flags.trackable_id, id))
+      );
+  }
+
+  const archived = q
+    .from({ archivedGroup: dbT.trackableGroup })
+    .where((query) =>
+      and(
+        eq(query.archivedGroup.group, 'archived'),
+        eq(query.archivedGroup.user_id, userID)
+      )
+    );
+
+  return q
+    .from({ flags: dbT.trackableFlags })
+    .join(
+      { archived },
+      (v) => eq(v.flags.trackable_id, v.archived.trackable_id),
+      'left'
+    )
+    .where(({ flags, archived }) =>
+      and(
+        eq(flags.user_id, userID),
+        fromArchive
+          ? eq(archived?.group, 'archived')
+          : isUndefined(archived?.group)
+      )
+    )
+    .select((v) => ({ ...v.flags }));
 };
 
 export const useTrackableData = (p: ByIdParams) => {
@@ -309,38 +362,6 @@ export const useTrackableFlag = <K extends ITrackableFlagKey>(
     },
     strategy: throttleStrategy({ wait: 300, leading: true }),
   });
-
-  const setFlag = useCallback(
-    async (value: ITrackableFlagValueInput<K>) => {
-      if (key === 'AnyTrackingStart') console.log('SET FLAG', { value });
-
-      const validated = FlagsValidators[key].safeParse(value);
-
-      if (!validated.success) {
-        console.log(validated.error);
-        throw new Error('Invalid flag value');
-      }
-
-      const vv = JSON.stringify(value);
-
-      // Note that we are not writing validated.data here. This is intentional because we do not want zod .transform() to apply here.
-      if (curId) {
-        dbT.trackableFlags.update(curId, (v) => {
-          v.value = vv;
-        });
-      } else {
-        dbT.trackableFlags.insert(
-          withTrackableFlagsPowersyncID({
-            user_id: userID,
-            key,
-            trackable_id: trackableId,
-            value: vv,
-          })
-        );
-      }
-    },
-    [dbT, userID, curId]
-  );
 
   const clearFlag = () => {
     if (curId) {

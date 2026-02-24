@@ -15,9 +15,8 @@ import {
 import type { ITrackableFlagType } from "@tyl/helpers/data/trackableFlags";
 import { Button } from "~/@shad/components/button";
 import DayCellRouter from "~/components/DayCell";
-import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useMemo } from "react";
-import { useTrackableFlag } from "@tyl/helpers/data/dbHooksTanstack";
+import { useTrackableFlagValueCached } from "@tyl/helpers/data/TrackableFlagsProvider";
 
 const MonthVisualCalendar = ({ dateFirstDay, mini }: { dateFirstDay: Date; mini?: boolean }) => {
   const prefaceWith = dateFirstDay ? getISODay(dateFirstDay) - 1 : 0;
@@ -78,9 +77,7 @@ export const MonthView = ({
   mini?: boolean;
   forceViewType?: ITrackableFlagType<"AnyMonthViewType">;
 }) => {
-  const { id } = useTrackableMeta();
-
-  const { data: vt } = useTrackableFlag(id, "AnyMonthViewType");
+  const vt = useTrackableFlagValueCached("AnyMonthViewType");
   const viewType = forceViewType ?? vt;
   const firstDayDate = useMemo(() => startOfMonth(date), [date]);
   const lastDayDate = useMemo(() => endOfMonth(date), [date]);

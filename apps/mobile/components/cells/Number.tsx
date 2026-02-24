@@ -2,7 +2,6 @@ import { Pressable, Text } from "react-native";
 import { useEffect, useMemo } from "react";
 import { useResolveClassNames, useUniwind } from "uniwind";
 
-import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
 import { formatNumberShort, getNumberSafe } from "@tyl/helpers/numberTools";
 import { cn } from "@/lib/utils";
 import { makeColorString } from "@tyl/helpers/colorTools";
@@ -14,7 +13,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { useOpenDayEditor } from "@/components/editorModal";
 import { DayCellBaseClasses, IDayCellProps, LabelInside } from "@/components/cells/common";
-import { useTrackableFlag } from "@tyl/helpers/data/dbHooksTanstack";
+import { useTrackableFlagValueCached } from "@tyl/helpers/data/TrackableFlagsProvider";
 
 export const NumberUI = ({
   value,
@@ -26,9 +25,8 @@ export const NumberUI = ({
   children: React.ReactNode;
 }) => {
   const internalNumber = getNumberSafe(value);
-  const { id } = useTrackableMeta();
   const { theme } = useUniwind();
-  const { data: colorCoding } = useTrackableFlag(id, "NumberColorCoding");
+  const colorCoding = useTrackableFlagValueCached("NumberColorCoding");
 
   const isBigNumber = internalNumber >= 10000;
 
@@ -96,8 +94,7 @@ export const DayCellNumber = (props: IDayCellProps) => {
 };
 
 const ProgressBar = ({ internalNumber, color }: { internalNumber: number; color: string }) => {
-  const { id } = useTrackableMeta();
-  const { data: progressBounds } = useTrackableFlag(id, "NumberProgessBounds");
+  const progressBounds = useTrackableFlagValueCached("NumberProgessBounds");
 
   const progress = progressBounds.map(internalNumber);
 

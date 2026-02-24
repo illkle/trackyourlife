@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { subDays } from "date-fns";
 import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
+import { TrackableFlagsProvider } from "@tyl/helpers/data/TrackableFlagsProvider";
 
 import { DailyList } from "~/components/Trackable/TrackablesList";
 
@@ -15,10 +16,12 @@ function AppComponent() {
   const firstShown = subDays(today, SHOW_DAYS);
 
   return (
-    <TrackableDataProvider firstDay={firstShown} lastDay={today}>
-      <div className="content-container flex w-full flex-col pb-6">
-        <DailyList daysToShow={SHOW_DAYS} />
-      </div>
-    </TrackableDataProvider>
+    <TrackableFlagsProvider>
+      <TrackableDataProvider firstDay={firstShown} lastDay={today}>
+        <div className="content-container flex w-full flex-col pb-6">
+          <DailyList daysToShow={SHOW_DAYS} />
+        </div>
+      </TrackableDataProvider>
+    </TrackableFlagsProvider>
   );
 }

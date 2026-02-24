@@ -8,8 +8,7 @@ import {
   LabelInside,
   IDayCellProps,
 } from "~/components/DayCell";
-import { useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
-import { useTrackableFlag } from "@tyl/helpers/data/dbHooksTanstack";
+import { useTrackableFlagValueCached } from "@tyl/helpers/data/TrackableFlagsProvider";
 
 const BooleanUI = ({
   value,
@@ -70,17 +69,13 @@ const BooleanUI = ({
 };
 
 export const DayCellBoolean = (props: IDayCellProps) => {
-  const { id } = useTrackableMeta();
-
   const { labelType, onChange, values } = props.cellData;
   const { value, id: recordId } = values[0] ?? {};
 
-  const {
-    data: { lightMode: themeActiveLight, darkMode: themeActiveDark },
-  } = useTrackableFlag(id, "BooleanCheckedColor");
-  const {
-    data: { lightMode: themeInactiveLight, darkMode: themeInactiveDark },
-  } = useTrackableFlag(id, "BooleanUncheckedColor");
+  const { lightMode: themeActiveLight, darkMode: themeActiveDark } =
+    useTrackableFlagValueCached("BooleanCheckedColor");
+  const { lightMode: themeInactiveLight, darkMode: themeInactiveDark } =
+    useTrackableFlagValueCached("BooleanUncheckedColor");
 
   return (
     <BooleanUI

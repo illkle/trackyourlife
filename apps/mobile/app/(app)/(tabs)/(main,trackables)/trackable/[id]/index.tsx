@@ -1,13 +1,4 @@
-import {
-  startTransition,
-  Suspense,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { startTransition, useEffect, useLayoutEffect, useMemo, useState } from "react";
 import { Dimensions, Pressable, Text, View } from "react-native";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { eachDayOfInterval, endOfMonth, format, getISODay, startOfMonth, sub } from "date-fns";
@@ -19,8 +10,9 @@ import { cn } from "@/lib/utils";
 import { DefaultWrapper } from "@/lib/styledComponents";
 import { TrackableMetaProvider } from "@tyl/helpers/data/TrackableMetaProvider";
 import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
+import { TrackableFlagsProvider } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackable } from "@tyl/helpers/data/dbHooksTanstack";
-import { Spinner } from "@/components/ui/spinner";
+import { InstaMount } from "@/lib/FastLoad";
 
 const getIncrementedDate = (add: number, year: number, month: number) => {
   let newMonth = month + add;
@@ -85,36 +77,14 @@ const ViewController = ({ year, month }: { year: number; month: number }) => {
 
 const TrackableView = () => {
   const { month, year, startOfMonthDate } = useYearMonth();
-  const [isMounted, setIsMounted] = useState(false);
-
-  useEffect(() => {
-    startTransition(() => {
-      setIsMounted(true);
-    });
-
-    return;
-  }, []);
 
   return (
     <View className="flex flex-col gap-4 pt-4 pb-6">
       <ViewController year={year} month={month} />
 
-      {isMounted ? (
-        <>
-          <MonthVisualCalendar dateFirstDay={startOfMonthDate} />
-          <MonthVisualCalendar dateFirstDay={sub(startOfMonthDate, { months: 1 })} />
-          <MonthVisualCalendar dateFirstDay={sub(startOfMonthDate, { months: 2 })} />
-          <MonthVisualCalendar dateFirstDay={sub(startOfMonthDate, { months: 3 })} />
-          <MonthVisualCalendar dateFirstDay={sub(startOfMonthDate, { months: 4 })} />
-          <MonthVisualCalendar dateFirstDay={sub(startOfMonthDate, { months: 5 })} />
-          <MonthVisualCalendar dateFirstDay={sub(startOfMonthDate, { months: 6 })} />
-          <MonthVisualCalendar dateFirstDay={sub(startOfMonthDate, { months: 7 })} />
-        </>
-      ) : (
-        <View className="flex h-64 items-center justify-center">
-          <Spinner color="white" />
-        </View>
-      )}
+      <InstaMount>
+        <MonthVisualCalendar dateFirstDay={startOfMonthDate} />
+      </InstaMount>
     </View>
   );
 };
@@ -236,9 +206,11 @@ export const TrackableFetcher = () => {
   return (
     <DefaultWrapper noTopSafeArea>
       <TrackableMetaProvider trackable={trackable}>
-        <TrackableDataProvider id={id} firstDay={dataRange.firstDay} lastDay={dataRange.lastDay}>
-          <TrackableView />
-        </TrackableDataProvider>
+        <TrackableFlagsProvider id={id}>
+          <TrackableDataProvider id={id} firstDay={dataRange.firstDay} lastDay={dataRange.lastDay}>
+            <TrackableView />
+          </TrackableDataProvider>
+        </TrackableFlagsProvider>
       </TrackableMetaProvider>
     </DefaultWrapper>
   );
