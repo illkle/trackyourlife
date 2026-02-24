@@ -66,7 +66,7 @@ export const trackable = pgTable(
       .references(() => user.id, { onDelete: 'cascade' }),
     name: text('name').notNull(),
     type: trackable_type_enum('type').notNull(),
-    bucketing: text('bucketing'),
+    bucketing: text('bucketing').notNull(),
   },
   (t) => [
     uniqueIndex('user_id_idx').on(t.user_id, t.id),
