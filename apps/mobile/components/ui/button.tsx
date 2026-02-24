@@ -2,6 +2,7 @@ import type { VariantProps } from "class-variance-authority";
 import { Pressable, Text } from "react-native";
 import { cn } from "@/lib/utils";
 import { cva } from "class-variance-authority";
+import { Spinner } from "@/components/ui/spinner";
 
 const buttonVariants = cva(
   cn("group shrink-0 flex-row items-center justify-center gap-2 rounded-md shadow-none"),
@@ -56,20 +57,51 @@ const buttonTextVariants = cva("text-foreground text-sm font-medium", {
   },
 });
 
+const buttonSpinnerVariants = cva("", {
+  variants: {
+    variant: {
+      default: "text-primary-foreground",
+      destructive: "text-white",
+      outline: "text-foreground",
+      secondary: "text-secondary-foreground",
+      ghost: "text-foreground",
+      link: "text-primary",
+    },
+    size: {
+      default: "h-4 w-4",
+      sm: "h-4 w-4",
+      lg: "h-5 w-5",
+      icon: "h-4 w-4",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+    size: "default",
+  },
+});
+
 type ButtonProps = React.ComponentProps<typeof Pressable> &
   React.RefAttributes<typeof Pressable> &
   VariantProps<typeof buttonVariants> & {
     text: string;
+    loading?: boolean;
   };
 
-function Button({ className, variant, size, ...props }: ButtonProps) {
+function Button({ className, variant, size, loading = false, text, disabled, ...props }: ButtonProps) {
+  const isDisabled = disabled || loading;
+
   return (
     <Pressable
-      className={cn(props.disabled && "opacity-50", buttonVariants({ variant, size }), className)}
+      className={cn(isDisabled && "opacity-50", buttonVariants({ variant, size }), className)}
       role="button"
       {...props}
+      disabled={isDisabled}
     >
-      <Text className={cn(buttonTextVariants({ variant, size }))}>{props.text}</Text>
+      {loading ? (
+        <Spinner className={cn(buttonSpinnerVariants({ variant, size }))} />
+      ) : (
+        <Text className={cn(buttonTextVariants({ variant, size }))}>{text}</Text>
+      )}
     </Pressable>
   );
 }

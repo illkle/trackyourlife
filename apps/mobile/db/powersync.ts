@@ -33,24 +33,73 @@ export const dbT = createTanstackDB(powersyncDB);
 
 export const transactor = new PowerSyncTransactor({ database: powersyncDB });
 
-export const connectPowerSync = async ({
-  powersyncURL,
-  serverURL,
-  authClient,
-  withClear = false,
-}: {
+type PowerSyncConnectionParams = {
   powersyncURL: string;
   serverURL: string;
   authClient: AuthClient;
-  withClear?: boolean;
-}) => {
-  if (withClear) {
-    await powersyncDB.disconnectAndClear();
-  } else {
-    await powersyncDB.disconnect();
+  userID: string;
+  sessionToken: string;
+};
+
+let activeConnectionKey: string | null = null;
+let isConnecting = false;
+let pendingConnection: PowerSyncConnectionParams | null = null;
+
+const createConnectionKey = ({
+  powersyncURL,
+  serverURL,
+  userID,
+  sessionToken,
+}: PowerSyncConnectionParams) => {
+  return `${powersyncURL}|${serverURL}|${userID}|${sessionToken}`;
+};
+
+export const ensurePowerSyncConnected = async (params: PowerSyncConnectionParams) => {
+  const nextKey = createConnectionKey(params);
+
+  if (activeConnectionKey === nextKey) {
+    return;
   }
-  const connector = new Connector({ powersyncURL, serverURL, authClient });
-  powersyncDB.connect(connector);
+
+  if (isConnecting) {
+    pendingConnection = params;
+    return;
+  }
+
+  isConnecting = true;
+
+  try {
+    await powersyncDB.disconnect();
+
+    const connector = new Connector({
+      powersyncURL: params.powersyncURL,
+      serverURL: params.serverURL,
+      authClient: params.authClient,
+    });
+
+    await powersyncDB.connect(connector);
+    activeConnectionKey = nextKey;
+  } finally {
+    isConnecting = false;
+
+    if (pendingConnection) {
+      const nextPending = pendingConnection;
+      pendingConnection = null;
+      await ensurePowerSyncConnected(nextPending);
+    }
+  }
+};
+
+export const disconnectPowerSync = async () => {
+  pendingConnection = null;
+  activeConnectionKey = null;
+  await powersyncDB.disconnect();
+};
+
+export const resetPowerSync = async () => {
+  pendingConnection = null;
+  activeConnectionKey = null;
+  await powersyncDB.disconnectAndClear();
 };
 
 const logger = createBaseLogger();

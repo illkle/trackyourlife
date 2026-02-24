@@ -117,9 +117,9 @@ export const CreateScreen = () => {
 
         <Button
           className="mt-2"
-          text={mutation.isPending ? 'Creating...' : 'Create'}
+          text="Create"
           onPress={handleCreate}
-          disabled={mutation.isPending}
+          loading={mutation.isPending}
         />
         <MutationError mutation={mutation} className="mt-2" />
       </View>

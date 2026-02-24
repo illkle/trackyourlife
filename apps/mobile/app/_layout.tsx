@@ -18,7 +18,6 @@ import {
   SafeAreaProvider,
 } from 'react-native-safe-area-context';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import {
   AuthClientProvider,
   SessionCachedProvider,
@@ -32,6 +31,7 @@ import { Uniwind } from 'uniwind';
 //import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ReactNode } from 'react';
+import { useColorScheme } from 'react-native';
 
 export const unstable_settings = {
   anchor: '(tabs)',

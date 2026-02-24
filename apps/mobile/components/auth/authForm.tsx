@@ -1,9 +1,8 @@
 import { useState } from "react";
-import { View } from "react-native";
+import { View, Text } from "react-native";
 import { MutationError } from "@/components/form/mutationError";
 import { FormTextField } from "@/components/form/textField";
 import { Button } from "@/components/ui/button";
-import { Text } from "react-native";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuthClient } from "@/lib/authClient";
 import { createFormHookContexts, useForm } from "@tanstack/react-form";
@@ -15,13 +14,22 @@ import { useServerURL } from "@/lib/ServerURLContext";
 
 export const { fieldContext, formContext, useFieldContext } = createFormHookContexts();
 
+const LOGIN_DEFAULTS = {
+  email:
+    process.env.NODE_ENV === "development" ? (process.env.EXPO_PUBLIC_DEV_LOGIN_EMAIL ?? "") : "",
+  password:
+    process.env.NODE_ENV === "development"
+      ? (process.env.EXPO_PUBLIC_DEV_LOGIN_PASSWORD ?? "")
+      : "",
+};
+
 const Login = () => {
   const { authClient } = useAuthClient();
   const { powersyncURL, serverURL } = useServerURL();
   const form = useForm({
     defaultValues: {
-      email: "",
-      password: "",
+      email: LOGIN_DEFAULTS.email,
+      password: LOGIN_DEFAULTS.password,
     },
     onSubmit: async ({ value }) => {
       mutation.mutate(value);
@@ -51,7 +59,12 @@ const Login = () => {
           <FormTextField
             field={field}
             label="Email"
-            inputProps={{ keyboardType: "email-address" }}
+            inputProps={{
+              keyboardType: "email-address",
+              autoCapitalize: "none",
+              autoCorrect: false,
+              autoComplete: "email",
+            }}
           />
         )}
       />
@@ -68,7 +81,13 @@ const Login = () => {
           />
         )}
       />
-      <Button onPress={() => void form.handleSubmit()} size="lg" text="Login" className="mt-4" />
+      <Button
+        onPress={() => void form.handleSubmit()}
+        size="lg"
+        text="Login"
+        className="mt-4"
+        loading={mutation.isPending}
+      />
       <MutationError mutation={mutation} className="mt-4" />
     </View>
   );
@@ -122,7 +141,12 @@ const Register = () => {
           <FormTextField
             field={field}
             label="Email"
-            inputProps={{ keyboardType: "email-address" }}
+            inputProps={{
+              keyboardType: "email-address",
+              autoCapitalize: "none",
+              autoCorrect: false,
+              autoComplete: "email",
+            }}
           />
         )}
       />
@@ -139,7 +163,13 @@ const Register = () => {
           />
         )}
       />
-      <Button onPress={() => void form.handleSubmit()} size="lg" text="Register" className="mt-4" />
+      <Button
+        onPress={() => void form.handleSubmit()}
+        size="lg"
+        text="Register"
+        className="mt-4"
+        loading={mutation.isPending}
+      />
       <MutationError mutation={mutation} className="mt-4" />
     </View>
   );

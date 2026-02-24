@@ -8,14 +8,35 @@ import { useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { View } from "react-native";
 
+const isDevelopment = process.env.NODE_ENV === "development";
+
+const parseDevBoolean = (value: string | undefined, fallback: boolean) => {
+  if (!value) return fallback;
+  const normalized = value.trim().toLowerCase();
+  if (["1", "true", "yes", "on"].includes(normalized)) return true;
+  if (["0", "false", "no", "off"].includes(normalized)) return false;
+  return fallback;
+};
+
+const SERVER_DEFAULTS = {
+  useHTTPS: isDevelopment
+    ? parseDevBoolean(process.env.EXPO_PUBLIC_DEV_SERVER_USE_HTTPS, true)
+    : true,
+  serverURL: isDevelopment ? (process.env.EXPO_PUBLIC_DEV_SERVER_URL ?? "") : "",
+  customPowersyncURL: isDevelopment
+    ? parseDevBoolean(process.env.EXPO_PUBLIC_DEV_SERVER_CUSTOM_POWERSYNC_URL, false)
+    : false,
+  powersyncURL: isDevelopment ? (process.env.EXPO_PUBLIC_DEV_POWERSYNC_URL ?? "") : "",
+};
+
 export const ServerSelectForm = () => {
   const { update } = useServerURL();
   const form = useForm({
     defaultValues: {
-      useHTTPS: true,
-      serverURL: "localhost:3000",
-      customPowersyncURL: false,
-      powersyncURL: "localhost:8080",
+      useHTTPS: SERVER_DEFAULTS.useHTTPS,
+      serverURL: SERVER_DEFAULTS.serverURL,
+      customPowersyncURL: SERVER_DEFAULTS.customPowersyncURL,
+      powersyncURL: SERVER_DEFAULTS.powersyncURL,
     },
     onSubmit: async ({ value }) => {
       mutation.mutate(value);
@@ -39,6 +60,18 @@ export const ServerSelectForm = () => {
       <form.Field
         name="serverURL"
         children={(field) => <FormTextField field={field} label="Server URL" />}
+      />
+
+      <form.Field
+        name="useHTTPS"
+        children={(field) => (
+          <Checkbox
+            checked={field.state.value}
+            onCheckedChange={field.handleChange}
+            label="HTTPS (recommended)"
+            className="mt-4"
+          />
+        )}
       />
 
       <form.Field
@@ -66,23 +99,14 @@ export const ServerSelectForm = () => {
       />
 
       <Button
-        variant={"outline"}
+        variant={"default"}
         onPress={() => void form.handleSubmit()}
         size="lg"
         text="Connect"
         className="mt-4"
+        loading={mutation.isPending}
       />
-      <form.Field
-        name="useHTTPS"
-        children={(field) => (
-          <Checkbox
-            checked={field.state.value}
-            onCheckedChange={field.handleChange}
-            label="HTTPS (recommended)"
-            className="mt-4"
-          />
-        )}
-      />
+
       <MutationError mutation={mutation} className="mt-4" />
     </View>
   );

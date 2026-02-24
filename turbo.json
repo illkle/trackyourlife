@@ -20,7 +20,15 @@
     },
     "dev": {
       "persistent": true,
-      "cache": false
+      "cache": false,
+      "env": [
+        "EXPO_PUBLIC_DEV_LOGIN_EMAIL",
+        "EXPO_PUBLIC_DEV_LOGIN_PASSWORD",
+        "EXPO_PUBLIC_DEV_SERVER_USE_HTTPS",
+        "EXPO_PUBLIC_DEV_SERVER_URL",
+        "EXPO_PUBLIC_DEV_SERVER_CUSTOM_POWERSYNC_URL",
+        "EXPO_PUBLIC_DEV_POWERSYNC_URL"
+      ]
     },
     "typecheck": {
       "dependsOn": [
