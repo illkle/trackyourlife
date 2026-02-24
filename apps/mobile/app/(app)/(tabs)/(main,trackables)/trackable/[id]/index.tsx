@@ -1,4 +1,4 @@
-import { startTransition, useEffect, useLayoutEffect, useMemo, useState } from "react";
+import { useLayoutEffect, useMemo } from "react";
 import { Dimensions, Pressable, Text, View } from "react-native";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { eachDayOfInterval, endOfMonth, format, getISODay, startOfMonth, sub } from "date-fns";

@@ -1,34 +1,32 @@
-import { Stack } from 'expo-router';
-import { View } from 'react-native';
+import { Stack } from "expo-router";
+import { useCSSVariable } from "uniwind";
 
 export default function SharedLayout() {
+  const emptyBorder = useCSSVariable("--color-background");
+
   return (
     <Stack
       screenOptions={{
         headerShadowVisible: false,
-        headerBackground: () => <View className="flex-1 bg-background" />,
+        headerStyle: {
+          backgroundColor: emptyBorder as string,
+        },
       }}
     >
-      <Stack.Screen
-        name="main"
-        options={{ headerShown: false, headerTitle: '' }}
-      />
-      <Stack.Screen
-        name="trackables"
-        options={{ headerShown: false, headerTitle: '' }}
-      />
+      <Stack.Screen name="main" options={{ headerShown: false, headerTitle: "" }} />
+      <Stack.Screen name="trackables" options={{ headerShown: false, headerTitle: "" }} />
       <Stack.Screen
         name="trackable/[id]"
         options={{
           headerShown: true,
-          title: 'Trackable',
+          title: "Trackable",
         }}
       />
       <Stack.Screen
         name="trackable/[id]/settings"
         options={{
           headerShown: true,
-          title: 'Trackable settings',
+          title: "Trackable settings",
         }}
       />
     </Stack>

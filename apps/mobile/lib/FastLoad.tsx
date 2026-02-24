@@ -18,7 +18,7 @@ export const InstaMount = ({ children }: { children: ReactNode }) => {
 
   if (!isMounted) {
     return (
-      <View className="flex h-64 items-center justify-center">
+      <View className="flex h-64 items-center justify-center opacity-30">
         <Spinner />
       </View>
     );
