@@ -6,9 +6,9 @@ import { useTrackableMeta } from '@tyl/helpers/data/TrackableMetaProvider';
 import {
   useRecordDeleteHandler,
   useRecordUpdateHandler,
-  useTrackableData,
   useTrackableFlag,
 } from '@tyl/helpers/data/dbHooksTanstack';
+import { useTrackableDataDay } from '@tyl/helpers/data/TrackableDataProvider';
 import { DayCellBoolean } from './Boolean';
 import { DayCellNumber } from './Number';
 import { cn } from '@/lib/utils';
@@ -51,11 +51,7 @@ export const DayCellRouter = ({
   });
   const onDelete = useRecordDeleteHandler();
 
-  const { data: values } = useTrackableData({
-    id,
-    firstDay: timestamp,
-    lastDay: timestamp,
-  });
+  const values = useTrackableDataDay(timestamp);
 
   const cellData = {
     type,

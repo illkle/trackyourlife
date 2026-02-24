@@ -5,6 +5,7 @@ import { eachDayOfInterval, subDays } from 'date-fns';
 
 import { useTrackablesList } from '@tyl/helpers/data/dbHooksTanstack';
 import { TrackableMetaProvider } from '@tyl/helpers/data/TrackableMetaProvider';
+import { TrackableDataProvider } from '@tyl/helpers/data/TrackableDataProvider';
 import { DefaultWrapper } from '@/lib/styledComponents';
 import { Button } from '@/components/ui/button';
 import { DayCellRouter } from '@/components/cells';
@@ -33,62 +34,80 @@ const TrackableList = ({ archived }: { archived: boolean }) => {
 
   if (q.isLoading) {
     return (
-      <View className="items-center justify-center py-12">
-        <Text className="text-muted-foreground">Loading trackables...</Text>
-      </View>
+      <TrackableDataProvider
+        firstDay={range.firstDay}
+        lastDay={range.lastDay}
+        fromArchive={archived ? true : undefined}
+      >
+        <View className="items-center justify-center py-12">
+          <Text className="text-muted-foreground">Loading trackables...</Text>
+        </View>
+      </TrackableDataProvider>
     );
   }
 
   if (!q.data || q.data.length === 0) {
     return (
-      <View className="items-center justify-center py-12">
-        <Text className="text-xl font-light text-foreground">
-          {archived
-            ? 'Archive is empty.'
-            : 'You do not have any trackables yet.'}
-        </Text>
-        {!archived && (
-          <Link href="/create" asChild className="mt-4">
-            <Button variant="outline" text="Create Trackable" />
-          </Link>
-        )}
-      </View>
+      <TrackableDataProvider
+        firstDay={range.firstDay}
+        lastDay={range.lastDay}
+        fromArchive={archived ? true : undefined}
+      >
+        <View className="items-center justify-center py-12">
+          <Text className="text-xl font-light text-foreground">
+            {archived
+              ? 'Archive is empty.'
+              : 'You do not have any trackables yet.'}
+          </Text>
+          {!archived && (
+            <Link href="/create" asChild className="mt-4">
+              <Button variant="outline" text="Create Trackable" />
+            </Link>
+          )}
+        </View>
+      </TrackableDataProvider>
     );
   }
 
   return (
-    <View className="flex flex-col gap-4 pb-6">
-      {q.data.map(({ trackable }) => {
-        return (
-          <TrackableMetaProvider key={trackable.id} trackable={trackable}>
-            <View className="border-b border-border">
-              <Link href={`/trackable/${trackable.id}`} className="px-4 py-1">
-                <Text className="text-lg font-semibold text-primary">
-                  {trackable.name}
-                </Text>
-              </Link>
-              <FlatList
-                data={days}
-                renderItem={({ item }) => (
-                  <DayCellRouter
-                    timestamp={item}
-                    labelType={'outside'}
-                    className="w-24"
-                  />
-                )}
-                horizontal
-                inverted
-                contentContainerStyle={{
-                  gap: 8,
-                  paddingHorizontal: 16,
-                  paddingBottom: 16,
-                }}
-              />
-            </View>
-          </TrackableMetaProvider>
-        );
-      })}
-    </View>
+    <TrackableDataProvider
+      firstDay={range.firstDay}
+      lastDay={range.lastDay}
+      fromArchive={archived ? true : undefined}
+    >
+      <View className="flex flex-col gap-4 pb-6">
+        {q.data.map(({ trackable }) => {
+          return (
+            <TrackableMetaProvider key={trackable.id} trackable={trackable}>
+              <View className="border-b border-border">
+                <Link href={`/trackable/${trackable.id}`} className="px-4 py-1">
+                  <Text className="text-lg font-semibold text-primary">
+                    {trackable.name}
+                  </Text>
+                </Link>
+                <FlatList
+                  data={days}
+                  renderItem={({ item }) => (
+                    <DayCellRouter
+                      timestamp={item}
+                      labelType={'outside'}
+                      className="w-24"
+                    />
+                  )}
+                  horizontal
+                  inverted
+                  contentContainerStyle={{
+                    gap: 8,
+                    paddingHorizontal: 16,
+                    paddingBottom: 16,
+                  }}
+                />
+              </View>
+            </TrackableMetaProvider>
+          );
+        })}
+      </View>
+    </TrackableDataProvider>
   );
 };
 

@@ -41,11 +41,11 @@ import {
   TrackableMetaProvider,
   useTrackableMeta,
 } from '@tyl/helpers/data/TrackableMetaProvider';
+import { TrackableDataProvider } from '@tyl/helpers/data/TrackableDataProvider';
 import { endOfMonth, endOfYear, startOfMonth, startOfYear } from 'date-fns';
 import {
   useIsTrackableInGroup,
   useTrackable,
-  useTrackableData,
   useTrackableFlag,
 } from '@tyl/helpers/data/dbHooksTanstack';
 const paramsSchema = z.object({
@@ -92,6 +92,7 @@ const RouteComponent = () => {
   const {
     data: [trackable],
   } = q;
+  const { from, to } = useMonthYear();
 
   if (q.isLoading) {
     return (
@@ -111,44 +112,46 @@ const RouteComponent = () => {
 
   return (
     <TrackableMetaProvider key={params.id} trackable={trackable}>
-      <div className="content-container flex h-full max-h-full w-full flex-col pb-6">
-        <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
-          <TrackableNameEditable />
-          <div className="flex gap-2 justify-self-end">
-            <FavoriteButton variant={'outline'} />
+      <TrackableDataProvider id={params.id} firstDay={from} lastDay={to}>
+        <div className="content-container flex h-full max-h-full w-full flex-col pb-6">
+          <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
+            <TrackableNameEditable />
+            <div className="flex gap-2 justify-self-end">
+              <FavoriteButton variant={'outline'} />
 
-            <MatchRoute to="/app/trackables/$id/view">
-              <Link
-                key={'settings'}
-                to={'/app/trackables/$id/settings'}
-                params={{ id: params.id }}
-              >
-                <Button name="settings" variant="outline">
-                  <SettingsIcon className="h-4 w-4" />
-                  <span className="max-md:hidden">Settings</span>
-                </Button>
-              </Link>
-            </MatchRoute>
+              <MatchRoute to="/app/trackables/$id/view">
+                <Link
+                  key={'settings'}
+                  to={'/app/trackables/$id/settings'}
+                  params={{ id: params.id }}
+                >
+                  <Button name="settings" variant="outline">
+                    <SettingsIcon className="h-4 w-4" />
+                    <span className="max-md:hidden">Settings</span>
+                  </Button>
+                </Link>
+              </MatchRoute>
 
-            <MatchRoute to="/app/trackables/$id/settings">
-              <Link
-                key={'view'}
-                to={'/app/trackables/$id/view'}
-                params={{ id: params.id }}
-              >
-                <Button variant="outline">
-                  <CalendarDaysIcon className="h-4 w-4" />
-                  <span className="max-md:hidden">View</span>
-                </Button>
-              </Link>
-            </MatchRoute>
+              <MatchRoute to="/app/trackables/$id/settings">
+                <Link
+                  key={'view'}
+                  to={'/app/trackables/$id/view'}
+                  params={{ id: params.id }}
+                >
+                  <Button variant="outline">
+                    <CalendarDaysIcon className="h-4 w-4" />
+                    <span className="max-md:hidden">View</span>
+                  </Button>
+                </Link>
+              </MatchRoute>
 
-            <TrackableDropdown />
+              <TrackableDropdown />
+            </div>
           </div>
+          <hr className="my-4 h-px border-none bg-foreground opacity-10 outline-hidden" />
+          <Outlet />
         </div>
-        <hr className="my-4 h-px border-none bg-foreground opacity-10 outline-hidden" />
-        <Outlet />
-      </div>
+      </TrackableDataProvider>
     </TrackableMetaProvider>
   );
 };

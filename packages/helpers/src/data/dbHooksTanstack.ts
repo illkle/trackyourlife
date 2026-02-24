@@ -258,7 +258,7 @@ export const useTrackableFlag = <K extends ITrackableFlagKey>(
   trackableId: string,
   key: K
 ) => {
-  const { dbT, db, userID, transactor } = usePowersyncDrizzle();
+  const { dbT, userID, transactor } = usePowersyncDrizzle();
 
   const qq = useLiveQuery(
     (q) =>
@@ -358,11 +358,7 @@ export const useTrackableFlag = <K extends ITrackableFlagKey>(
 };
 
 /** Hook to get a record update/create handler */
-export const useRecordUpdateHandler = ({
-  date,
-}: {
-  date: Date;
-}) => {
+export const useRecordUpdateHandler = ({ date }: { date: Date }) => {
   const { id: trackableId, type: _type, bucketing } = useTrackableMeta();
   const { dbT, userID } = usePowersyncDrizzle();
   const dateString = dateToSQLiteString(date);

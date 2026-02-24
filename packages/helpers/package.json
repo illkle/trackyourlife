@@ -21,6 +21,10 @@
     "./data/TrackableMetaProvider": {
       "types": "./dist/data/TrackableMetaProvider.d.ts",
       "default": "./src/data/TrackableMetaProvider.tsx"
+    },
+    "./data/TrackableDataProvider": {
+      "types": "./dist/data/TrackableDataProvider.d.ts",
+      "default": "./src/data/TrackableDataProvider.tsx"
     }
   },
   "scripts": {

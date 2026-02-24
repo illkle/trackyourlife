@@ -59,14 +59,6 @@ const buttonTextVariants = cva("text-foreground text-sm font-medium", {
 
 const buttonSpinnerVariants = cva("", {
   variants: {
-    variant: {
-      default: "text-primary-foreground",
-      destructive: "text-white",
-      outline: "text-foreground",
-      secondary: "text-secondary-foreground",
-      ghost: "text-foreground",
-      link: "text-primary",
-    },
     size: {
       default: "h-4 w-4",
       sm: "h-4 w-4",
@@ -75,8 +67,39 @@ const buttonSpinnerVariants = cva("", {
     },
   },
   defaultVariants: {
-    variant: "default",
     size: "default",
+  },
+});
+
+const buttonSpinnerColorVariants = cva("", {
+  variants: {
+    variant: {
+      default: "text-primary-foreground",
+      destructive: "text-white",
+      outline: "text-foreground",
+      secondary: "text-secondary-foreground",
+      ghost: "text-foreground",
+      link: "text-primary",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+});
+
+const buttonSpinnerInvertedColorVariants = cva("", {
+  variants: {
+    variant: {
+      default: "text-primary",
+      destructive: "text-destructive",
+      outline: "text-background",
+      secondary: "text-secondary",
+      ghost: "text-background",
+      link: "text-background",
+    },
+  },
+  defaultVariants: {
+    variant: "default",
   },
 });
 
@@ -85,9 +108,19 @@ type ButtonProps = React.ComponentProps<typeof Pressable> &
   VariantProps<typeof buttonVariants> & {
     text: string;
     loading?: boolean;
+    invertSpinner?: boolean;
   };
 
-function Button({ className, variant, size, loading = false, text, disabled, ...props }: ButtonProps) {
+function Button({
+  className,
+  variant,
+  size,
+  loading = false,
+  invertSpinner = false,
+  text,
+  disabled,
+  ...props
+}: ButtonProps) {
   const isDisabled = disabled || loading;
 
   return (
@@ -98,7 +131,12 @@ function Button({ className, variant, size, loading = false, text, disabled, ...
       disabled={isDisabled}
     >
       {loading ? (
-        <Spinner className={cn(buttonSpinnerVariants({ variant, size }))} />
+        <Spinner
+          className={cn(buttonSpinnerVariants({ size }))}
+          colorClassName={buttonSpinnerColorVariants({ variant })}
+          invertedColorClassName={buttonSpinnerInvertedColorVariants({ variant })}
+          inverted={invertSpinner}
+        />
       ) : (
         <Text className={cn(buttonTextVariants({ variant, size }))}>{text}</Text>
       )}

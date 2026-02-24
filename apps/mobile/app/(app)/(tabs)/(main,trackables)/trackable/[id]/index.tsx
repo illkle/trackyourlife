@@ -1,21 +1,26 @@
-import { useLayoutEffect, useMemo } from 'react';
-import { Dimensions, Pressable, Text, View } from 'react-native';
-import { useLocalSearchParams, useNavigation, useRouter } from 'expo-router';
 import {
-  eachDayOfInterval,
-  endOfMonth,
-  format,
-  getISODay,
-  startOfMonth,
-} from 'date-fns';
-import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react-native';
+  startTransition,
+  Suspense,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
+import { Dimensions, Pressable, Text, View } from "react-native";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import { eachDayOfInterval, endOfMonth, format, getISODay, startOfMonth, sub } from "date-fns";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react-native";
 
-import { Button } from '@/components/ui/button';
-import { DayCellRouter } from '@/components/cells';
-import { cn } from '@/lib/utils';
-import { DefaultWrapper } from '@/lib/styledComponents';
-import { TrackableMetaProvider } from '@tyl/helpers/data/TrackableMetaProvider';
-import { useTrackable } from '@tyl/helpers/data/dbHooksTanstack';
+import { Button } from "@/components/ui/button";
+import { DayCellRouter } from "@/components/cells";
+import { cn } from "@/lib/utils";
+import { DefaultWrapper } from "@/lib/styledComponents";
+import { TrackableMetaProvider } from "@tyl/helpers/data/TrackableMetaProvider";
+import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
+import { useTrackable } from "@tyl/helpers/data/dbHooksTanstack";
+import { Spinner } from "@/components/ui/spinner";
 
 const getIncrementedDate = (add: number, year: number, month: number) => {
   let newMonth = month + add;
@@ -36,14 +41,8 @@ const ViewController = ({ year, month }: { year: number; month: number }) => {
   const router = useRouter();
   const monthDate = useMemo(() => new Date(year, month, 1), [month, year]);
 
-  const toPrev = useMemo(
-    () => getIncrementedDate(-1, year, month),
-    [month, year]
-  );
-  const toNext = useMemo(
-    () => getIncrementedDate(1, year, month),
-    [month, year]
-  );
+  const toPrev = useMemo(() => getIncrementedDate(-1, year, month), [month, year]);
+  const toNext = useMemo(() => getIncrementedDate(1, year, month), [month, year]);
   const toToday = useMemo(() => {
     const now = new Date();
     return { year: now.getFullYear(), month: now.getMonth() };
@@ -65,12 +64,8 @@ const ViewController = ({ year, month }: { year: number; month: number }) => {
         <ChevronLeftIcon color="white" size={20} />
       </Pressable>
       <View className="min-w-30 flex-row items-baseline justify-center gap-2">
-        <Text className="text-base font-semibold text-foreground">
-          {format(monthDate, 'MMM')}
-        </Text>
-        <Text className="text-sm text-muted-foreground">
-          {format(monthDate, 'yyyy')}
-        </Text>
+        <Text className="text-base font-semibold text-foreground">{format(monthDate, "MMM")}</Text>
+        <Text className="text-sm text-muted-foreground">{format(monthDate, "yyyy")}</Text>
       </View>
       <Pressable
         onPress={() => updateParams(toNext)}
@@ -90,14 +85,36 @@ const ViewController = ({ year, month }: { year: number; month: number }) => {
 
 const TrackableView = () => {
   const { month, year, startOfMonthDate } = useYearMonth();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    startTransition(() => {
+      setIsMounted(true);
+    });
+
+    return;
+  }, []);
 
   return (
     <View className="flex flex-col gap-4 pt-4 pb-6">
       <ViewController year={year} month={month} />
-      <MonthVisualCalendar
-        key={`${year}-${month}`}
-        dateFirstDay={startOfMonthDate}
-      />
+
+      {isMounted ? (
+        <>
+          <MonthVisualCalendar dateFirstDay={startOfMonthDate} />
+          <MonthVisualCalendar dateFirstDay={sub(startOfMonthDate, { months: 1 })} />
+          <MonthVisualCalendar dateFirstDay={sub(startOfMonthDate, { months: 2 })} />
+          <MonthVisualCalendar dateFirstDay={sub(startOfMonthDate, { months: 3 })} />
+          <MonthVisualCalendar dateFirstDay={sub(startOfMonthDate, { months: 4 })} />
+          <MonthVisualCalendar dateFirstDay={sub(startOfMonthDate, { months: 5 })} />
+          <MonthVisualCalendar dateFirstDay={sub(startOfMonthDate, { months: 6 })} />
+          <MonthVisualCalendar dateFirstDay={sub(startOfMonthDate, { months: 7 })} />
+        </>
+      ) : (
+        <View className="flex h-64 items-center justify-center">
+          <Spinner color="white" />
+        </View>
+      )}
     </View>
   );
 };
@@ -108,30 +125,24 @@ const MonthVisualCalendar = ({ dateFirstDay }: { dateFirstDay: Date }) => {
   const prefaceWith = dateFirstDay ? getISODay(dateFirstDay) - 1 : 0;
 
   const days = useMemo(
-    () =>
-      eachDayOfInterval({ start: dateFirstDay, end: endOfMonth(dateFirstDay) }),
-    [dateFirstDay]
+    () => eachDayOfInterval({ start: dateFirstDay, end: endOfMonth(dateFirstDay) }),
+    [dateFirstDay],
   );
 
-  const screenWidth = Dimensions.get('window').width - 32; // sub side padding
+  const screenWidth = Dimensions.get("window").width - 32; // sub side padding
   const cellWidth = (screenWidth - SPACE_BETWEEN_CELLS * 6) / 7; // sub gap between cells
 
   return (
     <View
       key={dateFirstDay.toISOString()}
-      className={cn('flex flex-row flex-wrap')}
+      className={cn("flex flex-row flex-wrap")}
       style={{ gap: SPACE_BETWEEN_CELLS }}
     >
       {Array.from({ length: prefaceWith }).map((_, i) => (
         <View key={i} style={{ width: cellWidth }} className=""></View>
       ))}
       {days.map((el, i) => (
-        <DayCellRouter
-          key={i}
-          timestamp={el}
-          labelType={'auto'}
-          style={{ width: cellWidth }}
-        />
+        <DayCellRouter key={i} timestamp={el} labelType={"auto"} style={{ width: cellWidth }} />
       ))}
     </View>
   );
@@ -139,33 +150,21 @@ const MonthVisualCalendar = ({ dateFirstDay }: { dateFirstDay: Date }) => {
 
 export const useYearMonth = () => {
   const params = useLocalSearchParams();
-  const monthParam = Array.isArray(params.month)
-    ? params.month[0]
-    : params.month;
+  const monthParam = Array.isArray(params.month) ? params.month[0] : params.month;
   const yearParam = Array.isArray(params.year) ? params.year[0] : params.year;
 
   const month = useMemo(() => {
     const parsed = Number(monthParam);
-    return Number.isInteger(parsed) && parsed >= 0 && parsed <= 11
-      ? parsed
-      : new Date().getMonth();
+    return Number.isInteger(parsed) && parsed >= 0 && parsed <= 11 ? parsed : new Date().getMonth();
   }, [monthParam]);
 
   const year = useMemo(() => {
     const parsed = Number(yearParam);
-    return Number.isInteger(parsed) && parsed > 1900
-      ? parsed
-      : new Date().getFullYear();
+    return Number.isInteger(parsed) && parsed > 1900 ? parsed : new Date().getFullYear();
   }, [yearParam]);
 
-  const startOfMonthDate = useMemo(
-    () => startOfMonth(new Date(year, month, 1)),
-    [year, month]
-  );
-  const endOfMonthDate = useMemo(
-    () => endOfMonth(new Date(year, month, 1)),
-    [year, month]
-  );
+  const startOfMonthDate = useMemo(() => startOfMonth(new Date(year, month, 1)), [year, month]);
+  const endOfMonthDate = useMemo(() => endOfMonth(new Date(year, month, 1)), [year, month]);
 
   return {
     month,
@@ -178,6 +177,15 @@ export const useYearMonth = () => {
 export const TrackableFetcher = () => {
   const params = useLocalSearchParams();
   const id = params.id as string;
+  const { startOfMonthDate, endOfMonthDate } = useYearMonth();
+
+  const dataRange = useMemo(
+    () => ({
+      firstDay: startOfMonth(sub(startOfMonthDate, { months: 7 })),
+      lastDay: endOfMonthDate,
+    }),
+    [endOfMonthDate, startOfMonthDate],
+  );
 
   const q = useTrackable({
     id,
@@ -228,7 +236,9 @@ export const TrackableFetcher = () => {
   return (
     <DefaultWrapper noTopSafeArea>
       <TrackableMetaProvider trackable={trackable}>
-        <TrackableView />
+        <TrackableDataProvider id={id} firstDay={dataRange.firstDay} lastDay={dataRange.lastDay}>
+          <TrackableView />
+        </TrackableDataProvider>
       </TrackableMetaProvider>
     </DefaultWrapper>
   );

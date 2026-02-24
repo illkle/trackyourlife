@@ -79,6 +79,7 @@ export const CreateScreen = () => {
       return await createTrackable({
         name: payload.name,
         type: payload.type,
+        bucketing: 'day',
       });
     },
     onSuccess: (id) => {

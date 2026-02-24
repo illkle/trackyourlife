@@ -10,9 +10,9 @@ import { DbTrackableRecordSelect } from '@tyl/db/client/schema-powersync';
 import {
   useRecordDeleteHandler,
   useRecordUpdateHandler,
-  useTrackableData,
   useTrackableFlag,
 } from '@tyl/helpers/data/dbHooksTanstack';
+import { useTrackableDataDay } from '@tyl/helpers/data/TrackableDataProvider';
 
 export const DayCellBaseClasses =
   '@container w-full h-full relative select-none overflow-hidden border-transparent border-2 rounded-xs';
@@ -60,16 +60,12 @@ export const DayCellRouter = memo(
     });
     const onDelete = useRecordDeleteHandler();
 
-    const { data: values } = useTrackableData({
-      id,
-      firstDay: timestamp,
-      lastDay: timestamp,
-    });
+    const values = useTrackableDataDay(timestamp);
 
     const cellData = {
       type,
       isOutOfRange,
-      values: Object.values(values),
+      values,
       onChange,
       onDelete,
       labelType,

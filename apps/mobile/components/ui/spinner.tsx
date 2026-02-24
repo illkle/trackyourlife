@@ -1,6 +1,7 @@
 import type { ComponentProps } from "react";
 import { useEffect } from "react";
 import { Loader2Icon } from "lucide-react-native";
+import { useResolveClassNames } from "uniwind";
 import Animated, {
   Easing,
   cancelAnimation,
@@ -11,8 +12,22 @@ import Animated, {
 } from "react-native-reanimated";
 import { cn } from "@/lib/utils";
 
-export const Spinner = ({ className, ...props }: ComponentProps<typeof Loader2Icon>) => {
+type SpinnerProps = ComponentProps<typeof Loader2Icon> & {
+  colorClassName?: string;
+  invertedColorClassName?: string;
+  inverted?: boolean;
+};
+
+export const Spinner = ({
+  className,
+  colorClassName = "text-foreground",
+  invertedColorClassName = "text-background",
+  inverted = false,
+  color,
+  ...props
+}: SpinnerProps) => {
   const rotation = useSharedValue(0);
+  const resolvedColor = useResolveClassNames(inverted ? invertedColorClassName : colorClassName);
 
   useEffect(() => {
     rotation.value = withRepeat(
@@ -41,6 +56,7 @@ export const Spinner = ({ className, ...props }: ComponentProps<typeof Loader2Ic
         accessibilityRole="progressbar"
         accessibilityLabel="Loading"
         className={cn("h-4 w-4", className)}
+        color={color ?? resolvedColor.color}
         {...props}
       />
     </Animated.View>
