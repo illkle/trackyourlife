@@ -1,10 +1,11 @@
 import { Text, View } from "react-native";
 import { Button } from "@/components/ui/button";
-import {  useSessionCached } from "@/lib/authClient";
+import { useSessionCached } from "@/lib/authClient";
 import { powersyncDB } from "@/db/powersync";
 import { useEffect, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { DefaultWrapper } from "@/lib/styledComponents";
+import * as Updates from "expo-updates";
 
 const PowersyncStatus = () => {
   const [connected, setConnected] = useState(powersyncDB.connected);
@@ -32,6 +33,26 @@ const PowersyncStatus = () => {
   );
 };
 
+const UpdatesStatus = () => {
+  const { currentlyRunning, isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
+  return (
+    <View className="mt-4">
+      <Text className="text-muted-foreground">
+        Current minor version:{" "}
+        {[currentlyRunning.channel, currentlyRunning.runtimeVersion].filter(Boolean).join("/")}
+      </Text>
+      {isUpdateAvailable && <Text className="mt-2"> Update available </Text>}
+      {isUpdatePending && <Text className="mt-2">Update will be applied on next restart</Text>}
+      <Button
+        variant={"outline"}
+        className="mt-2"
+        onPress={() => Updates.checkForUpdateAsync()}
+        text="Check for updates"
+      />
+    </View>
+  );
+};
+
 export default function TabTwoScreen() {
   const session = useSessionCached();
   return (
@@ -40,21 +61,20 @@ export default function TabTwoScreen() {
         <Text className="text-2xl font-bold text-primary">User:</Text>
         <Text className="mt-2 font-mono text-primary">{session.data?.user?.name}</Text>
         <Text className="mt-1 font-mono text-primary">{session.data?.user?.email}</Text>
+
+        <Text className="mt-1 font-mono text-primary">{session.data?.session.id}</Text>
         <Text className="mt-1 font-mono text-primary">
           {session.data?.session?.expiresAt.toISOString()}
         </Text>
 
-        <Text className="mt-1 font-mono text-primary">
-          {JSON.stringify(session.data, null, 2)}
-        </Text>
-
         <PowersyncStatus />
+        <UpdatesStatus />
         <Button
-          variant={"outline"}
+          variant={"destructive"}
           className="mt-4"
           text="Sign out"
           onPress={() => {
-            void session.signOut()
+            void session.signOut();
           }}
         />
       </View>
