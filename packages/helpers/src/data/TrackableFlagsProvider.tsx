@@ -169,9 +169,5 @@ export const useTrackableFlagValueCached = <K extends ITrackableFlagKey>(key: K)
     return value.byLookupKey.get(lookupKey);
   });
 
-  if (raw === null) {
-    throw new Error("useTrackableFlagValue must be used within a TrackableFlagsProvider");
-  }
-
   return (raw ?? FlagDefaults[key]) as ITrackableFlagValue<K>;
 };
