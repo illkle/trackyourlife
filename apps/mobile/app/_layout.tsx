@@ -27,6 +27,7 @@ import { PortalHost } from '@rn-primitives/portal';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ServerURLProvider, useServerURL } from '@/lib/ServerURLContext';
 import { Uniwind } from 'uniwind';
+import { AppErrorBoundary } from '@/components/error/appErrorBoundary';
 
 //import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -43,31 +44,33 @@ export default function RootLayout() {
   const qc = new QueryClient();
 
   return (
-    <ServerURLProvider>
-      <AuthClientProvider>
-        <SessionCachedProvider>
-          <GestureHandlerRootView>
-            <ThemeP>
-              <QueryClientProvider client={qc}>
-                <SafeAreaProvider>
-                  <SafeAreaListener
-                    onChange={({ insets }) => {
-                      Uniwind.updateInsets(insets);
-                    }}
-                  >
-                    <KeyboardProvider>
-                      <RootNavigator />
-                      <StatusBar style="auto" />
-                      <PortalHost />
-                    </KeyboardProvider>
-                  </SafeAreaListener>
-                </SafeAreaProvider>
-              </QueryClientProvider>
-            </ThemeP>
-          </GestureHandlerRootView>
-        </SessionCachedProvider>
-      </AuthClientProvider>
-    </ServerURLProvider>
+    <AppErrorBoundary boundaryName="root-layout">
+      <ServerURLProvider>
+        <AuthClientProvider>
+          <SessionCachedProvider>
+            <GestureHandlerRootView>
+              <ThemeP>
+                <QueryClientProvider client={qc}>
+                  <SafeAreaProvider>
+                    <SafeAreaListener
+                      onChange={({ insets }) => {
+                        Uniwind.updateInsets(insets);
+                      }}
+                    >
+                      <KeyboardProvider>
+                        <RootNavigator />
+                        <StatusBar style="auto" />
+                        <PortalHost />
+                      </KeyboardProvider>
+                    </SafeAreaListener>
+                  </SafeAreaProvider>
+                </QueryClientProvider>
+              </ThemeP>
+            </GestureHandlerRootView>
+          </SessionCachedProvider>
+        </AuthClientProvider>
+      </ServerURLProvider>
+    </AppErrorBoundary>
   );
 }
 

@@ -4,6 +4,7 @@ import { isValid, parseISO } from "date-fns";
 import { z } from "zod";
 
 import { EditorModal } from "@/components/editorModal";
+import { AppErrorBoundary } from "@/components/error/appErrorBoundary";
 
 const EditorParamsSchema = z.object({
   trackableId: z.string().min(1),
@@ -40,10 +41,12 @@ export default function EditorRoute() {
   }
 
   return (
-    <EditorModal
-      trackableId={parsed.data.trackableId}
-      timestamp={timestamp}
-      onClose={() => router.back()}
-    />
+    <AppErrorBoundary boundaryName="editor-modal">
+      <EditorModal
+        trackableId={parsed.data.trackableId}
+        timestamp={timestamp}
+        onClose={() => router.back()}
+      />
+    </AppErrorBoundary>
   );
 }

@@ -29,6 +29,14 @@
     "./data/TrackableFlagsProvider": {
       "types": "./dist/data/TrackableFlagsProvider.d.ts",
       "default": "./src/data/TrackableFlagsProvider.tsx"
+    },
+    "./error/normalizeError": {
+      "types": "./dist/error/normalizeError.d.ts",
+      "default": "./src/error/normalizeError.ts"
+    },
+    "./error/types": {
+      "types": "./dist/error/types.d.ts",
+      "default": "./src/error/types.ts"
     }
   },
   "scripts": {

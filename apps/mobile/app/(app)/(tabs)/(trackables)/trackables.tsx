@@ -11,6 +11,7 @@ import { DefaultWrapper } from "@/lib/styledComponents";
 import { Button } from "@/components/ui/button";
 import { DayCellRouter } from "@/components/cells";
 import { InstaMount } from "@/lib/FastLoad";
+import { AppErrorBoundary } from "@/components/error/appErrorBoundary";
 
 const SHOW_DAYS = 6;
 
@@ -105,7 +106,9 @@ export const TrackablesScreen = () => {
         />
       </View>
       <InstaMount>
-        <TrackableList archived={archived} />
+        <AppErrorBoundary boundaryName="trackables-list">
+          <TrackableList archived={archived} />
+        </AppErrorBoundary>
       </InstaMount>
     </DefaultWrapper>
   );

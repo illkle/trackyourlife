@@ -16,7 +16,7 @@ const PowersyncStatus = () => {
         setConnected(status.connected);
       },
     });
-  }, [powersyncDB]);
+  }, []);
 
   return (
     <View className="mt-2 flex flex-row items-center gap-2 px-1 py-1 text-xs">
@@ -33,20 +33,24 @@ const PowersyncStatus = () => {
   );
 };
 
-const UpdatesStatus = () => {
+export const UpdatesStatus = () => {
   const { currentlyRunning, isUpdateAvailable, isUpdatePending } = Updates.useUpdates();
   return (
     <View className="mt-4">
       <Text className="text-muted-foreground">
         Current minor version:{" "}
-        {[currentlyRunning.channel, currentlyRunning.runtimeVersion].filter(Boolean).join("/")}
+        {[currentlyRunning.channel, currentlyRunning.runtimeVersion, currentlyRunning.manifest?.id]
+          .filter(Boolean)
+          .join("/")}
       </Text>
       {isUpdateAvailable && <Text className="mt-2"> Update available </Text>}
       {isUpdatePending && <Text className="mt-2">Update will be applied on next restart</Text>}
       <Button
         variant={"outline"}
         className="mt-2"
-        onPress={() => Updates.checkForUpdateAsync()}
+        onPress={() => {
+          void Updates.checkForUpdateAsync();
+        }}
         text="Check for updates"
       />
     </View>

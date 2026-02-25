@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { DayCellRouter } from "@/components/cells";
 import { useTrackablesList } from "@tyl/helpers/data/dbHooksTanstack";
 import { InstaMount } from "@/lib/FastLoad";
+import { AppErrorBoundary } from "@/components/error/appErrorBoundary";
 
 const SHOW_DAYS = 7;
 
@@ -121,9 +122,11 @@ const TodayList = () => {
 export const HomeScreen = () => {
   return (
     <DefaultWrapper>
-      <InstaMount>
-        <TodayList />
-      </InstaMount>
+      <AppErrorBoundary boundaryName="home-today-list">
+        <InstaMount>
+          <TodayList />
+        </InstaMount>
+      </AppErrorBoundary>
     </DefaultWrapper>
   );
 };

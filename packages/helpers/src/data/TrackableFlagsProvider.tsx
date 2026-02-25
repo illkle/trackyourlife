@@ -169,5 +169,7 @@ export const useTrackableFlagValueCached = <K extends ITrackableFlagKey>(key: K)
     return value.byLookupKey.get(lookupKey);
   });
 
+  throw new Error("lol");
+
   return (raw ?? FlagDefaults[key]) as ITrackableFlagValue<K>;
 };

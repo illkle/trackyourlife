@@ -13,6 +13,7 @@ import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
 import { TrackableFlagsProvider } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackable } from "@tyl/helpers/data/dbHooksTanstack";
 import { InstaMount } from "@/lib/FastLoad";
+import { AppErrorBoundary } from "@/components/error/appErrorBoundary";
 
 const getIncrementedDate = (add: number, year: number, month: number) => {
   let newMonth = month + add;
@@ -208,7 +209,9 @@ export const TrackableFetcher = () => {
       <TrackableMetaProvider trackable={trackable}>
         <TrackableFlagsProvider id={id}>
           <TrackableDataProvider id={id} firstDay={dataRange.firstDay} lastDay={dataRange.lastDay}>
-            <TrackableView />
+            <AppErrorBoundary boundaryName="trackable-view">
+              <TrackableView />
+            </AppErrorBoundary>
           </TrackableDataProvider>
         </TrackableFlagsProvider>
       </TrackableMetaProvider>
