@@ -1,59 +1,44 @@
-import type { CSSProperties } from 'react';
-import { useMemo, useState } from 'react';
-import { cn } from '@shad/lib/utils';
-import { PlusCircleIcon, XIcon } from 'lucide-react';
-import { v4 as uuidv4 } from 'uuid';
-import { PowerSyncTransactor } from '@tanstack/powersync-db-collection';
+import type { CSSProperties } from "react";
+import { useMemo, useState } from "react";
+import { cn } from "@shad/lib/utils";
+import { PlusCircleIcon, XIcon } from "lucide-react";
+import { v4 as uuidv4 } from "uuid";
 
 import type {
   IColorCodingValue,
   IColorCodingValueInput,
   IColorValue,
-} from '@tyl/db/jsonValidators';
-import { clamp, cloneDeep } from '@tyl/helpers';
-import {
-  getColorAtPosition,
-  makeColorString,
-  makeCssGradient,
-} from '@tyl/helpers/colorTools';
+} from "@tyl/db/jsonValidators";
+import { clamp, cloneDeep } from "@tyl/helpers";
+import { getColorAtPosition, makeColorString, makeCssGradient } from "@tyl/helpers/colorTools";
 
-import { Button } from '~/@shad/components/button';
+import { Button } from "~/@shad/components/button";
 import {
   Drawer,
   DrawerContent,
   DrawerMobileTitleProvider,
   DrawerTitle,
   DrawerTrigger,
-} from '~/@shad/components/drawer';
-import { Input } from '~/@shad/components/input';
-import { BetterNumberInput } from '~/components/Inputs/Colors/betterNumberInput';
-import { ColorDisplay } from '~/components/Inputs/Colors/colorDisplay';
-import ColorPicker from '~/components/Inputs/Colors/colorPicker';
-import {
-  ControllerPoint,
-  ControllerRoot,
-} from '~/components/Inputs/Colors/dragController';
-import { useLinkedValue } from '@tyl/helpers/useDbLinkedValue';
-import { useIsMobile } from '~/utils/useIsDesktop';
+} from "~/@shad/components/drawer";
+import { Input } from "~/@shad/components/input";
+import { BetterNumberInput } from "~/components/Inputs/Colors/betterNumberInput";
+import { ColorDisplay } from "~/components/Inputs/Colors/colorDisplay";
+import ColorPicker from "~/components/Inputs/Colors/colorPicker";
+import { ControllerPoint, ControllerRoot } from "~/components/Inputs/Colors/dragController";
+import { useIsMobile } from "~/utils/useIsDesktop";
 
-const getActualMin = (
-  firstVal: number | undefined,
-  minInput: number | null
-) => {
-  if (typeof firstVal !== 'number' && typeof minInput !== 'number') return 0;
+const getActualMin = (firstVal: number | undefined, minInput: number | null) => {
+  if (typeof firstVal !== "number" && typeof minInput !== "number") return 0;
 
-  const a = typeof firstVal === 'number' ? firstVal : Infinity;
-  const b = typeof minInput === 'number' ? minInput : Infinity;
+  const a = typeof firstVal === "number" ? firstVal : Infinity;
+  const b = typeof minInput === "number" ? minInput : Infinity;
   return Math.min(a, b);
 };
-const getActualMax = (
-  firstVal: number | undefined,
-  maxInput: number | null
-) => {
-  if (typeof firstVal !== 'number' && typeof maxInput !== 'number') return 100;
+const getActualMax = (firstVal: number | undefined, maxInput: number | null) => {
+  if (typeof firstVal !== "number" && typeof maxInput !== "number") return 100;
 
-  const a = typeof firstVal === 'number' ? firstVal : -Infinity;
-  const b = typeof maxInput === 'number' ? maxInput : -Infinity;
+  const a = typeof firstVal === "number" ? firstVal : -Infinity;
+  const b = typeof maxInput === "number" ? maxInput : -Infinity;
   return Math.max(a, b);
 };
 
@@ -70,11 +55,9 @@ const ControllerGradient = ({
   const firstItem = value[0];
   const lastItem = value[value.length - 1];
 
-  const [minValue, setMinValue] = useState<number>(
-    getActualMin(value[0]?.point, 0)
-  );
+  const [minValue, setMinValue] = useState<number>(getActualMin(value[0]?.point, 0));
   const [maxValue, setMaxValue] = useState<number>(
-    getActualMax(value[value.length - 1]?.point, 100)
+    getActualMax(value[value.length - 1]?.point, 100),
   );
 
   const [minInput, setMinInput] = useState(String(minValue));
@@ -100,7 +83,7 @@ const ControllerGradient = ({
 
   const removeColor = (id: string) => {
     const newVal = [...value].filter((v) => v.id !== id);
-    setSelectedColor(newVal[0]?.id ?? '');
+    setSelectedColor(newVal[0]?.id ?? "");
     onChange(newVal);
   };
 
@@ -127,7 +110,7 @@ const ControllerGradient = ({
   const updateSelectedColor = (color: IColorValue) => {
     const newVal = [...value];
     const v = newVal[selectedColorIndex];
-    if (!v) throw new Error('No value[selectedColorIndex]');
+    if (!v) throw new Error("No value[selectedColorIndex]");
     newVal[selectedColorIndex] = { ...v, color };
 
     onChange(newVal);
@@ -147,26 +130,13 @@ const ControllerGradient = ({
         onTouchStart={(e) => e.preventDefault()}
         style={
           {
-            '--gradLight': makeCssGradient(
-              sortedValues,
-              minValue,
-              maxValue,
-              'light'
-            ),
-            '--gradDark': makeCssGradient(
-              sortedValues,
-              minValue,
-              maxValue,
-              'dark'
-            ),
+            "--gradLight": makeCssGradient(sortedValues, minValue, maxValue, "light"),
+            "--gradDark": makeCssGradient(sortedValues, minValue, maxValue, "dark"),
           } as CSSProperties
         }
       >
         <Input
-          aria-invalid={
-            minInput !== String(minValue) ||
-            (firstItem && minValue > firstItem.point)
-          }
+          aria-invalid={minInput !== String(minValue) || (firstItem && minValue > firstItem.point)}
           value={minInput}
           type="number"
           onBlur={minMaxInputBlur}
@@ -185,9 +155,7 @@ const ControllerGradient = ({
           xMax={maxValue}
           selectedPoint={selectedColor}
           onSelectedPointChange={setSelectedColor}
-          className={cn(
-            'numberColorSelectorGradient cursor w-full cursor-copy'
-          )}
+          className={cn("numberColorSelectorGradient cursor w-full cursor-copy")}
           onEmptySpaceClick={!isMobile ? (v) => addColor(v.x) : undefined}
           onDragAway={value.length > 1 ? (id) => removeColor(id) : undefined}
         >
@@ -199,8 +167,8 @@ const ControllerGradient = ({
                 x={v.point}
                 style={
                   {
-                    '--light': makeColorString(v.color.lightMode),
-                    '--dark': makeColorString(v.color.darkMode),
+                    "--light": makeColorString(v.color.lightMode),
+                    "--dark": makeColorString(v.color.darkMode),
                   } as CSSProperties
                 }
                 className="bg-(--light) dark:bg-(--dark)"
@@ -211,10 +179,7 @@ const ControllerGradient = ({
         </ControllerRoot>
         <div className="justify-self-end">
           <Input
-            aria-invalid={
-              maxInput !== String(maxValue) ||
-              (lastItem && lastItem.point > maxValue)
-            }
+            aria-invalid={maxInput !== String(maxValue) || (lastItem && lastItem.point > maxValue)}
             value={maxInput}
             type="number"
             onBlur={minMaxInputBlur}
@@ -228,46 +193,35 @@ const ControllerGradient = ({
           />
         </div>
       </div>
-      <div className={cn('mt-2 flex flex-col-reverse gap-4 sm:flex-row')}>
+      <div className={cn("mt-2 flex flex-col-reverse gap-4 sm:flex-row")}>
         <div className="w-full max-md:hidden">
           {!isMobile && selectedColorObject && (
-            <ColorPicker
-              value={selectedColorObject}
-              onChange={updateSelectedColor}
-            />
+            <ColorPicker value={selectedColorObject} onChange={updateSelectedColor} />
           )}
         </div>
-        <div className={cn('w-full', !isMobile && 'sm:max-w-xs')}>
+        <div className={cn("w-full", !isMobile && "sm:max-w-xs")}>
           <div className="flex h-fit flex-col gap-2 rounded-lg bg-muted p-1">
             {value.map((v) => (
               <div
                 key={v.id}
                 className={cn(
-                  'flex items-stretch gap-2 p-2 transition-all',
-                  v.id === selectedColor
-                    ? 'rounded-md bg-background shadow-sm'
-                    : 'cursor-pointer'
+                  "flex items-stretch gap-2 p-2 transition-all",
+                  v.id === selectedColor ? "rounded-md bg-background shadow-sm" : "cursor-pointer",
                 )}
                 onClick={() => {
                   setSelectedColor(v.id);
                 }}
               >
                 {isMobile ? (
-                  <DrawerMobileTitleProvider title={'Edit color'}>
+                  <DrawerMobileTitleProvider title={"Edit color"}>
                     <Drawer handleOnly>
                       <DrawerTrigger className="w-full">
-                        <ColorDisplay
-                          color={v.color}
-                          className="h-full w-full"
-                        />
+                        <ColorDisplay color={v.color} className="h-full w-full" />
                       </DrawerTrigger>
                       <DrawerContent>
                         <DrawerTitle />
                         <div className="p-2">
-                          <ColorPicker
-                            value={v.color}
-                            onChange={updateSelectedColor}
-                          />
+                          <ColorPicker value={v.color} onChange={updateSelectedColor} />
                         </div>
                       </DrawerContent>
                     </Drawer>
@@ -282,8 +236,8 @@ const ControllerGradient = ({
                 />
                 <Button
                   disabled={value.length < 2}
-                  variant={'ghost'}
-                  size={'icon'}
+                  variant={"ghost"}
+                  size={"icon"}
                   className="shrink-0"
                   onClick={(e) => {
                     e.stopPropagation();
@@ -310,29 +264,18 @@ const ControllerGradient = ({
   );
 };
 
-const markNumbers = (value: IColorCodingValueInput[]): IColorCodingValue[] => {
-  return value.map((v) => ({ ...v, point: v.point, id: uuidv4() }));
-};
-
 const cloneAndSort = (value: IColorCodingValue[]): IColorCodingValue[] => {
   return cloneDeep(value).sort((a, b) => a.point - b.point);
 };
 
 const NumberColorSelector = ({
   value,
-  timestamp,
   onChange,
 }: {
   value: IColorCodingValueInput[];
-  onChange: (v: NonNullable<IColorCodingValueInput[]>, ts: number) => void;
-  timestamp?: number;
+  onChange: (v: NonNullable<IColorCodingValueInput[]>) => void;
 }) => {
-  return (
-    <ControllerGradient
-      value={value}
-      onChange={(v) => onChange(cloneAndSort(v), new Date().getTime())}
-    />
-  );
+  return <ControllerGradient value={value} onChange={(v) => onChange(cloneAndSort(v))} />;
 };
 
 export default NumberColorSelector;

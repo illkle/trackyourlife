@@ -71,11 +71,11 @@ export const SettingsNumber = () => {
   } = useTrackableFlag(id, "NumberColorCoding");
 
   const setColorCodingHandle = useCallback(
-    (v: NonNullable<IColorCodingValueInput[]>, ts: number) => {
+    (v: NonNullable<IColorCodingValueInput[]>) => {
       void setColorCoding({
         enabled: true,
         colors: v,
-        timestamp: ts,
+        timestamp: new Date().getTime(),
       });
     },
     [setColorCoding],
@@ -141,11 +141,7 @@ export const SettingsNumber = () => {
         <div className="mb-2 flex items-center space-x-2"></div>
 
         {colorCoding?.enabled && (
-          <NumberColorSelector
-            value={colorCoding.colors ?? []}
-            timestamp={colorCoding.timestamp}
-            onChange={setColorCodingHandle}
-          />
+          <NumberColorSelector value={colorCoding.colors ?? []} onChange={setColorCodingHandle} />
         )}
       </m.div>
     </>
