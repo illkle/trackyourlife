@@ -25,8 +25,6 @@ import { RadioTabItem, RadioTabs } from "~/@shad/custom/radio-tabs";
 import { ControllerPoint, ControllerRoot } from "~/components/Inputs/Colors/dragController";
 import { BetterNumberInput } from "./betterNumberInput";
 
-
-
 const useXYAttrs = (dimensions: (typeof colorControlDimensions)[ColorControlKey]) => {
   const { color, x, y, key } = dimensions;
 
@@ -229,8 +227,8 @@ export const PickerRGBHSL = ({
       <RadioTabs
         className="grid h-8 grid-cols-6 gap-1 rounded-t-none border border-t-0 border-border py-1"
         value={controlKey}
-         onValueChange={(v) => setControlKey(v as ColorControlKey)}
-       >
+        onValueChange={(v) => setControlKey(v as ColorControlKey)}
+      >
         <RadioTabItem className="text-xs" value="red">
           R
         </RadioTabItem>

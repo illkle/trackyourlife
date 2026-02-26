@@ -233,7 +233,7 @@ export const PickerRGBHSL = ({
 
       <View className="mt-2 flex-row">
         <BetterNumberInput
-          className={cn(bniClasses, inHSL && "opacity-50", "rounded-l-md")}
+          className={cn(bniClasses, inHSL && "opacity-50", "rounded-tl-md")}
           value={rgb.r}
           onChange={(v) => setRGB({ r: clamp(v, 0, 255) })}
           hardLimits
@@ -265,7 +265,7 @@ export const PickerRGBHSL = ({
           hardLimits
         />
         <BetterNumberInput
-          className={cn(bniClasses, !inHSL && "opacity-50", "rounded-r-md border-r")}
+          className={cn(bniClasses, !inHSL && "opacity-50", "rounded-tr-md border-r")}
           value={hsl.l}
           limits={{ min: 0, max: 100 }}
           onChange={(v) => setHSL({ l: v })}
@@ -319,13 +319,15 @@ export const ColorPicker = ({
 
   return (
     <View className={cn(className)}>
-      <View className="mb-2 min-h-9 flex-row items-center gap-2 self-start rounded-lg bg-muted px-2">
-        <Switch
-          value={automatic}
-          onValueChange={(nextAutomatic) => {
-            onChange({ ...value, userSelect: lightMode, manualMode: !nextAutomatic });
-          }}
-        />
+      <View className="mb-2 flex min-h-9 w-fit flex-row items-center gap-2 self-start rounded-lg bg-muted px-2">
+        <View>
+          <Switch
+            value={automatic}
+            onValueChange={(nextAutomatic) => {
+              onChange({ ...value, userSelect: lightMode, manualMode: !nextAutomatic });
+            }}
+          />
+        </View>
         <Text className="text-xs text-foreground">Auto Contrast</Text>
 
         {!automatic && (

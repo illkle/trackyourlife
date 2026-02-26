@@ -1,4 +1,4 @@
-import type { CSSProperties, MutableRefObject } from "react";
+import type { CSSProperties, RefObject } from "react";
 import React, { createContext, useCallback, useContext, useId, useRef, useState } from "react";
 import { cn } from "@shad/lib/utils";
 import { TrashIcon } from "lucide-react";
@@ -16,7 +16,7 @@ const ControllerContext = createContext<{
   disableY: boolean;
   width: number;
   height: number;
-  dataRef: MutableRefObject<{
+  dataRef: RefObject<{
     width: number;
     height: number;
     left: number;

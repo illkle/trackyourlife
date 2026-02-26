@@ -1,5 +1,5 @@
 import { Fragment, useMemo } from "react";
-import { Dimensions, Text, View } from "react-native";
+import { Dimensions, Pressable, Text, View } from "react-native";
 import { Link } from "expo-router";
 import { eachDayOfInterval, format, isLastDayOfMonth, subDays } from "date-fns";
 
@@ -10,7 +10,7 @@ import { DefaultWrapper } from "@/lib/styledComponents";
 import { Button } from "@/components/ui/button";
 import { DayCellRouter } from "@/components/cells";
 import { useTrackablesList } from "@tyl/helpers/data/dbHooksTanstack";
-import { useNowDay } from "@tyl/helpers/date/clockStore";
+import { useNowDay } from "@tyl/helpers";
 import { InstaMount } from "@/lib/FastLoad";
 import { AppErrorBoundary } from "@/components/error/appErrorBoundary";
 
@@ -101,8 +101,12 @@ const TodayList = () => {
                   {q.data.map(({ trackable }) => (
                     <TrackableMetaProvider key={trackable.id} trackable={trackable}>
                       <View style={{ width: cellWidth }}>
-                        <Link href={`/trackable/${trackable.id}`} className="py-1">
-                          <Text className="text-base text-muted-foreground">{trackable.name}</Text>
+                        <Link href={`/trackable/${trackable.id}`} className="py-1" asChild>
+                          <Pressable>
+                            <Text className="text-base text-muted-foreground">
+                              {trackable.name}
+                            </Text>
+                          </Pressable>
                         </Link>
 
                         <View>

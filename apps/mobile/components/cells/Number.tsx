@@ -73,7 +73,7 @@ export const NumberUI = ({
         style={animatedBorderStyle}
       >
         <ProgressBar internalNumber={internalNumber} color={progressColor} />
-        <Text className="text-center text-white">{displayedValue}</Text>
+        <Text className="text-center text-primary">{displayedValue}</Text>
         {children}
       </AnimatedPressable>
     </>

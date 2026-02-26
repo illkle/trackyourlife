@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, Pressable, Text, View } from "react-native";
 import { Link } from "expo-router";
 import { eachDayOfInterval, subDays } from "date-fns";
 
@@ -7,7 +7,7 @@ import { useTrackablesList } from "@tyl/helpers/data/dbHooksTanstack";
 import { TrackableMetaProvider } from "@tyl/helpers/data/TrackableMetaProvider";
 import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
 import { TrackableFlagsProvider } from "@tyl/helpers/data/TrackableFlagsProvider";
-import { useNowDay } from "@tyl/helpers/date/clockStore";
+import { useNowDay } from "@tyl/helpers";
 import { DefaultWrapper } from "@/lib/styledComponents";
 import { Button } from "@/components/ui/button";
 import { DayCellRouter } from "@/components/cells";
@@ -66,8 +66,10 @@ const TrackableList = ({ archived }: { archived: boolean }) => {
               return (
                 <TrackableMetaProvider key={trackable.id} trackable={trackable}>
                   <View className="border-b border-border">
-                    <Link href={`/trackable/${trackable.id}`} className="px-4 py-1">
-                      <Text className="text-lg font-semibold text-primary">{trackable.name}</Text>
+                    <Link href={`/trackable/${trackable.id}`} className="px-4 py-1" asChild>
+                      <Pressable>
+                        <Text className="text-lg font-semibold text-primary">{trackable.name}</Text>
+                      </Pressable>
                     </Link>
                     <FlatList
                       data={days}

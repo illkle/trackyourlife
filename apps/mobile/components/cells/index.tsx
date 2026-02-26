@@ -10,7 +10,7 @@ import { DayCellBoolean } from "./Boolean";
 import { DayCellNumber } from "./Number";
 import { cn } from "@/lib/utils";
 import { StyleProp, View, ViewStyle } from "react-native";
-import { useNowDay } from "@tyl/helpers/date/clockStore";
+import { useNowDay } from "@tyl/helpers";
 import {
   IDayCellLabelType,
   IDayCellProps,

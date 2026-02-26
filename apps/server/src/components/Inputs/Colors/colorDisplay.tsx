@@ -21,7 +21,7 @@ export const ColorDisplay = ({
   return (
     <div
       className={cn(
-        "relative flex w-full items-center overflow-hidden rounded-md border-2 border-border bg-transparent font-mono text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50",
+        "relative flex w-full items-center overflow-hidden rounded-md border-2 border-muted bg-transparent font-mono text-sm shadow-xs transition-colors focus-visible:ring-1 focus-visible:ring-ring focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
       style={style}

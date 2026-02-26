@@ -6,49 +6,36 @@ import { makeColorString, presetsArray } from "@tyl/helpers/colorTools";
 
 import { cn } from "@/lib/utils";
 
-const gradientBackground = (gradient: string) => {
-  return {
-    backgroundImage: gradient,
-    experimental_backgroundImage: gradient,
-  } as unknown as React.ComponentProps<typeof View>["style"];
-};
-
-export const ColorDisplay = ({
-  color,
-  className,
-}: {
-  color: IColorValue;
-  className?: string;
-}) => {
+export const ColorDisplay = ({ color, className }: { color: IColorValue; className?: string }) => {
   const currentLight = makeColorString(color.lightMode);
   const currentDark = makeColorString(color.darkMode);
 
   return (
     <View
       className={cn(
-        "relative w-full overflow-hidden rounded-md border-2 border-border bg-transparent",
+        "relative w-full overflow-hidden rounded-md border-2 border-muted bg-transparent",
         className,
       )}
     >
-      <View className="absolute inset-0">
-        <View
-          className="h-full w-full"
-          style={gradientBackground(
-            `linear-gradient(35deg, ${currentLight} 0%, ${currentLight} 48%, ${currentDark} 52%, ${currentDark} 100%)`,
-          )}
-        />
-      </View>
+      <View
+        className="absolute top-0 left-0 h-full w-full scale-200"
+        style={{ backgroundColor: currentLight }}
+      ></View>
+      <View
+        className="absolute top-0 left-1/2 h-full w-full"
+        style={{
+          backgroundColor: currentDark,
+          transformOrigin: "left",
+          transform: "rotate(35deg) scale(10)",
+        }}
+      ></View>
 
-      <SunIcon
-        size={14}
-        color="#000"
-        style={{ position: "absolute", left: 6, top: "50%", marginTop: -7, zIndex: 20 }}
-      />
-      <MoonIcon
-        size={14}
-        color="#fff"
-        style={{ position: "absolute", right: 6, top: "50%", marginTop: -7, zIndex: 20 }}
-      />
+      <View className="absolute top-1/2 left-2 -translate-y-1/2">
+        <SunIcon size={16} color="#000" />
+      </View>
+      <View className="absolute top-1/2 right-2 -translate-y-1/2">
+        <MoonIcon size={16} color="#fff" />
+      </View>
     </View>
   );
 };

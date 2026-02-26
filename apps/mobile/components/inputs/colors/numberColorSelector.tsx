@@ -18,10 +18,9 @@ import type { StyleProp, ViewStyle } from "react-native";
 import { useUniwind } from "uniwind";
 
 import { BetterNumberInput } from "@/components/inputs/colors/betterNumberInput";
-import { ColorDisplay } from "@/components/inputs/colors/colorDisplay";
-import { ColorPicker } from "@/components/inputs/colors/colorPicker";
 import { ControllerPoint, ControllerRoot } from "@/components/inputs/colors/dragController";
 import { cn } from "@/lib/utils";
+import { ColorInput } from "@/components/inputs/colors/colorInput";
 
 const makeId = () => `c-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
@@ -36,10 +35,12 @@ const GradientBar = ({
   value,
   min,
   max,
+  className,
 }: {
   value: IColorCodingValue[];
   min: number;
   max: number;
+  className: string;
 }) => {
   const { theme } = useUniwind();
   const gradient = useMemo(() => {
@@ -52,9 +53,7 @@ const GradientBar = ({
     );
   }, [max, min, theme, value]);
 
-  console.log(gradient);
-
-  return <View className="h-full w-full" style={gradientStyle(gradient)} />;
+  return <View className={cn("h-full w-full", className)} style={gradientStyle(gradient)} />;
 };
 
 const ControllerGradient = ({
@@ -95,12 +94,6 @@ const ControllerGradient = ({
     onChange(nextValue);
   };
 
-  const selectedColorIndex = useMemo(() => {
-    return value.findIndex((v) => v.id === selectedColor);
-  }, [selectedColor, value]);
-
-  const selectedColorObject = value[selectedColorIndex]?.color;
-
   useEffect(() => {
     const nextValue = clampPointsToRange({ value, min: minValue, max: maxValue });
 
@@ -110,61 +103,55 @@ const ControllerGradient = ({
     }
   }, [maxValue, minValue, onChange, value]);
 
-  const updateSelectedColor = (color: IColorValue) => {
-    const nextValue = [...value];
-    const v = nextValue[selectedColorIndex];
-    if (!v) return;
-    nextValue[selectedColorIndex] = { ...v, color };
-    onChange(nextValue);
+  const updateColorById = (id: string, color: IColorValue) => {
+    onChange([...value].map((v) => (v.id === id ? { ...v, color } : v)));
   };
 
   return (
     <View>
-      <View className="flex-row items-stretch gap-2">
+      <View className="flex-row items-center gap-1">
         <BetterNumberInput
           value={minValue}
           onChange={(n) => {
             setMinValue(Math.min(n, maxValue - 1));
           }}
-          className="w-16"
-          limits={{ min: -1000000000, max: 1000000000 }}
+          className="h-10 w-10 px-1"
         />
 
-        <ControllerRoot
-          disableY
-          xMin={minValue}
-          xMax={maxValue}
-          selectedPoint={selectedColor}
-          onSelectedPointChange={setSelectedColor}
-          className="h-10 w-full"
-          onEmptySpaceClick={(v) => addColor(v.x)}
-          onDragAway={value.length > 1 ? (id) => removeColor(id) : undefined}
-        >
-          <View pointerEvents="none" className="absolute inset-0">
-            <GradientBar value={value} min={minValue} max={maxValue} />
-          </View>
-          {value.map((v) => (
-            <ControllerPoint
-              key={v.id}
-              id={v.id}
-              x={v.point}
-              style={{
-                backgroundColor: v.color.userSelect
-                  ? `hsl(${v.color.userSelect.h}, ${v.color.userSelect.s}%, ${v.color.userSelect.l}%)`
-                  : undefined,
-              }}
-              onValueChange={(p) => setById(v.id, p.x)}
-            />
-          ))}
-        </ControllerRoot>
+        <View className="h-10 grow overflow-hidden rounded-md border border-muted">
+          <GradientBar value={value} min={minValue} max={maxValue} className="absolute inset-0" />
+          <ControllerRoot
+            disableY
+            xMin={minValue}
+            xMax={maxValue}
+            selectedPoint={selectedColor}
+            onSelectedPointChange={setSelectedColor}
+            onEmptySpaceClick={(v) => addColor(v.x)}
+            onDragAway={value.length > 1 ? (id) => removeColor(id) : undefined}
+            className="h-full w-full"
+          >
+            {value.map((v) => (
+              <ControllerPoint
+                key={v.id}
+                id={v.id}
+                x={v.point}
+                style={{
+                  backgroundColor: v.color.userSelect
+                    ? `hsl(${v.color.userSelect.h}, ${v.color.userSelect.s}%, ${v.color.userSelect.l}%)`
+                    : undefined,
+                }}
+                onValueChange={(p) => setById(v.id, p.x)}
+              />
+            ))}
+          </ControllerRoot>
+        </View>
 
         <BetterNumberInput
           value={maxValue}
           onChange={(n) => {
             setMaxValue(Math.max(n, minValue + 1));
           }}
-          className="w-16"
-          limits={{ min: -1000000000, max: 1000000000 }}
+          className="h-10 w-10 px-1"
         />
       </View>
 
@@ -182,7 +169,7 @@ const ControllerGradient = ({
               }}
             >
               <View className="h-9 flex-1">
-                <ColorDisplay color={v.color} className="h-full" />
+                <ColorInput value={v.color} onChange={(u) => updateColorById(v.id, u)} />
               </View>
               <BetterNumberInput
                 value={v.point}
@@ -213,12 +200,6 @@ const ControllerGradient = ({
           <PlusCircleIcon size={16} color="#6b7280" />
           <Text className="text-foreground">Add color</Text>
         </Pressable>
-
-        {selectedColorObject && (
-          <View className="rounded-lg border border-border p-2">
-            <ColorPicker value={selectedColorObject} onChange={updateSelectedColor} />
-          </View>
-        )}
       </View>
     </View>
   );

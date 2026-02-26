@@ -1,12 +1,12 @@
-import React from 'react';
-import { Platform } from 'react-native';
-import { NativeTabs } from 'expo-router/unstable-native-tabs';
-import { MaterialIcons } from '@expo/vector-icons';
-import { useCSSVariable } from 'uniwind';
+import React from "react";
+import { Platform } from "react-native";
+import { NativeTabs } from "expo-router/unstable-native-tabs";
+import { MaterialIcons } from "@expo/vector-icons";
+import { useCSSVariable } from "uniwind";
 
 export default function TabLayout() {
-  const c = useCSSVariable('--color-primary');
-  const activeColor = typeof c === 'string' ? c : undefined;
+  const c = useCSSVariable("--color-primary");
+  const activeColor = typeof c === "string" ? c : undefined;
 
   return (
     <NativeTabs iconColor={{ selected: activeColor }}>
@@ -15,12 +15,7 @@ export default function TabLayout() {
           ios: <NativeTabs.Trigger.Icon sf="calendar" />,
           android: (
             <NativeTabs.Trigger.Icon
-              src={
-                <NativeTabs.Trigger.VectorIcon
-                  family={MaterialIcons}
-                  name="calendar-today"
-                />
-              }
+              src={<NativeTabs.Trigger.VectorIcon family={MaterialIcons} name="calendar-today" />}
             />
           ),
         })}
@@ -31,12 +26,7 @@ export default function TabLayout() {
           ios: <NativeTabs.Trigger.Icon sf="list.bullet" />,
           android: (
             <NativeTabs.Trigger.Icon
-              src={
-                <NativeTabs.Trigger.VectorIcon
-                  family={MaterialIcons}
-                  name="list"
-                />
-              }
+              src={<NativeTabs.Trigger.VectorIcon family={MaterialIcons} name="list" />}
             />
           ),
         })}
@@ -47,12 +37,7 @@ export default function TabLayout() {
           ios: <NativeTabs.Trigger.Icon sf="plus.circle" />,
           android: (
             <NativeTabs.Trigger.Icon
-              src={
-                <NativeTabs.Trigger.VectorIcon
-                  family={MaterialIcons}
-                  name="add-circle"
-                />
-              }
+              src={<NativeTabs.Trigger.VectorIcon family={MaterialIcons} name="add-circle" />}
             />
           ),
         })}
@@ -63,12 +48,7 @@ export default function TabLayout() {
           ios: <NativeTabs.Trigger.Icon sf="gear" />,
           android: (
             <NativeTabs.Trigger.Icon
-              src={
-                <NativeTabs.Trigger.VectorIcon
-                  family={MaterialIcons}
-                  name="settings"
-                />
-              }
+              src={<NativeTabs.Trigger.VectorIcon family={MaterialIcons} name="settings" />}
             />
           ),
         })}

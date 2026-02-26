@@ -6,15 +6,15 @@ import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react-native";
 
 import { Button } from "@/components/ui/button";
 import { DayCellRouter } from "@/components/cells";
-import { cn } from "@/lib/utils";
+import { cn, useIconColor } from "@/lib/utils";
 import { DefaultWrapper } from "@/lib/styledComponents";
 import { TrackableMetaProvider } from "@tyl/helpers/data/TrackableMetaProvider";
 import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
 import { TrackableFlagsProvider } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackable } from "@tyl/helpers/data/dbHooksTanstack";
-import { useNowDay } from "@tyl/helpers/date/clockStore";
 import { InstaMount } from "@/lib/FastLoad";
 import { AppErrorBoundary } from "@/components/error/appErrorBoundary";
+import { useNowDay } from "@tyl/helpers";
 
 const getIncrementedDate = (add: number, year: number, month: number) => {
   let newMonth = month + add;
@@ -49,13 +49,15 @@ const ViewController = ({ year, month }: { year: number; month: number }) => {
     });
   };
 
+  const ic = useIconColor();
+
   return (
     <View className="flex h-10 flex-row items-center justify-between rounded-2xl border border-border">
       <Pressable
         onPress={() => updateParams(toPrev)}
         className="h-full grow items-center justify-center"
       >
-        <ChevronLeftIcon color="white" size={20} />
+        <ChevronLeftIcon color={ic} size={20} />
       </Pressable>
       <View className="min-w-30 flex-row items-baseline justify-center gap-2">
         <Text className="text-base font-semibold text-foreground">{format(monthDate, "MMM")}</Text>
@@ -65,7 +67,7 @@ const ViewController = ({ year, month }: { year: number; month: number }) => {
         onPress={() => updateParams(toNext)}
         className="h-full grow items-center justify-center"
       >
-        <ChevronRightIcon color="white" size={20} />
+        <ChevronRightIcon color={ic} size={20} />
       </Pressable>
       <Button
         text="Today"

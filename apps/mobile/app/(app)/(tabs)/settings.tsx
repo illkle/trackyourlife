@@ -95,8 +95,12 @@ export const UpdatesStatus = () => {
           .filter(Boolean)
           .join(" / ")}
       </Text>
-      <Text className="mt-1 text-muted-foreground">Last check: {formatRelativeTime(lastCheckForUpdateTimeSinceRestart)}</Text>
-      <Text className="mt-1 text-muted-foreground">Restart count since cold start: {restartCount}</Text>
+      <Text className="mt-1 text-muted-foreground">
+        Last check: {formatRelativeTime(lastCheckForUpdateTimeSinceRestart)}
+      </Text>
+      <Text className="mt-1 text-muted-foreground">
+        Restart count since cold start: {restartCount}
+      </Text>
       <Text className="mt-1 text-muted-foreground">
         Procedure state:{" "}
         {[
@@ -115,8 +119,12 @@ export const UpdatesStatus = () => {
       )}
       {isUpdateAvailable && <Text className="mt-2"> Update available </Text>}
       {isUpdatePending && <Text className="mt-2">Update will be applied on next restart</Text>}
-      <Text className="mt-1 text-muted-foreground">Available update: {updateLabel(availableUpdate)}</Text>
-      <Text className="mt-1 text-muted-foreground">Downloaded update: {updateLabel(downloadedUpdate)}</Text>
+      <Text className="mt-1 text-muted-foreground">
+        Available update: {updateLabel(availableUpdate)}
+      </Text>
+      <Text className="mt-1 text-muted-foreground">
+        Downloaded update: {updateLabel(downloadedUpdate)}
+      </Text>
       {checkError?.message && (
         <Text className="mt-2 text-destructive">Check error: {checkError.message}</Text>
       )}
@@ -173,26 +181,18 @@ export default function TabTwoScreen() {
         <PowersyncStatus />
         <UpdatesStatus />
 
-        <View className="mt-6 gap-3 rounded-lg border border-border p-3">
+        <View className="mt-6 gap-3">
           <Text className="text-lg font-semibold text-foreground">Color controls showcase</Text>
+
           <Text className="text-sm text-muted-foreground">
             Demo-only controls (local state, no DB writes)
           </Text>
 
-          <View className="mt-2 gap-2">
-            <Text className="text-sm font-medium text-foreground">ColorInput</Text>
-            <ColorInput value={colorInputValue} onChange={(v) => setColorInputValue(v)} />
-          </View>
+          <ColorInput value={colorInputValue} onChange={(v) => setColorInputValue(v)} />
 
-          <View className="mt-2 gap-2">
-            <Text className="text-sm font-medium text-foreground">ColorPicker</Text>
-            <ColorPicker value={demoColor} onChange={setDemoColor} />
-          </View>
+          <ColorPicker value={demoColor} onChange={setDemoColor} />
 
-          <View className="mt-2 gap-2">
-            <Text className="text-sm font-medium text-foreground">NumberColorSelector</Text>
-            <NumberColorSelector value={numberColors} onChange={(v) => setNumberColors(v)} />
-          </View>
+          <NumberColorSelector value={numberColors} onChange={(v) => setNumberColors(v)} />
         </View>
 
         <Button

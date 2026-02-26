@@ -142,15 +142,21 @@ export const gg2D: Record<
   (rgb: IColorRGB, hsl: IColorHSL) => string
 > = {
   red: (rgb, _) =>
-    `linear-gradient(to top left, rgb(${rgb.r}, 255, 255), rgba(${rgb.r}, 128, 128, 0), rgb(${rgb.r}, 0, 0)), linear-gradient(to top right, rgb(${rgb.r},255,0), rgba(${rgb.r}, 153, 150, 0), rgb(${rgb.r}, 0, 255)) rgba(${rgb.r}, 153, 150, 1)`,
+    `linear-gradient(to top left, rgb(${rgb.r}, 255, 255), rgba(${rgb.r}, 128, 128, 0), rgb(${rgb.r}, 0, 0)), 
+     linear-gradient(to top right, rgb(${rgb.r},255,0), rgba(${rgb.r}, 153, 150, 0), rgb(${rgb.r}, 0, 255)), 
+     linear-gradient(rgba(${rgb.r}, 153, 150, 1),rgba(${rgb.r}, 153, 150, 1))`,
   green: (rgb, _) =>
-    `linear-gradient(to bottom right, rgb(0,${rgb.g},0), rgba(128, ${rgb.g}, 128, 0), rgb(255, ${rgb.g}, 255)), linear-gradient(to bottom left, rgb(0, ${rgb.g}, 255), rgba(150, ${rgb.g}, 150, 0), rgb(255, ${rgb.g}, 0)), rgba(150, ${rgb.g}, 150, 1)`,
+    `linear-gradient(to bottom right, rgb(0,${rgb.g},0), rgba(128, ${rgb.g}, 128, 0), rgb(255, ${rgb.g}, 255)),
+     linear-gradient(to bottom left, rgb(0, ${rgb.g}, 255), rgba(150, ${rgb.g}, 150, 0), rgb(255, ${rgb.g}, 0)), 
+     linear-gradient(rgba(150, ${rgb.g}, 150, 1),rgba(150, ${rgb.g}, 150, 1))`,
   blue: (rgb, _) =>
-    `linear-gradient(to bottom right, rgb(0, 0, ${rgb.b}), rgba(128, 128, ${rgb.b}, 0), rgb(255, 255, ${rgb.b})), linear-gradient(to bottom left, rgb(0, 255, ${rgb.b}), rgba(150, 150, ${rgb.b}, 0), rgb(255, 0, ${rgb.b})), rgba(150, 150, ${rgb.b}, 1)`,
+    `linear-gradient(to bottom right, rgb(0, 0, ${rgb.b}), rgba(128, 128, ${rgb.b}, 0), rgb(255, 255, ${rgb.b})), 
+     linear-gradient(to bottom left, rgb(0, 255, ${rgb.b}), rgba(150, 150, ${rgb.b}, 0), rgb(255, 0, ${rgb.b})),
+      linear-gradient(rgba(150, 150, ${rgb.b}, 1),rgba(150, 150, ${rgb.b}, 1))`,
   hue: (rgb, hsl) =>
-    `linear-gradient(to bottom, black 0%, transparent 50%, white 100%), linear-gradient(to right, hsl(${hsl.h}, 0%, 50%) 0%, hsl(${hsl.h}, 100%, 50%) 100%)`,
+    `linear-gradient(to bottom, #000000 0%, #00000000 49%, #FFFFFF00 51%,  #FFFFFF 100%), linear-gradient(to right, hsl(${hsl.h}, 0%, 50%) 0%, hsl(${hsl.h}, 100%, 50%) 100%)`,
   saturation: (rgb, hsl) =>
-    `linear-gradient(to bottom, black 0%, transparent 50%, white 100%), ${hueGradientDynamic(hsl.s, 50)}`,
+    `linear-gradient(to bottom, #000000 0%, #00000000 49%, #FFFFFF00 51%,  #FFFFFF 100%), ${hueGradientDynamic(hsl.s, 50)}`,
   lightness: (rgb, hsl) =>
     `linear-gradient(to bottom, hsl(0, 0%, ${hsl.l}%) 0%, transparent 100%), ${hueGradientDynamic(100, hsl.l)}`,
 };
