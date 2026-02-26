@@ -9,7 +9,12 @@ import type {
   IColorCodingValueInput,
   IColorValue,
 } from "@tyl/db/jsonValidators";
-import { clamp, cloneDeep } from "@tyl/helpers";
+import {
+  clampPointsToRange,
+  cloneAndSortColorCoding,
+  getActualMax,
+  getActualMin,
+} from "@tyl/helpers/color/numberColorSelectorShared";
 import { getColorAtPosition, makeColorString, makeCssGradient } from "@tyl/helpers/colorTools";
 
 import { Button } from "~/@shad/components/button";
@@ -26,21 +31,6 @@ import { ColorDisplay } from "~/components/Inputs/Colors/colorDisplay";
 import ColorPicker from "~/components/Inputs/Colors/colorPicker";
 import { ControllerPoint, ControllerRoot } from "~/components/Inputs/Colors/dragController";
 import { useIsMobile } from "~/utils/useIsDesktop";
-
-const getActualMin = (firstVal: number | undefined, minInput: number | null) => {
-  if (typeof firstVal !== "number" && typeof minInput !== "number") return 0;
-
-  const a = typeof firstVal === "number" ? firstVal : Infinity;
-  const b = typeof minInput === "number" ? minInput : Infinity;
-  return Math.min(a, b);
-};
-const getActualMax = (firstVal: number | undefined, maxInput: number | null) => {
-  if (typeof firstVal !== "number" && typeof maxInput !== "number") return 100;
-
-  const a = typeof firstVal === "number" ? firstVal : -Infinity;
-  const b = typeof maxInput === "number" ? maxInput : -Infinity;
-  return Math.max(a, b);
-};
 
 // This can and probably should be refactored and be somewhat unified with a similar controller in color selector
 const ControllerGradient = ({
@@ -90,13 +80,8 @@ const ControllerGradient = ({
   const minMaxInputBlur = () => {
     setMinInput(String(minValue));
     setMaxInput(String(maxValue));
-    const r = [...value];
 
-    r.forEach((v) => {
-      v.point = clamp(v.point, minValue, maxValue);
-    });
-
-    onChange(r);
+    onChange(clampPointsToRange({ value, min: minValue, max: maxValue }));
   };
 
   const [selectedColor, setSelectedColor] = useState(value[0]?.id ?? null);
@@ -264,10 +249,6 @@ const ControllerGradient = ({
   );
 };
 
-const cloneAndSort = (value: IColorCodingValue[]): IColorCodingValue[] => {
-  return cloneDeep(value).sort((a, b) => a.point - b.point);
-};
-
 const NumberColorSelector = ({
   value,
   onChange,
@@ -275,7 +256,7 @@ const NumberColorSelector = ({
   value: IColorCodingValueInput[];
   onChange: (v: NonNullable<IColorCodingValueInput[]>) => void;
 }) => {
-  return <ControllerGradient value={value} onChange={(v) => onChange(cloneAndSort(v))} />;
+  return <ControllerGradient value={value} onChange={(v) => onChange(cloneAndSortColorCoding(v))} />;
 };
 
 export default NumberColorSelector;

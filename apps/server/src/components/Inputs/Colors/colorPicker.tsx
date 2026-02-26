@@ -5,6 +5,12 @@ import { AnimatePresence, m } from "motion/react";
 import type { IColorHSL, IColorRGB, IColorValue } from "@tyl/db/jsonValidators";
 import { clamp } from "@tyl/helpers/animation";
 import {
+  colorControlDimensions,
+  getControlMaxValue,
+  isHSLControl,
+  type ColorControlKey,
+} from "@tyl/helpers/color/pickerShared";
+import {
   findModeColorsFromUserSelect,
   HSLToRGB,
   makeColorString,
@@ -22,40 +28,7 @@ const hueGradient =
 const hueGradientDynamic = (s: number, l: number) =>
   `linear-gradient(to right, hsl(0, ${s}%, ${l}%) 0%, hsl(60, ${s}%, ${l}%) 17%, hsl(120, ${s}%, ${l}%)33%, hsl(180, ${s}%, ${l}%) 50%, hsl(240, ${s}%, ${l}%) 67%, hsl(300, ${s}%, ${l}%) 83%, hsl(360, ${s}%, ${l}%) 100%)`;
 
-type IKey = "hue" | "saturation" | "lightness" | "red" | "green" | "blue";
-
-const getMaxValue = (color: "rgb" | "hsl", key: "r" | "g" | "b" | "h" | "s" | "l") => {
-  if (color === "rgb") return 255;
-  if (key === "h") return 360;
-  return 100;
-};
-
-type KeysDimensions =
-  | {
-      color: "rgb";
-      x: keyof IColorRGB;
-      y: keyof IColorRGB;
-      l: keyof IColorRGB;
-      key: IKey;
-    }
-  | {
-      color: "hsl";
-      x: keyof IColorHSL;
-      y: keyof IColorHSL;
-      l: keyof IColorHSL;
-      key: IKey;
-    };
-
-const keysDimensions: Record<IKey, KeysDimensions> = {
-  red: { color: "rgb", x: "b", y: "g", l: "r", key: "red" },
-  green: { color: "rgb", x: "b", y: "r", l: "g", key: "green" },
-  blue: { color: "rgb", x: "g", y: "r", l: "b", key: "blue" },
-  hue: { color: "hsl", x: "s", y: "l", l: "h", key: "hue" },
-  saturation: { color: "hsl", x: "h", y: "l", l: "s", key: "saturation" },
-  lightness: { color: "hsl", x: "h", y: "s", l: "l", key: "lightness" },
-};
-
-const gg2D: Record<IKey, (rgb: IColorRGB, hsl: IColorHSL) => string> = {
+const gg2D: Record<ColorControlKey, (rgb: IColorRGB, hsl: IColorHSL) => string> = {
   red: (rgb, _) =>
     `linear-gradient(to top left, rgb(${rgb.r}, 255, 255), rgba(${rgb.r}, 128, 128, 0), rgb(${rgb.r}, 0, 0)), linear-gradient(to top right, rgb(${rgb.r},255,0), rgba(${rgb.r}, 153, 150, 0), rgb(${rgb.r}, 0, 255)) rgba(${rgb.r}, 153, 150, 1)`,
   green: (rgb, _) =>
@@ -70,7 +43,7 @@ const gg2D: Record<IKey, (rgb: IColorRGB, hsl: IColorHSL) => string> = {
     `linear-gradient(to bottom, hsl(0, 0%, ${hsl.l}%) 0%, transparent 100%), ${hueGradientDynamic(100, hsl.l)}`,
 };
 
-const ggLinear: Record<IKey, (rgb: IColorRGB, hsl: IColorHSL) => string> = {
+const ggLinear: Record<ColorControlKey, (rgb: IColorRGB, hsl: IColorHSL) => string> = {
   red: (rgb, _) =>
     `linear-gradient(to right, rgb(0,${rgb.g}, ${rgb.b}) 0%, rgb(255,${rgb.g}, ${rgb.b}) 100% )`,
   green: (rgb, _) =>
@@ -84,7 +57,7 @@ const ggLinear: Record<IKey, (rgb: IColorRGB, hsl: IColorHSL) => string> = {
     `linear-gradient(to right, hsl(${hsl.h}, ${hsl.s}%, 0%) 0%, hsl(${hsl.h}, ${hsl.s}%, 100%) 100% )`,
 };
 
-const useXYAttrs = (dimensions: KeysDimensions) => {
+const useXYAttrs = (dimensions: (typeof colorControlDimensions)[ColorControlKey]) => {
   const { color, x, y, key } = dimensions;
 
   const valueGetter = useMemo(
@@ -103,15 +76,15 @@ const useXYAttrs = (dimensions: KeysDimensions) => {
   );
 
   return {
-    maxX: getMaxValue(color, x),
-    maxY: getMaxValue(color, y),
+    maxX: getControlMaxValue(color, x),
+    maxY: getControlMaxValue(color, y),
     valueGetter,
     valueSetter,
     gradientGetter: gg2D[key],
   };
 };
 
-const useLAttrs = (dimensions: KeysDimensions) => {
+const useLAttrs = (dimensions: (typeof colorControlDimensions)[ColorControlKey]) => {
   const { color, l, key } = dimensions;
   const valueGetter = useMemo(() => {
     if (color === "rgb") return (rgb: IColorRGB) => rgb[l];
@@ -127,7 +100,7 @@ const useLAttrs = (dimensions: KeysDimensions) => {
   );
 
   return {
-    maxVal: getMaxValue(color, l),
+    maxVal: getControlMaxValue(color, l),
     valueGetter,
     valueSetter,
     gradientGetter: ggLinear[key],
@@ -148,9 +121,9 @@ const TripleController = ({
   derived: { hsl: IColorHSL; rgb: IColorRGB }[];
   setRGB: SetRGBFn;
   setHSL: SetHSLFn;
-  controlKey: IKey;
+  controlKey: ColorControlKey;
 }) => {
-  const dims = keysDimensions[controlKey];
+  const dims = colorControlDimensions[controlKey];
 
   const { maxX, maxY, valueGetter, valueSetter, gradientGetter } = useXYAttrs(dims);
 
@@ -223,9 +196,9 @@ export const PickerRGBHSL = ({
     onChange({ ...hsl, ...vals });
   };
 
-  const [controlKey, setControlKey] = useState<IKey>("hue");
+  const [controlKey, setControlKey] = useState<ColorControlKey>("hue");
 
-  const inHSL = controlKey === "hue" || controlKey === "saturation" || controlKey === "lightness";
+  const inHSL = isHSLControl(controlKey);
 
   const bniClasses = "h-7 rounded-none border border-r-0  transition-opacity";
 
@@ -286,8 +259,8 @@ export const PickerRGBHSL = ({
       <RadioTabs
         className="grid h-8 grid-cols-6 gap-1 rounded-t-none border border-t-0 border-border py-1"
         value={controlKey}
-        onValueChange={(v) => setControlKey(v as IKey)}
-      >
+         onValueChange={(v) => setControlKey(v as ColorControlKey)}
+       >
         <RadioTabItem className="text-xs" value="red">
           R
         </RadioTabItem>

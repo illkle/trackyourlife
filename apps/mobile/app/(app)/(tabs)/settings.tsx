@@ -8,6 +8,11 @@ import { DefaultWrapper } from "@/lib/styledComponents";
 import * as Updates from "expo-updates";
 import { useMutation } from "@tanstack/react-query";
 import { formatDistanceToNowStrict } from "date-fns";
+import type { IColorCodingValue } from "@tyl/db/jsonValidators";
+import { presetsMap } from "@tyl/helpers/colorTools";
+import { ColorInput } from "@/components/inputs/colors/colorInput";
+import { ColorPicker } from "@/components/inputs/colors/colorPicker";
+import { NumberColorSelector } from "@/components/inputs/colors/numberColorSelector";
 
 const PowersyncStatus = () => {
   const [connected, setConnected] = useState(powersyncDB.connected);
@@ -133,9 +138,29 @@ export const UpdatesStatus = () => {
 
 export default function TabTwoScreen() {
   const session = useSessionCached();
+  const [demoColor, setDemoColor] = useState(presetsMap.blue);
+  const [colorInputValue, setColorInputValue] = useState(presetsMap.green);
+  const [numberColors, setNumberColors] = useState<IColorCodingValue[]>([
+    {
+      id: "start",
+      point: 0,
+      color: presetsMap.neutral,
+    },
+    {
+      id: "mid",
+      point: 50,
+      color: presetsMap.orange,
+    },
+    {
+      id: "end",
+      point: 100,
+      color: presetsMap.green,
+    },
+  ]);
+
   return (
     <DefaultWrapper>
-      <View>
+      <View className="pb-6">
         <Text className="text-2xl font-bold text-primary">User:</Text>
         <Text className="mt-2 font-mono text-primary">{session.data?.user?.name}</Text>
         <Text className="mt-1 font-mono text-primary">{session.data?.user?.email}</Text>
@@ -147,6 +172,29 @@ export default function TabTwoScreen() {
 
         <PowersyncStatus />
         <UpdatesStatus />
+
+        <View className="mt-6 gap-3 rounded-lg border border-border p-3">
+          <Text className="text-lg font-semibold text-foreground">Color controls showcase</Text>
+          <Text className="text-sm text-muted-foreground">
+            Demo-only controls (local state, no DB writes)
+          </Text>
+
+          <View className="mt-2 gap-2">
+            <Text className="text-sm font-medium text-foreground">ColorInput</Text>
+            <ColorInput value={colorInputValue} onChange={(v) => setColorInputValue(v)} />
+          </View>
+
+          <View className="mt-2 gap-2">
+            <Text className="text-sm font-medium text-foreground">ColorPicker</Text>
+            <ColorPicker value={demoColor} onChange={setDemoColor} />
+          </View>
+
+          <View className="mt-2 gap-2">
+            <Text className="text-sm font-medium text-foreground">NumberColorSelector</Text>
+            <NumberColorSelector value={numberColors} onChange={(v) => setNumberColors(v)} />
+          </View>
+        </View>
+
         <Button
           variant={"destructive"}
           className="mt-4"
