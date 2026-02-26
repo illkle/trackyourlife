@@ -22,6 +22,10 @@
       "types": "./dist/date/*.d.ts",
       "default": "./src/date/*.ts"
     },
+    "./date/datePicker": {
+      "types": "./dist/date/datePicker.d.ts",
+      "default": "./src/date/datePicker.ts"
+    },
     "./data/TrackableMetaProvider": {
       "types": "./dist/data/TrackableMetaProvider.d.ts",
       "default": "./src/data/TrackableMetaProvider.tsx"

@@ -1,10 +1,11 @@
 import { useSyncExternalStore } from "react";
 
 import type { IColorValue } from "@tyl/db/jsonValidators";
+import type { DatePickerLimits } from "@tyl/helpers/date/datePicker";
 
 type Listener = () => void;
 
-export type InputEditorModalKind = "color";
+export type InputEditorModalKind = "color" | "date";
 
 type InputEditorModalDraftByKind = {
   color: {
@@ -12,19 +13,35 @@ type InputEditorModalDraftByKind = {
     onChange: (value: IColorValue) => void;
     title?: string;
   };
+  date: {
+    value?: Date;
+    onChange: (value?: Date) => void;
+    limits?: DatePickerLimits;
+    title?: string;
+  };
 };
 
-export type InputEditorModalDraftInput<K extends InputEditorModalKind = InputEditorModalKind> = {
-  kind: K;
-} & InputEditorModalDraftByKind[K];
+type InputEditorModalDraftInputByKind = {
+  [K in InputEditorModalKind]: {
+    kind: K;
+  } & InputEditorModalDraftByKind[K];
+};
 
-type InputEditorModalDraftRecord<K extends InputEditorModalKind = InputEditorModalKind> = {
-  id: string;
-  createdAt: number;
-  updatedAt: number;
-} & InputEditorModalDraftInput<K>;
+export type InputEditorModalDraftInput<K extends InputEditorModalKind = InputEditorModalKind> =
+  InputEditorModalDraftInputByKind[K];
 
-export type InputEditorModalDraft = InputEditorModalDraftRecord;
+type InputEditorModalDraftRecordByKind = {
+  [K in InputEditorModalKind]: {
+    id: string;
+    createdAt: number;
+    updatedAt: number;
+  } & InputEditorModalDraftInputByKind[K];
+};
+
+type InputEditorModalDraftRecord<K extends InputEditorModalKind = InputEditorModalKind> =
+  InputEditorModalDraftRecordByKind[K];
+
+export type InputEditorModalDraft = InputEditorModalDraftRecordByKind[InputEditorModalKind];
 
 const inputEditorModalDrafts = new Map<string, InputEditorModalDraft>();
 const listeners = new Set<Listener>();
@@ -56,39 +73,68 @@ export const openInputEditorModalDraft = <K extends InputEditorModalKind>(
 ) => {
   const now = Date.now();
   const id = makeDraftId();
-
-  inputEditorModalDrafts.set(id, {
+  const nextDraft = {
     ...draft,
     id,
     createdAt: now,
     updatedAt: now,
-  });
+  } as InputEditorModalDraft;
+
+  inputEditorModalDrafts.set(id, nextDraft);
 
   emit();
 
   return id;
 };
 
-export const updateInputEditorModalDraft = <K extends InputEditorModalKind>(
-  kind: K,
+export function updateInputEditorModalDraft(
+  kind: "color",
   id: string,
-  nextValue: InputEditorModalDraftByKind[K]["value"],
-) => {
+  nextValue: InputEditorModalDraftByKind["color"]["value"],
+): void;
+export function updateInputEditorModalDraft(
+  kind: "date",
+  id: string,
+  nextValue: InputEditorModalDraftByKind["date"]["value"],
+): void;
+export function updateInputEditorModalDraft(
+  kind: InputEditorModalKind,
+  id: string,
+  nextValue: InputEditorModalDraftByKind[InputEditorModalKind]["value"],
+) {
   const current = inputEditorModalDrafts.get(id);
   if (!current || current.kind !== kind) {
     return;
   }
 
-  const nextDraft = {
-    ...current,
-    value: nextValue,
-    updatedAt: Date.now(),
-  } as InputEditorModalDraftRecord<K>;
+  if (current.kind === "color") {
+    const nextDraft: InputEditorModalDraftRecord<"color"> = {
+      ...current,
+      value: nextValue as InputEditorModalDraftByKind["color"]["value"],
+      updatedAt: Date.now(),
+    };
 
-  inputEditorModalDrafts.set(id, nextDraft);
-  nextDraft.onChange(nextValue);
+    inputEditorModalDrafts.set(id, nextDraft);
+    nextDraft.onChange(nextDraft.value);
+    emit();
+    return;
+  }
+
+  if (current.kind === "date") {
+    const nextDraft: InputEditorModalDraftRecord<"date"> = {
+      ...current,
+      value: nextValue as InputEditorModalDraftByKind["date"]["value"],
+      updatedAt: Date.now(),
+    };
+
+    inputEditorModalDrafts.set(id, nextDraft);
+    nextDraft.onChange(nextDraft.value);
+    emit();
+    return;
+  }
+
   emit();
-};
+}
 
 export const closeInputEditorModalDraft = (id: string) => {
   if (!inputEditorModalDrafts.has(id)) {

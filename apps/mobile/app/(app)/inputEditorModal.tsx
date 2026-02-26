@@ -11,10 +11,11 @@ import {
 
 import { AppErrorBoundary } from "@/components/error/appErrorBoundary";
 import { ColorPicker } from "@/components/inputs/colors/colorPicker";
+import { DatePicker } from "@/components/inputs/date/datePicker";
 
 const InputEditorModalParamsSchema = z.object({
   draftId: z.string().min(1),
-  kind: z.enum(["color"]),
+  kind: z.enum(["color", "date"]),
 });
 
 const InputEditorModal = () => {
@@ -65,9 +66,11 @@ const InputEditorModal = () => {
     };
   }, [parsed]);
 
-  if (!parsed.success || !draft || draft.kind !== "color") {
+  if (!parsed.success || !draft || draft.kind !== parsed.data.kind) {
     return null;
   }
+
+  const defaultTitle = draft.kind === "color" ? "Color picker" : "Date picker";
 
   return (
     <View className="flex-1 justify-end">
@@ -75,14 +78,28 @@ const InputEditorModal = () => {
 
       <View className="max-h-[85%] rounded-t-3xl border border-border bg-card px-4 pt-6 pb-8">
         <Text className="mb-3 text-lg font-semibold text-foreground">
-          {draft.title ?? "Color picker"}
+          {draft.title ?? defaultTitle}
         </Text>
-        <ColorPicker
-          value={draft.value}
-          onChange={(nextValue) => {
-            updateInputEditorModalDraft("color", parsed.data.draftId, nextValue);
-          }}
-        />
+
+        {draft.kind === "color" && (
+          <ColorPicker
+            value={draft.value}
+            onChange={(nextValue) => {
+              updateInputEditorModalDraft("color", parsed.data.draftId, nextValue);
+            }}
+          />
+        )}
+
+        {draft.kind === "date" && (
+          <DatePicker
+            value={draft.value}
+            limits={draft.limits}
+            onChange={(nextValue) => {
+              updateInputEditorModalDraft("date", parsed.data.draftId, nextValue);
+            }}
+            onPick={handleClose}
+          />
+        )}
       </View>
     </View>
   );

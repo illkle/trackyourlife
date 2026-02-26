@@ -2,7 +2,7 @@ import { useLayoutEffect, useMemo } from "react";
 import { Dimensions, Pressable, Text, View } from "react-native";
 import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
 import { eachDayOfInterval, endOfMonth, format, getISODay, startOfMonth, sub } from "date-fns";
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react-native";
+import { ChevronLeftIcon, ChevronRightIcon, SettingsIcon } from "lucide-react-native";
 
 import { Button } from "@/components/ui/button";
 import { DayCellRouter } from "@/components/cells";
@@ -152,6 +152,7 @@ export const useYearMonth = () => {
 export const TrackableFetcher = () => {
   const params = useLocalSearchParams();
   const id = params.id as string;
+  const router = useRouter();
   const { startOfMonthDate, endOfMonthDate } = useYearMonth();
 
   const dataRange = useMemo(
@@ -167,6 +168,7 @@ export const TrackableFetcher = () => {
   });
 
   const navigation = useNavigation();
+  const iconColor = useIconColor();
 
   const trackable = Array.isArray(q.data) ? q.data[0] : q.data;
 
@@ -174,9 +176,20 @@ export const TrackableFetcher = () => {
     if (trackable?.name) {
       navigation.setOptions({
         title: trackable.name,
+        headerRight: () => (
+          <Pressable
+            onPress={() => {
+              router.replace({ pathname: "/trackable/[id]/settings", params: { id } });
+            }}
+            className="h-9 w-9 items-center justify-center"
+            hitSlop={8}
+          >
+            <SettingsIcon size={18} color={iconColor} />
+          </Pressable>
+        ),
       });
     }
-  }, [navigation, trackable?.name]);
+  }, [iconColor, id, navigation, router, trackable?.name]);
 
   if (q.isLoading) {
     return (
