@@ -10,6 +10,7 @@ import { DayCellBoolean } from "./Boolean";
 import { DayCellNumber } from "./Number";
 import { cn } from "@/lib/utils";
 import { StyleProp, View, ViewStyle } from "react-native";
+import { useNowDay } from "@tyl/helpers/date/clockStore";
 import {
   IDayCellLabelType,
   IDayCellProps,
@@ -34,7 +35,7 @@ export const DayCellRouter = ({
   const { type } = useTrackableMeta();
   const trackingStart = useTrackableFlagValueCached("AnyTrackingStart");
 
-  const now = useMemo(() => new Date(), []);
+  const now = useNowDay();
   const isToday = useMemo(() => isSameDay(timestamp, now), [timestamp, now]);
   const isOutOfRange = useMemo(
     () => isAfter(timestamp, now) || Boolean(trackingStart && isBefore(timestamp, trackingStart)),

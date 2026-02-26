@@ -10,6 +10,7 @@ import { DbTrackableRecordSelect } from "@tyl/db/client/schema-powersync";
 import { useRecordDeleteHandler, useRecordUpdateHandler } from "@tyl/helpers/data/dbHooksTanstack";
 import { useTrackableDataDay } from "@tyl/helpers/data/TrackableDataProvider";
 import { useTrackableFlagValueCached } from "@tyl/helpers/data/TrackableFlagsProvider";
+import { useNowDay } from "@tyl/helpers/date/clockStore";
 
 export const DayCellBaseClasses =
   "@container w-full h-full relative select-none overflow-hidden border-transparent border-2 rounded-xs";
@@ -43,7 +44,7 @@ export const DayCellRouter = memo(
     const { type } = useTrackableMeta();
     const trackingStart = useTrackableFlagValueCached("AnyTrackingStart");
 
-    const now = useMemo(() => new Date(), []);
+    const now = useNowDay();
     const isToday = useMemo(() => isSameDay(timestamp, now), [timestamp, now]);
     const isOutOfRange = useMemo(
       () => isAfter(timestamp, now) || Boolean(trackingStart && isBefore(timestamp, trackingStart)),

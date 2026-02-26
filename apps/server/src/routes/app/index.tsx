@@ -2,6 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { subDays } from "date-fns";
 import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
 import { TrackableFlagsProvider } from "@tyl/helpers/data/TrackableFlagsProvider";
+import { useNowDay } from "@tyl/helpers/date/clockStore";
 
 import { DailyList } from "~/components/Trackable/TrackablesList";
 
@@ -12,7 +13,7 @@ export const Route = createFileRoute("/app/")({
 });
 
 function AppComponent() {
-  const today = new Date();
+  const today = useNowDay();
   const firstShown = subDays(today, SHOW_DAYS);
 
   return (

@@ -11,6 +11,7 @@ import { TrackableNameText } from "~/components/Trackable/TrackableName";
 import MiniTrackable from "./miniTrackable";
 import { TrackableMetaProvider } from "@tyl/helpers/data/TrackableMetaProvider";
 import { useTrackablesList } from "@tyl/helpers/data/dbHooksTanstack";
+import { useNowDay } from "@tyl/helpers/date/clockStore";
 
 const EmptyList = () => {
   return (
@@ -27,13 +28,15 @@ const EmptyList = () => {
 const list_transition: Transition = { duration: 0.2, ease: "circInOut" };
 
 const TrackablesList = ({ daysToShow, archived }: { daysToShow: number; archived: boolean }) => {
+  const nowDay = useNowDay();
+
   const range = useMemo(() => {
-    const lastDay = new Date();
+    const lastDay = nowDay;
     return {
       firstDay: subDays(lastDay, daysToShow - 1),
       lastDay,
     };
-  }, [daysToShow]);
+  }, [daysToShow, nowDay]);
 
   const q = useTrackablesList({
     showArchived: archived,
@@ -71,13 +74,15 @@ const TrackablesList = ({ daysToShow, archived }: { daysToShow: number; archived
 };
 
 export const DailyList = ({ daysToShow }: { daysToShow: number }) => {
+  const nowDay = useNowDay();
+
   const range = useMemo(() => {
-    const lastDay = new Date();
+    const lastDay = nowDay;
     return {
       firstDay: subDays(lastDay, daysToShow),
       lastDay,
     };
-  }, [daysToShow]);
+  }, [daysToShow, nowDay]);
 
   const { data: qData, isLoading } = useTrackablesList();
 

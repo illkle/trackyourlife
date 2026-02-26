@@ -3,6 +3,7 @@ import { sub } from "date-fns";
 import { z } from "zod/v4";
 import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
 import { TrackableFlagsProvider } from "@tyl/helpers/data/TrackableFlagsProvider";
+import { useNowDay } from "@tyl/helpers/date/clockStore";
 
 import { Button } from "~/@shad/components/button";
 import TrackablesList from "~/components/Trackable/TrackablesList";
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/app/trackables/")({
 function RouteComponent() {
   const params = Route.useSearch();
 
-  const today = new Date();
+  const today = useNowDay();
   const firstShown = sub(today, { days: SHOW_DAYS });
 
   return (

@@ -7,6 +7,7 @@ import { useTrackablesList } from "@tyl/helpers/data/dbHooksTanstack";
 import { TrackableMetaProvider } from "@tyl/helpers/data/TrackableMetaProvider";
 import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
 import { TrackableFlagsProvider } from "@tyl/helpers/data/TrackableFlagsProvider";
+import { useNowDay } from "@tyl/helpers/date/clockStore";
 import { DefaultWrapper } from "@/lib/styledComponents";
 import { Button } from "@/components/ui/button";
 import { DayCellRouter } from "@/components/cells";
@@ -16,13 +17,15 @@ import { AppErrorBoundary } from "@/components/error/appErrorBoundary";
 const SHOW_DAYS = 6;
 
 const TrackableList = ({ archived }: { archived: boolean }) => {
+  const nowDay = useNowDay();
+
   const range = useMemo(() => {
-    const lastDay = new Date();
+    const lastDay = nowDay;
     return {
       firstDay: subDays(lastDay, SHOW_DAYS - 1),
       lastDay,
     };
-  }, []);
+  }, [nowDay]);
 
   const q = useTrackablesList({ showArchived: archived });
 

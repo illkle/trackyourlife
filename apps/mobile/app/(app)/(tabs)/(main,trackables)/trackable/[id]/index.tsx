@@ -12,6 +12,7 @@ import { TrackableMetaProvider } from "@tyl/helpers/data/TrackableMetaProvider";
 import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
 import { TrackableFlagsProvider } from "@tyl/helpers/data/TrackableFlagsProvider";
 import { useTrackable } from "@tyl/helpers/data/dbHooksTanstack";
+import { useNowDay } from "@tyl/helpers/date/clockStore";
 import { InstaMount } from "@/lib/FastLoad";
 import { AppErrorBoundary } from "@/components/error/appErrorBoundary";
 
@@ -32,14 +33,14 @@ const getIncrementedDate = (add: number, year: number, month: number) => {
 
 const ViewController = ({ year, month }: { year: number; month: number }) => {
   const router = useRouter();
+  const nowDay = useNowDay();
   const monthDate = useMemo(() => new Date(year, month, 1), [month, year]);
 
   const toPrev = useMemo(() => getIncrementedDate(-1, year, month), [month, year]);
   const toNext = useMemo(() => getIncrementedDate(1, year, month), [month, year]);
   const toToday = useMemo(() => {
-    const now = new Date();
-    return { year: now.getFullYear(), month: now.getMonth() };
-  }, []);
+    return { year: nowDay.getFullYear(), month: nowDay.getMonth() };
+  }, [nowDay]);
 
   const updateParams = (next: { year: number; month: number }) => {
     router.setParams({
@@ -121,18 +122,19 @@ const MonthVisualCalendar = ({ dateFirstDay }: { dateFirstDay: Date }) => {
 
 export const useYearMonth = () => {
   const params = useLocalSearchParams();
+  const nowDay = useNowDay();
   const monthParam = Array.isArray(params.month) ? params.month[0] : params.month;
   const yearParam = Array.isArray(params.year) ? params.year[0] : params.year;
 
   const month = useMemo(() => {
     const parsed = Number(monthParam);
-    return Number.isInteger(parsed) && parsed >= 0 && parsed <= 11 ? parsed : new Date().getMonth();
-  }, [monthParam]);
+    return Number.isInteger(parsed) && parsed >= 0 && parsed <= 11 ? parsed : nowDay.getMonth();
+  }, [monthParam, nowDay]);
 
   const year = useMemo(() => {
     const parsed = Number(yearParam);
-    return Number.isInteger(parsed) && parsed > 1900 ? parsed : new Date().getFullYear();
-  }, [yearParam]);
+    return Number.isInteger(parsed) && parsed > 1900 ? parsed : nowDay.getFullYear();
+  }, [yearParam, nowDay]);
 
   const startOfMonthDate = useMemo(() => startOfMonth(new Date(year, month, 1)), [year, month]);
   const endOfMonthDate = useMemo(() => endOfMonth(new Date(year, month, 1)), [year, month]);

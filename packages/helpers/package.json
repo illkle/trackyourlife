@@ -18,6 +18,10 @@
       "types": "./dist/data/*.d.ts",
       "default": "./src/data/*.ts"
     },
+    "./date/*": {
+      "types": "./dist/date/*.d.ts",
+      "default": "./src/date/*.ts"
+    },
     "./data/TrackableMetaProvider": {
       "types": "./dist/data/TrackableMetaProvider.d.ts",
       "default": "./src/data/TrackableMetaProvider.tsx"

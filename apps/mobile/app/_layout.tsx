@@ -31,8 +31,9 @@ import { AppErrorBoundary } from '@/components/error/appErrorBoundary';
 
 //import * as SplashScreen from "expo-splash-screen";
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { ReactNode } from 'react';
-import { useColorScheme } from 'react-native';
+import { ReactNode, useEffect } from 'react';
+import { AppState, useColorScheme } from 'react-native';
+import { refreshNow } from '@tyl/helpers/date/clockStore';
 
 export const unstable_settings = {
   anchor: '(tabs)',
@@ -42,6 +43,18 @@ export const unstable_settings = {
 
 export default function RootLayout() {
   const qc = new QueryClient();
+
+  useEffect(() => {
+    const subscription = AppState.addEventListener('change', (state) => {
+      if (state === 'active') {
+        refreshNow();
+      }
+    });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   return (
     <AppErrorBoundary boundaryName="root-layout">

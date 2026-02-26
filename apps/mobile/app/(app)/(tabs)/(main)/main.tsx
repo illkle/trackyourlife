@@ -10,6 +10,7 @@ import { DefaultWrapper } from "@/lib/styledComponents";
 import { Button } from "@/components/ui/button";
 import { DayCellRouter } from "@/components/cells";
 import { useTrackablesList } from "@tyl/helpers/data/dbHooksTanstack";
+import { useNowDay } from "@tyl/helpers/date/clockStore";
 import { InstaMount } from "@/lib/FastLoad";
 import { AppErrorBoundary } from "@/components/error/appErrorBoundary";
 
@@ -29,13 +30,15 @@ const EmptyList = () => {
 };
 
 const TodayList = () => {
+  const nowDay = useNowDay();
+
   const range = useMemo(() => {
-    const lastDay = new Date();
+    const lastDay = nowDay;
     return {
       firstDay: subDays(lastDay, SHOW_DAYS),
       lastDay,
     };
-  }, []);
+  }, [nowDay]);
 
   const q = useTrackablesList();
 
