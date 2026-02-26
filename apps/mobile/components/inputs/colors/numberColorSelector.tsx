@@ -1,17 +1,20 @@
-import type { IColorCodingValue, IColorCodingValueInput, IColorValue } from "@tyl/db/jsonValidators";
+import type {
+  IColorCodingValue,
+  IColorCodingValueInput,
+  IColorValue,
+} from "@tyl/db/jsonValidators";
 import { clamp } from "@tyl/helpers/animation";
-import { makeColorCodingStops } from "@tyl/helpers/color/pickerShared";
 import {
   clampPointsToRange,
   cloneAndSortColorCoding,
   getActualMax,
   getActualMin,
 } from "@tyl/helpers/color/numberColorSelectorShared";
-import { getColorAtPosition } from "@tyl/helpers/colorTools";
+import { getColorAtPosition, makeCssGradient } from "@tyl/helpers/colorTools";
 import { PlusCircleIcon, XIcon } from "lucide-react-native";
 import { useEffect, useMemo, useState } from "react";
 import { Pressable, Text, View } from "react-native";
-import Svg, { Defs, LinearGradient as SvgLinearGradient, Rect, Stop } from "react-native-svg";
+import type { StyleProp, ViewStyle } from "react-native";
 import { useUniwind } from "uniwind";
 
 import { BetterNumberInput } from "@/components/inputs/colors/betterNumberInput";
@@ -22,6 +25,13 @@ import { cn } from "@/lib/utils";
 
 const makeId = () => `c-${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
+const gradientStyle = (gradient: string): StyleProp<ViewStyle> => {
+  return {
+    backgroundImage: gradient,
+    experimental_backgroundImage: gradient,
+  } as unknown as StyleProp<ViewStyle>;
+};
+
 const GradientBar = ({
   value,
   min,
@@ -31,29 +41,20 @@ const GradientBar = ({
   min: number;
   max: number;
 }) => {
-  const id = useMemo(() => Math.random().toString(36).slice(2), []);
   const { theme } = useUniwind();
-  const stops = useMemo(() => {
-    return makeColorCodingStops({
-      values: [...value].sort((a, b) => a.point - b.point),
+  const gradient = useMemo(() => {
+    return makeCssGradient(
+      [...value].sort((a, b) => a.point - b.point),
       min,
       max,
-      mode: theme === "dark" ? "dark" : "light",
-    });
+      theme === "dark" ? "dark" : "light",
+      true,
+    );
   }, [max, min, theme, value]);
 
-  return (
-    <Svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-      <Defs>
-        <SvgLinearGradient id={id} x1="0" y1="0" x2="1" y2="0">
-          {stops.map((stop, index) => (
-            <Stop key={`${index}-${stop.offset}`} offset={`${stop.offset * 100}%`} stopColor={stop.color} />
-          ))}
-        </SvgLinearGradient>
-      </Defs>
-      <Rect x={0} y={0} width={100} height={100} fill={stops.length ? `url(#${id})` : "transparent"} />
-    </Svg>
-  );
+  console.log(gradient);
+
+  return <View className="h-full w-full" style={gradientStyle(gradient)} />;
 };
 
 const ControllerGradient = ({
@@ -64,7 +65,9 @@ const ControllerGradient = ({
   onChange: (v: IColorCodingValue[]) => void;
 }) => {
   const [minValue, setMinValue] = useState<number>(getActualMin(value[0]?.point, 0));
-  const [maxValue, setMaxValue] = useState<number>(getActualMax(value[value.length - 1]?.point, 100));
+  const [maxValue, setMaxValue] = useState<number>(
+    getActualMax(value[value.length - 1]?.point, 100),
+  );
 
   const setById = (id: string, point: number) => {
     const nextValue = [...value];
@@ -192,7 +195,10 @@ const ControllerGradient = ({
                 onPress={() => {
                   removeColor(v.id);
                 }}
-                className={cn("h-9 w-9 items-center justify-center rounded-md", value.length < 2 && "opacity-30")}
+                className={cn(
+                  "h-9 w-9 items-center justify-center rounded-md",
+                  value.length < 2 && "opacity-30",
+                )}
               >
                 <XIcon size={16} color="#6b7280" />
               </Pressable>
@@ -225,5 +231,7 @@ export const NumberColorSelector = ({
   value: IColorCodingValueInput[];
   onChange: (v: NonNullable<IColorCodingValueInput[]>) => void;
 }) => {
-  return <ControllerGradient value={value} onChange={(v) => onChange(cloneAndSortColorCoding(v))} />;
+  return (
+    <ControllerGradient value={value} onChange={(v) => onChange(cloneAndSortColorCoding(v))} />
+  );
 };

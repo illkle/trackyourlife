@@ -1,13 +1,18 @@
-import chroma from "chroma-js";
+import chroma from 'chroma-js';
 
-import type { IColorCodingValue, IColorHSL, IColorRGB, IColorValue } from "@tyl/db/jsonValidators";
+import type {
+  IColorCodingValue,
+  IColorHSL,
+  IColorRGB,
+  IColorValue,
+} from '@tyl/db/jsonValidators';
 
-import { range } from "./animation";
+import { range } from './animation';
 
 export { chroma };
 
-const black_c = chroma("#fafafa");
-const white_c = chroma("#0a0a0a");
+const black_c = chroma('#fafafa');
+const white_c = chroma('#0a0a0a');
 
 // It is probably possible to write this without using a library, especially because we only need a few transforms.
 
@@ -18,12 +23,12 @@ export function makeChroma({ h, s, l }: IColorHSL) {
 export const InterpolateColors = (
   first: IColorHSL,
   second: IColorHSL,
-  ratio: number,
+  ratio: number
 ): IColorHSL => {
   if (ratio >= 1) return second;
   if (ratio <= 0) return first;
 
-  const c = chroma.mix(makeChroma(first), makeChroma(second), ratio, "rgb");
+  const c = chroma.mix(makeChroma(first), makeChroma(second), ratio, 'rgb');
 
   return makeColorFromChroma(c);
 };
@@ -37,7 +42,8 @@ export const makeColorFromChroma = (c: chroma.Color) => {
   };
 };
 
-export const makeColorString = (color: IColorHSL) => `hsl(${color.h}, ${color.s}%, ${color.l}%)`;
+export const makeColorString = (color: IColorHSL) =>
+  `hsl(${color.h}, ${color.s}%, ${color.l}%)`;
 
 export const makeColorStrings = (color: IColorValue) => ({
   lightMode: makeColorString(color.lightMode),
@@ -46,10 +52,16 @@ export const makeColorStrings = (color: IColorValue) => ({
 });
 
 export const getContrastierColorForDay = ({ h, s, l }: IColorHSL) => {
-  const withBlack = chroma.contrast(chroma.hsl(h, s / 100, l / 100), chroma.rgb(0, 0, 0));
-  const withWhite = chroma.contrast(chroma.hsl(h, s / 100, l / 100), chroma.rgb(255, 255, 255));
+  const withBlack = chroma.contrast(
+    chroma.hsl(h, s / 100, l / 100),
+    chroma.rgb(0, 0, 0)
+  );
+  const withWhite = chroma.contrast(
+    chroma.hsl(h, s / 100, l / 100),
+    chroma.rgb(255, 255, 255)
+  );
 
-  return withBlack > withWhite ? "black" : "white";
+  return withBlack > withWhite ? 'black' : 'white';
 };
 
 export const RGBToHSL = ({ r, g, b }: IColorRGB): IColorHSL => {
@@ -66,26 +78,31 @@ export const makeCssGradient = (
   values: IColorCodingValue[],
   min: number,
   max: number,
-  theme = "dark",
+  theme = 'dark',
+  isApp?: boolean
 ) => {
-  if (!values.length) return "";
+  if (!values.length) return '';
+
+  const prefix = isApp ? '' : 'in srgb ';
 
   if (values.length === 1 && values[0])
-    return `linear-gradient(in srgb to right, ${makeColorString(
-      theme === "light" ? values[0].color.lightMode : values[0].color.darkMode,
+    return `linear-gradient(${prefix}to right, ${makeColorString(
+      theme === 'light' ? values[0].color.lightMode : values[0].color.darkMode
     )} 0%, ${makeColorString(
-      theme === "light" ? values[0].color.lightMode : values[0].color.darkMode,
+      theme === 'light' ? values[0].color.lightMode : values[0].color.darkMode
     )} 100%`;
 
-  return `linear-gradient(in srgb to right, ${values
+  return `linear-gradient(${prefix} to right, ${values
     .map(
       (v) =>
-        makeColorString(theme === "light" ? v.color.lightMode : v.color.darkMode) +
-        " " +
+        makeColorString(
+          theme === 'light' ? v.color.lightMode : v.color.darkMode
+        ) +
+        ' ' +
         range(min, max, 0, 100, v.point) +
-        "%",
+        '%'
     )
-    .join(", ")})`;
+    .join(', ')})`;
 };
 
 export const getColorAtPosition = ({
@@ -123,9 +140,13 @@ export const getColorAtPosition = ({
     leftSide.color.lightMode,
     rightSide.color.lightMode,
 
-    proportion,
+    proportion
   );
-  const d = InterpolateColors(leftSide.color.darkMode, rightSide.color.darkMode, proportion);
+  const d = InterpolateColors(
+    leftSide.color.darkMode,
+    rightSide.color.darkMode,
+    proportion
+  );
 
   return {
     userSelect: l,
@@ -202,6 +223,9 @@ export const stringToColorHSL = (input: string): IColorHSL => {
     l: l,
   };
 };
+
+
+
 
 const neutral_base = {
   h: 0,
@@ -289,4 +313,11 @@ export const presetsMap = {
   pink,
   neutral,
 };
-export const presetsArray: IColorValue[] = [neutral, red, orange, green, purple, pink];
+export const presetsArray: IColorValue[] = [
+  neutral,
+  red,
+  orange,
+  green,
+  purple,
+  pink,
+];

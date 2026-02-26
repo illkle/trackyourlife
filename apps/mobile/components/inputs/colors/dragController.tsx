@@ -157,7 +157,14 @@ export const ControllerRoot = ({
       if (typeof onDragAway !== "function") return 0;
 
       const l = layoutRef.current;
-      const nearest = getNearestSquarePoint(x, y, l.left, l.top, l.left + l.width, l.top + l.height);
+      const nearest = getNearestSquarePoint(
+        x,
+        y,
+        l.left,
+        l.top,
+        l.left + l.width,
+        l.top + l.height,
+      );
 
       const distance =
         Math.abs(nearest.x - x) * (1 - Number(disableY)) +
@@ -256,8 +263,10 @@ export const ControllerRoot = ({
               xToValue,
               valueToY,
               yToValue,
-              selectedPoint: externallyControlled ? selectedPoint ?? null : selectedPointInternal,
-              setSelectedPoint: externallyControlled ? onSelectedPointChange : setSelectedPointInternal,
+              selectedPoint: externallyControlled ? (selectedPoint ?? null) : selectedPointInternal,
+              setSelectedPoint: externallyControlled
+                ? onSelectedPointChange
+                : setSelectedPointInternal,
               onDragAway,
               pointToDragAwayPercent,
               draggingId,
@@ -357,7 +366,7 @@ export const ControllerPoint = ({
 
   return (
     <View
-      className={cn("absolute left-0 top-0")}
+      className={cn("absolute top-0 left-0")}
       style={{
         left: disableX ? 0 : `${xPercent}%`,
         top: disableY ? 0 : `${yPercent}%`,

@@ -7,6 +7,8 @@ import { clamp } from "@tyl/helpers/animation";
 import {
   colorControlDimensions,
   getControlMaxValue,
+  gg2D,
+  ggLinear,
   isHSLControl,
   type ColorControlKey,
 } from "@tyl/helpers/color/pickerShared";
@@ -23,39 +25,7 @@ import { RadioTabItem, RadioTabs } from "~/@shad/custom/radio-tabs";
 import { ControllerPoint, ControllerRoot } from "~/components/Inputs/Colors/dragController";
 import { BetterNumberInput } from "./betterNumberInput";
 
-const hueGradient =
-  "linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0) 33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 83%, rgb(255, 0, 0) 100%)";
-const hueGradientDynamic = (s: number, l: number) =>
-  `linear-gradient(to right, hsl(0, ${s}%, ${l}%) 0%, hsl(60, ${s}%, ${l}%) 17%, hsl(120, ${s}%, ${l}%)33%, hsl(180, ${s}%, ${l}%) 50%, hsl(240, ${s}%, ${l}%) 67%, hsl(300, ${s}%, ${l}%) 83%, hsl(360, ${s}%, ${l}%) 100%)`;
 
-const gg2D: Record<ColorControlKey, (rgb: IColorRGB, hsl: IColorHSL) => string> = {
-  red: (rgb, _) =>
-    `linear-gradient(to top left, rgb(${rgb.r}, 255, 255), rgba(${rgb.r}, 128, 128, 0), rgb(${rgb.r}, 0, 0)), linear-gradient(to top right, rgb(${rgb.r},255,0), rgba(${rgb.r}, 153, 150, 0), rgb(${rgb.r}, 0, 255)) rgba(${rgb.r}, 153, 150, 1)`,
-  green: (rgb, _) =>
-    `linear-gradient(to bottom right, rgb(0,${rgb.g},0), rgba(128, ${rgb.g}, 128, 0), rgb(255, ${rgb.g}, 255)), linear-gradient(to bottom left, rgb(0, ${rgb.g}, 255), rgba(150, ${rgb.g}, 150, 0), rgb(255, ${rgb.g}, 0)), rgba(150, ${rgb.g}, 150, 1)`,
-  blue: (rgb, _) =>
-    `linear-gradient(to bottom right, rgb(0, 0, ${rgb.b}), rgba(128, 128, ${rgb.b}, 0), rgb(255, 255, ${rgb.b})), linear-gradient(to bottom left, rgb(0, 255, ${rgb.b}), rgba(150, 150, ${rgb.b}, 0), rgb(255, 0, ${rgb.b})), rgba(150, 150, ${rgb.b}, 1)`,
-  hue: (rgb, hsl) =>
-    `linear-gradient(to bottom, black 0%, transparent 50%, white 100%), linear-gradient(to right, hsl(${hsl.h}, 0%, 50%) 0%, hsl(${hsl.h}, 100%, 50%) 100%)`,
-  saturation: (rgb, hsl) =>
-    `linear-gradient(to bottom, black 0%, transparent 50%, white 100%), ${hueGradientDynamic(hsl.s, 50)}`,
-  lightness: (rgb, hsl) =>
-    `linear-gradient(to bottom, hsl(0, 0%, ${hsl.l}%) 0%, transparent 100%), ${hueGradientDynamic(100, hsl.l)}`,
-};
-
-const ggLinear: Record<ColorControlKey, (rgb: IColorRGB, hsl: IColorHSL) => string> = {
-  red: (rgb, _) =>
-    `linear-gradient(to right, rgb(0,${rgb.g}, ${rgb.b}) 0%, rgb(255,${rgb.g}, ${rgb.b}) 100% )`,
-  green: (rgb, _) =>
-    `linear-gradient(to right, rgb(${rgb.r}, 0, ${rgb.b}) 0%, rgb(${rgb.r}, 255, ${rgb.b}) 100% )`,
-  blue: (rgb, _) =>
-    `linear-gradient(to right, rgb(${rgb.r}, ${rgb.g}, 0) 0%, rgb(${rgb.r}, ${rgb.g}, 255) 100% )`,
-  hue: () => hueGradient,
-  saturation: (rgb, hsl) =>
-    `linear-gradient(to right, hsl(${hsl.h}, 0%, ${hsl.l}%) 0%, hsl(${hsl.h}, 100%, ${hsl.l}%) 100% )`,
-  lightness: (rgb, hsl) =>
-    `linear-gradient(to right, hsl(${hsl.h}, ${hsl.s}%, 0%) 0%, hsl(${hsl.h}, ${hsl.s}%, 100%) 100% )`,
-};
 
 const useXYAttrs = (dimensions: (typeof colorControlDimensions)[ColorControlKey]) => {
   const { color, x, y, key } = dimensions;

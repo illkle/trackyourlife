@@ -1,11 +1,17 @@
 import { Pressable, View } from "react-native";
 import { MoonIcon, SunIcon } from "lucide-react-native";
-import Svg, { Polygon, Rect } from "react-native-svg";
 
 import type { IColorValue } from "@tyl/db/jsonValidators";
 import { makeColorString, presetsArray } from "@tyl/helpers/colorTools";
 
 import { cn } from "@/lib/utils";
+
+const gradientBackground = (gradient: string) => {
+  return {
+    backgroundImage: gradient,
+    experimental_backgroundImage: gradient,
+  } as unknown as React.ComponentProps<typeof View>["style"];
+};
 
 export const ColorDisplay = ({
   color,
@@ -25,10 +31,12 @@ export const ColorDisplay = ({
       )}
     >
       <View className="absolute inset-0">
-        <Svg width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none">
-          <Rect x={0} y={0} width={100} height={100} fill={currentLight} />
-          <Polygon points="52,0 100,0 100,100 36,100" fill={currentDark} />
-        </Svg>
+        <View
+          className="h-full w-full"
+          style={gradientBackground(
+            `linear-gradient(35deg, ${currentLight} 0%, ${currentLight} 48%, ${currentDark} 52%, ${currentDark} 100%)`,
+          )}
+        />
       </View>
 
       <SunIcon
