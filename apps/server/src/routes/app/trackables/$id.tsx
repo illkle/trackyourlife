@@ -1,11 +1,4 @@
-import {
-  createFileRoute,
-  Link,
-  MatchRoute,
-  Outlet,
-  useLocation,
-  useMatchRoute,
-} from '@tanstack/react-router';
+import { createFileRoute, Link, MatchRoute, Outlet } from "@tanstack/react-router";
 import {
   ArchiveIcon,
   ArchiveRestoreIcon,
@@ -14,12 +7,12 @@ import {
   MoreHorizontalIcon,
   SettingsIcon,
   TrashIcon,
-} from 'lucide-react';
-import { z } from 'zod/v4';
+} from "lucide-react";
+import { z } from "zod/v4";
 
-import type { ITrackableFlagType } from '@tyl/helpers/data/trackableFlags';
-import { AlertDialogTrigger } from '~/@shad/components/alert-dialog';
-import { Button } from '~/@shad/components/button';
+import type { ITrackableFlagType } from "@tyl/helpers/data/trackableFlags";
+import { AlertDialogTrigger } from "~/@shad/components/alert-dialog";
+import { Button } from "~/@shad/components/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -31,56 +24,42 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '~/@shad/components/dropdown-menu';
-import { Spinner } from '~/@shad/components/spinner';
-import DeleteButton from '~/components/Trackable/DeleteButton';
-import { FavoriteButton } from '~/components/Trackable/FavoriteButton';
-import { TrackableNameEditable } from '~/components/Trackable/TrackableName';
+} from "~/@shad/components/dropdown-menu";
+import { Spinner } from "~/@shad/components/spinner";
+import DeleteButton from "~/components/Trackable/DeleteButton";
+import { FavoriteButton } from "~/components/Trackable/FavoriteButton";
+import { TrackableNameEditable } from "~/components/Trackable/TrackableName";
 
-import {
-  TrackableMetaProvider,
-  useTrackableMeta,
-} from '@tyl/helpers/data/TrackableMetaProvider';
-import { TrackableDataProvider } from '@tyl/helpers/data/TrackableDataProvider';
-import { TrackableFlagsProvider } from '@tyl/helpers/data/TrackableFlagsProvider';
-import { endOfMonth, endOfYear, startOfMonth, startOfYear } from 'date-fns';
+import { TrackableMetaProvider, useTrackableMeta } from "@tyl/helpers/data/TrackableMetaProvider";
+import { TrackableDataProvider } from "@tyl/helpers/data/TrackableDataProvider";
+import { TrackableFlagsProvider } from "@tyl/helpers/data/TrackableFlagsProvider";
+import { endOfMonth, endOfYear, startOfMonth, startOfYear } from "date-fns";
 import {
   useIsTrackableInGroup,
   useTrackable,
   useTrackableFlag,
-} from '@tyl/helpers/data/dbHooksTanstack';
+} from "@tyl/helpers/data/dbHooksTanstack";
 const paramsSchema = z.object({
-  month: z
-    .number()
-    .min(0)
-    .max(11)
-    .or(z.literal('list'))
-    .optional()
-    .default(new Date().getMonth()),
-  year: z
-    .number()
-    .min(1970)
-    .or(z.literal('list'))
-    .optional()
-    .default(new Date().getFullYear()),
+  month: z.number().min(0).max(11).or(z.literal("list")).optional().default(new Date().getMonth()),
+  year: z.number().min(1970).or(z.literal("list")).optional().default(new Date().getFullYear()),
 });
 
 export const useMonthYear = () => {
   const { month, year } = Route.useSearch();
 
-  if (typeof year === 'number' && typeof month === 'number') {
+  if (typeof year === "number" && typeof month === "number") {
     const d = new Date(year, month, 1);
-    return { mode: 'month', from: startOfMonth(d), to: endOfMonth(d) };
-  } else if (typeof year === 'number') {
+    return { mode: "month", from: startOfMonth(d), to: endOfMonth(d) };
+  } else if (typeof year === "number") {
     return {
-      mode: 'year',
+      mode: "year",
       from: startOfYear(new Date(year, 0, 1)),
       to: endOfYear(new Date(year, 0, 1)),
     };
   }
 
   return {
-    mode: 'month',
+    mode: "month",
     from: startOfMonth(new Date()),
     to: endOfMonth(new Date()),
   };
@@ -119,12 +98,12 @@ const RouteComponent = () => {
             <div className="grid grid-cols-2 gap-2 max-sm:grid-cols-1">
               <TrackableNameEditable />
               <div className="flex gap-2 justify-self-end">
-                <FavoriteButton variant={'outline'} />
+                <FavoriteButton variant={"outline"} />
 
                 <MatchRoute to="/app/trackables/$id/view">
                   <Link
-                    key={'settings'}
-                    to={'/app/trackables/$id/settings'}
+                    key={"settings"}
+                    to={"/app/trackables/$id/settings"}
                     params={{ id: params.id }}
                   >
                     <Button name="settings" variant="outline">
@@ -135,11 +114,7 @@ const RouteComponent = () => {
                 </MatchRoute>
 
                 <MatchRoute to="/app/trackables/$id/settings">
-                  <Link
-                    key={'view'}
-                    to={'/app/trackables/$id/view'}
-                    params={{ id: params.id }}
-                  >
+                  <Link key={"view"} to={"/app/trackables/$id/view"} params={{ id: params.id }}>
                     <Button variant="outline">
                       <CalendarDaysIcon className="h-4 w-4" />
                       <span className="max-md:hidden">View</span>
@@ -162,11 +137,13 @@ const RouteComponent = () => {
 const TrackableDropdown = () => {
   const { id } = useTrackableMeta();
 
-  const { data: isArchived, toggleGroup: handleArchiveToggle } =
-    useIsTrackableInGroup(id, 'archived');
+  const { data: isArchived, toggleGroup: handleArchiveToggle } = useIsTrackableInGroup(
+    id,
+    "archived",
+  );
   const { data: monthViewStyle, setFlag: setMonthViewStyle } = useTrackableFlag(
     id,
-    'AnyMonthViewType'
+    "AnyMonthViewType",
   );
 
   return (
@@ -191,26 +168,17 @@ const TrackableDropdown = () => {
                   value={monthViewStyle}
                   className="min-w-46"
                   onValueChange={(style) =>
-                    void setMonthViewStyle(
-                      style as ITrackableFlagType<'AnyMonthViewType'>
-                    )
+                    void setMonthViewStyle(style as ITrackableFlagType<"AnyMonthViewType">)
                   }
                 >
-                  <DropdownMenuRadioItem value="calendar">
-                    Calendar
-                  </DropdownMenuRadioItem>
-                  <DropdownMenuRadioItem value="list">
-                    List
-                  </DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="calendar">Calendar</DropdownMenuRadioItem>
+                  <DropdownMenuRadioItem value="list">List</DropdownMenuRadioItem>
                 </DropdownMenuRadioGroup>
               </DropdownMenuSubContent>
             </DropdownMenuPortal>
           </DropdownMenuSub>
 
-          <DropdownMenuItem
-            className="cursor-pointer"
-            onClick={() => void handleArchiveToggle()}
-          >
+          <DropdownMenuItem className="cursor-pointer" onClick={() => void handleArchiveToggle()}>
             {isArchived ? (
               <>
                 <ArchiveRestoreIcon className="mr-1" /> Unarchve
@@ -237,7 +205,7 @@ const TrackableDropdown = () => {
   );
 };
 
-export const Route = createFileRoute('/app/trackables/$id')({
+export const Route = createFileRoute("/app/trackables/$id")({
   component: RouteComponent,
   validateSearch: paramsSchema,
   loaderDeps: ({ search: { month, year } }) => ({ month, year }),

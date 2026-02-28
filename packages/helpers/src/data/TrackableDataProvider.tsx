@@ -142,9 +142,7 @@ export const TrackableDataProvider = ({
   const startDate = useMemo(() => dateToSQLiteString(startOfDay(firstDay)), [firstDay]);
   const endDate = useMemo(() => dateToSQLiteString(endOfDay(lastDay)), [lastDay]);
 
-  const [byBucket, setByBucket] = useState<Map<string, DbTrackableRecordSelect[]>>(() =>
-    new Map(),
-  );
+  const [byBucket, setByBucket] = useState<Map<string, DbTrackableRecordSelect[]>>(() => new Map());
 
   const recordsByIdRef = useRef<Map<string, DbTrackableRecordSelect>>(new Map());
   const bucketKeyByIdRef = useRef<Map<string, string>>(new Map());
