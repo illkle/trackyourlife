@@ -1,23 +1,16 @@
-import 'react-native-random-uuid'; // required for tanstack db
-import { Connector } from '@/db/connector';
-import { AuthClient } from '@/lib/authClient';
-import { wrapPowerSyncWithDrizzle } from '@powersync/drizzle-driver';
-import { OPSqliteOpenFactory } from '@powersync/op-sqlite'; // Add this import
-import {
-  createBaseLogger,
-  LogLevel,
-  PowerSyncDatabase,
-} from '@powersync/react-native';
-import { PowerSyncTransactor } from '@tanstack/powersync-db-collection';
+import "react-native-random-uuid"; // required for tanstack db
+import { Connector } from "@/db/connector";
+import { AuthClient } from "@/lib/authClient";
+import { wrapPowerSyncWithDrizzle } from "@powersync/drizzle-driver";
+import { OPSqliteOpenFactory } from "@powersync/op-sqlite"; // Add this import
+import { createBaseLogger, LogLevel, PowerSyncDatabase } from "@powersync/react-native";
+import { PowerSyncTransactor } from "@tanstack/powersync-db-collection";
 
-import {
-  PowersyncDrizzleSchema,
-  PowersyncSchema,
-} from '@tyl/db/client/schema-powersync';
-import { createTanstackDB } from '@tyl/helpers/data/tanstack';
+import { PowersyncDrizzleSchema, PowersyncSchema } from "@tyl/db/client/schema-powersync";
+import { createTanstackDB } from "@tyl/helpers/data/tanstack";
 
 const opSqlite = new OPSqliteOpenFactory({
-  dbFilename: 'powersync.db',
+  dbFilename: "powersync.db",
 });
 
 export const powersyncDB = new PowerSyncDatabase({

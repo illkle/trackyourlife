@@ -76,14 +76,20 @@ export const DatePicker = ({
       <View className="mb-3 flex-row items-center justify-between gap-1">
         <View className="flex-row">
           <Pressable
-            className={cn("h-9 w-9 items-center justify-center rounded-md", !canMoveBack && "opacity-40")}
+            className={cn(
+              "h-9 w-9 items-center justify-center rounded-md",
+              !canMoveBack && "opacity-40",
+            )}
             onPress={() => moveCursor(-12)}
             disabled={!canMoveBack}
           >
             <ChevronsLeftIcon size={16} color={iconColor} />
           </Pressable>
           <Pressable
-            className={cn("h-9 w-9 items-center justify-center rounded-md", !canMoveBack && "opacity-40")}
+            className={cn(
+              "h-9 w-9 items-center justify-center rounded-md",
+              !canMoveBack && "opacity-40",
+            )}
             onPress={() => moveCursor(-1)}
             disabled={!canMoveBack}
           >

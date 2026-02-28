@@ -46,13 +46,7 @@ export const writeAuthCache = async ({
   await storage.setItem(key, JSON.stringify(record));
 };
 
-export const clearAuthCache = async ({
-  storage,
-  key,
-}: {
-  storage: AuthStorage;
-  key: string;
-}) => {
+export const clearAuthCache = async ({ storage, key }: { storage: AuthStorage; key: string }) => {
   await storage.removeItem(key);
 };
 

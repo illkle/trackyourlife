@@ -18,7 +18,10 @@ export const DayCellTextPopup = (props: IDayCellProps) => {
     <button
       data-text-cell
       onClick={() =>
-        openDayEditor({ date: timestamp, trackable: { id, type, name, bucketing: bucketing ?? null } })
+        openDayEditor({
+          date: timestamp,
+          trackable: { id, type, name, bucketing: bucketing ?? null },
+        })
       }
       className={cn(
         "flex-col border-2 p-1 text-left text-ellipsis text-foreground sm:p-2",

@@ -12,8 +12,6 @@
     "types": ["vite/client"],
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx" ],
+  "include": ["**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"]
 }

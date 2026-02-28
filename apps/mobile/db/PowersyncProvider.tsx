@@ -5,21 +5,17 @@ import {
   ensurePowerSyncConnected,
   powersyncDB,
   transactor,
-} from '@/db/powersync';
-import { useAuthClient, useSessionCached } from '@/lib/authClient';
-import { useServerURL } from '@/lib/ServerURLContext';
-import { PowerSyncContext } from '@powersync/react-native';
-import { PowersyncDrizzleContext } from '@tyl/helpers/data/context';
-import * as Network from 'expo-network';
-import { ReactNode, useEffect, useRef, useState } from 'react';
+} from "@/db/powersync";
+import { useAuthClient, useSessionCached } from "@/lib/authClient";
+import { useServerURL } from "@/lib/ServerURLContext";
+import { PowerSyncContext } from "@powersync/react-native";
+import { PowersyncDrizzleContext } from "@tyl/helpers/data/context";
+import * as Network from "expo-network";
+import { ReactNode, useEffect, useRef, useState } from "react";
 
 const DISCONNECT_GRACE_MS = 20_000;
 
-export const MobilePowerSyncProvider = ({
-  children,
-}: {
-  children: ReactNode;
-}) => {
+export const MobilePowerSyncProvider = ({ children }: { children: ReactNode }) => {
   const { authClient } = useAuthClient();
   const { powersyncURL, serverURL } = useServerURL();
   const session = useSessionCached();
@@ -94,12 +90,12 @@ export const MobilePowerSyncProvider = ({
   }, []);
 
   if (!session.data?.user) {
-    console.error('User not found');
+    console.error("User not found");
     return null;
   }
 
   if (!powersyncURL || !serverURL) {
-    console.error('Powersync URL or Server URL not found');
+    console.error("Powersync URL or Server URL not found");
     return null;
   }
 

@@ -102,13 +102,7 @@ export const createOfflineAuthModule = ({
     return cached?.data ?? null;
   };
 
-  const setCacheState = async ({
-    data,
-    error,
-  }: {
-    data: AuthData;
-    error?: string | null;
-  }) => {
+  const setCacheState = async ({ data, error }: { data: AuthData; error?: string | null }) => {
     setSnapshot({
       data,
       source: "cache",

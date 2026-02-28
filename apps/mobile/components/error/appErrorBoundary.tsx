@@ -43,12 +43,7 @@ class AppErrorBoundaryInternal extends Component<AppErrorBoundaryProps, AppError
 
   public render() {
     if (this.state.hasError && this.state.payload) {
-      return (
-        <ErrorFallbackModal
-          payload={this.state.payload}
-          onRetry={this.handleRetry}
-        />
-      );
+      return <ErrorFallbackModal payload={this.state.payload} onRetry={this.handleRetry} />;
     }
 
     if (this.state.hasError) {
@@ -61,8 +56,6 @@ class AppErrorBoundaryInternal extends Component<AppErrorBoundaryProps, AppError
 
 export const AppErrorBoundary = ({ children, boundaryName }: AppErrorBoundaryProps) => {
   return (
-    <AppErrorBoundaryInternal boundaryName={boundaryName}>
-      {children}
-    </AppErrorBoundaryInternal>
+    <AppErrorBoundaryInternal boundaryName={boundaryName}>{children}</AppErrorBoundaryInternal>
   );
 };

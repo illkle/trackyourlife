@@ -256,7 +256,9 @@ const NumberColorSelector = ({
   value: IColorCodingValueInput[];
   onChange: (v: NonNullable<IColorCodingValueInput[]>) => void;
 }) => {
-  return <ControllerGradient value={value} onChange={(v) => onChange(cloneAndSortColorCoding(v))} />;
+  return (
+    <ControllerGradient value={value} onChange={(v) => onChange(cloneAndSortColorCoding(v))} />
+  );
 };
 
 export default NumberColorSelector;

@@ -12,10 +12,7 @@ import {
 } from "react";
 import { useServerURL } from "@/lib/ServerURLContext";
 import { isBefore } from "date-fns";
-import {
-  AuthData,
-  AuthDataSchema,
-} from "@/lib/auth/schemas";
+import { AuthData, AuthDataSchema } from "@/lib/auth/schemas";
 import {
   createOfflineAuthModule,
   OfflineAuthModule,

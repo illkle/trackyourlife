@@ -37,7 +37,10 @@ function RouteComponent() {
             </h2>
 
             <Button variant={"ghost"}>
-              <Link from={Route.fullPath} search={(prev) => ({ ...prev, archived: !params.archived })}>
+              <Link
+                from={Route.fullPath}
+                search={(prev) => ({ ...prev, archived: !params.archived })}
+              >
                 {params.archived ? "Trackables" : "Archive"}
               </Link>
             </Button>

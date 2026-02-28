@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "@turbo/gen": "2.8.10",
-    "oxfmt": "^0.27.0",
+    "oxfmt": "^0.35.0",
     "oxlint": "^1.49.0",
     "sherif": "1.10.0",
     "turbo": "2.8.10",

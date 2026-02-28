@@ -1,6 +1,6 @@
-import { endOfDay, format, startOfDay } from 'date-fns';
+import { endOfDay, format, startOfDay } from "date-fns";
 
-import { usePowersyncDrizzle } from './context';
+import { usePowersyncDrizzle } from "./context";
 
 import {
   and,
@@ -16,26 +16,23 @@ import {
   throttleStrategy,
   useLiveQuery,
   usePacedMutations,
-} from '@tanstack/react-db';
+} from "@tanstack/react-db";
 import {
   flagParser,
   FlagsValidators,
   ITrackableFlagKey,
   ITrackableFlagValue,
   ITrackableFlagValueInput,
-} from './trackableFlags';
-import { useCallback } from 'react';
-import { useTrackableMeta } from './TrackableMetaProvider';
+} from "./trackableFlags";
+import { useCallback } from "react";
+import { useTrackableMeta } from "./TrackableMetaProvider";
 import {
   withTrackableFlagsPowersyncID,
   withTrackableGroupPowersyncID,
-} from '@tyl/db/client/clientIds';
-import { v4 as uuidv4 } from 'uuid';
-import {
-  DbTrackableInsert,
-  DbTrackableSelect,
-} from '@tyl/db/client/schema-powersync';
-import { TanstackDBType } from './tanstack';
+} from "@tyl/db/client/clientIds";
+import { v4 as uuidv4 } from "uuid";
+import { DbTrackableInsert, DbTrackableSelect } from "@tyl/db/client/schema-powersync";
+import { TanstackDBType } from "./tanstack";
 
 export const dateToSQLiteString = (date: Date | number): string => {
   return format(date, "yyyy-MM-dd'T'HH:mm:ss.SSS");
@@ -46,9 +43,9 @@ const getTimeBucket = ({
   bucketing,
 }: {
   date: Date;
-  bucketing?: DbTrackableSelect['bucketing'];
+  bucketing?: DbTrackableSelect["bucketing"];
 }) => {
-  if (bucketing === 'day') {
+  if (bucketing === "day") {
     return dateToSQLiteString(startOfDay(date));
   }
 
@@ -73,47 +70,33 @@ export const useTrackablesList = ({
       const favorites = q
         .from({ favoriteGroup: dbT.trackableGroup })
         .where((q) =>
-          and(
-            eq(q.favoriteGroup.group, 'favorites'),
-            eq(q.favoriteGroup.user_id, userID)
-          )
+          and(eq(q.favoriteGroup.group, "favorites"), eq(q.favoriteGroup.user_id, userID)),
         );
 
       const archived = q
         .from({ archivedGroup: dbT.trackableGroup })
         .where((q) =>
-          and(
-            eq(q.archivedGroup.group, 'archived'),
-            eq(q.archivedGroup.user_id, userID)
-          )
+          and(eq(q.archivedGroup.group, "archived"), eq(q.archivedGroup.user_id, userID)),
         );
 
       return q
         .from({ trackable: dbT.trackable })
         .where((v) => eq(v.trackable.user_id, userID))
         .join({ favoriteGroup: favorites }, ({ trackable, favoriteGroup }) =>
-          eq(trackable.id, favoriteGroup.trackable_id)
+          eq(trackable.id, favoriteGroup.trackable_id),
         )
         .join({ archiveGroup: archived }, ({ trackable, archiveGroup }) =>
-          eq(trackable.id, archiveGroup.trackable_id)
+          eq(trackable.id, archiveGroup.trackable_id),
         )
         .where((v) =>
           showArchived
-            ? not(
-                or(
-                  isUndefined(v.archiveGroup?.group),
-                  isNull(v.archiveGroup?.group)
-                )
-              )
-            : or(
-                isUndefined(v.archiveGroup?.group),
-                isNull(v.archiveGroup?.group)
-              )
+            ? not(or(isUndefined(v.archiveGroup?.group), isNull(v.archiveGroup?.group)))
+            : or(isUndefined(v.archiveGroup?.group), isNull(v.archiveGroup?.group)),
         )
-        .orderBy((v) => length(v.favoriteGroup?.group), 'desc')
+        .orderBy((v) => length(v.favoriteGroup?.group), "desc")
         .orderBy((v) => v.trackable.name);
     },
-    [userID, showArchived]
+    [userID, showArchived],
   );
 };
 
@@ -123,10 +106,8 @@ export const useTrackable = ({ id }: { id: string }) => {
     (q) =>
       q
         .from({ trackable: dbT.trackable })
-        .where((v) =>
-          and(eq(v.trackable.user_id, userID), eq(v.trackable.id, id))
-        ),
-    [id, userID, id]
+        .where((v) => and(eq(v.trackable.user_id, userID), eq(v.trackable.id, id))),
+    [id, userID, id],
   );
 };
 
@@ -165,36 +146,25 @@ export const buildTrackableDataQuery = ({
           eq(records.user_id, userID),
           gte(records.timestamp, startDate),
           lte(records.timestamp, endDate),
-          eq(records.trackable_id, id)
-        )
+          eq(records.trackable_id, id),
+        ),
       );
   }
 
   const archived = q
     .from({ archivedGroup: dbT.trackableGroup })
-    .where((q) =>
-      and(
-        eq(q.archivedGroup.group, 'archived'),
-        eq(q.archivedGroup.user_id, userID)
-      )
-    );
+    .where((q) => and(eq(q.archivedGroup.group, "archived"), eq(q.archivedGroup.user_id, userID)));
 
   return q
     .from({ records: dbT.trackableRecord })
-    .join(
-      { archived },
-      (v) => eq(v.records.trackable_id, v.archived.trackable_id),
-      'left'
-    )
+    .join({ archived }, (v) => eq(v.records.trackable_id, v.archived.trackable_id), "left")
     .where(({ records, archived }) =>
       and(
         eq(records.user_id, userID),
         gte(records.timestamp, startDate),
         lte(records.timestamp, endDate),
-        fromArchive
-          ? eq(archived?.group, 'archived')
-          : isUndefined(archived?.group)
-      )
+        fromArchive ? eq(archived?.group, "archived") : isUndefined(archived?.group),
+      ),
     )
     .select((v) => ({ ...v.records }));
 };
@@ -215,34 +185,23 @@ export const buildTrackableFlagsQuery = ({
   if (id) {
     return q
       .from({ flags: dbT.trackableFlags })
-      .where(({ flags }) =>
-        and(eq(flags.user_id, userID), eq(flags.trackable_id, id))
-      );
+      .where(({ flags }) => and(eq(flags.user_id, userID), eq(flags.trackable_id, id)));
   }
 
   const archived = q
     .from({ archivedGroup: dbT.trackableGroup })
     .where((query) =>
-      and(
-        eq(query.archivedGroup.group, 'archived'),
-        eq(query.archivedGroup.user_id, userID)
-      )
+      and(eq(query.archivedGroup.group, "archived"), eq(query.archivedGroup.user_id, userID)),
     );
 
   return q
     .from({ flags: dbT.trackableFlags })
-    .join(
-      { archived },
-      (v) => eq(v.flags.trackable_id, v.archived.trackable_id),
-      'left'
-    )
+    .join({ archived }, (v) => eq(v.flags.trackable_id, v.archived.trackable_id), "left")
     .where(({ flags, archived }) =>
       and(
         eq(flags.user_id, userID),
-        fromArchive
-          ? eq(archived?.group, 'archived')
-          : isUndefined(archived?.group)
-      )
+        fromArchive ? eq(archived?.group, "archived") : isUndefined(archived?.group),
+      ),
     )
     .select((v) => ({ ...v.flags }));
 };
@@ -255,7 +214,7 @@ export const useTrackableData = (p: ByIdParams) => {
 
   const q = useLiveQuery(
     (q) => {
-      console.log('trackable data q');
+      console.log("trackable data q");
       return buildTrackableDataQuery({
         q,
         dbT,
@@ -266,7 +225,7 @@ export const useTrackableData = (p: ByIdParams) => {
         fromArchive: p.fromArchive,
       });
     },
-    [p.id, startDate, endDate, p.fromArchive, userID]
+    [p.id, startDate, endDate, p.fromArchive, userID],
   );
 
   return q;
@@ -280,14 +239,10 @@ export const useIsTrackableInGroup = (trackableId: string, group: string) => {
       q
         .from({ g: dbT.trackableGroup })
         .where((v) =>
-          and(
-            eq(v.g.group, group),
-            eq(v.g.trackable_id, trackableId),
-            eq(v.g.user_id, userID)
-          )
+          and(eq(v.g.group, group), eq(v.g.trackable_id, trackableId), eq(v.g.user_id, userID)),
         )
         .findOne(),
-    [userID, trackableId, group]
+    [userID, trackableId, group],
   );
 
   const toggleGroup = useCallback(async () => {
@@ -299,7 +254,7 @@ export const useIsTrackableInGroup = (trackableId: string, group: string) => {
           group: group,
           trackable_id: trackableId,
           user_id: userID,
-        })
+        }),
       );
     }
   }, [qq.data?.id]);
@@ -307,10 +262,7 @@ export const useIsTrackableInGroup = (trackableId: string, group: string) => {
   return { ...qq, data: Boolean(qq.data), toggleGroup };
 };
 
-export const useTrackableFlag = <K extends ITrackableFlagKey>(
-  trackableId: string,
-  key: K
-) => {
+export const useTrackableFlag = <K extends ITrackableFlagKey>(trackableId: string, key: K) => {
   const { dbT, userID, transactor } = usePowersyncDrizzle();
 
   const qq = useLiveQuery(
@@ -318,14 +270,10 @@ export const useTrackableFlag = <K extends ITrackableFlagKey>(
       q
         .from({ f: dbT.trackableFlags })
         .where((v) =>
-          and(
-            eq(v.f.key, key),
-            eq(v.f.trackable_id, trackableId),
-            eq(v.f.user_id, userID)
-          )
+          and(eq(v.f.key, key), eq(v.f.trackable_id, trackableId), eq(v.f.user_id, userID)),
         )
         .findOne(),
-    [userID, trackableId, key]
+    [userID, trackableId, key],
   );
 
   const curId = qq.data?.id;
@@ -336,7 +284,7 @@ export const useTrackableFlag = <K extends ITrackableFlagKey>(
 
       if (!validated.success) {
         console.log(validated.error);
-        throw new Error('Invalid flag value');
+        throw new Error("Invalid flag value");
       }
 
       const vv = JSON.stringify(value);
@@ -353,7 +301,7 @@ export const useTrackableFlag = <K extends ITrackableFlagKey>(
             key,
             trackable_id: trackableId,
             value: vv,
-          })
+          }),
         );
       }
     },
@@ -413,11 +361,11 @@ export const useRecordUpdateHandler = ({ date }: { date: Date }) => {
         time_bucket: timeBucket,
         updated_at: updatedAt,
         value,
-        external_key: '',
+        external_key: "",
       });
       return id;
     },
-    [dbT, trackableId, dateString, userID, timeBucket]
+    [dbT, trackableId, dateString, userID, timeBucket],
   );
 };
 
@@ -428,7 +376,7 @@ export const useRecordDeleteHandler = () => {
     async (recordId: string) => {
       await dbT.trackableRecord.delete(recordId);
     },
-    [dbT]
+    [dbT],
   );
 };
 
@@ -439,23 +387,15 @@ export const useTrackableHandlers = () => {
     await dbT.trackable.delete(id);
   };
 
-  const updateTrackableName = async ({
-    id,
-    name,
-  }: {
-    id: string;
-    name: string;
-  }) => {
+  const updateTrackableName = async ({ id, name }: { id: string; name: string }) => {
     await dbT.trackable.update(id, (v) => (v.name = name));
   };
 
-  const createTrackable = async (
-    data: Omit<DbTrackableInsert, 'user_id' | 'id'>
-  ) => {
+  const createTrackable = async (data: Omit<DbTrackableInsert, "user_id" | "id">) => {
     const id = uuidv4();
     await dbT.trackable.insert({
       ...data,
-      bucketing: data.bucketing ?? 'day',
+      bucketing: data.bucketing ?? "day",
       user_id: userID,
       id,
     });

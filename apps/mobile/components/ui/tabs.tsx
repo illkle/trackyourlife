@@ -53,16 +53,16 @@ type TabsListProps = React.ComponentPropsWithoutRef<typeof View>;
 
 export const TabsList = React.forwardRef<React.ElementRef<typeof View>, TabsListProps>(
   ({ className, ...props }, ref) => {
-  return (
-    <View
-      ref={ref}
-      className={cn(
-        "h-11 w-full flex-row items-stretch justify-center rounded-lg bg-muted p-1 text-muted-foreground",
-        className,
-      )}
-      {...props}
-    />
-  );
+    return (
+      <View
+        ref={ref}
+        className={cn(
+          "h-11 w-full flex-row items-stretch justify-center rounded-lg bg-muted p-1 text-muted-foreground",
+          className,
+        )}
+        {...props}
+      />
+    );
   },
 );
 TabsList.displayName = "TabsList";
@@ -98,7 +98,9 @@ export const TabsTrigger = React.forwardRef<React.ElementRef<typeof Pressable>, 
       >
         <>
           {text && (
-            <Text className={cn("font-bold", isActive ? "text-foreground" : "text-muted-foreground")}>
+            <Text
+              className={cn("font-bold", isActive ? "text-foreground" : "text-muted-foreground")}
+            >
               {text}
             </Text>
           )}

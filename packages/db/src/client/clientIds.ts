@@ -11,27 +11,23 @@ import {
   DbTrackableFlagsInsert,
   DbTrackableGroupInsert,
   DbUserFlagsInsert,
-} from './schema-powersync';
+} from "./schema-powersync";
 
-export const withUserFlagsPowersyncID = (v: Omit<DbUserFlagsInsert, 'id'>) => {
+export const withUserFlagsPowersyncID = (v: Omit<DbUserFlagsInsert, "id">) => {
   return {
     ...v,
     id: `${v.user_id}|${v.key}`,
   };
 };
 
-export const withTrackableFlagsPowersyncID = (
-  v: Omit<DbTrackableFlagsInsert, 'id'>
-) => {
+export const withTrackableFlagsPowersyncID = (v: Omit<DbTrackableFlagsInsert, "id">) => {
   return {
     ...v,
     id: `${v.user_id}|${v.trackable_id}|${v.key}`,
   };
 };
 
-export const withTrackableGroupPowersyncID = (
-  v: Omit<DbTrackableGroupInsert, 'id'>
-) => {
+export const withTrackableGroupPowersyncID = (v: Omit<DbTrackableGroupInsert, "id">) => {
   return {
     ...v,
     id: `${v.user_id}|${v.trackable_id}|${v.group}`,

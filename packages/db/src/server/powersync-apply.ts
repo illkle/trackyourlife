@@ -1,7 +1,7 @@
-import { CrudBatch, UpdateType } from '@powersync/common';
-import { and, eq, isNotNull, sql } from 'drizzle-orm';
+import { CrudBatch, UpdateType } from "@powersync/common";
+import { and, eq, isNotNull, sql } from "drizzle-orm";
 
-import { db } from '.';
+import { db } from ".";
 import {
   trackable,
   trackable_flags,
@@ -18,12 +18,12 @@ import {
   user_flags,
   user_flags_insert_schema,
   user_flags_update_schema,
-} from './schema';
+} from "./schema";
 
 export type SyncEntry = {
   id: string;
   op: UpdateType;
-  opData: CrudBatch['crud'][number]['opData'];
+  opData: CrudBatch["crud"][number]["opData"];
   table: string;
 };
 
@@ -70,27 +70,23 @@ export const applyCrudTrackable = async (entry: SyncEntry, user_id: string) => {
 // TRACKABLE FLAGS
 // ============================================================================
 
-const trackableFlagsFromClientId = (id: SyncEntry['id']) => {
-  const spl = id.split('|');
+const trackableFlagsFromClientId = (id: SyncEntry["id"]) => {
+  const spl = id.split("|");
 
   if (spl.length != 3 || spl.some((s) => !s)) {
-    throw new Error('Invalid trackable flag from client id: ' + id);
+    throw new Error("Invalid trackable flag from client id: " + id);
   }
 
-  console.log('valid flag', id);
+  console.log("valid flag", id);
 
   return { trackable_id: spl[1]!, key: spl[2]! };
 };
 
-const trackable_flags_update_schema_only_value =
-  trackable_flags_update_schema.pick({
-    value: true,
-  });
+const trackable_flags_update_schema_only_value = trackable_flags_update_schema.pick({
+  value: true,
+});
 
-export const applyCrudTrackableFlags = async (
-  entry: SyncEntry,
-  user_id: string
-) => {
+export const applyCrudTrackableFlags = async (entry: SyncEntry, user_id: string) => {
   const { opData } = entry;
 
   switch (entry.op) {
@@ -104,11 +100,7 @@ export const applyCrudTrackableFlags = async (
         .insert(trackable_flags)
         .values({ ...verified, value: sql`${verified.value}` })
         .onConflictDoUpdate({
-          target: [
-            trackable_flags.user_id,
-            trackable_flags.trackable_id,
-            trackable_flags.key,
-          ],
+          target: [trackable_flags.user_id, trackable_flags.trackable_id, trackable_flags.key],
           set: { value: sql`${verified.value}` },
         });
     }
@@ -124,8 +116,8 @@ export const applyCrudTrackableFlags = async (
           and(
             eq(trackable_flags.trackable_id, dataFromId.trackable_id),
             eq(trackable_flags.user_id, user_id),
-            eq(trackable_flags.key, dataFromId.key)
-          )
+            eq(trackable_flags.key, dataFromId.key),
+          ),
         );
     }
     case UpdateType.DELETE: {
@@ -137,8 +129,8 @@ export const applyCrudTrackableFlags = async (
           and(
             eq(trackable_flags.trackable_id, dataFromId.trackable_id),
             eq(trackable_flags.user_id, user_id),
-            eq(trackable_flags.key, dataFromId.key)
-          )
+            eq(trackable_flags.key, dataFromId.key),
+          ),
         );
     }
   }
@@ -148,10 +140,7 @@ export const applyCrudTrackableFlags = async (
 // TRACKABLE RECORD
 // ============================================================================
 
-export const applyCrudTrackableRecord = async (
-  entry: SyncEntry,
-  user_id: string
-) => {
+export const applyCrudTrackableRecord = async (entry: SyncEntry, user_id: string) => {
   const opData = entry.opData as Record<string, unknown>;
   const id = entry.id;
 
@@ -176,28 +165,18 @@ export const applyCrudTrackableRecord = async (
     case UpdateType.PATCH: {
       const verified = trackable_record_update_schema.parse(opData);
 
-      console.log('patch trackable record', verified, opData);
+      console.log("patch trackable record", verified, opData);
 
       await db
         .update(trackable_record)
         .set(verified)
-        .where(
-          and(
-            eq(trackable_record.id, id),
-            eq(trackable_record.user_id, user_id)
-          )
-        );
+        .where(and(eq(trackable_record.id, id), eq(trackable_record.user_id, user_id)));
       break;
     }
     case UpdateType.DELETE: {
       await db
         .delete(trackable_record)
-        .where(
-          and(
-            eq(trackable_record.id, entry.id),
-            eq(trackable_record.user_id, user_id)
-          )
-        );
+        .where(and(eq(trackable_record.id, entry.id), eq(trackable_record.user_id, user_id)));
       break;
     }
   }
@@ -207,20 +186,17 @@ export const applyCrudTrackableRecord = async (
 // TRACKABLE GROUP
 // ============================================================================
 
-const trackableGroupFromClientId = (id: SyncEntry['id']) => {
-  const spl = id.split('|');
+const trackableGroupFromClientId = (id: SyncEntry["id"]) => {
+  const spl = id.split("|");
 
   if (spl.length != 3 || spl.some((s) => !s)) {
-    throw new Error('Invalid trackable group id: ' + id);
+    throw new Error("Invalid trackable group id: " + id);
   }
 
   return { trackable_id: spl[1]!, group: spl[2]! };
 };
 
-export const applyCrudTrackableGroup = async (
-  entry: SyncEntry,
-  user_id: string
-) => {
+export const applyCrudTrackableGroup = async (entry: SyncEntry, user_id: string) => {
   const { opData } = entry;
 
   switch (entry.op) {
@@ -237,10 +213,7 @@ export const applyCrudTrackableGroup = async (
       const verified = trackable_group_update_schema.parse(opData);
 
       if (!verified.trackable_id || !verified.group) {
-        console.error(
-          'trying to patch trackable group with invalid data',
-          verified
-        );
+        console.error("trying to patch trackable group with invalid data", verified);
         return;
       }
 
@@ -251,8 +224,8 @@ export const applyCrudTrackableGroup = async (
           and(
             eq(trackable_group.trackable_id, verified.trackable_id),
             eq(trackable_group.user_id, user_id),
-            eq(trackable_group.group, verified.group)
-          )
+            eq(trackable_group.group, verified.group),
+          ),
         );
       break;
     }
@@ -264,8 +237,8 @@ export const applyCrudTrackableGroup = async (
           and(
             eq(trackable_group.user_id, user_id),
             eq(trackable_group.trackable_id, dataFromId.trackable_id),
-            eq(trackable_group.group, dataFromId.group)
-          )
+            eq(trackable_group.group, dataFromId.group),
+          ),
         );
       break;
     }
@@ -276,11 +249,11 @@ export const applyCrudTrackableGroup = async (
 // USER FLAGS
 // ============================================================================
 
-const userFlagsFromClientID = (id: SyncEntry['id']) => {
-  const spl = id.split('|');
+const userFlagsFromClientID = (id: SyncEntry["id"]) => {
+  const spl = id.split("|");
 
   if (spl.length != 2 || spl.some((s) => !s)) {
-    throw new Error('Invalid user flags id: ' + id);
+    throw new Error("Invalid user flags id: " + id);
   }
 
   return { key: spl[1]! };
@@ -309,16 +282,14 @@ export const applyCrudUserFlags = async (entry: SyncEntry, user_id: string) => {
       const verified = user_flags_update_schema.parse(opData);
 
       if (!verified.key) {
-        console.error('trying to patch flag without key');
+        console.error("trying to patch flag without key");
         return;
       }
 
       await db
         .update(user_flags)
         .set({ value: verified.value })
-        .where(
-          and(eq(user_flags.key, verified.key), eq(user_flags.user_id, user_id))
-        );
+        .where(and(eq(user_flags.key, verified.key), eq(user_flags.user_id, user_id)));
       break;
     }
     case UpdateType.DELETE: {
@@ -326,12 +297,7 @@ export const applyCrudUserFlags = async (entry: SyncEntry, user_id: string) => {
 
       await db
         .delete(user_flags)
-        .where(
-          and(
-            eq(user_flags.key, dataFromId.key),
-            eq(user_flags.user_id, user_id)
-          )
-        );
+        .where(and(eq(user_flags.key, dataFromId.key), eq(user_flags.user_id, user_id)));
       break;
     }
   }

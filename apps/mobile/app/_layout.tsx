@@ -1,42 +1,31 @@
-import '@azure/core-asynciterator-polyfill'; // required for powersync
-import 'react-native-get-random-values'; // required for uuidv4
-import 'react-native-reanimated';
+import "@azure/core-asynciterator-polyfill"; // required for powersync
+import "react-native-get-random-values"; // required for uuidv4
+import "react-native-reanimated";
 
-import '../global.css';
+import "../global.css";
 
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from '@react-navigation/native';
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { DarkTheme, DefaultTheme, ThemeProvider } from "@react-navigation/native";
 
-import { KeyboardProvider } from 'react-native-keyboard-controller';
-import {
-  SafeAreaListener,
-  SafeAreaProvider,
-} from 'react-native-safe-area-context';
+import { KeyboardProvider } from "react-native-keyboard-controller";
+import { SafeAreaListener, SafeAreaProvider } from "react-native-safe-area-context";
 
-import {
-  AuthClientProvider,
-  SessionCachedProvider,
-  useSessionCached,
-} from '@/lib/authClient';
-import { PortalHost } from '@rn-primitives/portal';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ServerURLProvider, useServerURL } from '@/lib/ServerURLContext';
-import { Uniwind } from 'uniwind';
-import { AppErrorBoundary } from '@/components/error/appErrorBoundary';
+import { AuthClientProvider, SessionCachedProvider, useSessionCached } from "@/lib/authClient";
+import { PortalHost } from "@rn-primitives/portal";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ServerURLProvider, useServerURL } from "@/lib/ServerURLContext";
+import { Uniwind } from "uniwind";
+import { AppErrorBoundary } from "@/components/error/appErrorBoundary";
 
 //import * as SplashScreen from "expo-splash-screen";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { ReactNode, useEffect } from 'react';
-import { AppState, useColorScheme } from 'react-native';
-import { refreshNow } from '@tyl/helpers/date/clockStore';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { ReactNode, useEffect } from "react";
+import { AppState, useColorScheme } from "react-native";
+import { refreshNow } from "@tyl/helpers/date/clockStore";
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  anchor: "(tabs)",
 };
 
 //SplashScreen.preventAutoHideAsync();
@@ -45,8 +34,8 @@ export default function RootLayout() {
   const qc = new QueryClient();
 
   useEffect(() => {
-    const subscription = AppState.addEventListener('change', (state) => {
-      if (state === 'active') {
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state === "active") {
         refreshNow();
       }
     });
@@ -92,7 +81,7 @@ const ThemeP = ({ children }: { children: ReactNode }) => {
 
   return (
     <>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
         {children}
       </ThemeProvider>
     </>

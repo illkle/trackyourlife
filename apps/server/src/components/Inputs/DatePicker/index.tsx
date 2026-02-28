@@ -1,5 +1,5 @@
-import { RefObject, useContext, useEffect, useRef, useState } from 'react';
-import { cn } from '@shad/lib/utils';
+import { RefObject, useContext, useEffect, useRef, useState } from "react";
+import { cn } from "@shad/lib/utils";
 import {
   addMonths,
   clamp,
@@ -10,7 +10,7 @@ import {
   isBefore,
   isSameMonth,
   startOfMonth,
-} from 'date-fns';
+} from "date-fns";
 import {
   CalendarIcon,
   ChevronLeftIcon,
@@ -18,19 +18,19 @@ import {
   ChevronsLeftIcon,
   ChevronsRightIcon,
   XIcon,
-} from 'lucide-react';
-import { AnimatePresence, m } from 'motion/react';
-import { useResizeObserver } from 'usehooks-ts';
+} from "lucide-react";
+import { AnimatePresence, m } from "motion/react";
+import { useResizeObserver } from "usehooks-ts";
 
-import { Button, buttonVariants } from '~/@shad/components/button';
-import { DrawerMobileTitleContext } from '~/@shad/components/drawer';
+import { Button, buttonVariants } from "~/@shad/components/button";
+import { DrawerMobileTitleContext } from "~/@shad/components/drawer";
 import {
   DynamicModal,
   DynamicModalContent,
   DynamicModalDescription,
   DynamicModalDrawerTitle,
   DynamicModalTrigger,
-} from '~/components/Modal/dynamicModal';
+} from "~/components/Modal/dynamicModal";
 
 const DatePicker = ({
   date,
@@ -98,10 +98,10 @@ const DatePicker = ({
       }
     };
 
-    window.addEventListener('click', closeChecker);
+    window.addEventListener("click", closeChecker);
 
     return () => {
-      window.removeEventListener('click', closeChecker);
+      window.removeEventListener("click", closeChecker);
     };
   }, []);
 
@@ -111,15 +111,14 @@ const DatePicker = ({
     return true;
   };
 
-  const highlightSelected =
-    date && isSameMonth(date, cursor) ? date.getDate() : -1;
+  const highlightSelected = date && isSameMonth(date, cursor) ? date.getDate() : -1;
 
   const variants = {
     enter: (d = 0) => {
       return { x: `${100 * d}%`, opacity: 0 };
     },
     middle: () => {
-      return { x: '0%', opacity: 1 };
+      return { x: "0%", opacity: 1 };
     },
     exit: (d = 0) => {
       return { x: `${-100 * d}%`, opacity: 0 };
@@ -129,21 +128,15 @@ const DatePicker = ({
   const mobileTitle = useContext(DrawerMobileTitleContext);
 
   return (
-    <div className={cn('relative flex', className)}>
-      <DynamicModal
-        open={isOpened}
-        onOpenChange={setIsOpened}
-        desktopMode="popover"
-      >
+    <div className={cn("relative flex", className)}>
+      <DynamicModal open={isOpened} onOpenChange={setIsOpened} desktopMode="popover">
         <DynamicModalContent className="overflow-hidden">
           <div className="relative max-sm:m-auto max-sm:w-fit max-sm:pb-4">
-            <DynamicModalDrawerTitle className="text-center">
-              {mobileTitle}
-            </DynamicModalDrawerTitle>
+            <DynamicModalDrawerTitle className="text-center">{mobileTitle}</DynamicModalDrawerTitle>
             <DynamicModalDescription> </DynamicModalDescription>
             <m.div
               animate={{ height: height }}
-              transition={{ duration: 0.15, ease: 'easeInOut' }}
+              transition={{ duration: 0.15, ease: "easeInOut" }}
               className="flex w-full flex-col items-center md:w-fit"
             >
               <div ref={wrapRef}>
@@ -166,22 +159,18 @@ const DatePicker = ({
                       <ChevronLeftIcon size={16} />
                     </Button>
                   </div>
-                  <AnimatePresence
-                    mode="popLayout"
-                    initial={false}
-                    custom={moveDirection * 0.1}
-                  >
+                  <AnimatePresence mode="popLayout" initial={false} custom={moveDirection * 0.1}>
                     <m.div
                       initial="enter"
                       animate="middle"
                       exit="exit"
-                      transition={{ duration: 0.15, ease: 'easeInOut' }}
+                      transition={{ duration: 0.15, ease: "easeInOut" }}
                       variants={variants}
                       custom={moveDirection * 0.1}
                       key={cursor.toString()}
                       className="pointer-events-none whitespace-nowrap select-none"
                     >
-                      {format(cursor, 'MMMM yyyy')}
+                      {format(cursor, "MMMM yyyy")}
                     </m.div>
                   </AnimatePresence>
                   <div className="flex">
@@ -205,18 +194,14 @@ const DatePicker = ({
                   </div>
                 </div>
 
-                <AnimatePresence
-                  mode="popLayout"
-                  initial={false}
-                  custom={moveDirection * 0.5}
-                >
+                <AnimatePresence mode="popLayout" initial={false} custom={moveDirection * 0.5}>
                   <m.div
                     initial="enter"
                     animate="middle"
                     exit="exit"
                     custom={moveDirection * 0.5}
-                    className={'grid w-fit grid-cols-7 gap-1'}
-                    transition={{ duration: 0.15, ease: 'easeInOut' }}
+                    className={"grid w-fit grid-cols-7 gap-1"}
+                    transition={{ duration: 0.15, ease: "easeInOut" }}
                     variants={variants}
                     key={cursor.toString()}
                   >
@@ -227,7 +212,7 @@ const DatePicker = ({
                       <Button
                         className="h-9 sm:w-9"
                         disabled={!inLimit(el)}
-                        variant={el === highlightSelected ? 'default' : 'ghost'}
+                        variant={el === highlightSelected ? "default" : "ghost"}
                         key={`${cursor.getMonth()}-${el}`}
                         onClick={() => recordDate(el)}
                       >
@@ -244,22 +229,20 @@ const DatePicker = ({
         <DynamicModalTrigger>
           <div
             className={cn(
-              buttonVariants({ variant: 'outline' }),
-              !disableClear && 'rounded-r-none',
-              'min-w-50'
+              buttonVariants({ variant: "outline" }),
+              !disableClear && "rounded-r-none",
+              "min-w-50",
             )}
           >
-            <span className="">
-              {date ? format(date, 'd MMMM yyyy') : 'No date set'}
-            </span>
+            <span className="">{date ? format(date, "d MMMM yyyy") : "No date set"}</span>
             <CalendarIcon size={16} className="ml-auto" />
           </div>
         </DynamicModalTrigger>
         {!disableClear && (
           <Button
-            variant={'outline'}
+            variant={"outline"}
             disabled={!date}
-            size={'icon'}
+            size={"icon"}
             className="rounded-l-none border-l-0"
             onClick={() => onChange(undefined)}
           >

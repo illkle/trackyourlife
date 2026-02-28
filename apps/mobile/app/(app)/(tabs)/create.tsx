@@ -1,34 +1,32 @@
-import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
-import { useRouter } from 'expo-router';
-import { useMutation } from '@tanstack/react-query';
+import { useState } from "react";
+import { Pressable, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import { useMutation } from "@tanstack/react-query";
 
-import { DefaultWrapper } from '@/lib/styledComponents';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { cn } from '@/lib/utils';
-import { useTrackableHandlers } from '@tyl/helpers/data/dbHooksTanstack';
-import { MutationError } from '@/components/form/mutationError';
+import { DefaultWrapper } from "@/lib/styledComponents";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
+import { useTrackableHandlers } from "@tyl/helpers/data/dbHooksTanstack";
+import { MutationError } from "@/components/form/mutationError";
 
-type TrackableType = 'boolean' | 'number' | 'text';
+type TrackableType = "boolean" | "number" | "text";
 const options = [
   {
-    value: 'boolean' as const,
-    title: 'Boolean',
-    description:
-      'True or false. Can be used for habit tracking or as a checkbox.',
+    value: "boolean" as const,
+    title: "Boolean",
+    description: "True or false. Can be used for habit tracking or as a checkbox.",
   },
   {
-    value: 'number' as const,
-    title: 'Number',
+    value: "number" as const,
+    title: "Number",
     description:
-      'Can represent count like steps walked, measurement like weight, or rating like mood.',
+      "Can represent count like steps walked, measurement like weight, or rating like mood.",
   },
   {
-    value: 'text' as const,
-    title: 'Text',
-    description:
-      'Simple text for each day. You can use it as a note or a gratitude journal.',
+    value: "text" as const,
+    title: "Text",
+    description: "Simple text for each day. You can use it as a note or a gratitude journal.",
   },
 ];
 
@@ -48,16 +46,12 @@ const TrackableTypeSelector = ({
             key={option.value}
             onPress={() => setType(option.value)}
             className={cn(
-              'rounded-md border-2 border-border bg-card p-4',
-              selected && 'border-primary bg-accent/20'
+              "rounded-md border-2 border-border bg-card p-4",
+              selected && "border-primary bg-accent/20",
             )}
           >
-            <Text className="text-lg font-semibold text-foreground">
-              {option.title}
-            </Text>
-            <Text className="mt-1 text-sm text-muted-foreground">
-              {option.description}
-            </Text>
+            <Text className="text-lg font-semibold text-foreground">{option.title}</Text>
+            <Text className="mt-1 text-sm text-muted-foreground">{option.description}</Text>
           </Pressable>
         );
       })}
@@ -70,8 +64,8 @@ export const CreateScreen = () => {
   const { createTrackable } = useTrackableHandlers();
 
   const [newOne, setNewOne] = useState<{ type: TrackableType; name: string }>({
-    type: 'boolean',
-    name: '',
+    type: "boolean",
+    name: "",
   });
 
   const mutation = useMutation({
@@ -79,12 +73,12 @@ export const CreateScreen = () => {
       return await createTrackable({
         name: payload.name,
         type: payload.type,
-        bucketing: 'day',
+        bucketing: "day",
       });
     },
     onSuccess: (id) => {
-      router.push({ pathname: '/trackable/[id]', params: { id } });
-      console.log('id', id);
+      router.push({ pathname: "/trackable/[id]", params: { id } });
+      console.log("id", id);
     },
   });
 
@@ -94,7 +88,7 @@ export const CreateScreen = () => {
 
   const handleCreate = () => {
     mutation.mutate({
-      name: newOne.name || '',
+      name: newOne.name || "",
       type: newOne.type,
     });
   };
@@ -102,16 +96,12 @@ export const CreateScreen = () => {
   return (
     <DefaultWrapper>
       <View className="flex flex-col gap-4 pb-6">
-        <Text className="text-2xl font-semibold text-foreground">
-          Create new Trackable
-        </Text>
+        <Text className="text-2xl font-semibold text-foreground">Create new Trackable</Text>
 
         <Input
           placeholder="Unnamed Trackable"
           value={newOne.name}
-          onChangeText={(value) =>
-            setNewOne((prev) => ({ ...prev, name: value }))
-          }
+          onChangeText={(value) => setNewOne((prev) => ({ ...prev, name: value }))}
         />
 
         <TrackableTypeSelector type={newOne.type} setType={setType} />

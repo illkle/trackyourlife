@@ -3,14 +3,8 @@
   "ui": "tui",
   "tasks": {
     "build": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        ".expo/**",
-        ".output/**",
-        "dist/**"
-      ],
+      "dependsOn": ["^build"],
+      "outputs": [".expo/**", ".output/**", "dist/**"],
       "env": [
         "VITE_DEPLOY_DOMAIN",
         "VITE_POWERSYNC_DOMAIN",
@@ -31,18 +25,11 @@
       ]
     },
     "typecheck": {
-      "dependsOn": [
-        "^build"
-      ],
-      "outputs": [
-        "node_modules/.cache/tsbuildinfo.json",
-        "**/*.tsbuildinfo"
-      ]
+      "dependsOn": ["^build"],
+      "outputs": ["node_modules/.cache/tsbuildinfo.json", "**/*.tsbuildinfo"]
     },
     "lint": {
-      "dependsOn": [
-        "^lint"
-      ]
+      "dependsOn": ["^lint"]
     },
     "clean": {
       "cache": false
@@ -50,34 +37,24 @@
     "push": {
       "cache": false,
       "interactive": true,
-      "env": [
-        "DATABASE_URL"
-      ]
+      "env": ["DATABASE_URL"]
     },
     "studio": {
       "cache": false,
       "persistent": true,
-      "env": [
-        "DATABASE_URL"
-      ]
+      "env": ["DATABASE_URL"]
     },
     "generate": {
       "cache": false,
-      "env": [
-        "DATABASE_URL"
-      ]
+      "env": ["DATABASE_URL"]
     },
     "migrate": {
       "cache": false,
-      "env": [
-        "DATABASE_URL"
-      ]
+      "env": ["DATABASE_URL"]
     },
     "up": {
       "cache": false,
-      "env": [
-        "DATABASE_URL"
-      ]
+      "env": ["DATABASE_URL"]
     },
     "test": {
       "cache": false
@@ -87,12 +64,8 @@
     },
     "migrate:deploy": {
       "cache": false,
-      "env": [
-        "DATABASE_URL"
-      ]
+      "env": ["DATABASE_URL"]
     }
   },
-  "globalEnv": [
-    "NODE_ENV"
-  ]
+  "globalEnv": ["NODE_ENV"]
 }
